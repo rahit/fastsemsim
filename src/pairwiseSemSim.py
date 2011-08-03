@@ -12,7 +12,7 @@ from SemSim import ObjSemSim
 from SemSim import SemSimUtils
 from SemSim import ResnikSemSim
 from SemSim import maxSemSim
-from pairs import *
+#from pairs import *
 import sys
 import os
 
@@ -35,7 +35,7 @@ if __name__ == "__main__":
 				#print str(test_set[i][0]) + "\t" +  str(test_set[j][0])
 	#sys.exit()
 	#### load ontology
-	tree = GeneOntology.get_go_graph(open(sys.argv[1]))
+	tree = GeneOntology.load_GO_XML(open(sys.argv[1]))
 	#print "Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.V.__len__()) + ". Edges: " + str(tree.E.__len__())
 	print("Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num()))
 	#### load annotations
@@ -84,25 +84,25 @@ if __name__ == "__main__":
 			##outfile.write(str(k) + "\t" + str(i) + "\t" + str(ssscores[k][i]) + "\n")
 	#outfile.close()
 
-     outfile = open(sys.argv[3], 'w')
-        outfile1 = open(sys.argv[4], 'w')
-        complexes = gp.annotations
-        test_set = complexes.items()
-        conta = 0
-        for i in range(0,len(test_set)):
-                outfile1.write(str(test_set[i]) + "\n")
-                ssscores[test_set[i][0]] = {}
-                if i%(len(test_set)/100)==0:
-                        print "Done " + str(i) + " on " + str(len(test_set))
-                for j in range(i+1,len(test_set)):
-                        if j%(len(test_set)/100)==0:
-                                print "Done " + str(j) + " on " + str(len(test_set))
-                        test = SS.SemSim(test_set[i][0],test_set[j][0],ontology)
-                        #ssscores[test_set[i][0]][test_set[j][0]]= test
-                        #outfile.write(str(test_set[i][0]) + "\t" + str(test_set[j][0]) + "\t" + str(test) + "\n")
-                        outfile.write(str(test) + "\n")
-        #for k in ssscores:
-                #for i in ssscores[k]:
-                        #outfile.write(str(k) + "\t" + str(i) + "\t" + str(ssscores[k][i]) + "\n")
-        outfile.close()
-        outfile1.close()
+	outfile = open(sys.argv[3], 'w')
+	outfile1 = open(sys.argv[4], 'w')
+	complexes = gp.annotations
+	test_set = complexes.items()
+	conta = 0
+	for i in range(0,len(test_set)):
+		outfile1.write(str(test_set[i]) + "\n")
+		ssscores[test_set[i][0]] = {}
+		if i%(len(test_set)/100)==0:
+			print "Done " + str(i) + " on " + str(len(test_set))
+		for j in range(i+1,len(test_set)):
+			if j%(len(test_set)/100)==0:
+				print "Done " + str(j) + " on " + str(len(test_set))
+			test = SS.SemSim(test_set[i][0],test_set[j][0],ontology)
+			#ssscores[test_set[i][0]][test_set[j][0]]= test
+			#outfile.write(str(test_set[i][0]) + "\t" + str(test_set[j][0]) + "\t" + str(test) + "\n")
+			outfile.write(str(test) + "\n")
+	#for k in ssscores:
+		#for i in ssscores[k]:
+			#outfile.write(str(k) + "\t" + str(i) + "\t" + str(ssscores[k][i]) + "\n")
+	outfile.close()
+	outfile1.close()
