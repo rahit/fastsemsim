@@ -102,21 +102,23 @@ class fastResnikSemSim():
 			temp_row = len(self.sortedTerms)*[0]
 			temp_annot = self.int_format_data(i, onto)
 			#print str(temp_row)
-			for i in temp_annot:
+			for j in temp_annot:
 				#print str(i)
 				#print str(len(self.sortedTermsDict))
 				#print str(self.sortedTermsDict[i])
 				#print str(len(self.sortedTerms))
-				temp_row[self.sortedTermsDict[i]] = 1
+				temp_row[self.sortedTermsDict[j]] = 1
 			#print temp_row
 			self.matrice.append(temp_row)
+			print i
 			self.matrice_names.append(i) #[i] = pos 
 			pos += 1
 		#main loop
 		for i in range(0,len(self.matrice)):
-			print("Processing " + str(i) + " on " + str(len(self.matrice)))
+			print("Processing " + str(i) + " on " + str(len(self.matrice)) + ": " + str(self.matrice_names[i]))
 			temp_scores = {}
 			temp_missing = [x for x in range(i+1, len(self.matrice))]
+			#print(str(len(temp_missing)))
 			k = 0
 			while k < len(self.matrice[i]):
 				if self.matrice[i][k] == 0:
@@ -134,13 +136,28 @@ class fastResnikSemSim():
 
 					k += 1
 			for j in temp_missing:
-				temp_scores[self.matrice_names[temp_missing[j]]] = 0
-			print temp_scores
-			self.scores[self.matrice_names[i]] = temp_scores
+				print j
+				self.matrice_names[j]
+				#print temp_missing[j]
+				temp_scores[self.matrice_names[j]] = 0
+			#print temp_scores
+			print("Size of last added vector: " + str(len(temp_scores)))
+			print("-------------------")
+			if self.stream1 is None:
+				if self.matrice_names[i] in self.scores:
+					print "Errore"
+				self.scores[self.matrice_names[i]] = temp_scores
+				print("Size of score matrix: " + str(len(self.scores)))
+			else:	
+				#self.stream1.write(str(self.matrice_names[i]) + " - " + str(k) + ": " + str(temp_scores[k]) + "\n")
+				for k in temp_scores:
+					self.stream1.write(str(self.matrice_names[i]) + "\t" + str(k) + "\t" + str('%.4f' %temp_scores[k]) + "\n")
 			#for i in 
 			
 
-	def SemSim(self, ontology):
+	def SemSim(self, ontology, stream1 = None):
+		self.stream1 = stream1
+		#self.stream2 = stream2
 		#### translate into id format & check data
 		if ontology is self.util.BP_ontology:
 			onto = self.util.BP_root
@@ -203,8 +220,10 @@ if __name__ == "__main__":
 	ssu.det_ICs_table()
 
 	SS = fastResnikSemSim(gp, tree, ssu)
-	ontology = "BP"
-	SS.SemSim(ontology)
+	ontology = "MF"
+	outfile1 = open(sys.argv[3], 'w')
+	SS.SemSim(ontology, outfile1)
+	outfile1.close()
 	sys.exit(0)
 	#A = int(sys.argv[6])
 	#B = int(sys.argv[7])
@@ -222,26 +241,26 @@ if __name__ == "__main__":
 	#test_set = human_pairs
 	#inf.close()
 	
-	outfile = open(sys.argv[3], 'w')
-	outfile1 = open(sys.argv[4], 'w')
-	complexes = gp.annotations
-	test_set = complexes.items()
-	conta = 0
-	A = 0
-	B = len(test_set) - 1
-	for i in range(A,B+1):
-		outfile1.write(str(test_set[i]))
-		#ssscores[test_set[i]] = {}
-		if i%(len(test_set)/100)==0:
-			print "Done " + str(i) + " on " + str(len(test_set))
-		firsttime = True
-		for j in range(i+1,len(test_set)):
-			if firsttime:
-				 outfile1.write(" " + str(test_set[j]) + "\n")
-				 firsttime = False
-			if j%(len(test_set)/1000)==0:
-				print "Done " + str(j) + " on " + str(len(test_set))
-			test = SS.SemSim(test_set[i],test_set[j],ontology)
-			outfile.write(str(test) + "\n")
-	outfile.close()
-	outfile1.close()
+	#outfile = open(sys.argv[3], 'w')
+	#outfile1 = open(sys.argv[4], 'w')
+	#complexes = gp.annotations
+	#test_set = complexes.items()
+	#conta = 0
+	#A = 0
+	#B = len(test_set) - 1
+	#for i in range(A,B+1):
+		#outfile1.write(str(test_set[i]))
+		##ssscores[test_set[i]] = {}
+		#if i%(len(test_set)/100)==0:
+			#print "Done " + str(i) + " on " + str(len(test_set))
+		#firsttime = True
+		#for j in range(i+1,len(test_set)):
+			#if firsttime:
+				 #outfile1.write(" " + str(test_set[j]) + "\n")
+				 #firsttime = False
+			#if j%(len(test_set)/1000)==0:
+				#print "Done " + str(j) + " on " + str(len(test_set))
+			#test = SS.SemSim(test_set[i],test_set[j],ontology)
+			#outfile.write(str(test) + "\n")
+	#outfile.close()
+	#outfile1.close()
