@@ -220,7 +220,7 @@ if __name__ == "__main__":
 	ssu.det_ICs_table()
 
 	SS = fastResnikSemSim(gp, tree, ssu)
-	ontology = "MF"
+	ontology = "BP"
 	outfile1 = open(sys.argv[3], 'w')
 	SS.SemSim(ontology, outfile1)
 	outfile1.close()

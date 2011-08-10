@@ -23,7 +23,6 @@ This class provides a fast implementation of Resnik max
 """
 
 from GO import AnnotationCorpus
-from GO import PlainAnnotationCorpus
 from GO import GeneOntology
 from SemSim import ObjSemSim
 from SemSim import SemSimUtils
@@ -136,7 +135,7 @@ class fastResnikSemSim():
 
 					k += 1
 			for j in temp_missing:
-				print j
+				#print j
 				self.matrice_names[j]
 				#print temp_missing[j]
 				temp_scores[self.matrice_names[j]] = 0
@@ -200,16 +199,13 @@ if __name__ == "__main__":
 	#### load ontology
 	tree = GeneOntology.load_GO_XML(open(sys.argv[1]))
 	print "Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
-	
-	#### load annotations
-	#gp = AnnotationCorpus.AnnotationCorpus(tree)
-	#gp.parse(sys.argv[2])
-	gp = PlainAnnotationCorpus.PlainAnnotationCorpus(tree)	
-	gp.parse(sys.argv[2])
-	
-	gp.check_consistency()
+
+	gp = AnnotationCorpus.AnnotationCorpus(tree)	
+	gp.parse(sys.argv[2],'plain')
+
 	print("Annotated proteins: " + str(len(gp.annotations)))
 	print("Annotated terms: " + str(len(gp.reverse_annotations)))
+	print("Check annotation corpus consistency... " + str(gp.check_consistency()))
 
 	#### create SemSimUtils class
 	ssu = SemSimUtils.SemSimUtils(gp, tree)

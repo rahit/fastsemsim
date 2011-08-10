@@ -30,6 +30,9 @@ Function load_GO_XML(file_stream) loads XML files. It returns a GeneOntology obj
 
 IS_A = 0
 PART_OF = 1
+BP_root = "GO:0008150"
+MF_root = "GO:0003674"
+CC_root = "GO:0005575"
 
 import types
 from xml.sax import make_parser
@@ -106,6 +109,10 @@ class GeneOntology:
 		for (u,v,z) in edges:
 			self.add_edge(u,v,z)
 		self.alt_ids = alt_ids
+		self.obsolete_ids = {}
+		for i in self.alt_ids:
+			if i not in self.nodes_edges:
+				self.obsolete_ids[i] = {}
 
 	def add_node(self,n):
 		if n not in self.nodes_edges:

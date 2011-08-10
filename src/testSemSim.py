@@ -23,6 +23,7 @@ This class provides check tests for ObjSemSim class
 """
 
 from GO import AnnotationCorpus
+from GO import GOAAnnotationCorpus
 from GO import GeneOntology
 from SemSim import ObjSemSim
 from SemSim import SemSimUtils
@@ -35,18 +36,15 @@ if __name__ == "__main__":
 	#### load ontology
 	tree = GeneOntology.load_GO_XML(open(sys.argv[1]))
 	print "Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
-	#print "Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.V.__len__()) + ". Edges: " + str(tree.E.__len__())
+	
 	#### load annotations
 	gp = AnnotationCorpus.AnnotationCorpus(tree)
-	gp.parse(sys.argv[2])
+	gp.parse(sys.argv[2], 'GOA')
 	
-	gp.check_consistency()
+	#gp.check_consistency()
 	print "Annotated proteins: " + str(len(gp.annotations))
 	print "Annotated terms: " + str(len(gp.reverse_annotations))
-
-	#for i in gp.annotations:
-		#print str(i)
-
+	gp.check_consistency()
 	ssu = SemSimUtils.SemSimUtils(gp, tree)
 	ssu.det_offspring_table()
 	ssu.det_ancestors_table()

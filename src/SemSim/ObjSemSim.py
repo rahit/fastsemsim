@@ -93,7 +93,7 @@ class ObjSemSim:
 			return None
 		terms = []
 		for i in self.annotation_corpus.annotations[obj]:
-			if i in self.annotation_corpus.obsoletes:
+			if i in self.go.obsolete_ids:
 				#print(str(i) + " obsolete!"
 				continue
 			if i not in self.util.GO_division:
@@ -134,30 +134,6 @@ class ObjSemSim:
 			print("Unrecognized TSS.")
 			sys.exit(1)
 		return sscore
-
-#class ObjSemSimConfigurator:
-	
-	#def config(gofile, goafile, tss, mixs):
-		##### load ontology
-		#tree = GeneOntology.get_go_graph(open(sys.argv[1]))
-		#print("Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.V.__len__()) + ". Edges: " + str(tree.E.__len__())
-		
-		##### load annotations
-		#gp = AnnotationCorpus.AnnotationCorpus(tree)
-		#gp.parse(sys.argv[2])
-		
-		#gp.check_consistency()
-		#print("Annotated proteins: " + str(len(gp.annotations))
-		#print("Annotated terms: " + str(len(gp.reverse_annotations))
-		
-		#ssu = SemSimUtils(gp, tree)
-		#ssu.det_offspring_table()
-		#ssu.det_ancestors_table()
-		#ssu.det_freq_table()
-		#ssu.det_GO_division()
-		#ssu.det_ICs_table()
-		#oss = ObjSemSim(gp, tree, ResnikSemSim(gp, tree, ssu), avgSemSim(gp, tree), ssu)
-		#return oss
 
 if __name__ == "__main__":
 	

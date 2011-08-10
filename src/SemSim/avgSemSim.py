@@ -44,26 +44,3 @@ class avgSemSim(MixSemSim):
 			finale += i[2]
 		finale /= float(len(scores))
 		return finale
-
-#if __name__ == "__main__":
-	##### load annotations
-	#gp = AnnotationCorpus.AnnotationCorpus()
-	#gp.parse(sys.argv[2])
-
-	##### load ontology
-	#tree = GeneOntology.get_go_graph(open(sys.argv[1]))
-	#print("Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.V.__len__()) + ". Edges: " + str(tree.E.__len__())
-	
-	##### create SemSimUtils class
-	#ssu = SemSimUtils(gp, tree)
-	#ssu.det_offspring_table()
-	#ssu.det_ancestors_table()
-	#ssu.det_freq_table()
-	#ssu.det_GO_division()
-	#ssu.det_ICs_table()
-
-	#TSS = TermSemSim(gp, tree, ssu)
-	#test = TSS.SemSim("GO:0030682","GO:0030683")
-	#print(test
-	#test = TSS.SemSim("GO:0008150","GO:0008150")
-	#print(test

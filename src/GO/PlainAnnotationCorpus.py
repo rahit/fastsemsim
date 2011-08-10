@@ -34,71 +34,34 @@ __author__="Marco Mina"
 #
 ####
 import sys
+import copy
 #from pairs import rowscounter
+#from GO import GeneOntology
+import GeneOntology
+import AnnotationCorpus
 
-class PlainAnnotationCorpus:
-	BP_root = "GO:0008150"
-	MF_root = "GO:0003674"
-	CC_root = "GO:0005575"
-	exclude_GO_root = True
-	SHOW_PROCESS_THRESHOLD = 50000
+class PlainAnnotationCorpus():
 	separator = '\t'
-	#### final tables to be filled and used
+	objfirst = True
 	
-	annotations = {}
-	reverse_annotations = {}
-	obj_set = {}
+	#def __init__(self, tree=None):
+		#AnnotationCorpus.__init__(tree)
 
-	original_annotations = {}
-	original_reverse_annotations = {}
-	original_obj_set = {}
-	original_term_set = {}
-	
-	annotations = {}
-	reverse_annotations = {}
-	obj_set = {}
-	term_set = {}
-	obsoletes = {}
-
-	taxonomy_filter = {}
-	EC_filter = {}
-	EC_filter_inclusive = True
-	
-	def __init__(self, tree=None):
-		self.go = tree
-		
-	def check_consistency(self):
-		if self.go is None:
-			return None
-		valid = True
-		for i in self.reverse_annotations:
-			if not i in self.go.alt_ids:
-				print("Term " + str(i) + " not found in GO.")
-				valid = False
-				continue
-			if not i in self.go.nodes_edges:
-				if self.go.alt_ids[i] == i:
-					print("Term " + str(i) + " is an obsolete id.")
-					self.obsoletes[i] = {}
-				else:
-					print("Term " + str(i) + " is an alternative id.")
-					valid = False
-					continue
-		if valid:
-			print("Annotation Corpus is consistent.")
+	# deepcopy missing but not needed for now.
+	#def load(self, fname):
+		#self.parse(fname, self)
 			
-	def parse(self, fname):
-		self.annotations = {}
-		self.obj_set = {}
-		self.reverse_annotations = {}
-
+	def parse(self, fname, trueclass):
+		if type(fname) is str:
+			stream = open(fname)
+		else:
+			stream = fname
 		#filenum = rowcount(fname);
 		#if filenum > self.SHOW_PROCESS_THRESHOLD:
 			#print(fname + " has " + str(filenum) + " lines."
 			#self.SHOW_PROCESS = True;
 		#else:
-		self.SHOW_PROCESS = False;
-		stream = open(fname)
+		#self.SHOW_PROCESS = False;
 		lines_counter = 0
 		for line in stream:
 			line = line.rstrip('\n')
@@ -109,64 +72,60 @@ class PlainAnnotationCorpus:
 			if len(line) < 2:
 				print("Strange line: " + str(line))
 				continue
-			obj_id = line[1]
-			term = line[0]
-			#term = int(term[3:])
-			
-			if self.exclude_GO_root:
-				if term == self.BP_root:
+			if self.objfirst:
+				obj_id = line[0]
+				term = line[1]
+			else:
+				obj_id = line[1]
+				term = line[0]
+			if trueclass.exclude_GO_root:
+				if term == GeneOntology.BP_root:
 					continue
-				if term == self.CC_root:
+				if term == GeneOntology.CC_root:
 					continue
-				if term == self.MF_root:
+				if term == GeneOntology.MF_root:
 					continue
 			term = int(term[3:])
-			if not self.go == None and not self.go.alt_ids == None:
-				if not term in self.go.alt_ids:
-					print(str(term) + " not in GO. Error")
-					sys.exit(1)
-				else:
-					if not term == self.go.alt_ids[term]:
-						#print("Remapping " + str(term) + " to " + str(self.go.alt_ids[term])
-						term = self.go.alt_ids[term]
+			if not trueclass.go == None and not trueclass.go.alt_ids == None:
+				if not term in trueclass.go.alt_ids:
+					#print(str(term) + " not in GO.")
+					continue
+				if not term in trueclass.go.nodes_edges:
+					#print(str(term) + " obsolete.")
+					continue
+				if not term == trueclass.go.alt_ids[term]:
+					#print("Remapping " + str(term) + " to " + str(trueclass.go.alt_ids[term])
+					term = trueclass.go.alt_ids[term]
 						
 			#### Build up genes set
-			if obj_id not in self.obj_set:
-				self.obj_set[obj_id] = {}
+			if obj_id not in trueclass.obj_set:
+				trueclass.obj_set[obj_id] = {}
+			if term not in trueclass.term_set:
+				trueclass.term_set[term] = {}
 			#### Build up annotations set
-			if obj_id not in self.annotations:
-				self.annotations[obj_id] = {}
-			if term not in self.annotations[obj_id]:
-				self.annotations[obj_id][term] = {}
+			if obj_id not in trueclass.annotations:
+				trueclass.annotations[obj_id] = {}
+			if term not in trueclass.annotations[obj_id]:
+				trueclass.annotations[obj_id][term] = {}
 			#### Build up reverse annotations set
-			if term not in self.reverse_annotations:
-				self.reverse_annotations[term] = {}
-			if obj_id not in self.reverse_annotations[term]:
-				self.reverse_annotations[term][obj_id] = {}
+			if term not in trueclass.reverse_annotations:
+				trueclass.reverse_annotations[term] = {}
+			if obj_id not in trueclass.reverse_annotations[term]:
+				trueclass.reverse_annotations[term][obj_id] = {}
 			lines_counter += 1
-			if self.SHOW_PROCESS and (lines_counter%(filenum/20)==0):
-				print("Lines processed: " + str(lines_counter) + " on " + str(filenum) + " (" + str(int(100*float(lines_counter)/float(filenum))) + "%)")
-		stream.close()
-		self.original_annotations = self.annotations
-		self.original_obj_set = self.obj_set
-		self.original_reverse_annotations = self.reverse_annotations
-		
-	def invalidate_secondary_data(self):
-		self.n_proteins = -1
-		self.n_terms = -1
-		self.n_annotated_proteins = -1
-		#self.n_most_annotated_protein = ''
-		
-	def det_secondary_data(self):
-		self.n_proteins = len(self.obj_id)
-		self.n_term = len(self.reverse_annotations)
-		self.n_annotated_proteins = self.n_proteins
-		for i in self.annotations:
-			if len(self.annotations[i])==0:
-				self.n_annotated_proteins -= 1
+			#if trueclass.SHOW_PROCESS and (lines_counter%(filenum/20)==0):
+				#print("Lines processed: " + str(lines_counter) + " on " + str(filenum) + " (" + str(int(100*float(lines_counter)/float(filenum))) + "%)")
+		if type(fname) is str:
+			stream.close()
+
 
 if __name__ == "__main__":
-	gp = PlainAnnotationCorpus()
-	gp.parse(sys.argv[1])
+	tree = GeneOntology.load_GO_XML(open(sys.argv[1]))
+	print "Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
+	
+	gp = PlainAnnotationCorpus(tree)
+	gp.parse(sys.argv[2])
 	for i in gp.annotations:
 		print(str(i) + ": " + str(gp.annotations[i]))
+	gp.check_consistency()
+	gp.sanitize()
