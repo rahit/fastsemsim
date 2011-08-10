@@ -40,9 +40,18 @@ class Window ( wxFrame ):
 
 		# Configure the box sizers
 
+		self.acboxline = wxStaticBox(self, wxID_ANY, 'Annotation Corpus')
+		self.acbox = wxStaticBoxSizer(self.acboxline, wxHORIZONTAL)
+		self.aclabel = wxStaticText(self.panel, label = 'Annotation Corpus not loaded')
+		self.acchooser = wxButton(self.panel, wxID_ANY, 'Manage Annotation Corpus...')
+		self.boxSizer.Add(self.aclabel)
+		self.boxSizer.Add(self.acchooser, flag=wxALL|wxCENTER, border = 8)
+		
+
 		self.horizontal.Add ( ( 0, 0 ), 1, wxEXPAND )
 
 		self.horizontal.Add ( self.boxSizer )
+		#self.horizontal.Add ( self.acbox)
 
 		self.horizontal.Add ( ( 0, 0 ), 1, wxEXPAND )
 
