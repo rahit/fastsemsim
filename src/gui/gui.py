@@ -28,13 +28,29 @@ from configOutputGUI import *
 from pairsGUI import *
 
 class gui(wxFrame):
+	#Windows handles
 	loadGOgui = None
 	loadACgui = None
 	OperationGui = None
 	OutputGui = None
 
+	#data
+	go = None
+	ac = None
+	selectedGO = None
+	mixingstrategy = None
+	ssmeasures = None
+	ssobject = None
+	output_type = None
+	output_file = None
+	query_type = None
+	query_from_ac = False
+	query = None
+	query_file = None
+	status = 0
+	
 	def __init__(self, parent):
-		super(gui, self).__init__(parent, title="fastSemSim GUI (src version)", size=(800,500))
+		super(gui, self).__init__(parent, title="fastSemSim GUI (src version)", size=(700,600))
 		self.InitUI()   
 
 	def InitUI(self):
@@ -43,7 +59,7 @@ class gui(wxFrame):
         
 		self.panel = wxPanel(self)
 		self.mainbox = wxBoxSizer(wxVERTICAL)
-		self.goacbox = wxBoxSizer(wxHORIZONTAL)
+		self.goacbox = wxBoxSizer(wxVERTICAL)
 
 		# GO File Chooser
 		self.goboxline = wxStaticBox(self.panel, wxID_ANY, 'Gene Ontology')
@@ -96,6 +112,18 @@ class gui(wxFrame):
 		self.outputbox.Add(self.outputlabel, flag=wxALL|wxCENTER, border = 8)
 		self.outputbox.Add(self.outputchooser, flag=wxALL|wxCENTER, border = 8)
 
+		## Control buttons
+		#self.commandboxline = wxStaticBox(self.panel, wxID_ANY, 'Query pairs')
+		self.commandbox = wxBoxSizer(wxHORIZONTAL)
+		self.gocmd = wxButton(self.panel, wxID_ANY, 'Start')
+		self.gocmd_status = 0
+		#self.stopcmd = wxButton(self.panel, wxID_ANY, 'Stop')
+		self.exitcmd = wxButton(self.panel, wxID_ANY, 'Exit')
+		self.commandbox.Add(self.gocmd)
+		#self.commandbox.Add(self.stopcmd)
+		self.commandbox.Add(self.exitcmd)
+		
+		## Put everything together
 		self.goacbox.Add ( ( 0, 0 ), 1, wxEXPAND )
 		self.goacbox.Add(self.gobox, flag=wxEXPAND, border=5)
 		self.goacbox.Add ( ( 0, 0 ), 1, wxEXPAND )
@@ -107,23 +135,58 @@ class gui(wxFrame):
 		self.goacbox.Add ( ( 0, 0 ), 1, wxEXPAND )
 		self.mainbox.Add(self.pairsbox, flag=wxEXPAND, border=5)
 		self.mainbox.Add(self.outputbox, flag=wxEXPAND, border=5)
+		self.mainbox.Add(self.commandbox, flag=wxEXPAND|wxCENTER, border=5)
 		self.panel.SetSizerAndFit(self.mainbox)
 		
 		self.Bind(EVT_BUTTON, self.OnGOBrowse, id=self.gochooser.GetId())
 		self.Bind(EVT_BUTTON, self.OnACBrowse, id=self.acchooser.GetId())
 		#self.Bind(EVT_BUTTON, self.OnOperationConfig, id=self.ochooser.GetId())
 		self.Bind(EVT_BUTTON, self.OnOutputConfig, id=self.outputchooser.GetId())
+		self.Bind(EVT_BUTTON, self.OnGoCmd, id=self.gocmd.GetId())
+		#self.Bind(EVT_BUTTON, self.OnExitCmd, id=self.stopcmd.GetId())
+		self.Bind(EVT_BUTTON, self.OnExitCmd, id=self.exitcmd.GetId())
 
 	def enablebutton(self):
 		print self.gopath.GetValue()
 		print self.acpath.GetValue()
 		if (not self.gopath.GetValue() == "") and (not self.acpath.GetValue() == ""):
 			self.filesloader.Enable()
-	
+
+	def OnGoCmd(self, event):
+		if self.gocmd_status == 0:
+			if self.start():
+				self.gocmd.SetLabel("Stop")
+				self.gocmd_status = 1
+			# add code to disable all controls
+		elif self.gocmd_status == 1:
+			if self.stop():
+				self.gocmd.SetLabel("Start")
+				self.gocmd_status = 0
+			# add code to enable all controls
+
+	def start(self):
+		return True
+
+	def stop(self):
+		return True
+
+	def OnExitCmd(self, event):
+		self.Close()
+		return
+		#if self.loadGOgui is None:
+			#self.loadGOgui = loadGO(self)
+		#self.loadGOgui.Show()
+
+	#def OnStopCmd(self, event):
+		#return
+		#if self.loadGOgui is None:
+			#self.loadGOgui = loadGO(self)
+		#self.loadGOgui.Show()
+
 	def OnGOBrowse(self, event):
 		if self.loadGOgui is None:
 			self.loadGOgui = loadGO(self)
-		self.loadGOgui.Show()  
+		self.loadGOgui.Show()
 		
 	def OnACBrowse(self, event):
 		if self.loadACgui is None:
@@ -147,9 +210,9 @@ class gui(wxFrame):
 			#self.acpath.SetValue(dialog.GetPath())
 			#self.enablebutton()
 
-	def OnQuit(event):
-		#print event
-		frame.Close()
+	#def OnQuit(event):
+		##print event
+		#frame.Close()
 
 if __name__ == "__main__":
 	app = wxApp()

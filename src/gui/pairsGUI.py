@@ -42,7 +42,7 @@ class PairsGUI:
 		
 		#Pairs input type
 		self.listchooserboxline = wxStaticBox(self.panel, wxID_ANY, 'Input format')
-		self.listchooserbox = wxStaticBoxSizer(self.listchooserboxline, wxVERTICAL)
+		self.listchooserbox = wxStaticBoxSizer(self.listchooserboxline, wxHORIZONTAL)
 		self.pairinputtypes = ['pairs','list']
 		self.radio_pairs = wxRadioButton(self.panel, wxID_ANY, self.pairinputtypes[0], (10, 10), style=wxRB_GROUP)
 		self.radio_list = wxRadioButton(self.panel, wxID_ANY, self.pairinputtypes[1], (10, 10))
@@ -59,10 +59,15 @@ class PairsGUI:
 		
 		self.inputcommands = wxBoxSizer(wxVERTICAL)
 		self.clear = wxButton(self.panel, wxID_ANY, 'Clear')
-		self.filechooser = wxButton(self.panel, wxID_ANY, 'Load file')
+		self.filechooser = wxButton(self.panel, wxID_ANY, 'Load from file...')
+		self.fromaccmd = wxButton(self.panel, wxID_ANY, 'From Annotation Corpus')
+		self.fromaccmd.Disable()
 		self.parentobj.Bind(EVT_BUTTON, self.OnClear, id=self.clear.GetId())
 		self.parentobj.Bind(EVT_BUTTON, self.OnFileBrowse, id=self.filechooser.GetId())
+		self.parentobj.Bind(EVT_BUTTON, self.OnFromAC, id=self.fromaccmd.GetId())
+		self.inputcommands.Add(self.listchooserbox, flag=wxBOTTOM|wxTOP, border=10)
 		self.inputcommands.Add(self.filechooser)
+		self.inputcommands.Add(self.fromaccmd)
 		self.inputcommands.Add(self.clear)
 		#self.pairinputsource = ['text field','file','annotation corpus']
 		#self.radio_field = wxRadioButton(self.panel, wxID_ANY, self.pairinputsource[0], (10, 10), style=wxRB_GROUP)
@@ -93,12 +98,14 @@ class PairsGUI:
 		
 		
 
-		self.mainsubbox.Add(self.listchooserbox, flag=wxLEFT|wxRIGHT|wxTOP, border=10)
+		
 		self.mainsubbox.Add(self.listsrcbox, flag=wxEXPAND|wxLEFT|wxRIGHT|wxTOP, border=10)
 		self.mainsubbox.Add(self.inputcommands, flag=wxEXPAND|wxLEFT|wxRIGHT|wxTOP, border=10)
+		#self.mainsubbox.Add(self.listchooserbox, flag=wxLEFT|wxRIGHT|wxTOP, border=10)
 #------------------------------------------------------------------------------------------------------------------
 		self.mainbox.Add(self.mainsubbox, flag=wxEXPAND)
 		#self.panel.SetSizerAndFit(self.mainbox)
+
 #------------------------------------------------------------------------------------------------------------------
 	def OnFileBrowse(self, event):
 		dialog = wxFileDialog(None, style = wxOPEN)
@@ -114,18 +121,24 @@ class PairsGUI:
 			##self.parentobj.acchooser.Disable()
 			#event = wxPyCommandEvent(EVT_BUTTON.typeId, self.acload.GetId())
 			#wxPostEvent(self.GetEventHandler(), event)
-	
+	def OnFromAC(self, event):
+		self.inputfield.SetValue("From AC")
+			
 	def OnClear(self, event):
 		self.inputfield.SetValue('')
 		
 	def OnTypeSelect(self, event):
 		if self.radio_pairs.GetValue():
 			self.parentobj.inputformat = 0
+			self.fromaccmd.Disable()
 				#self.radio_ac.Disable()
 				#if self.radio_ac.GetValue():
 					#self.radio_field.SetValue(True)
 		elif self.radio_list.GetValue():
 			self.parentobj.inputformat = 1
+			self.fromaccmd.Enable()
+		event = wxPyCommandEvent(EVT_BUTTON.typeId, self.clear.GetId())
+		wxPostEvent(self.parentobj.GetEventHandler(), event)
 				#self.radio_ac.Enable()
 
 	#def OnSrcSelect(self, event):
