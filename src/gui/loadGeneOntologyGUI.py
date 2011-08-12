@@ -89,7 +89,7 @@ class loadGO(wxFrame):
 			self.doneb.Disable()
 			self.gonodes.SetLabel("")
 			self.goedges.SetLabel("")
-			self.parentobj.acchooser.Disable()
+			self.parentobj.acchoosecmd.Disable()
 			event = wxPyCommandEvent(EVT_BUTTON.typeId, self.goload.GetId())
 			wxPostEvent(self.GetEventHandler(), event)
 
@@ -102,10 +102,12 @@ class loadGO(wxFrame):
 			self.doneb.Enable()
 			self.gonodes.SetLabel(str(self.tree.node_num()))
 			self.goedges.SetLabel(str(self.tree.edge_num()))
+			self.status_label.SetLabel("Ontology loaded.")
+			self.parentobj.acchoosecmd.Enable()
 			self.parentobj.go = self.tree
 			self.parentobj.golabel.SetLabel(self.filename.GetLabel())
-			self.status_label.SetLabel("Ontology loaded.")
-			self.parentobj.acchooser.Enable()
+			self.parentobj.update_ac = True
+			self.parentobj.go_ok = True
 
 	def OnGOBrowseDone(self, event):
 		self.Hide()

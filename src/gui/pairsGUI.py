@@ -34,7 +34,7 @@ class PairsGUI:
 		#font.SetPointSize(9)
         
 		#self.panel = wxPanel(self)
-		self.mainbox = self.parentobj.pairsbox
+		self.mainbox = self.parentobj.querybox
 		self.panel = self.parentobj.panel
 
 		#Pairs section
@@ -50,107 +50,117 @@ class PairsGUI:
 		self.listchooserbox.Add(self.radio_list,wxEXPAND)
 		self.parentobj.Bind(EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_pairs.GetId())
 		self.parentobj.Bind(EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_list.GetId())
-				
+		self.parentobj.query_type = 0
+		
 		#Pairs input src
 		self.listsrcboxline = wxStaticBox(self.panel, wxID_ANY, 'Query')
 		self.listsrcbox = wxStaticBoxSizer(self.listsrcboxline, wxHORIZONTAL)
-		self.inputfield = wxTextCtrl(self.panel, size=(250,150))
+		self.inputfield = wxTextCtrl(self.panel, size=(200,150), style = wxTE_MULTILINE|wxTE_READONLY)
 		self.listsrcbox.Add(self.inputfield)
 		
 		self.inputcommands = wxBoxSizer(wxVERTICAL)
 		self.clear = wxButton(self.panel, wxID_ANY, 'Clear')
 		self.filechooser = wxButton(self.panel, wxID_ANY, 'Load from file...')
-		self.fromaccmd = wxButton(self.panel, wxID_ANY, 'From Annotation Corpus')
+
+		self.fromaccmd = wxCheckBox(self.panel, wxID_ANY, 'From Annotation Corpus', (10,10))
+		#self.fromfile = wxCheckBox(self.panel, wxID_ANY, 'From File', (10,10))
+		self.parentobj.Bind(EVT_CHECKBOX, self.OnFromAC, id=self.fromaccmd.GetId())
+		#self.parentobj.Bind(EVT_CHECKBOX, self.OnFromFile, id=self.fromfile.GetId())
+		self.fromaccmd.SetValue(False)
 		self.fromaccmd.Disable()
+		#self.fromfile.Hide()
+		
 		self.parentobj.Bind(EVT_BUTTON, self.OnClear, id=self.clear.GetId())
 		self.parentobj.Bind(EVT_BUTTON, self.OnFileBrowse, id=self.filechooser.GetId())
-		self.parentobj.Bind(EVT_BUTTON, self.OnFromAC, id=self.fromaccmd.GetId())
 		self.inputcommands.Add(self.listchooserbox, flag=wxBOTTOM|wxTOP, border=10)
-		self.inputcommands.Add(self.filechooser)
 		self.inputcommands.Add(self.fromaccmd)
+		#self.inputcommands.Add(self.fromfile)
+		self.inputcommands.Add(self.filechooser)
 		self.inputcommands.Add(self.clear)
-		#self.pairinputsource = ['text field','file','annotation corpus']
-		#self.radio_field = wxRadioButton(self.panel, wxID_ANY, self.pairinputsource[0], (10, 10), style=wxRB_GROUP)
-		#self.radio_file = wxRadioButton(self.panel, wxID_ANY, self.pairinputsource[1], (10, 10))
-		#self.radio_ac = wxRadioButton(self.panel, wxID_ANY, self.pairinputsource[2], (10, 10))
-		#self.listsrcbox.Add(self.radio_field)
-		#self.listsrcbox.Add(self.radio_file)
-		#self.listsrcbox.Add(self.radio_ac)
-		#self.parentobj.Bind(EVT_RADIOBUTTON, self.OnSrcSelect, id=self.radio_field.GetId())
-		#self.parentobj.Bind(EVT_RADIOBUTTON, self.OnSrcSelect, id=self.radio_file.GetId())
-		#self.parentobj.Bind(EVT_RADIOBUTTON, self.OnSrcSelect, id=self.radio_ac.GetId())
-			
-		#self.mainsubbox.Add(self.listchooserbox, flag=wxEXPAND|wxLEFT|wxRIGHT|wxTOP, border=10)
-		#self.mainsubbox.Add(self.listsrcbox, flag=wxEXPAND|wxLEFT|wxRIGHT|wxTOP, border=10)
-		
-		##Pairs input field
-		##self.inputboxline = wxStaticBox(self.panel, wxID_ANY, '')
-		##self.inputbox = wxStaticBoxSizer(self.inputboxline, wxHORIZONTAL)
-		#self.inputbox = wxBoxSizer(wxHORIZONTAL)
-		#self.inputfield = wxTextCtrl(self.panel, size=(250,150))
-		#self.filename = wxStaticText(self.panel, label='')
-		#self.filename.SetFont(self.parentobj.font)
-		#self.filechooser = wxButton(self.panel, wxID_ANY, 'Select file...')
-		#self.parentobj.Bind(EVT_BUTTON, self.OnFileBrowse, id=self.filechooser.GetId())
-		#self.filechooser.Hide()
-		#self.filename.Hide()
-		#self.inputfield.Hide()
-		
-		
-
 		
 		self.mainsubbox.Add(self.listsrcbox, flag=wxEXPAND|wxLEFT|wxRIGHT|wxTOP, border=10)
 		self.mainsubbox.Add(self.inputcommands, flag=wxEXPAND|wxLEFT|wxRIGHT|wxTOP, border=10)
-		#self.mainsubbox.Add(self.listchooserbox, flag=wxLEFT|wxRIGHT|wxTOP, border=10)
 #------------------------------------------------------------------------------------------------------------------
 		self.mainbox.Add(self.mainsubbox, flag=wxEXPAND)
-		#self.panel.SetSizerAndFit(self.mainbox)
-
 #------------------------------------------------------------------------------------------------------------------
 	def OnFileBrowse(self, event):
 		dialog = wxFileDialog(None, style = wxOPEN)
 		if dialog.ShowModal() == wxID_OK:
-			#print 'Selected: ', dialog.GetPath()
-			self.inputfield.SetValue(dialog.GetPath())
-			#self.status_label.SetLabel("Loading annotation corpus... Please wait.")
-			#self.status_label.Show()
-			#self.acchooser.Disable()
-			#self.doneb.Disable()
-			#self.acobjs.SetLabel("")
-			#self.acterms.SetLabel("")
-			##self.parentobj.acchooser.Disable()
-			#event = wxPyCommandEvent(EVT_BUTTON.typeId, self.acload.GetId())
-			#wxPostEvent(self.GetEventHandler(), event)
+			self.parentobj.query_file = dialog.GetPath()
+			self.inputfield.Disable()
+			self.parentobj.query_from_ac = False
+			self.fromaccmd.SetValue(False)
+			self.inputfield.SetValue("Data will be loaded from " + self.parentobj.query_file)
+
 	def OnFromAC(self, event):
-		self.inputfield.SetValue("From AC")
-			
+		if self.fromaccmd.GetValue():
+			self.inputfield.Disable()
+			self.parentobj.query_from_ac = True
+			self.inputfield.SetValue("Data will be loaded from Annotation Corpus")
+		else:
+			self.inputfield.Enable()
+			self.inputfield.SetValue("")
+			self.parentobj.query_from_ac = False
+
 	def OnClear(self, event):
 		self.inputfield.SetValue('')
-		
+		self.fromaccmd.SetValue(False)
+		self.inputfield.Enable()
+		self.parentobj.query_file = None
+		self.parentobj.query_from_ac = None
+
 	def OnTypeSelect(self, event):
 		if self.radio_pairs.GetValue():
-			self.parentobj.inputformat = 0
+			self.parentobj.query_type = 0
+			if self.parentobj.query_from_ac:
+				self.parentobj.query_from_ac = False
+				self.inputfield.SetValue("")
+				self.inputfield.Enable()
 			self.fromaccmd.Disable()
-				#self.radio_ac.Disable()
-				#if self.radio_ac.GetValue():
-					#self.radio_field.SetValue(True)
+			self.fromaccmd.SetValue(False)
 		elif self.radio_list.GetValue():
-			self.parentobj.inputformat = 1
+			self.parentobj.query_type = 1
 			self.fromaccmd.Enable()
-		event = wxPyCommandEvent(EVT_BUTTON.typeId, self.clear.GetId())
-		wxPostEvent(self.parentobj.GetEventHandler(), event)
-				#self.radio_ac.Enable()
 
-	#def OnSrcSelect(self, event):
-		#if self.radio_ac.GetValue():
-				#self.inputfield.Hide()
-				#self.filename.Hide()
-				#self.filechooser.Hide()
-		#elif self.radio_field.GetValue():
-				#self.inputfield.Show()
-				#self.filename.Hide()
-				#self.filechooser.Hide()
-		#elif self.radio_file.GetValue():
-				#self.inputfield.Hide()
-				#self.filename.Show()
-				#self.filechooser.Show()
+	def loadPairs(self):
+		h = open(self.parentobj.query_file,'r')
+		text = []
+		for line in h:
+			line = line.rstrip('\n')
+			line = line.rstrip('\r')
+			line = line.rsplit('\t')
+			text.append((line[0], line[1]))
+		inf.close()
+		self.parentobj.query_pairs = text
+		
+	def loadList(self):
+		h = open(self.parentobj.query_file,'r')
+		text = []
+		for line in h:
+			line = line.rstrip('\n')
+			line = line.rstrip('\r')
+			#line = line.rsplit('\t')
+			text.append(line)
+		inf.close()
+		self.parentobj.query_list = text
+		
+	def loadListfromField(self):
+		h = self.inputfield.GetValue()
+		text = []
+		for line in h:
+			line = line.rstrip('\n')
+			line = line.rstrip('\r')
+			#line = line.rsplit('\t')
+			text.append(line)
+		self.parentobj.query_list = text
+		
+	def loadPairsfromField(self):
+		h = self.inputfield.GetValue()
+		text = []
+		for line in h:
+			line = line.rstrip('\n')
+			line = line.rstrip('\r')
+			line = line.rsplit('\t')
+			text.append((line[0], line[1]))
+		self.parentobj.query_list = text
+		

@@ -22,96 +22,56 @@ from wxPython.wx import *
 from GO import GeneOntology
 from GO import AnnotationCorpus
 
-class OutputGui(wxFrame):
-	
+class OutputCtrlGui():
 	def __init__(self, parent):
 		self.parentobj = parent
-		super(OutputGui, self).__init__(self.parentobj, title="Load Annotation Corpus", size=(500,200))
 		self.InitUI()
 	
 	def InitUI(self):
-		self.Bind(EVT_CLOSE, self.OnQuit, id=self.GetId())
-		font = wxSystemSettings_GetFont(wxSYS_SYSTEM_FONT)
-		font.SetPointSize(9)
-        
-		panel = wxPanel(self)
-		#panel.SetBackgroundColour('#4f5049')
-		mainbox = wxBoxSizer(wxVERTICAL)
-		descbox = wxFlexGridSizer(rows = 4, cols = 2, vgap = 6, hgap = 20)
-		commanbox = wxBoxSizer(wxHORIZONTAL)
-		statusbox = wxBoxSizer(wxHORIZONTAL)
-		panel.SetSizerAndFit(mainbox)
-		mainbox.Add(statusbox, flag=wxEXPAND|wxLEFT|wxRIGHT|wxTOP, border=10)
-		mainbox.Add(descbox, flag=wxEXPAND|wxLEFT|wxRIGHT|wxTOP, border=10)
-		mainbox.Add(commanbox, flag=wxEXPAND|wxLEFT|wxRIGHT|wxTOP, border=10)
+		self.panel = self.parentobj.panel
+		self.mainbox = self.parentobj.outputctrlbox
+#------------------------------------------------------------------------------------------------------------------
+		self.destinationboxline = wxStaticBox(self.panel, wxID_ANY, 'Output destination')
+		self.destinationbox= wxStaticBoxSizer(self.destinationboxline, wxHORIZONTAL)
+		self.outputtypes = ['output field','file']
+		self.radio_field = wxRadioButton(self.panel, wxID_ANY, self.outputtypes[0], (10, 10), style=wxRB_GROUP)
+		self.radio_file = wxRadioButton(self.panel, wxID_ANY, self.outputtypes[1], (10, 10))
+		self.destinationbox.Add(self.radio_field,wxEXPAND)
+		self.destinationbox.Add(self.radio_file,wxEXPAND)
+		self.parentobj.Bind(EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_field.GetId())
+		self.parentobj.Bind(EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_file.GetId())
+		self.parentobj.output_type = 0
+		self.parentobj.output_ok = True
 
+		self.commandsline  = wxStaticBox(self.panel, wxID_ANY, 'Output file')
+		self.commands = wxStaticBoxSizer(self.commandsline, wxVERTICAL)
+		self.outputlabel = wxStaticText(self.panel, label = 'Not selected')
+		self.outputlabel.SetFont(self.parentobj.font)
+		self.filechooser = wxButton(self.panel, wxID_ANY, 'Choose file...')
+		self.filechooser.Disable()
+		self.parentobj.Bind(EVT_BUTTON, self.OnFileBrowse, id=self.filechooser.GetId())
+		self.commands.Add(self.outputlabel, flag=wxBOTTOM|wxTOP, border=10)
+		self.commands.Add(self.filechooser)
 		
-		# Descbox
-		self.filename_label = wxStaticText(panel, label='AC File')
-		self.filename_label.SetFont(font)
-		self.filename = wxStaticText(panel, label='')
-		self.acobjs_label = wxStaticText(panel, label='Objects')
-		self.acobjs_label.SetFont(font)
-		self.acobjs = wxStaticText(panel, label='')
-		self.acobjs.SetFont(font)
-		self.acterms_label = wxStaticText(panel, label='Go Terms involved')
-		self.acterms_label.SetFont(font)
-		self.acterms = wxStaticText(panel, label='')
-		self.acterms.SetFont(font)
-		descbox.AddMany([(self.filename_label), (self.filename), (self.acobjs_label), (self.acobjs), (self.acterms_label), (self.acterms)])
+		self.mainbox.Add(self.destinationbox)
+		self.mainbox.Add(self.commands)
+#------------------------------------------------------------------------------------------------------------------
 
-		# commanbox
-		self.acchooser = wxButton(panel, wxID_ANY, 'Select file...')
-		self.acload = wxButton(panel, wxID_ANY, 'Load...')
-		self.acload.Hide()
-		self.Bind(EVT_BUTTON, self.OnACBrowse, id=self.acchooser.GetId())
-		self.Bind(EVT_BUTTON, self.OnACLoad, id=self.acload.GetId())
-		self.doneb = wxButton(panel, wxID_ANY, 'Done')
-		self.Bind(EVT_BUTTON, self.OnACBrowseDone, id=self.doneb.GetId())
-		commanbox.Add(self.acchooser, flag=wxLEFT|wxRIGHT|wxTOP, border=10)
-		commanbox.Add(self.doneb, flag=wxLEFT|wxRIGHT|wxTOP, border=10)
-		
-		#statusbox
-		self.status_label = wxStaticText(panel, label='No Annotation Corpus loaded.')
-		self.status_label.SetFont(font)
-		#self.status_label.Hide()
-		statusbox.Add(self.status_label, border=10)
-		
+	def OnFileBrowse(self, event):
+		dialog = wxFileDialog(None, style = wxSAVE|wxOVERWRITE_PROMPT)
+		if dialog.ShowModal() == wxID_OK:
+			self.parentobj.output_file = dialog.GetPath()
+			self.outputlabel.SetLabel(self.parentobj.output_file)
+			self.parentobj.output_ok = True
 
-	#def OnACBrowse(self, event):
-		#dialog = wxFileDialog(None, style = wxOPEN)
-		#if dialog.ShowModal() == wxID_OK:
-			##print 'Selected: ', dialog.GetPath()
-			#self.filename.SetLabel(dialog.GetPath())
-			#self.status_label.SetLabel("Loading annotation corpus... Please wait.")
-			#self.status_label.Show()
-			#self.acchooser.Disable()
-			#self.doneb.Disable()
-			#self.acobjs.SetLabel("")
-			#self.acterms.SetLabel("")
-			##self.parentobj.acchooser.Disable()
-			#event = wxPyCommandEvent(EVT_BUTTON.typeId, self.acload.GetId())
-			#wxPostEvent(self.GetEventHandler(), event)
-
-
-	#def OnACLoad(self, event):
-		#self.ac = AnnotationCorpus.AnnotationCorpus(self.parentobj.go) 
-		#self.ftype = "GOA"
-		#self.ac.parse(str(self.filename.GetLabel()), self.ftype)
-		#self.ac.sanitize()
-		#if True: # replace with control code
-			##print "Ontology infos: file name: " + str(self.filename.GetLabel()) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
-			#self.acchooser.Enable()
-			#self.doneb.Enable()
-			#self.acobjs.SetLabel(str(len(self.ac.annotations)))
-			#self.acterms.SetLabel(str(len(self.ac.reverse_annotations)))
-			#self.parentobj.ac = self.ac
-			#self.parentobj.aclabel.SetLabel(self.filename.GetLabel())
-			#self.status_label.SetLabel("Annotation Corpus loaded.")
-			##self.parentobj.acchooser.Enable()
-				
-	def OnACBrowseDone(self, event):
-		self.Hide()
-		
-	def OnQuit(self, event):
-		self.Hide()
+	def OnTypeSelect(self, event):
+		if self.radio_field.GetValue():
+			self.parentobj.output_type = 0 # text field
+			self.filechooser.Disable()
+			self.parentobj.output_ok = True
+			#self.fromaccmd.Disable()
+		elif self.radio_file.GetValue():
+			self.parentobj.output_type = 1 # file field
+			if self.parentobj.output_file == None:
+				self.parentobj.output_ok = False
+			self.filechooser.Enable()

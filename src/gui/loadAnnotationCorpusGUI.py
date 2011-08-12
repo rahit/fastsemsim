@@ -30,11 +30,10 @@ class loadAC(wxFrame):
 		self.InitUI()
 	
 	def InitUI(self):
-		self.Bind(EVT_CLOSE, self.OnQuit, id=self.GetId())
-		font = wxSystemSettings_GetFont(wxSYS_SYSTEM_FONT)
-		font.SetPointSize(9)
-        
 		panel = wxPanel(self)
+		self.Bind(EVT_CLOSE, self.OnQuit, id=self.GetId())
+#------------------------------------------------------------------------------------------------------------------
+		
 		#panel.SetBackgroundColour('#4f5049')
 		mainbox = wxBoxSizer(wxVERTICAL)
 		descbox = wxFlexGridSizer(rows = 4, cols = 2, vgap = 6, hgap = 20)
@@ -45,7 +44,6 @@ class loadAC(wxFrame):
 		mainbox.Add(descbox, flag=wxEXPAND|wxLEFT|wxRIGHT|wxTOP, border=10)
 		mainbox.Add(commanbox, flag=wxEXPAND|wxLEFT|wxRIGHT|wxTOP, border=10)
 
-		
 		# Descbox
 		self.filename_label = wxStaticText(panel, label='AC File')
 		self.filename_label.SetFont(font)
@@ -105,11 +103,12 @@ class loadAC(wxFrame):
 			self.doneb.Enable()
 			self.acobjs.SetLabel(str(len(self.ac.annotations)))
 			self.acterms.SetLabel(str(len(self.ac.reverse_annotations)))
+			self.status_label.SetLabel("Annotation Corpus loaded.")
 			self.parentobj.ac = self.ac
 			self.parentobj.aclabel.SetLabel(self.filename.GetLabel())
-			self.status_label.SetLabel("Annotation Corpus loaded.")
-			#self.parentobj.acchooser.Enable()
-				
+			self.parentobj.ac_ok = True
+			self.parentobj.update_ac = False
+
 	def OnACBrowseDone(self, event):
 		self.Hide()
 		
