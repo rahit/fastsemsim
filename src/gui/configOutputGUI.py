@@ -63,6 +63,7 @@ class OutputCtrlGui():
 			self.parentobj.output_file = dialog.GetPath()
 			self.outputlabel.SetLabel(self.parentobj.output_file)
 			self.parentobj.output_ok = True
+			#self.parentobj.mainbox.Fit()
 
 	def OnTypeSelect(self, event):
 		if self.radio_field.GetValue():

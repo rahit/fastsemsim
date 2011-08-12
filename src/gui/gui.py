@@ -171,7 +171,7 @@ class gui(wxFrame):
 		## Put everything together
 		self.mainbox.Add(self.goacbox, 0, flag=wxEXPAND)
 		self.mainbox.Add(self.operationbox, flag=wxEXPAND, border=5)
-		self.mainbox.Add(self.queryoutputctrlbox, flag=wxEXPAND, border=5)
+		self.mainbox.Add(self.queryoutputctrlbox, flag=wxEXPAND|wxCENTER, border=5)
 		self.mainbox.Add(self.interactionbox, flag=wxEXPAND|wxCENTER|wxALL, border=5)
 		self.panel.SetSizerAndFit(self.mainbox)
 
@@ -208,35 +208,51 @@ class gui(wxFrame):
 #--------------------------------------------------------------------------------------------------------------
 
 	def start(self):
-		print self.selectedGO
-		if not self.go_ok:
-			self.logfield.AppendText("Gene Ontology not correctly loaded.\n")
-			self.logfield.AppendText("Aborted.\n")
-			return False
-		if not self.ac_ok:
-			self.logfield.AppendText("Annotation Corpus not correctly loaded.\n")
-			self.logfield.AppendText("Aborted.\n")
-			return False
-		if not self.query_ok:
-			self.logfield.AppendText("Query not correctly loaded.\n")
-			self.logfield.AppendText("Aborted.\n")
-			return False
-		if not self.output_ok:
-			self.logfield.AppendText("Output parameters not correctly loaded.\n")
-			self.logfield.AppendText("Aborted.\n")
-			return False
+		self.skip_checks = False
+#----------------------------------------------------------------------------------------------------
+		#check if everything is configured
+		if not self.skip_checks:
+			if not self.go_ok:
+				self.logfield.AppendText("Gene Ontology not correctly loaded.\n")
+				self.logfield.AppendText("Aborted.\n")
+				return False
+			if not self.ac_ok:
+				self.logfield.AppendText("Annotation Corpus not correctly loaded.\n")
+				self.logfield.AppendText("Aborted.\n")
+				return False
+			if not self.query_ok:
+				self.logfield.AppendText("Query not correctly loaded.\n")
+				self.logfield.AppendText("Aborted.\n")
+				return False
+			if not self.output_ok:
+				self.logfield.AppendText("Output parameters not correctly loaded.\n")
+				self.logfield.AppendText("Aborted.\n")
+				return False
 		#if not self.operation_ok:
 			#self.logfield.AppendText("Semantic Similarity parameters not correctly loaded.\n")
 			#self.logfield.AppendText("Aborted.\n")
 			#return False
+#----------------------------------------------------------------------------------------------------
+		#Prepare sem sim object
 		self.logfield.AppendText("Trying to setup semantic similarity.\n")
 		if not self.buildSSobject():
 			return False
+#----------------------------------------------------------------------------------------------------
+		# Prepare query
 		if not self.buildQuery():
 			self.logfield.AppendText("Failed to load query.\n")
 			self.logfield.AppendText("Aborted.\n")
-		self.logfield.AppendText("Query loaded: " + str(len(self.query)) + " items.\n")
-		
+		else:
+			if self.query_type == 0:
+				self.logfield.AppendText("\tQuery loaded." + (str(len(self.query))) + " pairs\n")
+			elif self.query_type == 1:
+				self.logfield.AppendText("Query loaded: " + str(len(self.query)) + " items.\n")
+#----------------------------------------------------------------------------------------------------
+		# Calculate SS scores
+		self.sample_threshold = 100
+		if self.output_type==1:
+			self.output_file_handle = open(self.output_file, 'w')
+			little_sample = 0
 		if self.query_type == 1: # list
 			for i in range(0,len(self.query)):
 				for j in range(i+1, len(self.query)):
@@ -244,29 +260,47 @@ class gui(wxFrame):
 					if self.output_type == 0:
 						self.outputfield.AppendText(str(self.query[i]) + "\t" + str(self.query[j]) + "\t" + str(test) + "\n")
 					else:
-						pass
+						self.output_file_handle.write(str(self.query[i]) + "\t" + str(self.query[j]) + "\t" + str(test) + "\n")
+						if little_sample < self.sample_threshold:
+							self.outputfield.AppendText(str(self.query[i]) + "\t" + str(self.query[j]) + "\t" + str(test) + "\n")
+					little_sample+=1
 		elif self.query_type == 0: # pairs
 			for i in self.query:
 				test = self.ssobject.SemSim(i[0],i[1], self.selectedGO)
 				if self.output_type == 0:
 					self.outputfield.AppendText(str(i[0]) + "\t" + str(i[1]) + "\t" + str(test) + "\n")
 				else:
-					pass
+					self.output_file_handle.write(str(i[0]) + "\t" + str(i[1]) + "\t" + str(test) + "\n")
+					if little_sample < self.sample_threshold:
+						self.outputfield.AppendText(str(i[0]) + "\t" + str(i[1]) + "\t" + str(test) + "\n")
+				little_sample+=1
+		if self.output_type==0:
+			self.output_file_handle.close()
+#----------------------------------------------------------------------------------------------------
 		return False
 
 	def buildQuery(self):
-		if self.query_type == 1 and self.query_from_ac:
-			self.logfield.AppendText("Loading query list from Annotation Corpus...\n")
-			return self.loadFromAC()
-		if self.query_type == 0 and self.query_from_ac:
-			self.logfield.AppendText("Cannot get pairs from Annotation Corpus.\n")
-			return False
-		if self.query_file:
-			self.logfield.AppendText("Loading query from file " + str(self.query_file) +"...\n")
-			return self.loadFromFile()
-		else:
-			self.logfield.AppendText("Loading query from text field...\n")
-			return self.loadFromField()
+		result = True
+		self.logfield.AppendText("Loading query...\n")
+		if self.query == None or self.update_query:
+			if self.query_type == 1 and self.query_from_ac:
+				self.logfield.AppendText("\tLoading query list from Annotation Corpus...\n")
+				result = self.loadFromAC()
+			elif self.query_type == 0 and self.query_from_ac:
+				self.logfield.AppendText("Cannot get pairs from Annotation Corpus.\n")
+				result = False
+			elif self.query_file:
+				self.logfield.AppendText("\tLoading query from file " + str(self.query_file) +"...\n")
+				result = self.loadFromFile()
+			else:
+				self.logfield.AppendText("\tLoading query from text field...\n")
+				result = self.loadFromField()
+			if result:
+				self.update_query = False
+			else:
+				self.update_query = True
+				self.query = None
+		return result
 
 	def loadFromFile(self):
 		h = open(self.query_file,'r')
@@ -285,12 +319,17 @@ class gui(wxFrame):
 	def loadFromField(self):
 		h = self.Querygui.inputfield.GetValue()
 		self.query= []
+		h = h.splitlines()
+		#print h
 		for line in h:
+			#print line
 			if self.query_type == 0: #pairs
-				line = line.rsplit('\t')
-				self.query.append((line[0], line[1]))
+				line = line.rsplit(' ')
+				#print line
+				self.query.append((str(line[0]), str(line[1])))
 			else: # list
-				self.query.append(line)
+				self.query.append(str(line))
+		print self.query
 		return True
 
 	def loadFromAC(self):

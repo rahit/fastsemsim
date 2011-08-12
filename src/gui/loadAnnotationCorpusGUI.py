@@ -100,6 +100,7 @@ class LoadAC(wxFrame):
 		self.ftype = "GOA"
 		self.ac.parse(str(self.filename.GetLabel()), self.ftype)
 		self.ac.sanitize()
+		self.parentobj.update_query = True
 		if True: # replace with control code
 			#print "Ontology infos: file name: " + str(self.filename.GetLabel()) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
 			self.acchooser.Enable()
