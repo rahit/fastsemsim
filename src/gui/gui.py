@@ -114,7 +114,7 @@ class gui(wxFrame):
 		## Operation Section
 		self.operationboxline = wxStaticBox(self.panel, wxID_ANY, 'Operation')
 		self.operationbox = wxStaticBoxSizer(self.operationboxline, wxVERTICAL)
-		self.operationobj = OperationGui(self)
+		self.Operationgui = OperationGui(self)
 
 #----------------------------------------------------------------------------------------------------------------------------------
 		## Query and output Sections
@@ -123,12 +123,12 @@ class gui(wxFrame):
 		## Query Chooser
 		self.queryboxline = wxStaticBox(self.panel, wxID_ANY, 'Query pairs')
 		self.querybox = wxStaticBoxSizer(self.queryboxline, wxVERTICAL)
-		self.querygui = PairsGUI(self)
+		self.Querygui = PairsGUI(self)
 #----------------------------------------------------------------------------------
 		## Output Chooser
 		self.outputctrlboxline = wxStaticBox(self.panel, wxID_ANY, 'Output format')
 		self.outputctrlbox = wxStaticBoxSizer(self.outputctrlboxline, wxVERTICAL)
-		self.outputCrtlgui = OutputCtrlGui(self)
+		self.OutputCrtlgui = OutputCtrlGui(self)
 #----------------------------------------------------------------------------------
 		self.queryoutputctrlbox.Add(self.querybox, flag=wxEXPAND, border=5)
 		self.queryoutputctrlbox.Add(self.outputctrlbox, flag=wxEXPAND, border=5)
@@ -179,14 +179,14 @@ class gui(wxFrame):
 #----------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------
 	def OnGOBrowse(self, event):
-		if self.loadGOgui is None:
-			self.loadGOgui = loadGO(self)
-		self.loadGOgui.Show()
+		if self.LoadGOgui is None:
+			self.LoadGOgui = LoadGO(self)
+		self.LoadGOgui.Show()
 
 	def OnACBrowse(self, event):
-		if self.loadACgui is None:
-			self.loadACgui = loadAC(self)
-		self.loadACgui.Show()  
+		if self.LoadACgui is None:
+			self.LoadACgui = LoadAC(self)
+		self.LoadACgui.Show()  
 
 	def OnExitCmd(self, event):
 		self.Close()
@@ -208,6 +208,7 @@ class gui(wxFrame):
 #--------------------------------------------------------------------------------------------------------------
 
 	def start(self):
+		print self.selectedGO
 		if not self.go_ok:
 			self.logfield.AppendText("Gene Ontology not correctly loaded.\n")
 			self.logfield.AppendText("Aborted.\n")
@@ -224,88 +225,109 @@ class gui(wxFrame):
 			self.logfield.AppendText("Output parameters not correctly loaded.\n")
 			self.logfield.AppendText("Aborted.\n")
 			return False
-		if not self.operation_ok:
-			self.logfield.AppendText("Semantic Similarity parameters not correctly loaded.\n")
-			self.logfield.AppendText("Aborted.\n")
+		#if not self.operation_ok:
+			#self.logfield.AppendText("Semantic Similarity parameters not correctly loaded.\n")
+			#self.logfield.AppendText("Aborted.\n")
+			#return False
+		self.logfield.AppendText("Trying to setup semantic similarity.\n")
+		if not self.buildSSobject():
 			return False
+		if not self.buildQuery():
+			self.logfield.AppendText("Failed to load query.\n")
+			self.logfield.AppendText("Aborted.\n")
+		self.logfield.AppendText("Query loaded: " + str(len(self.query)) + " items.\n")
 		
-		
-		print self.go
-		print self.ac
-		print self.selectedGO
-		print self.mixingstrategy
-		print self.ssmeasure
-		print self.ssobject
-		print self.output_type
-		print self.output_file
-		print self.query_type
-		print self.query_from_ac
-		print self.query
-		print self.query_file
-		print self.status
-		self.operationobj.buildSSobject()
-		self.buildQuery()
-		#for pairs, get list in self.query_pairs
-		#for list, get list in self.query_list
-
+		if self.query_type == 1: # list
+			for i in range(0,len(self.query)):
+				for j in range(i+1, len(self.query)):
+					test = self.ssobject.SemSim(self.query[i],self.query[j], self.selectedGO)
+					if self.output_type == 0:
+						self.outputfield.AppendText(str(self.query[i]) + "\t" + str(self.query[j]) + "\t" + str(test) + "\n")
+					else:
+						pass
+		elif self.query_type == 0: # pairs
+			for i in self.query:
+				test = self.ssobject.SemSim(i[0],i[1], self.selectedGO)
+				if self.output_type == 0:
+					self.outputfield.AppendText(str(i[0]) + "\t" + str(i[1]) + "\t" + str(test) + "\n")
+				else:
+					pass
 		return False
 
 	def buildQuery(self):
-		if self.query_type == 0: # Pairs
-			if self.query_from_ac:
-				print "Annotation Corpus cannot be used as pairs input source"
-			elif not self.query_file == None:
-				self.pairsobj.loadPairs()
-			else:
-				self.pairsobj.loadPairsfromField()
-		elif self.query_type == 1: # List
-			if self.query_from_ac:
-				self.loadListFromAC()
-			elif not self.query_file == None:
-				self.pairsobj.loadList()
-			else:
-				self.pairsobj.loadListfromField()
-		
-		if self.query_type == 0:
-			print self.query_pairs
-		elif self.query_type == 1:
-			print self.query_list
-		
-	def loadListFromAC(self):
-		self.parentobj.query_list = []
+		if self.query_type == 1 and self.query_from_ac:
+			self.logfield.AppendText("Loading query list from Annotation Corpus...\n")
+			return self.loadFromAC()
+		if self.query_type == 0 and self.query_from_ac:
+			self.logfield.AppendText("Cannot get pairs from Annotation Corpus.\n")
+			return False
+		if self.query_file:
+			self.logfield.AppendText("Loading query from file " + str(self.query_file) +"...\n")
+			return self.loadFromFile()
+		else:
+			self.logfield.AppendText("Loading query from text field...\n")
+			return self.loadFromField()
+
+	def loadFromFile(self):
+		h = open(self.query_file,'r')
+		self.query = []
+		for line in h:
+			line = line.rstrip('\n')
+			line = line.rstrip('\r')
+			if self.query_type == 0: #pairs
+				line = line.rsplit('\t')
+				self.query.append((line[0], line[1]))
+			else: # list
+				self.query.append(line)
+		inf.close()
+		return True
+
+	def loadFromField(self):
+		h = self.Querygui.inputfield.GetValue()
+		self.query= []
+		for line in h:
+			if self.query_type == 0: #pairs
+				line = line.rsplit('\t')
+				self.query.append((line[0], line[1]))
+			else: # list
+				self.query.append(line)
+		return True
+
+	def loadFromAC(self):
+		self.query = []
+		if self.ac == None:
+			return False
 		for line in self.ac.annotations:
-			self.parentobj.query_list.append(line)
+			self.query.append(line)
+		return True
 	
 	def stop(self):
 		return True
 
 	def buildSSobject(self):
-		self.parentobj.ssobject = None
-		if self.parentobj.ssmeasure is None:
-			return
-		if SSmeasures[self.ssmeasure][1]:
-			if self.parentobj.mixingstrategy is None:
-				return
-		if self.parentobj.go is None or self.parentobj.ac is None:
-			return
-		self.parentobj.ssobject = ObjSemSim.ObjSemSim(self.parentobj.ac, self.parentobj.go, self.parentobj.ssmeasure, self.parentobj.mixingstrategy, None)
-		if not self.parentobj.ssobject is None:
-			print "SS object created"
-		#self.ac = AnnotationCorpus.AnnotationCorpus(self.parentobj.go) 
-		#self.ftype = "GOA"
-		#self.ac.parse(str(self.filename.GetLabel()), self.ftype)
-		#self.ac.sanitize()
-		#if True: # replace with control code
-			##print "Ontology infos: file name: " + str(self.filename.GetLabel()) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
-			#self.acchooser.Enable()
-			#self.doneb.Enable()
-			#self.acobjs.SetLabel(str(len(self.ac.annotations)))
-			#self.acterms.SetLabel(str(len(self.ac.reverse_annotations)))
-			#self.parentobj.ac = self.ac
-			#self.parentobj.aclabel.SetLabel(self.filename.GetLabel())
-			#self.status_label.SetLabel("Annotation Corpus loaded.")
-			##self.parentobj.acchooser.Enable()
-			
+		if self.update_ssobject or self.ssobject == None:
+			self.ssobject = None
+			if self.ssmeasure is None:
+				return False
+			if SSmeasures[self.Operationgui.ssmeasure][1]:
+				if self.mixingstrategy is None:
+					return False 
+			if self.go is None or self.ac is None:
+				return False
+			self.ssobject = ObjSemSim.ObjSemSim(self.ac, self.go, self.ssmeasure, self.mixingstrategy, None)
+			if not self.ssobject is None:
+				self.update_ssobject = False
+				if SSmeasures[self.Operationgui.ssmeasure][1]:
+					self.logfield.AppendText("Semantic similarity object created: " + str(self.ssmeasure) + " " + str(self.mixingstrategy) + ".\n")
+				else:
+					self.logfield.AppendText("Semantic similarity object created: " + str(self.ssmeasure) + ".\n")
+			else:
+				self.logfield.AppendText("Unable to create semantic similarity of type " + str(self.ssmeasure) + " " + str(self.mixingstrategy) + ".\n")
+				return False
+		else:
+			self.logfield.AppendText("Using previous semantic similarity object.\n")
+		return True
+
 if __name__ == "__main__":
 	app = wxApp()
 	window = gui(None)

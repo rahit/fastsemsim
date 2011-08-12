@@ -22,17 +22,15 @@ from wxPython.wx import *
 from GO import GeneOntology
 #from GO import AnnotationCorpus
 
-class loadGO(wxFrame):
+class LoadGO(wxFrame):
 	
 	def __init__(self, parent):
 		self.parentobj = parent
-		super(loadGO, self).__init__(self.parentobj, title="Load Gene Ontology", size=(500,200))
+		super(LoadGO, self).__init__(self.parentobj, title="Load Gene Ontology", size=(500,200))
 		self.InitUI()
 	
 	def InitUI(self):
 		self.Bind(EVT_CLOSE, self.OnQuit, id=self.GetId())
-		font = wxSystemSettings_GetFont(wxSYS_SYSTEM_FONT)
-		font.SetPointSize(9)
         
 		panel = wxPanel(self)
 		#panel.SetBackgroundColour('#4f5049')
@@ -48,16 +46,16 @@ class loadGO(wxFrame):
 		
 		# Descbox
 		self.filename_label = wxStaticText(panel, label='GO File')
-		self.filename_label.SetFont(font)
+		self.filename_label.SetFont(self.parentobj.font)
 		self.filename = wxStaticText(panel, label='')
 		self.gonodes_label = wxStaticText(panel, label='Nodes')
-		self.gonodes_label.SetFont(font)
+		self.gonodes_label.SetFont(self.parentobj.font)
 		self.gonodes = wxStaticText(panel, label='')
-		self.gonodes.SetFont(font)
+		self.gonodes.SetFont(self.parentobj.font)
 		self.goedges_label = wxStaticText(panel, label='Edges')
-		self.goedges_label.SetFont(font)
+		self.goedges_label.SetFont(self.parentobj.font)
 		self.goedges = wxStaticText(panel, label='')
-		self.goedges.SetFont(font)
+		self.goedges.SetFont(self.parentobj.font)
 		descbox.AddMany([(self.filename_label), (self.filename), (self.gonodes_label), (self.gonodes), (self.goedges_label), (self.goedges)])
 
 		# commanbox
@@ -73,7 +71,7 @@ class loadGO(wxFrame):
 		
 		#statusbox
 		self.status_label = wxStaticText(panel, label='No Ontology loaded.')
-		self.status_label.SetFont(font)
+		self.status_label.SetFont(self.parentobj.font)
 		#self.status_label.Hide()
 		statusbox.Add(self.status_label, border=10)
 		
@@ -95,6 +93,9 @@ class loadGO(wxFrame):
 
 
 	def OnGOLoad(self, event):
+		self.parentobj.go_ok = False
+		self.parentobj.update_ac = True
+		self.parentobj.update_ssobject = True
 		self.tree = GeneOntology.load_GO_XML(open(self.filename.GetLabel(),'r'))
 		if self.tree is not None:
 			#print "Ontology infos: file name: " + str(self.filename.GetLabel()) + ". Nodes: " + str(self.tree.node_num()) + ". Edges: " + str(self.tree.edge_num())
@@ -106,7 +107,6 @@ class loadGO(wxFrame):
 			self.parentobj.acchoosecmd.Enable()
 			self.parentobj.go = self.tree
 			self.parentobj.golabel.SetLabel(self.filename.GetLabel())
-			self.parentobj.update_ac = True
 			self.parentobj.go_ok = True
 
 	def OnGOBrowseDone(self, event):

@@ -22,11 +22,11 @@ from wxPython.wx import *
 from GO import GeneOntology
 from GO import AnnotationCorpus
 
-class loadAC(wxFrame):
+class LoadAC(wxFrame):
 	
 	def __init__(self, parent):
 		self.parentobj = parent
-		super(loadAC, self).__init__(self.parentobj, title="Load Annotation Corpus", size=(500,200))
+		super(LoadAC, self).__init__(self.parentobj, title="Load Annotation Corpus", size=(500,200))
 		self.InitUI()
 	
 	def InitUI(self):
@@ -46,16 +46,16 @@ class loadAC(wxFrame):
 
 		# Descbox
 		self.filename_label = wxStaticText(panel, label='AC File')
-		self.filename_label.SetFont(font)
+		self.filename_label.SetFont(self.parentobj.font)
 		self.filename = wxStaticText(panel, label='')
 		self.acobjs_label = wxStaticText(panel, label='Objects')
-		self.acobjs_label.SetFont(font)
+		self.acobjs_label.SetFont(self.parentobj.font)
 		self.acobjs = wxStaticText(panel, label='')
-		self.acobjs.SetFont(font)
+		self.acobjs.SetFont(self.parentobj.font)
 		self.acterms_label = wxStaticText(panel, label='Go Terms involved')
-		self.acterms_label.SetFont(font)
+		self.acterms_label.SetFont(self.parentobj.font)
 		self.acterms = wxStaticText(panel, label='')
-		self.acterms.SetFont(font)
+		self.acterms.SetFont(self.parentobj.font)
 		descbox.AddMany([(self.filename_label), (self.filename), (self.acobjs_label), (self.acobjs), (self.acterms_label), (self.acterms)])
 
 		# commanbox
@@ -71,7 +71,7 @@ class loadAC(wxFrame):
 		
 		#statusbox
 		self.status_label = wxStaticText(panel, label='No Annotation Corpus loaded.')
-		self.status_label.SetFont(font)
+		self.status_label.SetFont(self.parentobj.font)
 		#self.status_label.Hide()
 		statusbox.Add(self.status_label, border=10)
 		
@@ -93,6 +93,9 @@ class loadAC(wxFrame):
 
 
 	def OnACLoad(self, event):
+		self.parentobj.ac_ok = False
+		self.parentobj.update_ac = True
+		self.parentobj.update_ssobject = True
 		self.ac = AnnotationCorpus.AnnotationCorpus(self.parentobj.go) 
 		self.ftype = "GOA"
 		self.ac.parse(str(self.filename.GetLabel()), self.ftype)

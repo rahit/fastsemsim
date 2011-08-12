@@ -71,7 +71,7 @@ class OutputCtrlGui():
 			self.parentobj.output_ok = True
 			#self.fromaccmd.Disable()
 		elif self.radio_file.GetValue():
-			self.parentobj.output_type = 1 # file field
+			self.parentobj.output_type = 1 # file 
 			if self.parentobj.output_file == None:
 				self.parentobj.output_ok = False
 			self.filechooser.Enable()

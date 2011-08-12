@@ -29,6 +29,7 @@ class PairsGUI:
 		self.InitUI()
 	
 	def InitUI(self):
+		self.parentobj.query_ok = True
 		#self.Bind(EVT_CLOSE, self.OnQuit, id=self.GetId())
 		#font = wxSystemSettings_GetFont(wxSYS_SYSTEM_FONT)
 		#font.SetPointSize(9)
@@ -55,7 +56,7 @@ class PairsGUI:
 		#Pairs input src
 		self.listsrcboxline = wxStaticBox(self.panel, wxID_ANY, 'Query')
 		self.listsrcbox = wxStaticBoxSizer(self.listsrcboxline, wxHORIZONTAL)
-		self.inputfield = wxTextCtrl(self.panel, size=(200,150), style = wxTE_MULTILINE|wxTE_READONLY)
+		self.inputfield = wxTextCtrl(self.panel, size=(200,150), style = wxTE_MULTILINE)
 		self.listsrcbox.Add(self.inputfield)
 		
 		self.inputcommands = wxBoxSizer(wxVERTICAL)
@@ -121,46 +122,3 @@ class PairsGUI:
 		elif self.radio_list.GetValue():
 			self.parentobj.query_type = 1
 			self.fromaccmd.Enable()
-
-	def loadPairs(self):
-		h = open(self.parentobj.query_file,'r')
-		text = []
-		for line in h:
-			line = line.rstrip('\n')
-			line = line.rstrip('\r')
-			line = line.rsplit('\t')
-			text.append((line[0], line[1]))
-		inf.close()
-		self.parentobj.query_pairs = text
-		
-	def loadList(self):
-		h = open(self.parentobj.query_file,'r')
-		text = []
-		for line in h:
-			line = line.rstrip('\n')
-			line = line.rstrip('\r')
-			#line = line.rsplit('\t')
-			text.append(line)
-		inf.close()
-		self.parentobj.query_list = text
-		
-	def loadListfromField(self):
-		h = self.inputfield.GetValue()
-		text = []
-		for line in h:
-			line = line.rstrip('\n')
-			line = line.rstrip('\r')
-			#line = line.rsplit('\t')
-			text.append(line)
-		self.parentobj.query_list = text
-		
-	def loadPairsfromField(self):
-		h = self.inputfield.GetValue()
-		text = []
-		for line in h:
-			line = line.rstrip('\n')
-			line = line.rstrip('\r')
-			line = line.rsplit('\t')
-			text.append((line[0], line[1]))
-		self.parentobj.query_list = text
-		

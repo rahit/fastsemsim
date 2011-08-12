@@ -69,11 +69,12 @@ class OperationGui:
 		self.gobox = wxStaticBoxSizer(self.goboxline, wxVERTICAL)
 		#self.go_label = wxStaticText(self.panel, label='Ontology')
 		self.gos = ['Molecular Function','Biological Process','Cellular Component']
+		self.gocodes = ['MF','BP','CC']
 		self.goradius = []
 		self.goradius.append(wxRadioButton(self.panel, wxID_ANY, self.gos[0], (10, 10), style=wxRB_GROUP))
 		self.goradius.append(wxRadioButton(self.panel, wxID_ANY, self.gos[1], (10, 10)))
 		self.goradius.append(wxRadioButton(self.panel, wxID_ANY, self.gos[2], (10, 10)))
-		self.parentobj.selectedGO = 0
+		self.parentobj.selectedGO = self.gocodes[0]
 		#self.gobox.Add(self.go_label)
 		for i in self.goradius:
 			self.gobox.Add(i)
@@ -97,7 +98,7 @@ class OperationGui:
 	def OnSelectGO(self, event):
 		for i in range(0,len(self.goradius)):
 			if self.goradius[i].GetValue():
-				self.parentobj.selectedGO = i
+				self.parentobj.selectedGO = self.gocodes[i]
 		
 	def OnSelectMS(self, event):
 		self.parentobj.mixingstrategy = MixingStrategies[self.mixing.GetSelection()][0]
