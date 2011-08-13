@@ -42,7 +42,7 @@ import AnnotationCorpus
 
 class PlainAnnotationCorpus():
 	separator = '\t'
-	objfirst = True
+	objfirst = False
 	
 	#def __init__(self, tree=None):
 		#AnnotationCorpus.__init__(tree)
@@ -117,6 +117,7 @@ class PlainAnnotationCorpus():
 				#print("Lines processed: " + str(lines_counter) + " on " + str(filenum) + " (" + str(int(100*float(lines_counter)/float(filenum))) + "%)")
 		if type(fname) is str:
 			stream.close()
+		return True
 
 
 if __name__ == "__main__":

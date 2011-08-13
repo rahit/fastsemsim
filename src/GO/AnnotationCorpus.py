@@ -130,6 +130,7 @@ class AnnotationCorpus:
 					del self.reverse_annotations[i]
 					del self.term_set[i]
 					continue
+		return True
 
 	def check_consistency(self):
 		if self.go is None:
@@ -221,13 +222,19 @@ class AnnotationCorpus:
 	def load(self, fname, ftype):
 		self.parse(fname, ftype)
 
-	def parse(self, fname, ftype):
+	def parse(self, fname, ftype, params=None):
 		if ftype is 'GOA':
 			temp = GOAAnnotationCorpus.GOAAnnotationCorpus()
-			temp.parse(fname, self)
+			return temp.parse(fname, self)
 		elif ftype is 'plain':
 			temp = PlainAnnotationCorpus.PlainAnnotationCorpus()
-			temp.parse(fname, self)
+			temp.objfirst = True
+			if not(params == None):
+				if 'AC_OBJ_FIRST' in params:
+					temp.objfirst = True
+				elif 'AC_TERM_FIRST' in params:
+					temp.objfirst = False
+			return temp.parse(fname, self)
 
 
 if __name__ == "__main__":
