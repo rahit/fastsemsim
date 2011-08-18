@@ -31,9 +31,9 @@ import AnnotationCorpus
 class GOAAnnotationCorpus():
 	separator = '\t'
 
-	#def load(self, fname):
-		#self.parse(fname, self)
-			
+	#def __init__(self, ac):
+		#self.ac = ac
+
 	def parse(self, fname, trueclass):
 		if type(fname) is str:
 			stream = open(fname)
@@ -121,56 +121,56 @@ class GOAAnnotationCorpus():
 				#print("Lines processed: " + str(lines_counter) + " on " + str(filenum) + " (" + str(int(100*float(lines_counter)/float(filenum))) + "%)")
 		stream.close()
 
-if __name__ == "__main__":
-	tree = GeneOntology.load_GO_XML(open(sys.argv[1]))
-	print "Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
+#if __name__ == "__main__":
+	#tree = GeneOntology.load_GO_XML(open(sys.argv[1]))
+	#print "Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
 	
-	gp = GOAAnnotationCorpus(tree)
+	#gp = GOAAnnotationCorpus(tree)
 	
-	tax_filter = {}
-	tax_filter['taxon:103351'] = []
-	tax_filter['taxon:10335'] = []
-	tax_filter['taxon:10338'] = []
-	tax_filter['taxon:341980'] = []
-	tax_filter['taxon:103354'] = []
-	tax_filter['taxon:103353'] = []
-	tax_filter['taxon:103352'] = []
-	tax_filter['taxon:154633'] = []
-	tax_filter['taxon:103387'] = []
-	tax_filter['taxon:103385'] = []
-	tax_filter['taxon:103380'] = []
-	tax_filter['taxon:103355'] = []
-	tax_filter['taxon:103350'] = []
-	#gp.set_taxonomy_filter(tax_filter)
-	gp.reset_taxonomy_filter()
-	EC_filter = {}
-	EC_filter['IES'] = []
-	#gp.set_EC_filter(EC_filter)
-	gp.reset_EC_filter()
-	gp.parse(sys.argv[2])
-	gp.set_EC_filter(EC_filter)
-	gp.set_EC_filter_rule(False)
+	#tax_filter = {}
+	#tax_filter['taxon:103351'] = []
+	#tax_filter['taxon:10335'] = []
+	#tax_filter['taxon:10338'] = []
+	#tax_filter['taxon:341980'] = []
+	#tax_filter['taxon:103354'] = []
+	#tax_filter['taxon:103353'] = []
+	#tax_filter['taxon:103352'] = []
+	#tax_filter['taxon:154633'] = []
+	#tax_filter['taxon:103387'] = []
+	#tax_filter['taxon:103385'] = []
+	#tax_filter['taxon:103380'] = []
+	#tax_filter['taxon:103355'] = []
+	#tax_filter['taxon:103350'] = []
+	##gp.set_taxonomy_filter(tax_filter)
+	#gp.reset_taxonomy_filter()
+	#EC_filter = {}
+	#EC_filter['IES'] = []
+	##gp.set_EC_filter(EC_filter)
 	#gp.reset_EC_filter()
-	#gp.set_taxonomy_filter(tax_filter)
-	gp.constrain()
+	#gp.parse(sys.argv[2])
+	#gp.set_EC_filter(EC_filter)
+	#gp.set_EC_filter_rule(False)
+	##gp.reset_EC_filter()
+	##gp.set_taxonomy_filter(tax_filter)
+	#gp.constrain()
 	
-	print("Annotated proteins: " + str(len(gp.annotations)))
-	print("Annotated terms: " + str(len(gp.reverse_annotations)))
+	#print("Annotated proteins: " + str(len(gp.annotations)))
+	#print("Annotated terms: " + str(len(gp.reverse_annotations)))
 	
-	for i in gp.annotations:
-		print(str(i) + ": " + str(gp.annotations[i]))
-	for i in gp.reverse_annotations:
-		print(str(i) + ": " + str(gp.reverse_annotations[i]))
+	#for i in gp.annotations:
+		#print(str(i) + ": " + str(gp.annotations[i]))
+	#for i in gp.reverse_annotations:
+		#print(str(i) + ": " + str(gp.reverse_annotations[i]))
 
-	clone = copy.deepcopy(gp)
-	#for i in gp.obj_set:
-		#print(str(i) + ": " + str(gp.obj_set[i]))
-	for i in gp.annotations:
-		print(str(i) + ": " + str(len(gp.annotations[i])))
-		print(str(i) + ": " + str(len(clone.annotations[i])))
-	for i in gp.reverse_annotations:
-		print(str(i) + ": " + str(len(gp.reverse_annotations[i])))
-		print(str(i) + ": " + str(len(clone.reverse_annotations[i])))
+	#clone = copy.deepcopy(gp)
+	##for i in gp.obj_set:
+		##print(str(i) + ": " + str(gp.obj_set[i]))
+	#for i in gp.annotations:
+		#print(str(i) + ": " + str(len(gp.annotations[i])))
+		#print(str(i) + ": " + str(len(clone.annotations[i])))
+	#for i in gp.reverse_annotations:
+		#print(str(i) + ": " + str(len(gp.reverse_annotations[i])))
+		#print(str(i) + ": " + str(len(clone.reverse_annotations[i])))
 
-	print(clone.check_consistency())
-	clone.sanitize()
+	#print(clone.check_consistency())
+	#clone.sanitize()

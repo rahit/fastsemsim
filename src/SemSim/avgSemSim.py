@@ -38,9 +38,9 @@ class avgSemSim(MixSemSim):
 		finale = 0
 		for i in scores:
 			#print(scores[i]
-			if i[2] == -1:
-				print("Errore in avgSemSim")
-				sys.exit(1)
+			#if i[2] == -1:
+				#print("Errore in avgSemSim")
+				#sys.exit(1)
 			finale += i[2]
 		finale /= float(len(scores))
 		return finale

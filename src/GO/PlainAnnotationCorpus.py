@@ -19,20 +19,13 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 __author__="Marco Mina"
-#@mail marco.mina.85@gmail.com
-#@version 1.0
-#@desc This class reads plain annotation corpus files.
+
+'''
+This class reads plain annotation corpus files.
 #Plain format 1: protein ID - Term ID
 #Plain format 1: protein ID - Taxonomy - Term ID
 #Plain format 3: protein ID - Taxonomy - Term ID - EC
-#In all the cases each row defines just 1 annotation.
-#### annotations: dict with protein ids as primary key. Each key is associated with a dict of annotations associated to the protein. Each annotation is a key itself (the term code in the GO is used as key), and it is associated to the EC/REF of the annotation. Multiple EC for the same annotation are possible.
-#
-#### reverse annotations: dict with term codes in the GO as primary key. Each key is associated with a dict of annotations associated to the term. Each annotation is a key itself (the protein ids are used as keys), and it is associated to the EC/REF of the annotation. Multiple EC for the same annotation are possible.
-#
-#### obj_set: set of proteins present in the annotation table, connected with the taxon id of the organism they belong to. This table is useful to filter out proteins from uninteresting species.
-#
-####
+'''
 import sys
 import copy
 #from pairs import rowscounter
@@ -120,13 +113,13 @@ class PlainAnnotationCorpus():
 		return True
 
 
-if __name__ == "__main__":
-	tree = GeneOntology.load_GO_XML(open(sys.argv[1]))
-	print "Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
+#if __name__ == "__main__":
+	#tree = GeneOntology.load_GO_XML(open(sys.argv[1]))
+	#print "Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
 	
-	gp = PlainAnnotationCorpus(tree)
-	gp.parse(sys.argv[2])
-	for i in gp.annotations:
-		print(str(i) + ": " + str(gp.annotations[i]))
-	gp.check_consistency()
-	gp.sanitize()
+	#gp = PlainAnnotationCorpus(tree)
+	#gp.parse(sys.argv[2])
+	#for i in gp.annotations:
+		#print(str(i) + ": " + str(gp.annotations[i]))
+	#gp.check_consistency()
+	#gp.sanitize()

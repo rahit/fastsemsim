@@ -18,17 +18,37 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-from wxPython.wx import *
+from SemSim.ResnikSemSim import *
+from SemSim.LinSemSim import *
+from SemSim.JiangConrathSemSim import *
+from SemSim.SimGICSemSim import *
+from SemSim.avgSemSim import *
+from SemSim.maxSemSim import *
+from SemSim.BMASemSim import *
 
-SemSimMeasures = [
-('Resnik', True),
-('SimGIC', False),
-('Lin', True),
-('Jiang and Conrath', True),
-('SimIC', True),
-('G-SESAME', True)]
+'''
+Struct SemSimMeasures.
+Contains a list of all available SS measures.
+It is built as a dictionary. SS measure names are used as keys. Each entry is a tuple with the following structure:
+(class pointer, Pairwise flag, )
+'''
+SemSimMeasures = {
+'Resnik' : (ResnikSemSim, True),
+'SimGIC': (SimGICSemSim, False),
+'Lin' :(LinSemSim, True),
+'Jiang and Conrath' :(JiangConrathSemSim, True),
+#'SimIC' :(SimGICSemSim, True)
+#'G-SESAME' :(True, ResnikSemSim)}
+}
 
-MixingStrategies = [
-('max',0),
-('BMA',0),
-('avg',0),]
+'''
+Struct MixingStrategies.
+Contains a list of all available mixing strategies
+It is built as a dictionary. Mixing strategy names are used as keys. Each entry is a tuple with the following structure:
+(class pointer, )
+'''
+MixingStrategies = {
+'max':(maxSemSim),
+'BMA':(BMASemSim),
+'avg':(avgSemSim)
+}

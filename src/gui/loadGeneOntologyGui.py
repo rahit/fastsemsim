@@ -18,11 +18,12 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-from wxPython.wx import *
+#from wx.Python.wx import *
+import wx
 from GO import GeneOntology
 #from GO import AnnotationCorpus
 
-class LoadGO(wxFrame):
+class LoadGO(wx.Frame):
 	
 	def __init__(self, parent):
 		self.parentobj = parent
@@ -30,55 +31,55 @@ class LoadGO(wxFrame):
 		self.InitUI()
 	
 	def InitUI(self):
-		self.Bind(EVT_CLOSE, self.OnQuit, id=self.GetId())
+		self.Bind(wx.EVT_CLOSE, self.OnQuit, id=self.GetId())
         
-		panel = wxPanel(self)
+		panel = wx.Panel(self)
 		#panel.SetBackgroundColour('#4f5049')
-		mainbox = wxBoxSizer(wxVERTICAL)
-		descbox = wxFlexGridSizer(rows = 4, cols = 2, vgap = 6, hgap = 20)
-		commanbox = wxBoxSizer(wxHORIZONTAL)
-		statusbox = wxBoxSizer(wxHORIZONTAL)
+		mainbox = wx.BoxSizer(wx.VERTICAL)
+		descbox = wx.FlexGridSizer(rows = 4, cols = 2, vgap = 6, hgap = 20)
+		commanbox = wx.BoxSizer(wx.HORIZONTAL)
+		statusbox = wx.BoxSizer(wx.HORIZONTAL)
 		panel.SetSizer(mainbox)
-		mainbox.Add(statusbox, flag=wxEXPAND|wxLEFT|wxRIGHT|wxTOP, border=10)
-		mainbox.Add(descbox, flag=wxEXPAND|wxLEFT|wxRIGHT|wxTOP, border=10)
-		mainbox.Add(commanbox, flag=wxEXPAND|wxLEFT|wxRIGHT|wxTOP, border=10)
+		mainbox.Add(statusbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+		mainbox.Add(descbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+		mainbox.Add(commanbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 
 		
 		# Descbox
-		self.filename_label = wxStaticText(panel, label='GO File')
+		self.filename_label = wx.StaticText(panel, label='GO File')
 		self.filename_label.SetFont(self.parentobj.font)
-		self.filename = wxStaticText(panel, label='')
-		self.gonodes_label = wxStaticText(panel, label='Nodes')
+		self.filename = wx.StaticText(panel, label='')
+		self.gonodes_label = wx.StaticText(panel, label='Nodes')
 		self.gonodes_label.SetFont(self.parentobj.font)
-		self.gonodes = wxStaticText(panel, label='')
+		self.gonodes = wx.StaticText(panel, label='')
 		self.gonodes.SetFont(self.parentobj.font)
-		self.goedges_label = wxStaticText(panel, label='Edges')
+		self.goedges_label = wx.StaticText(panel, label='Edges')
 		self.goedges_label.SetFont(self.parentobj.font)
-		self.goedges = wxStaticText(panel, label='')
+		self.goedges = wx.StaticText(panel, label='')
 		self.goedges.SetFont(self.parentobj.font)
 		descbox.AddMany([(self.filename_label), (self.filename), (self.gonodes_label), (self.gonodes), (self.goedges_label), (self.goedges)])
 
 		# commanbox
-		self.gochooser = wxButton(panel, wxID_ANY, 'Select file...')
-		self.goload = wxButton(panel, wxID_ANY, 'Load...')
+		self.gochooser = wx.Button(panel, wx.ID_ANY, 'Select file...')
+		self.goload = wx.Button(panel, wx.ID_ANY, 'Load...')
 		self.goload.Hide()
-		self.Bind(EVT_BUTTON, self.OnGOBrowse, id=self.gochooser.GetId())
-		self.Bind(EVT_BUTTON, self.OnGOLoad, id=self.goload.GetId())
-		self.doneb = wxButton(panel, wxID_ANY, 'Done')
-		self.Bind(EVT_BUTTON, self.OnGOBrowseDone, id=self.doneb.GetId())
-		commanbox.Add(self.gochooser, flag=wxLEFT|wxRIGHT|wxTOP, border=10)
-		commanbox.Add(self.doneb, flag=wxLEFT|wxRIGHT|wxTOP, border=10)
+		self.Bind(wx.EVT_BUTTON, self.OnGOBrowse, id=self.gochooser.GetId())
+		self.Bind(wx.EVT_BUTTON, self.OnGOLoad, id=self.goload.GetId())
+		self.doneb = wx.Button(panel, wx.ID_ANY, 'Done')
+		self.Bind(wx.EVT_BUTTON, self.OnGOBrowseDone, id=self.doneb.GetId())
+		commanbox.Add(self.gochooser, flag=wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+		commanbox.Add(self.doneb, flag=wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 		
 		#statusbox
-		self.status_label = wxStaticText(panel, label='No Ontology loaded.')
+		self.status_label = wx.StaticText(panel, label='No Ontology loaded.')
 		self.status_label.SetFont(self.parentobj.font)
 		#self.status_label.Hide()
 		statusbox.Add(self.status_label, border=10)
 		
 
 	def OnGOBrowse(self, event):
-		dialog = wxFileDialog(None, style = wxOPEN)
-		if dialog.ShowModal() == wxID_OK:
+		dialog = wx.FileDialog(None, style = wx.OPEN)
+		if dialog.ShowModal() == wx.ID_OK:
 			#print 'Selected: ', dialog.GetPath()
 			self.filename.SetLabel(dialog.GetPath())
 			self.status_label.SetLabel("Loading ontology... Please wait.")
@@ -88,8 +89,8 @@ class LoadGO(wxFrame):
 			self.gonodes.SetLabel("")
 			self.goedges.SetLabel("")
 			self.parentobj.acchoosecmd.Disable()
-			event = wxPyCommandEvent(EVT_BUTTON.typeId, self.goload.GetId())
-			wxPostEvent(self.GetEventHandler(), event)
+			event = wx.PyCommandEvent(wx.EVT_BUTTON.typeId, self.goload.GetId())
+			wx.PostEvent(self.GetEventHandler(), event)
 
 
 	def OnGOLoad(self, event):

@@ -22,9 +22,6 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 This class provides the prototype for BMA mixing strategy for pairwise Terms Protein Semantic Similarity measures (mixSS)
 """
 
-#from GO import AnnotationCorpus
-#from GO import GeneOntology
-#from SemSimUtils import *
 from MixSemSim import *
 import sys
 import os
@@ -41,9 +38,9 @@ class BMASemSim(MixSemSim):
 		for i in scores:
 			#print(i
 			#print(scores[i]
-			if i[2] == -1:
-				print("Errore in BMASemSim")
-				sys.exit()
+			#if i[2] == -1:
+				#print("Errore in BMASemSim")
+				#sys.exit()
 			if i[0] not in rebuild1:
 				rebuild1[i[0]] = {}
 			if i[1] not in rebuild1[i[0]]:

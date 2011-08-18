@@ -18,7 +18,8 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-from wxPython.wx import *
+#from wx.Python.wx import *
+import wx
 from GO import GeneOntology
 from GO import AnnotationCorpus
 
@@ -31,26 +32,26 @@ class OutputCtrlGui():
 		self.panel = self.parentobj.panel
 		self.mainbox = self.parentobj.outputctrlbox
 #------------------------------------------------------------------------------------------------------------------
-		self.destinationboxline = wxStaticBox(self.panel, wxID_ANY, 'Output destination')
-		self.destinationbox= wxStaticBoxSizer(self.destinationboxline, wxHORIZONTAL)
+		self.destinationboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Output destination')
+		self.destinationbox= wx.StaticBoxSizer(self.destinationboxline, wx.HORIZONTAL)
 		self.outputtypes = ['output field','file']
-		self.radio_field = wxRadioButton(self.panel, wxID_ANY, self.outputtypes[0], (10, 10), style=wxRB_GROUP)
-		self.radio_file = wxRadioButton(self.panel, wxID_ANY, self.outputtypes[1], (10, 10))
-		self.destinationbox.Add(self.radio_field,wxEXPAND)
-		self.destinationbox.Add(self.radio_file,wxEXPAND)
-		self.parentobj.Bind(EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_field.GetId())
-		self.parentobj.Bind(EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_file.GetId())
+		self.radio_field = wx.RadioButton(self.panel, wx.ID_ANY, self.outputtypes[0], (10, 10), style=wx.RB_GROUP)
+		self.radio_file = wx.RadioButton(self.panel, wx.ID_ANY, self.outputtypes[1], (10, 10))
+		self.destinationbox.Add(self.radio_field,wx.EXPAND)
+		self.destinationbox.Add(self.radio_file,wx.EXPAND)
+		self.parentobj.Bind(wx.EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_field.GetId())
+		self.parentobj.Bind(wx.EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_file.GetId())
 		self.parentobj.output_type = 0
 		self.parentobj.output_ok = True
 
-		self.commandsline  = wxStaticBox(self.panel, wxID_ANY, 'Output file')
-		self.commands = wxStaticBoxSizer(self.commandsline, wxVERTICAL)
-		self.outputlabel = wxStaticText(self.panel, label = 'Not selected')
+		self.commandsline  = wx.StaticBox(self.panel, wx.ID_ANY, 'Output file')
+		self.commands = wx.StaticBoxSizer(self.commandsline, wx.VERTICAL)
+		self.outputlabel = wx.StaticText(self.panel, label = 'Not selected')
 		self.outputlabel.SetFont(self.parentobj.font)
-		self.filechooser = wxButton(self.panel, wxID_ANY, 'Choose file...')
+		self.filechooser = wx.Button(self.panel, wx.ID_ANY, 'Choose file...')
 		self.filechooser.Disable()
-		self.parentobj.Bind(EVT_BUTTON, self.OnFileBrowse, id=self.filechooser.GetId())
-		self.commands.Add(self.outputlabel, flag=wxBOTTOM|wxTOP, border=10)
+		self.parentobj.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.filechooser.GetId())
+		self.commands.Add(self.outputlabel, flag=wx.BOTTOM|wx.TOP, border=10)
 		self.commands.Add(self.filechooser)
 		
 		self.mainbox.Add(self.destinationbox)
@@ -58,8 +59,8 @@ class OutputCtrlGui():
 #------------------------------------------------------------------------------------------------------------------
 
 	def OnFileBrowse(self, event):
-		dialog = wxFileDialog(None, style = wxSAVE|wxOVERWRITE_PROMPT)
-		if dialog.ShowModal() == wxID_OK:
+		dialog = wx.FileDialog(None, style = wx.SAVE|wx.OVERWRITE_PROMPT)
+		if dialog.ShowModal() == wx.ID_OK:
 			self.parentobj.output_file = dialog.GetPath()
 			self.outputlabel.SetLabel(self.parentobj.output_file)
 			self.parentobj.output_ok = True

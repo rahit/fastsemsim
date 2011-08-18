@@ -18,33 +18,32 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-####
-#@desc Class to handle Annotation Corpora. It consists of 4 hash tables (dict)
 '''
-annotations: dict with protein ids as primary key. Each key is associated with a dict of annotations associated to the protein. Each annotation is a key itself (the term code in the GO is used as key), and it is associated to the EC/REF of the annotation. Multiple EC for the same annotation are possible.
+This class provides a unified interface to handle Annotation Corpora.
 
-reverse annotations: dict with term codes in the GO as primary key. Each key is associated with a dict of annotations associated to the term. Each annotation is a key itself (the protein ids are used as keys), and it is associated to the EC/REF of the annotation. Multiple EC for the same annotation are possible.
+annotations: dict with protein ids as primary key. Each key is associated with a dictionary of GO Terms annotated for the protein. Detailed information, when available, are included as values within the latter dictionary.
 
-obj_set: set of proteins present in the annotation table, connected with the taxon id of the organism they belong to. This table is useful to filter out proteins from uninteresting species.
+reverse_annotations: dict with GO Terms as primary key. Each key is associated with a dict of proteins/gene products annotated with the GO term.
+
+obj_set: set of proteins/gene products present in the annotation table, connected with the taxon id of the organism they belong to, when this information is available. This table is useful to filter out proteins from uninteresting species.
 
 term_set: set of terms present in the annotation table.
 
-If a GO is passed as input data, annotation corpus is corrected removing obsolete annotations and resolving alternative ids.
+If a GO object is passed as input data, annotation corpus is corrected removing obsolete annotations and resolving alternative ids.
+This can be done later by calling sanitize method after supplying a valid GO object.
 '''
 
 import sys
 import copy
-#from pairs import rowscounter
-#from GO import GeneOntology
-import GeneOntology
-import GOAAnnotationCorpus
-import PlainAnnotationCorpus
+
+from GO.GeneOntology import *
+from GO.GOAAnnotationCorpus import GOAAnnotationCorpus
+from GO.PlainAnnotationCorpus import PlainAnnotationCorpus
 
 class AnnotationCorpus:
 	exclude_GO_root = True
 	go = None
-	#SHOW_PROCESS_THRESHOLD = 50000
-	
+
 	annotations = {}
 	reverse_annotations = {}
 	obj_set = {}
@@ -76,24 +75,6 @@ class AnnotationCorpus:
 		a.EC_filter = copy.deepcopy(self.EC_filter, memo)
 		a.EC_filter_inclusive = self.EC_filter_inclusive
 		return a
-
-	#def isinEC(self,s):
-
-	#def get_annotations(self):
-		#finale = {}
-		#for i in self.annotations:
-			#finale[i] = {}
-			#for j in self.annotations[i]:
-				#finale[i][j] = {}
-		#return finale
-
-	#def get_reverse_annotations(self):
-		#finale = {}
-		#for i in self.reverse_annotations:
-			#finale[i] = {}
-			#for j in self.reverse_annotations[i]:
-				#finale[i][j] = {}
-		#return finale
 
 	def sanitize(self):
 		if self.go is None:
@@ -224,10 +205,10 @@ class AnnotationCorpus:
 
 	def parse(self, fname, ftype, params=None):
 		if ftype is 'GOA':
-			temp = GOAAnnotationCorpus.GOAAnnotationCorpus()
+			temp = GOAAnnotationCorpus()
 			return temp.parse(fname, self)
 		elif ftype is 'plain':
-			temp = PlainAnnotationCorpus.PlainAnnotationCorpus()
+			temp = PlainAnnotationCorpus()
 			temp.objfirst = True
 			if not(params == None):
 				if 'AC_OBJ_FIRST' in params:
@@ -237,44 +218,44 @@ class AnnotationCorpus:
 			return temp.parse(fname, self)
 
 
-if __name__ == "__main__":
-	tree = GeneOntology.get_go_graph(open(sys.argv[1]))
-	print("Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.V.__len__()) + ". Edges: " + str(tree.E.__len__()))
+#if __name__ == "__main__":
+	#tree = GeneOntology.get_go_graph(open(sys.argv[1]))
+	#print("Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.V.__len__()) + ". Edges: " + str(tree.E.__len__()))
 	
-	gp = AnnotationCorpus(tree)
+	#gp = AnnotationCorpus(tree)
 
-	tax_filter = {}
-	tax_filter['taxon:103351'] = []
-	tax_filter['taxon:10335'] = []
-	tax_filter['taxon:10338'] = []
-	tax_filter['taxon:341980'] = []
-	tax_filter['taxon:103354'] = []
-	tax_filter['taxon:103353'] = []
-	tax_filter['taxon:103352'] = []
-	tax_filter['taxon:154633'] = []
-	tax_filter['taxon:103387'] = []
-	tax_filter['taxon:103385'] = []
-	tax_filter['taxon:103380'] = []
-	tax_filter['taxon:103355'] = []
-	tax_filter['taxon:103350'] = []
-	#gp.set_taxonomy_filter(tax_filter)
-	gp.reset_taxonomy_filter()
-	EC_filter = {}
-	EC_filter['IES'] = []
-	#gp.set_EC_filter(EC_filter)
-	gp.reset_EC_filter()
-	gp.parse(sys.argv[2])
-	gp.set_EC_filter(EC_filter)
+	#tax_filter = {}
+	#tax_filter['taxon:103351'] = []
+	#tax_filter['taxon:10335'] = []
+	#tax_filter['taxon:10338'] = []
+	#tax_filter['taxon:341980'] = []
+	#tax_filter['taxon:103354'] = []
+	#tax_filter['taxon:103353'] = []
+	#tax_filter['taxon:103352'] = []
+	#tax_filter['taxon:154633'] = []
+	#tax_filter['taxon:103387'] = []
+	#tax_filter['taxon:103385'] = []
+	#tax_filter['taxon:103380'] = []
+	#tax_filter['taxon:103355'] = []
+	#tax_filter['taxon:103350'] = []
+	##gp.set_taxonomy_filter(tax_filter)
+	#gp.reset_taxonomy_filter()
+	#EC_filter = {}
+	#EC_filter['IES'] = []
+	##gp.set_EC_filter(EC_filter)
 	#gp.reset_EC_filter()
-	gp.set_taxonomy_filter(tax_filter)
-	gp.constrain()
+	#gp.parse(sys.argv[2])
+	#gp.set_EC_filter(EC_filter)
+	##gp.reset_EC_filter()
+	#gp.set_taxonomy_filter(tax_filter)
+	#gp.constrain()
 	
-	print("Annotated proteins: " + str(len(gp.annotations)))
-	print("Annotated terms: " + str(len(gp.reverse_annotations)))
+	#print("Annotated proteins: " + str(len(gp.annotations)))
+	#print("Annotated terms: " + str(len(gp.reverse_annotations)))
 	
-	for i in gp.annotations:
-		print(i + ": " + str(gp.annotations[i]))
-	for i in gp.reverse_annotations:
-		print(i + ": " + str(gp.reverse_annotations[i]))
-	#for i in gp.obj_set:
-		#print(i + ": " + str(gp.obj_set[i])
+	#for i in gp.annotations:
+		#print(i + ": " + str(gp.annotations[i]))
+	#for i in gp.reverse_annotations:
+		#print(i + ": " + str(gp.reverse_annotations[i]))
+	##for i in gp.obj_set:
+		##print(i + ": " + str(gp.obj_set[i])

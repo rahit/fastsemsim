@@ -18,7 +18,8 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-from wxPython.wx import *
+#from wx.Python.wx import *
+import wx
 from GO import GeneOntology
 from GO import AnnotationCorpus
 from gui import loadGeneOntologyGui
@@ -34,7 +35,7 @@ from SemSim import ObjSemSim
 #from configOutputGUI import *
 #from pairsGUI import *
 
-class fastSemSimGui(wxFrame):
+class fastSemSimGui(wx.Frame):
 	#Windows handles
 	LoadGOgui = None
 	LoadACgui = None
@@ -79,111 +80,137 @@ class fastSemSimGui(wxFrame):
 		self.InitUI()
 
 	def InitUI(self):
-		self.font = wxSystemSettings_GetFont(wxSYS_SYSTEM_FONT)
+		self.font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
 		self.font.SetPointSize(9)
         
-		self.panel = wxPanel(self)
-		self.mainbox = wxBoxSizer(wxVERTICAL)
+		self.panel = wx.Panel(self)
+		self.mainbox = wx.BoxSizer(wx.VERTICAL)
 
 #----------------------------------------------------------------------------------------------------------------------------------
 		#GO and GOA Sections
-		self.goacbox = wxBoxSizer(wxHORIZONTAL)
+		self.goacbox = wx.BoxSizer(wx.HORIZONTAL)
 #		---------------------------------------------------------------------------
 		# GO File Section
-		self.goboxline = wxStaticBox(self.panel, wxID_ANY, 'Gene Ontology')
-		self.gobox = wxStaticBoxSizer(self.goboxline, wxHORIZONTAL)
-		self.golabel = wxStaticText(self.panel, label='Not loaded')
+		self.goboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Gene Ontology')
+		self.gobox = wx.StaticBoxSizer(self.goboxline, wx.HORIZONTAL)
+		self.golabel = wx.StaticText(self.panel, label='Not loaded')
 		self.golabel.SetFont(self.font)
-		self.gochoosecmd = wxButton(self.panel, wxID_ANY, 'Manage GO...')
-		self.gobox.Add(self.golabel,flag=wxALL|wxCENTER, border = 8)
-		self.gobox.Add(self.gochoosecmd,flag=wxALL|wxCENTER, border = 8)
-		self.Bind(EVT_BUTTON, self.OnGOBrowse, id=self.gochoosecmd.GetId())
+		self.golabel.Hide()
+		self.gopicture = wx.StaticBitmap(self.panel)
+		self.gopicture.SetBitmap(wx.Bitmap('W_75.png'))
+		
+		self.gochoosecmd = wx.Button(self.panel, wx.ID_ANY, 'Manage GO...')
+		self.gobox.Add(self.golabel,flag=wx.ALL|wx.CENTER, border = 8)
+		self.gobox.Add(self.gochoosecmd,flag=wx.ALL|wx.CENTER, border = 8)
+		self.gobox.Add(self.gopicture,flag=wx.ALL|wx.CENTER, border = 8)
+		self.Bind(wx.EVT_BUTTON, self.OnGOBrowse, id=self.gochoosecmd.GetId())
 		
 #		---------------------------------------------------------------------------
 		## Annotation Corpus File Chooser
-		self.acboxline = wxStaticBox(self.panel, wxID_ANY, 'Annotation Corpus')
-		self.acbox = wxStaticBoxSizer(self.acboxline, wxHORIZONTAL)
-		self.aclabel = wxStaticText(self.panel, label = 'Not loaded')
+		self.acboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Annotation Corpus')
+		self.acbox = wx.StaticBoxSizer(self.acboxline, wx.HORIZONTAL)
+		self.aclabel = wx.StaticText(self.panel, label = 'Not loaded')
 		self.aclabel.SetFont(self.font)
-		self.acchoosecmd = wxButton(self.panel, wxID_ANY, 'Manage AC...')
+		self.aclabel.Hide()
+		self.acpicture = wx.StaticBitmap(self.panel)
+		self.acpicture.SetBitmap(wx.Bitmap('W_75.png'))
+		self.acchoosecmd = wx.Button(self.panel, wx.ID_ANY, 'Manage AC...')
 		#self.acchoosecmd.Disable()
-		self.acbox.Add(self.aclabel, flag=wxALL|wxCENTER, border = 8)
-		self.acbox.Add(self.acchoosecmd, flag=wxALL|wxCENTER, border = 8)
-		self.Bind(EVT_BUTTON, self.OnACBrowse, id=self.acchoosecmd.GetId())
+		self.acbox.Add(self.aclabel, flag=wx.ALL|wx.CENTER, border = 8)
+		self.acbox.Add(self.acchoosecmd, flag=wx.ALL|wx.CENTER, border = 8)
+		self.acbox.Add(self.acpicture,flag=wx.ALL|wx.CENTER, border = 8)
+		self.Bind(wx.EVT_BUTTON, self.OnACBrowse, id=self.acchoosecmd.GetId())
 		
 #		---------------------------------------------------------------------------
-		self.goacbox.Add ( ( 0, 0 ), 1, wxEXPAND )
-		self.goacbox.Add(self.gobox, flag=wxEXPAND, border=5)
-		self.goacbox.Add ( ( 0, 0 ), 1, wxEXPAND )
-		self.goacbox.Add(self.acbox, flag=wxEXPAND, border=5)
-		self.goacbox.Add ( ( 0, 0 ), 1, wxEXPAND )
+		self.goacbox.Add ( ( 0, 0 ), 1, wx.EXPAND )
+		self.goacbox.Add(self.gobox, flag=wx.EXPAND, border=5)
+		self.goacbox.Add ( ( 0, 0 ), 1, wx.EXPAND )
+		self.goacbox.Add(self.acbox, flag=wx.EXPAND, border=5)
+		self.goacbox.Add ( ( 0, 0 ), 1, wx.EXPAND )
 
 #----------------------------------------------------------------------------------------------------------------------------------
 		## Operation Section
-		self.operationboxline = wxStaticBox(self.panel, wxID_ANY, 'Operation')
-		self.operationbox = wxStaticBoxSizer(self.operationboxline, wxVERTICAL)
+		self.operationboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Operation')
+		self.operationbox = wx.StaticBoxSizer(self.operationboxline, wx.HORIZONTAL)
+		self.oppicture = wx.StaticBitmap(self.panel)
+		self.oppicture.SetBitmap(wx.Bitmap('W_75.png'))
+		#self.queryoutputctrlbox.Add(self.qocpicture,flag=wx.ALL|wx.CENTER, border = 8)
 		self.Operationgui = OperationGui.OperationGui(self)
+		self.operationbox.Add(self.oppicture,flag=wx.ALL|wx.CENTER, border = 8)
 
 #----------------------------------------------------------------------------------------------------------------------------------
 		## Query and output Sections
-		self.queryoutputctrlbox = wxBoxSizer(wxHORIZONTAL)
+		self.queryoutputctrlbox = wx.BoxSizer(wx.HORIZONTAL)
+		#self.qocpicture = wx.StaticBitmap(self.panel)
+		#self.qocpicture.SetBitmap(wx.Bitmap('W_75.png'))
+		#self.queryoutputctrlbox.Add(self.qocpicture,flag=wx.ALL|wx.CENTER, border = 8)
 #----------------------------------------------------------------------------------
 		## Query Chooser
-		self.queryboxline = wxStaticBox(self.panel, wxID_ANY, 'Query pairs')
-		self.querybox = wxStaticBoxSizer(self.queryboxline, wxVERTICAL)
+		self.queryboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Query pairs')
+		self.querybox = wx.StaticBoxSizer(self.queryboxline, wx.HORIZONTAL)
 		self.Querygui = QueryGui.QueryGui(self)
+		self.qpicture = wx.StaticBitmap(self.panel)
+		self.qpicture.SetBitmap(wx.Bitmap('W_75.png'))
+		self.querybox.Add(self.qpicture,flag=wx.ALL|wx.CENTER, border = 8)
 #----------------------------------------------------------------------------------
 		## Output Chooser
-		self.outputctrlboxline = wxStaticBox(self.panel, wxID_ANY, 'Output format')
-		self.outputctrlbox = wxStaticBoxSizer(self.outputctrlboxline, wxVERTICAL)
+		self.superoutputctrlboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Output format')
+		self.superoutputctrlbox = wx.StaticBoxSizer(self.superoutputctrlboxline, wx.HORIZONTAL)
+		self.outputctrlboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Output format')
+		self.outputctrlbox = wx.StaticBoxSizer(self.outputctrlboxline, wx.VERTICAL)
+		self.superoutputctrlbox.Add(self.outputctrlbox,flag=wx.ALL|wx.CENTER, border = 8)
 		self.OutputCrtlgui = OutputCtrlGui.OutputCtrlGui(self)
+		self.opicture = wx.StaticBitmap(self.panel)
+		self.opicture.SetBitmap(wx.Bitmap('W_75.png'))
+		self.superoutputctrlbox.Add(self.opicture,flag=wx.ALL|wx.CENTER, border = 8)
+		
 #----------------------------------------------------------------------------------
-		self.queryoutputctrlbox.Add(self.querybox, flag=wxEXPAND, border=5)
-		self.queryoutputctrlbox.Add(self.outputctrlbox, flag=wxEXPAND, border=5)
+		self.queryoutputctrlbox.Add(self.querybox, flag=wx.EXPAND, border=5)
+		self.queryoutputctrlbox.Add(self.superoutputctrlbox, flag=wx.EXPAND, border=5)
 		
 #----------------------------------------------------------------------------------------------------------------------------------
 		## Control and output Section 
-		self.interactionboxline = wxStaticBox(self.panel, wxID_ANY, 'Controls and Output')
-		self.interactionbox = wxStaticBoxSizer(self.interactionboxline, wxHORIZONTAL)
+		self.interactionboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Controls and Output')
+		self.interactionbox = wx.StaticBoxSizer(self.interactionboxline, wx.HORIZONTAL)
 		
 #----------------------------------------------------------------------------------
 		#Control zone
-		self.commandlogbox = wxBoxSizer(wxVERTICAL)
-		self.commandbox = wxBoxSizer(wxHORIZONTAL)
-		self.gocmd = wxButton(self.panel, wxID_ANY, 'Start')
-		self.exitcmd = wxButton(self.panel, wxID_ANY, 'Exit')
+		self.commandlogbox = wx.BoxSizer(wx.VERTICAL)
+		self.commandbox = wx.BoxSizer(wx.HORIZONTAL)
+		self.gocmd = wx.Button(self.panel, wx.ID_ANY, 'Start')
+		self.exitcmd = wx.Button(self.panel, wx.ID_ANY, 'Exit')
 		self.commandbox.Add(self.gocmd)
 		self.commandbox.Add(self.exitcmd)
-		self.Bind(EVT_BUTTON, self.OnGoCmd, id=self.gocmd.GetId())
-		self.Bind(EVT_BUTTON, self.OnExitCmd, id=self.exitcmd.GetId())
+		self.Bind(wx.EVT_BUTTON, self.OnGoCmd, id=self.gocmd.GetId())
+		self.Bind(wx.EVT_BUTTON, self.OnExitCmd, id=self.exitcmd.GetId())
 		
 #----------------------------------------------------------------------------------
 		#Log zone
-		self.logboxline = wxStaticBox(self.panel, wxID_ANY, 'Log')
-		self.logbox = wxStaticBoxSizer(self.logboxline, wxVERTICAL)
-		self.logfield = wxTextCtrl(self.panel, size=(300,120), style = wxTE_MULTILINE|wxTE_READONLY|wxTE_AUTO_URL)
-		self.logbox.Add(self.logfield, flag=wxEXPAND)
+		self.logboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Log')
+		self.logbox = wx.StaticBoxSizer(self.logboxline, wx.VERTICAL)
+		self.logfield = wx.TextCtrl(self.panel, size=(300,120), style = wx.TE_MULTILINE|wx.TE_READONLY|wx.TE_AUTO_URL)
+		self.logbox.Add(self.logfield, flag=wx.EXPAND)
 		
-		self.commandlogbox.Add(self.commandbox, flag=wxEXPAND)
-		self.commandlogbox.Add(self.logbox, flag=wxEXPAND)
+		self.commandlogbox.Add(self.commandbox, flag=wx.EXPAND)
+		self.commandlogbox.Add(self.logbox, flag=wx.EXPAND)
 #----------------------------------------------------------------------------------
 		#Output zone
-		self.outputline = wxStaticBox(self.panel, wxID_ANY, 'Output')
-		self.outputbox = wxStaticBoxSizer(self.outputline, wxHORIZONTAL)
-		self.outputfield = wxTextCtrl(self.panel, size=(350,150), style = wxTE_MULTILINE|wxTE_READONLY)
-		self.outputbox.Add(self.outputfield, flag=wxEXPAND)
+		self.outputline = wx.StaticBox(self.panel, wx.ID_ANY, 'Output')
+		self.outputbox = wx.StaticBoxSizer(self.outputline, wx.HORIZONTAL)
+		self.outputfield = wx.TextCtrl(self.panel, size=(350,150), style = wx.TE_MULTILINE|wx.TE_READONLY)
+		self.outputbox.Add(self.outputfield, flag=wx.EXPAND)
 		
 #----------------------------------------------------------------------------------
-		self.interactionbox.Add(self.commandlogbox, flag=wxEXPAND|wxCENTER|wxTOP, border=10)
-		#self.interactionbox.Add(self.logbox, flag=wxEXPAND|wxCENTER|wxALL, border=10)
-		self.interactionbox.Add(self.outputbox, flag=wxEXPAND|wxCENTER|wxALL, border=10)
+		self.interactionbox.Add(self.commandlogbox, flag=wx.EXPAND|wx.CENTER|wx.TOP, border=10)
+		#self.interactionbox.Add(self.logbox, flag=wx.EXPAND|wx.CENTER|wx.ALL, border=10)
+		self.interactionbox.Add(self.outputbox, flag=wx.EXPAND|wx.CENTER|wx.ALL, border=10)
 
 #----------------------------------------------------------------------------------------------------------------------------------
 		## Put everything together
-		self.mainbox.Add(self.goacbox, 0, flag=wxEXPAND)
-		self.mainbox.Add(self.operationbox, flag=wxEXPAND, border=5)
-		self.mainbox.Add(self.queryoutputctrlbox, flag=wxEXPAND, border=5)
-		self.mainbox.Add(self.interactionbox, flag=wxEXPAND|wxCENTER|wxALL, border=5)
+		self.mainbox.Add(self.goacbox, 0, flag=wx.EXPAND)
+		self.mainbox.Add(self.operationbox, flag=wx.EXPAND, border=5)
+		self.mainbox.Add(self.queryoutputctrlbox, flag=wx.EXPAND, border=5)
+		self.mainbox.Add(self.interactionbox, flag=wx.EXPAND|wx.CENTER|wx.ALL, border=5)
 		self.panel.SetSizerAndFit(self.mainbox)
 
 #----------------------------------------------------------------------------------------------------------------------------------
@@ -272,7 +299,8 @@ class fastSemSimGui(wxFrame):
 			for i in range(0,len(self.query)):
 				for j in range(i+1, len(self.query)):
 					test = self.ssobject.SemSim(self.query[i],self.query[j], self.selectedGO)
-					test = str('%.4f' %test)
+					if type(test) is float:
+						test = str('%.4f' %test)
 					if self.output_type == 0:
 						self.outputfield.AppendText(str(self.query[i]) + "\t" + str(self.query[j]) + "\t" + str(test) + "\n")
 					else:
@@ -389,7 +417,7 @@ class fastSemSimGui(wxFrame):
 		return True
 
 if __name__ == "__main__":
-	app = wxApp()
+	app = wx.App()
 	window = fastSemSimGui(None)
 	window.Centre()
 	window.Show()  

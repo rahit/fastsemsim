@@ -33,7 +33,7 @@ import math
 class TermSemSim:
 	P_TSS = "Pairwise"
 	G_TSS = "Groupwise"
-	SS_type = P_TSS
+	SS_type = None
 	IC_based = False
 
 	def __init__(self, ac, go, util = None):
@@ -122,8 +122,8 @@ class TermSemSim:
 		return self.int_SemSim(id1, id2)
 
 	def int_SemSim(self, term1, term2):
-		gene1anc = self.util.ancestors[term1]
-		gene2anc = self.util.ancestors[term2]
+		#gene1anc = self.util.ancestors[term1]
+		#gene2anc = self.util.ancestors[term2]
 		return None
 
 #if __name__ == "__main__":

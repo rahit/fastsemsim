@@ -18,7 +18,8 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-from wxPython.wx import *
+#from wx.Python.wx import *
+import wx
 from GO import GeneOntology
 from GO import AnnotationCorpus
 #from SSmeasures import *
@@ -30,64 +31,64 @@ class QueryGui:
 	
 	def InitUI(self):
 		self.parentobj.query_ok = True
-		#self.Bind(EVT_CLOSE, self.OnQuit, id=self.GetId())
-		#font = wxSystemSettings_GetFont(wxSYS_SYSTEM_FONT)
+		#self.Bind(wx.EVT_CLOSE, self.OnQuit, id=self.GetId())
+		#font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
 		#font.SetPointSize(9)
         
-		#self.panel = wxPanel(self)
+		#self.panel = wx.Panel(self)
 		self.mainbox = self.parentobj.querybox
 		self.panel = self.parentobj.panel
 
 		#Pairs section
-		self.mainsubbox = wxBoxSizer(wxHORIZONTAL)
+		self.mainsubbox = wx.BoxSizer(wx.HORIZONTAL)
 		
 		#Pairs input type
-		self.listchooserboxline = wxStaticBox(self.panel, wxID_ANY, 'Input format')
-		self.listchooserbox = wxStaticBoxSizer(self.listchooserboxline, wxHORIZONTAL)
+		self.listchooserboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Input format')
+		self.listchooserbox = wx.StaticBoxSizer(self.listchooserboxline, wx.HORIZONTAL)
 		self.pairinputtypes = ['pairs','list']
-		self.radio_pairs = wxRadioButton(self.panel, wxID_ANY, self.pairinputtypes[0], (10, 10), style=wxRB_GROUP)
-		self.radio_list = wxRadioButton(self.panel, wxID_ANY, self.pairinputtypes[1], (10, 10))
-		self.listchooserbox.Add(self.radio_pairs,wxEXPAND)
-		self.listchooserbox.Add(self.radio_list,wxEXPAND)
-		self.parentobj.Bind(EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_pairs.GetId())
-		self.parentobj.Bind(EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_list.GetId())
+		self.radio_pairs = wx.RadioButton(self.panel, wx.ID_ANY, self.pairinputtypes[0], (10, 10), style=wx.RB_GROUP)
+		self.radio_list = wx.RadioButton(self.panel, wx.ID_ANY, self.pairinputtypes[1], (10, 10))
+		self.listchooserbox.Add(self.radio_pairs,wx.EXPAND)
+		self.listchooserbox.Add(self.radio_list,wx.EXPAND)
+		self.parentobj.Bind(wx.EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_pairs.GetId())
+		self.parentobj.Bind(wx.EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_list.GetId())
 		self.parentobj.query_type = 0
 		
 		#Pairs input src
-		self.listsrcboxline = wxStaticBox(self.panel, wxID_ANY, 'Query')
-		self.listsrcbox = wxStaticBoxSizer(self.listsrcboxline, wxHORIZONTAL)
-		self.inputfield = wxTextCtrl(self.panel, size=(200,150), style = wxTE_MULTILINE)
-		#self.parentobj.Bind(wxEVT_COMMAND_TEXT_UPDATED, self.OnTextChange(), self.inputfield.GetId())
+		self.listsrcboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Query')
+		self.listsrcbox = wx.StaticBoxSizer(self.listsrcboxline, wx.HORIZONTAL)
+		self.inputfield = wx.TextCtrl(self.panel, size=(200,150), style = wx.TE_MULTILINE)
+		#self.parentobj.Bind(wx.wx.EVT_COMMAND_TEXT_UPDATED, self.OnTextChange(), self.inputfield.GetId())
 		self.listsrcbox.Add(self.inputfield)
 		
-		self.inputcommands = wxBoxSizer(wxVERTICAL)
-		self.clear = wxButton(self.panel, wxID_ANY, 'Clear')
-		self.filechooser = wxButton(self.panel, wxID_ANY, 'Load from file...')
+		self.inputcommands = wx.BoxSizer(wx.VERTICAL)
+		self.clear = wx.Button(self.panel, wx.ID_ANY, 'Clear')
+		self.filechooser = wx.Button(self.panel, wx.ID_ANY, 'Load from file...')
 
-		self.fromaccmd = wxCheckBox(self.panel, wxID_ANY, 'From Annotation Corpus', (10,10))
-		#self.fromfile = wxCheckBox(self.panel, wxID_ANY, 'From File', (10,10))
-		self.parentobj.Bind(EVT_CHECKBOX, self.OnFromAC, id=self.fromaccmd.GetId())
-		#self.parentobj.Bind(EVT_CHECKBOX, self.OnFromFile, id=self.fromfile.GetId())
+		self.fromaccmd = wx.CheckBox(self.panel, wx.ID_ANY, 'From Annotation Corpus', (10,10))
+		#self.fromfile = wx.CheckBox(self.panel, wx.ID_ANY, 'From File', (10,10))
+		self.parentobj.Bind(wx.EVT_CHECKBOX, self.OnFromAC, id=self.fromaccmd.GetId())
+		#self.parentobj.Bind(wx.EVT_CHECKBOX, self.OnFromFile, id=self.fromfile.GetId())
 		self.fromaccmd.SetValue(False)
 		self.fromaccmd.Disable()
 		#self.fromfile.Hide()
 		
-		self.parentobj.Bind(EVT_BUTTON, self.OnClear, id=self.clear.GetId())
-		self.parentobj.Bind(EVT_BUTTON, self.OnFileBrowse, id=self.filechooser.GetId())
-		self.inputcommands.Add(self.listchooserbox, flag=wxBOTTOM|wxTOP, border=10)
+		self.parentobj.Bind(wx.EVT_BUTTON, self.OnClear, id=self.clear.GetId())
+		self.parentobj.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.filechooser.GetId())
+		self.inputcommands.Add(self.listchooserbox, flag=wx.BOTTOM|wx.TOP, border=10)
 		self.inputcommands.Add(self.fromaccmd)
 		#self.inputcommands.Add(self.fromfile)
 		self.inputcommands.Add(self.filechooser)
 		self.inputcommands.Add(self.clear)
 		
-		self.mainsubbox.Add(self.listsrcbox, flag=wxEXPAND|wxLEFT|wxRIGHT|wxTOP, border=10)
-		self.mainsubbox.Add(self.inputcommands, flag=wxEXPAND|wxLEFT|wxRIGHT|wxTOP, border=10)
+		self.mainsubbox.Add(self.listsrcbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+		self.mainsubbox.Add(self.inputcommands, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 #------------------------------------------------------------------------------------------------------------------
-		self.mainbox.Add(self.mainsubbox, flag=wxEXPAND)
+		self.mainbox.Add(self.mainsubbox, flag=wx.EXPAND)
 #------------------------------------------------------------------------------------------------------------------
 	def OnFileBrowse(self, event):
-		dialog = wxFileDialog(None, style = wxOPEN)
-		if dialog.ShowModal() == wxID_OK:
+		dialog = wx.FileDialog(None, style = wx.OPEN)
+		if dialog.ShowModal() == wx.ID_OK:
 			self.parentobj.query_file = dialog.GetPath()
 			self.inputfield.Disable()
 			self.parentobj.query_from_ac = False

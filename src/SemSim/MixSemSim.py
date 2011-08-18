@@ -22,9 +22,6 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 This class provides the prototype for a generic mixing strategy for pairwise Terms Protein Semantic Similarity measures (mixSS)
 """
 
-#from GO import AnnotationCorpus
-#from GO import GeneOntology
-#from SemSimUtils import *
 import sys
 import os
 import math
@@ -59,9 +56,8 @@ class MixSemSim:
 		for i in lset1:
 			for j in lset2:
 				temp_scores.append((i, j, TSS.SemSim(i,j)))
-		#print(temp_scores
 		return self.int_SemSim(temp_scores)
 
 	def int_SemSim(self, scores):
-		print("No mixing strategy selected!")
-		return -1
+		raise "No mixing strategy selected."
+		return None

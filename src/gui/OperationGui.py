@@ -18,7 +18,8 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-from wxPython.wx import *
+#from wx.Python.wx import *
+import wx
 from GO import GeneOntology
 from GO import AnnotationCorpus
 #from SSmeasures import *
@@ -36,64 +37,64 @@ class OperationGui:
 		self.panel = self.parentobj.panel
 #------------------------------------------------------------------------------------------------------------------
 		#SS section
-		self.mainsubbox = wxBoxSizer(wxHORIZONTAL)
+		self.mainsubbox = wx.BoxSizer(wx.HORIZONTAL)
 		
 		# SSbox
-		self.ssboxline = wxStaticBox(self.panel, wxID_ANY, 'Semantic Similarity')
-		self.ssbox = wxStaticBoxSizer(self.ssboxline, wxHORIZONTAL)
+		self.ssboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Semantic Similarity')
+		self.ssbox = wx.StaticBoxSizer(self.ssboxline, wx.HORIZONTAL)
 		
 		# SSbox - SS
-		self.tsbox = wxBoxSizer(wxVERTICAL)
+		self.tsbox = wx.BoxSizer(wx.VERTICAL)
 		self.availablemeasures = []
 		self.requiremixing = []
 		for i in SemSimMeasures.SemSimMeasures:
 			self.availablemeasures.append(i[0])
 			self.requiremixing.append(i[1])
-		self.ss = wxComboBox(self.panel, wxID_ANY, choices=self.availablemeasures, style=wxCB_READONLY)
-		self.ss_label = wxStaticText(self.panel, label='Semantic Measure')
-		self.tsbox.Add(self.ss_label, flag=wxUP|wxDOWN|wxLEFT|wxRIGHT, border=5)
-		self.tsbox.Add(self.ss, flag=wxLEFT|wxRIGHT, border=10)
+		self.ss = wx.ComboBox(self.panel, wx.ID_ANY, choices=self.availablemeasures, style=wx.CB_READONLY)
+		self.ss_label = wx.StaticText(self.panel, label='Semantic Measure')
+		self.tsbox.Add(self.ss_label, flag=wx.UP|wx.DOWN|wx.LEFT|wx.RIGHT, border=5)
+		self.tsbox.Add(self.ss, flag=wx.LEFT|wx.RIGHT, border=10)
 
 		# SSbox - MS
-		self.msbox = wxBoxSizer(wxVERTICAL)
+		self.msbox = wx.BoxSizer(wx.VERTICAL)
 		self.availablemixing = []
 		for i in SemSimMeasures.MixingStrategies:
 			self.availablemixing.append(i[0])
-		self.mixing = wxComboBox(self.panel, wxID_ANY, choices=self.availablemixing, style=wxCB_READONLY)
-		self.mixing_label = wxStaticText(self.panel, label='Mixing Strategy')
-		self.msbox.Add(self.mixing_label, flag=wxUP|wxDOWN|wxLEFT|wxRIGHT, border=5)
-		self.msbox.Add(self.mixing, flag=wxLEFT|wxRIGHT, border=10)
+		self.mixing = wx.ComboBox(self.panel, wx.ID_ANY, choices=self.availablemixing, style=wx.CB_READONLY)
+		self.mixing_label = wx.StaticText(self.panel, label='Mixing Strategy')
+		self.msbox.Add(self.mixing_label, flag=wx.UP|wx.DOWN|wx.LEFT|wx.RIGHT, border=5)
+		self.msbox.Add(self.mixing, flag=wx.LEFT|wx.RIGHT, border=10)
 		self.mixing.Disable()
 		
 		# GObox
-		self.goboxline = wxStaticBox(self.panel, wxID_ANY, 'Ontology')
-		self.gobox = wxStaticBoxSizer(self.goboxline, wxVERTICAL)
-		#self.go_label = wxStaticText(self.panel, label='Ontology')
+		self.goboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Ontology')
+		self.gobox = wx.StaticBoxSizer(self.goboxline, wx.VERTICAL)
+		#self.go_label = wx.StaticText(self.panel, label='Ontology')
 		self.gos = ['Molecular Function','Biological Process','Cellular Component']
 		self.gocodes = ['MF','BP','CC']
 		self.goradius = []
-		self.goradius.append(wxRadioButton(self.panel, wxID_ANY, self.gos[0], (10, 10), style=wxRB_GROUP))
-		self.goradius.append(wxRadioButton(self.panel, wxID_ANY, self.gos[1], (10, 10)))
-		self.goradius.append(wxRadioButton(self.panel, wxID_ANY, self.gos[2], (10, 10)))
+		self.goradius.append(wx.RadioButton(self.panel, wx.ID_ANY, self.gos[0], (10, 10), style=wx.RB_GROUP))
+		self.goradius.append(wx.RadioButton(self.panel, wx.ID_ANY, self.gos[1], (10, 10)))
+		self.goradius.append(wx.RadioButton(self.panel, wx.ID_ANY, self.gos[2], (10, 10)))
 		self.parentobj.selectedGO = self.gocodes[0]
 		#self.gobox.Add(self.go_label)
 		for i in self.goradius:
 			self.gobox.Add(i)
 		
-		#self.ssbox.Add(self.hint, flag=wxEXPAND|wxALL, border=10)
-		self.ssbox.Add(self.tsbox, flag=wxEXPAND)
-		self.ssbox.Add(self.msbox, flag=wxEXPAND)
-		self.mainsubbox.Add(self.ssbox, flag=wxEXPAND|wxLEFT|wxRIGHT|wxTOP, border=10)
-		self.mainsubbox.Add(self.gobox, flag=wxEXPAND|wxLEFT|wxRIGHT|wxTOP, border=10)
+		#self.ssbox.Add(self.hint, flag=wx.EXPAND|wx.ALL, border=10)
+		self.ssbox.Add(self.tsbox, flag=wx.EXPAND)
+		self.ssbox.Add(self.msbox, flag=wx.EXPAND)
+		self.mainsubbox.Add(self.ssbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+		self.mainsubbox.Add(self.gobox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 		
-		self.parentobj.Bind(EVT_COMBOBOX, self.OnSelectSS, id=self.ss.GetId())
-		self.parentobj.Bind(EVT_COMBOBOX, self.OnSelectMS, id=self.mixing.GetId())
+		self.parentobj.Bind(wx.EVT_COMBOBOX, self.OnSelectSS, id=self.ss.GetId())
+		self.parentobj.Bind(wx.EVT_COMBOBOX, self.OnSelectMS, id=self.mixing.GetId())
 		for i in self.goradius:
-			self.parentobj.Bind(EVT_RADIOBUTTON, self.OnSelectGO, id=i.GetId())
+			self.parentobj.Bind(wx.EVT_RADIOBUTTON, self.OnSelectGO, id=i.GetId())
 
 #------------------------------------------------------------------------------------------------------------------
-		self.mainbox.Add(self.mainsubbox, flag=wxEXPAND)
-		#self.mainbox.Add(self.mainsubbox2, flag=wxEXPAND)
+		self.mainbox.Add(self.mainsubbox, flag=wx.EXPAND)
+		#self.mainbox.Add(self.mainsubbox2, flag=wx.EXPAND)
 		#self.panel.SetSizerAndFit(self.mainbox)
 #------------------------------------------------------------------------------------------------------------------
 	def OnSelectGO(self, event):
