@@ -42,7 +42,7 @@ class OutputCtrlGui():
 		self.parentobj.Bind(wx.EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_field.GetId())
 		self.parentobj.Bind(wx.EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_file.GetId())
 		self.parentobj.output_type = 0
-		self.parentobj.output_ok = True
+		self.parentobj.SetOutputCtrlOk(True)
 
 		self.commandsline  = wx.StaticBox(self.panel, wx.ID_ANY, 'Output file')
 		self.commands = wx.StaticBoxSizer(self.commandsline, wx.VERTICAL)
@@ -63,17 +63,17 @@ class OutputCtrlGui():
 		if dialog.ShowModal() == wx.ID_OK:
 			self.parentobj.output_file = dialog.GetPath()
 			self.outputlabel.SetLabel(self.parentobj.output_file)
-			self.parentobj.output_ok = True
+			self.parentobj.SetOutputCtrlOk(True)
 			#self.parentobj.mainbox.Fit()
 
 	def OnTypeSelect(self, event):
 		if self.radio_field.GetValue():
 			self.parentobj.output_type = 0 # text field
 			self.filechooser.Disable()
-			self.parentobj.output_ok = True
+			self.parentobj.SetOutputCtrlOk(True)
 			#self.fromaccmd.Disable()
 		elif self.radio_file.GetValue():
 			self.parentobj.output_type = 1 # file 
 			if self.parentobj.output_file == None:
-				self.parentobj.output_ok = False
+				self.parentobj.SetOutputCtrlOk(False)
 			self.filechooser.Enable()

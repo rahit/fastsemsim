@@ -111,6 +111,8 @@ class ObjSemSim:
 	def int_SemSim(self, term1, term2):
 		if term1 is None or term2 is None or len(term1) == 0 or len(term2) == 0:
 			return None
+		#print self.TSS
+		#print self.TSS.SS_type
 		if self.TSS.SS_type is self.TSS.P_TSS:
 			sscore = self.mixSS.SemSim(term1, term2, self.TSS)
 		elif self.TSS.SS_type is self.TSS.G_TSS:

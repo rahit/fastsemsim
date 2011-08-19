@@ -120,6 +120,7 @@ class GOAAnnotationCorpus():
 			#if trueclass.SHOW_PROCESS and (lines_counter%(filenum/20)==0):
 				#print("Lines processed: " + str(lines_counter) + " on " + str(filenum) + " (" + str(int(100*float(lines_counter)/float(filenum))) + "%)")
 		stream.close()
+		return True
 
 #if __name__ == "__main__":
 	#tree = GeneOntology.load_GO_XML(open(sys.argv[1]))

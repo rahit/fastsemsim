@@ -18,15 +18,17 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-#from wx.Python.wx import *
 import wx
 from GO import GeneOntology
 from GO import AnnotationCorpus
-#from SSmeasures import *
-#from SemSim import ObjSemSim
 from SemSim import SemSimMeasures
 
 class OperationGui:
+
+	availablemeasures = []
+	requiremixing = []
+	availablemixing = []
+		
 	def __init__(self, parent):
 		self.parentobj = parent
 		self.InitUI()
@@ -48,7 +50,7 @@ class OperationGui:
 		self.availablemeasures = []
 		self.requiremixing = []
 		for i in SemSimMeasures.SemSimMeasures:
-			self.availablemeasures.append(i[0])
+			self.availablemeasures.append(i)
 			self.requiremixing.append(i[1])
 		self.ss = wx.ComboBox(self.panel, wx.ID_ANY, choices=self.availablemeasures, style=wx.CB_READONLY)
 		self.ss_label = wx.StaticText(self.panel, label='Semantic Measure')
@@ -59,7 +61,7 @@ class OperationGui:
 		self.msbox = wx.BoxSizer(wx.VERTICAL)
 		self.availablemixing = []
 		for i in SemSimMeasures.MixingStrategies:
-			self.availablemixing.append(i[0])
+			self.availablemixing.append(i)
 		self.mixing = wx.ComboBox(self.panel, wx.ID_ANY, choices=self.availablemixing, style=wx.CB_READONLY)
 		self.mixing_label = wx.StaticText(self.panel, label='Mixing Strategy')
 		self.msbox.Add(self.mixing_label, flag=wx.UP|wx.DOWN|wx.LEFT|wx.RIGHT, border=5)
@@ -103,18 +105,27 @@ class OperationGui:
 				self.parentobj.selectedGO = self.gocodes[i]
 		
 	def OnSelectMS(self, event):
-		self.parentobj.mixingstrategy = SemSimMeasures.MixingStrategies[self.mixing.GetSelection()][0]
-		self.ok = True
+		#self.parentobj.mixingstrategy = SemSimMeasures.MixingStrategies[self.availablemixing[self.mixing.GetSelection()]]
+		self.parentobj.mixingstrategy = self.availablemixing[self.mixing.GetSelection()]
+		#print self.parentobj.mixingstrategy
+		#self.ok = True
 		self.parentobj.update_ssobject = True
+		if self.parentobj.ssmeasure is None:
+			self.parentobj.SetOperationOk(False)
+		else:
+			self.parentobj.SetOperationOk(True)
 		
 	def OnSelectSS(self, event):
 		self.ssmeasure = self.ss.GetSelection()
-		self.parentobj.ssmeasure = SemSimMeasures.SemSimMeasures[self.ss.GetSelection()][0]
+		#self.parentobj.ssmeasure = SemSimMeasures.SemSimMeasures[self.availablemeasures[self.ss.GetSelection()]]
+		self.parentobj.ssmeasure = self.availablemeasures[self.ss.GetSelection()]
+		#print self.parentobj.ssmeasure
 		self.parentobj.update_ssobject = True
 		#print SSmeasures[self.ss.GetSelection()]
-		if SemSimMeasures.SemSimMeasures[self.ss.GetSelection()][1]:
+		if SemSimMeasures.SemSimMeasures[self.availablemeasures[self.ss.GetSelection()]][1]:
 			self.mixing.Enable()
-			self.parentobj.operation_ok = False
+			if self.parentobj.mixingstrategy is None:
+				self.parentobj.SetOperationOk(False)
 		else:
 			self.mixing.Disable()
-			self.parentobj.operation_ok = True
+			self.parentobj.SetOperationOk(True)

@@ -52,7 +52,7 @@ class QueryGui:
 		self.listchooserbox.Add(self.radio_list,wx.EXPAND)
 		self.parentobj.Bind(wx.EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_pairs.GetId())
 		self.parentobj.Bind(wx.EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_list.GetId())
-		self.parentobj.query_type = 0
+		self.parentobj.query_type = 0 # from field
 		
 		#Pairs input src
 		self.listsrcboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Query')
@@ -89,23 +89,25 @@ class QueryGui:
 	def OnFileBrowse(self, event):
 		dialog = wx.FileDialog(None, style = wx.OPEN)
 		if dialog.ShowModal() == wx.ID_OK:
-			self.parentobj.query_file = dialog.GetPath()
 			self.inputfield.Disable()
-			self.parentobj.query_from_ac = False
-			self.fromaccmd.SetValue(False)
 			self.inputfield.SetValue("Data will be loaded from " + self.parentobj.query_file)
+			self.parentobj.query_from = 1 # from file
+			self.fromaccmd.SetValue(False)
 			self.parentobj.upload_query = True
+			self.parentobj.query_file = dialog.GetPath()
 
 	def OnFromAC(self, event):
 		if self.fromaccmd.GetValue():
 			self.inputfield.Disable()
-			self.parentobj.query_from_ac = True
+			#self.parentobj.query_from_ac = True
+			self.parentobj.query_from = 2 # from ac
 			self.inputfield.SetValue("Data will be loaded from Annotation Corpus")
 			self.parentobj.upload_query = True
 		else:
 			self.inputfield.Enable()
 			self.inputfield.SetValue("")
-			self.parentobj.query_from_ac = False
+			#self.parentobj.query_from_ac = False
+			self.parentobj.query_from = 0 # from field
 			self.parentobj.upload_query = True
 
 	def OnClear(self, event):
@@ -113,15 +115,17 @@ class QueryGui:
 		self.fromaccmd.SetValue(False)
 		self.inputfield.Enable()
 		self.parentobj.query_file = None
-		self.parentobj.query_from_ac = None
+		#self.parentobj.query_from_ac = False
+		self.parentobj.query_from = 0 # field
 		self.parentobj.upload_query = True
 
 	def OnTypeSelect(self, event):
 		self.parentobj.upload_query = True
 		if self.radio_pairs.GetValue():
 			self.parentobj.query_type = 0
-			if self.parentobj.query_from_ac:
+			if self.parentobj.query_from == 2:
 				self.parentobj.query_from_ac = False
+				self.parentobj.query_from = 0
 				self.inputfield.SetValue("")
 				self.inputfield.Enable()
 			self.fromaccmd.Disable()

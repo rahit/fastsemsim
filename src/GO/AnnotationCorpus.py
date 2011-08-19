@@ -205,6 +205,7 @@ class AnnotationCorpus:
 
 	def parse(self, fname, ftype, params=None):
 		if ftype is 'GOA':
+			#print "GOA load"
 			temp = GOAAnnotationCorpus()
 			return temp.parse(fname, self)
 		elif ftype is 'plain':

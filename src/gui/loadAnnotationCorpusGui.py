@@ -148,7 +148,7 @@ class LoadAC(wx.Frame):
 		self.doneb.Disable()
 		self.acload.Disable()
 		self.parentobj.ac = None
-		self.parentobj.ac_ok = False
+		self.parentobj.SetAcOk(False)
 		self.parentobj.update_ac = True
 		self.parentobj.update_ssobject = True
 		self.parentobj.update_query = True
@@ -171,11 +171,11 @@ class LoadAC(wx.Frame):
 					#self.acobjs.SetLabel(str(len(self.ac.annotations)))
 					#self.acterms.SetLabel(str(len(self.ac.reverse_annotations)))
 					self.parentobj.ac = self.ac
-					self.parentobj.ac_ok = True
+					self.parentobj.SetAcOk(True)
 					self.parentobj.update_ac = False
 					self.status_label.SetLabel("Annotation Corpus loaded.")
 					return
-				self.status_label.SetLabel("Failed to load Annotation Corpus.")
+			self.status_label.SetLabel("Failed to load Annotation Corpus.")
 		except:
 			self.status_label.SetLabel("Failed to load Annotation Corpus.")
 				

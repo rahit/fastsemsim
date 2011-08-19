@@ -18,10 +18,8 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-#from wx.Python.wx import *
 import wx
 from GO import GeneOntology
-#from GO import AnnotationCorpus
 
 class LoadGO(wx.Frame):
 	
@@ -34,7 +32,6 @@ class LoadGO(wx.Frame):
 		self.Bind(wx.EVT_CLOSE, self.OnQuit, id=self.GetId())
         
 		panel = wx.Panel(self)
-		#panel.SetBackgroundColour('#4f5049')
 		mainbox = wx.BoxSizer(wx.VERTICAL)
 		descbox = wx.FlexGridSizer(rows = 4, cols = 2, vgap = 6, hgap = 20)
 		commanbox = wx.BoxSizer(wx.HORIZONTAL)
@@ -44,16 +41,15 @@ class LoadGO(wx.Frame):
 		mainbox.Add(descbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 		mainbox.Add(commanbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 
-		
 		# Descbox
-		self.filename_label = wx.StaticText(panel, label='GO File')
+		self.filename_label = wx.StaticText(panel, label='File:')
 		self.filename_label.SetFont(self.parentobj.font)
 		self.filename = wx.StaticText(panel, label='')
-		self.gonodes_label = wx.StaticText(panel, label='Nodes')
+		self.gonodes_label = wx.StaticText(panel, label='Nodes:')
 		self.gonodes_label.SetFont(self.parentobj.font)
 		self.gonodes = wx.StaticText(panel, label='')
 		self.gonodes.SetFont(self.parentobj.font)
-		self.goedges_label = wx.StaticText(panel, label='Edges')
+		self.goedges_label = wx.StaticText(panel, label='Edges:')
 		self.goedges_label.SetFont(self.parentobj.font)
 		self.goedges = wx.StaticText(panel, label='')
 		self.goedges.SetFont(self.parentobj.font)
@@ -94,7 +90,7 @@ class LoadGO(wx.Frame):
 
 
 	def OnGOLoad(self, event):
-		self.parentobj.go_ok = False
+		self.parentobj.SetGoOk(False)
 		self.parentobj.update_ac = True
 		self.parentobj.update_ssobject = True
 		self.tree = GeneOntology.load_GO_XML(open(self.filename.GetLabel(),'r'))
@@ -107,8 +103,7 @@ class LoadGO(wx.Frame):
 			self.status_label.SetLabel("Ontology loaded.")
 			self.parentobj.acchoosecmd.Enable()
 			self.parentobj.go = self.tree
-			self.parentobj.golabel.SetLabel(self.filename.GetLabel())
-			self.parentobj.go_ok = True
+			self.parentobj.SetGoOk(True)
 
 	def OnGOBrowseDone(self, event):
 		self.Hide()
