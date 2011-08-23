@@ -39,11 +39,11 @@ class OperationGui:
 		self.panel = self.parentobj.panel
 #------------------------------------------------------------------------------------------------------------------
 		#SS section
-		self.mainsubbox = wx.BoxSizer(wx.HORIZONTAL)
+		self.mainsubbox = wx.BoxSizer(wx.VERTICAL)
 		
 		# SSbox
 		self.ssboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Semantic Similarity')
-		self.ssbox = wx.StaticBoxSizer(self.ssboxline, wx.HORIZONTAL)
+		self.ssbox = wx.StaticBoxSizer(self.ssboxline, wx.VERTICAL)
 		
 		# SSbox - SS
 		self.tsbox = wx.BoxSizer(wx.VERTICAL)

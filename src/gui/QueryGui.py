@@ -57,7 +57,7 @@ class QueryGui:
 		#Pairs input src
 		self.listsrcboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Query')
 		self.listsrcbox = wx.StaticBoxSizer(self.listsrcboxline, wx.HORIZONTAL)
-		self.inputfield = wx.TextCtrl(self.panel, size=(200,150), style = wx.TE_MULTILINE)
+		self.inputfield = wx.TextCtrl(self.panel, size=(300,120), style = wx.TE_MULTILINE)
 		#self.parentobj.Bind(wx.wx.EVT_COMMAND_TEXT_UPDATED, self.OnTextChange(), self.inputfield.GetId())
 		self.listsrcbox.Add(self.inputfield)
 		
@@ -81,8 +81,9 @@ class QueryGui:
 		self.inputcommands.Add(self.filechooser)
 		self.inputcommands.Add(self.clear)
 		
-		self.mainsubbox.Add(self.listsrcbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+		#self.mainsubbox.Add(self.listsrcbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 		self.mainsubbox.Add(self.inputcommands, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+		self.mainsubbox.Add(self.listsrcbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 #------------------------------------------------------------------------------------------------------------------
 		self.mainbox.Add(self.mainsubbox, flag=wx.EXPAND)
 #------------------------------------------------------------------------------------------------------------------
