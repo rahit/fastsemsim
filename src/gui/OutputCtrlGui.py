@@ -31,10 +31,9 @@ class OutputCtrlGui():
 	def InitUI(self):
 		self.panel = self.parentobj.panel
 		self.mainbox = self.parentobj.outputctrlbox
-		self.commandsbox = wx.BoxSizer(wx.VERTICAL)
 #------------------------------------------------------------------------------------------------------------------
 		self.destinationboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Output destination')
-		self.destinationbox= wx.StaticBoxSizer(self.destinationboxline, wx.VERTICAL)
+		self.destinationbox= wx.StaticBoxSizer(self.destinationboxline, wx.HORIZONTAL)
 		self.outputtypes = ['output field','file']
 		self.radio_field = wx.RadioButton(self.panel, wx.ID_ANY, self.outputtypes[0], (10, 10), style=wx.RB_GROUP)
 		self.radio_file = wx.RadioButton(self.panel, wx.ID_ANY, self.outputtypes[1], (10, 10))
@@ -55,16 +54,8 @@ class OutputCtrlGui():
 		self.commands.Add(self.outputlabel, flag=wx.BOTTOM|wx.TOP, border=10)
 		self.commands.Add(self.filechooser)
 		
-		#Output zone
-		self.outputline = wx.StaticBox(self.parentobj.panel, wx.ID_ANY, 'Output')
-		self.outputbox = wx.StaticBoxSizer(self.outputline, wx.HORIZONTAL)
-		self.parentobj.outputfield = wx.TextCtrl(self.parentobj.panel, size=(450,130), style = wx.TE_MULTILINE|wx.TE_READONLY)
-		self.outputbox.Add(self.parentobj.outputfield, flag=wx.EXPAND)
-		
-		self.commandsbox.Add(self.destinationbox)
-		self.commandsbox.Add(self.commands)
-		self.mainbox.Add(self.commandsbox)
-		self.mainbox.Add(self.outputbox)
+		self.mainbox.Add(self.destinationbox)
+		self.mainbox.Add(self.commands)
 #------------------------------------------------------------------------------------------------------------------
 
 	def OnFileBrowse(self, event):

@@ -21,5 +21,4 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 __author__="Marco Mina"
 __email__="marco.mina.85@gmail.com"
 
-#__all__ = ["fastSemSimGui", "GeneOntologyGui", "AnnotationCorpusGui", "OperationGui", "OutputCtrlGui", "QueryGui"]
-__all__ = ["fastSemSimGui"]
+__all__ = ["fastSemSimGui", "loadGeneOntologyGui", "loadAnnotationCorpusGui", "OperationGui", "OutputCtrlGui", "QueryGui"]
