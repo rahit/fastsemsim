@@ -75,8 +75,8 @@ class fastSemSimGui(wx.Frame):
 	update_ac = True
 	
 	#other data
-	Ok_pic = 'V_75.png'
-	Warning_pic = 'W_75.png'
+	Ok_pic = 'gui/V_75.png'
+	Warning_pic = 'gui/W_75.png'
 	show_pics = True
 	gopicture = None
 	acpicture = None
