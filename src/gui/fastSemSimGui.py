@@ -33,6 +33,7 @@ from gui.StatusGui import StatusGui
 from SemSim import SemSimMeasures
 from SemSim import ObjSemSim
 from gui import WorkThread
+import threading
 
 class fastSemSimGui(wx.Frame):
 	debug = True
@@ -400,6 +401,7 @@ class fastSemSimGui(wx.Frame):
 		# Calculate SS scores
 		self.log_field.AppendText("Evaluating semantic similarity...\n")
 		self.ssthread = WorkThread.WorkThread(self)
+		self.update_event = threading.Event()
 		self.running = True
 		self.ssthread.start()
 		print "Done"
@@ -410,23 +412,37 @@ class fastSemSimGui(wx.Frame):
 #################################################################################################################################
 
 	def OnProgress(self, msg):
+		print "Updating progress bar..."
 		t = msg.data
 		gaugerange = self.progress.GetRange()
 		self.progress.SetValue(t*gaugerange)
-
+		self.OnUpdateDone()
 
 	def OnCompleted(self, msg):
 		t = msg.data
 		self.log_field.AppendText("Completed\n")
 		self.running = False
+		self.OnUpdateDone()
 		
 	def OnOutputData(self, msg):
+		print "Printing output data"
 		t = msg.data
-		self.OutputGui.output_field.AppendText(t)
-		
+		#print t
+		for i in t: #range(t[0], t[1] + 1):
+			#frase = self.ssthread.buffer[i][0] + "\t" + self.ssthread.buffer[i][1] + "\t" + self.ssthread.buffer[i][2] + "\n"
+			frase = str(i[0]) + "\t" + str(i[1]) + "\t" + str(i[2]) + "\n"
+			self.OutputGui.output_field.AppendText(frase)
+		print "Output data printed"
+		self.OnUpdateDone()
+
 	def OnLogData(self, msg):
 		t = msg.data
 		self.log_field.AppendText(t)
+		self.OnUpdateDone()
+		
+	def OnUpdateDone(self):
+		print "Update done"
+		self.update_event.set()
 
 #################################################################################################################################
 

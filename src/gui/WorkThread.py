@@ -21,6 +21,7 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 import wx
 import threading
 import time 
+import copy
 
 
 # events
@@ -56,6 +57,8 @@ class LogDataEvent(wx.PyEvent):
 # Thread
 
 class WorkThread(threading.Thread):
+	MAX_CACHE_SIZE = 5000
+	KEEP_MODE = True
 
 	def __init__(self, gui):
 		threading.Thread.__init__(self)
@@ -76,25 +79,49 @@ class WorkThread(threading.Thread):
 		return
 
 	def sendOutput(self, a, b, c):
-		#self.gui.OutputGui.output_field.AppendText("Preview text. Complete output can be found here: "+str(self.gui.output_file)+".\n")
-		self.buffer = self.buffer + str(a) + "\t" + str(b) + "\t" + str(c) + "\n"
-		if len(self.buffer) > 1000:
-			wx.PostEvent(self.gui, OutputDataEvent(self.buffer))
-			self.buffer = ""
+		self.gui.update_event.clear()
 		#wx.PostEvent(self.gui, LogDataEvent(str(i)))
+		if self.KEEP_MODE:
+			self.last_added += 1
+			self.buffer[self.last_added] = ((str(a),str(b),str(c)))
+			if self.last_added - (self.last_sent + 1) > self.MAX_CACHE_SIZE:
+				temp = self.buffer[self.last_sent+1: self.last_added]
+				temp = copy.deepcopy(temp)
+				#wx.PostEvent(self.gui, OutputDataEvent((self.last_sent+1, self.last_added)))
+				wx.PostEvent(self.gui, OutputDataEvent(temp))
+				#time.sleep(1)
+				print "Before waiting in post event"
+				self.gui.update_event.wait()
+				self.gui.update_event.clear()
+				print "after waiting in post event"
+				self.last_sent = self.last_added
+
+	def flushOutput(self):
+		if self.last_sent == self.last_added:
+			return
+		#wx.PostEvent(self.gui, OutputDataEvent((self.last_sent, self.last_added)))
+		temp = self.buffer[self.last_sent+1: self.last_added]
+		temp = copy.deepcopy(temp)
+		wx.PostEvent(self.gui, OutputDataEvent(temp))
+		self.last_sent = self.last_added
 
 	def writeOutput(self, a, b, c):
 		self.output_file_handle.write(str(a) + "\t" + str(b) + "\t" + str(c) + "\n")
 		return True
 	
 	def run(self):
-		self.buffer = ""
+		self.buffer = None # data will be stored here
 		if self.output_type==1:
 			self.output_file_handle = open(self.output_file, 'w')
 		counter = 0
 		last_percentual = -1
+		self.last_sent = -1
+		self.last_added = -1
 		if self.query_type == 1: # list
 			self.total_number = len(self.query) * (len(self.query)-1) / 2
+			if self.output_type==0:
+				#self.buffer = [(None, None, None)]*self.total_number
+				self.buffer = [None]*self.total_number
 			for i in range(0,len(self.query)):
 				for j in range(i+1, len(self.query)):
 					test = self.ssobject.SemSim(self.query[i],self.query[j], self.selectedGO)
@@ -102,15 +129,22 @@ class WorkThread(threading.Thread):
 					if not int(counter*100/self.total_number) == last_percentual:
 						last_percentual = int(counter*100/self.total_number)
 						wx.PostEvent(self.gui, ProgressEvent(float(counter)/self.total_number))
+						self.gui.update_event.wait()
+						self.gui.update_event.clear()
 					if type(test) is float:
 						test = str('%.4f' %test)
 					if self.output_type == 0:
 						self.sendOutput(str(self.query[i]), str(self.query[j]), str(test))
 					else:
 						self.writeOutput(str(self.query[i]), str(self.query[j]), str(test))
-						self.sendOutput(str(self.query[i]), str(self.query[j]), str(test))
+						#self.sendOutput(str(self.query[i]), str(self.query[j]), str(test))
+			if self.output_type == 0:
+				self.flushOutput()
 		elif self.query_type == 0: # pairs
 			self.total_number = len(self.query)
+			if self.output_type==0:
+				#self.buffer = [(None, None, None)]*self.total_number
+				self.buffer = [None]*self.total_number
 			for i in self.query:
 				test = self.ssobject.SemSim(i[0],i[1], self.selectedGO)
 				counter += 1
@@ -121,7 +155,9 @@ class WorkThread(threading.Thread):
 					self.sendOutput(str(i[0]), str(i[1]), str(test))
 				else:
 					self.writeOutput(str(i[0]), str(i[1]), str(test))
-					self.sendOutput(str(i[0]), str(i[1]), str(test))
+					#self.sendOutput(str(i[0]), str(i[1]), str(test))
+			if self.output_type == 0:
+				self.flushOutput()
 		if self.output_type==1:
 			self.output_file_handle.close()
 		wx.PostEvent(self.gui, CompletedEvent("Completed"))
