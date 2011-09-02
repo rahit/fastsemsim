@@ -36,7 +36,7 @@ class QueryGui:
 		#font.SetPointSize(9)
         
 		#self.panel = wx.Panel(self)
-		self.mainbox = self.parentobj.querybox
+		self.mainbox = self.parentobj.query_box
 		self.panel = self.parentobj.panel
 
 		#Pairs section
@@ -57,7 +57,7 @@ class QueryGui:
 		#Pairs input src
 		self.listsrcboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Query')
 		self.listsrcbox = wx.StaticBoxSizer(self.listsrcboxline, wx.HORIZONTAL)
-		self.inputfield = wx.TextCtrl(self.panel, size=(200,150), style = wx.TE_MULTILINE)
+		self.inputfield = wx.TextCtrl(self.panel, size=(250,150), style = wx.TE_MULTILINE)
 		#self.parentobj.Bind(wx.wx.EVT_COMMAND_TEXT_UPDATED, self.OnTextChange(), self.inputfield.GetId())
 		self.listsrcbox.Add(self.inputfield)
 		
@@ -85,30 +85,30 @@ class QueryGui:
 		self.mainsubbox.Add(self.inputcommands, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 #------------------------------------------------------------------------------------------------------------------
 		self.mainbox.Add(self.mainsubbox, flag=wx.EXPAND)
+		self.parentobj.SetQueryOk(False)
 #------------------------------------------------------------------------------------------------------------------
 	def OnFileBrowse(self, event):
 		dialog = wx.FileDialog(None, style = wx.OPEN)
 		if dialog.ShowModal() == wx.ID_OK:
 			self.inputfield.Disable()
-			self.inputfield.SetValue("Data will be loaded from " + self.parentobj.query_file)
+			self.parentobj.query_file = dialog.GetPath()
+			self.inputfield.SetValue("Data will be loaded from " + str(self.parentobj.query_file))
 			self.parentobj.query_from = 1 # from file
 			self.fromaccmd.SetValue(False)
 			self.parentobj.upload_query = True
-			self.parentobj.query_file = dialog.GetPath()
+		self.CheckIfOk()
 
 	def OnFromAC(self, event):
 		if self.fromaccmd.GetValue():
 			self.inputfield.Disable()
-			#self.parentobj.query_from_ac = True
 			self.parentobj.query_from = 2 # from ac
 			self.inputfield.SetValue("Data will be loaded from Annotation Corpus")
-			self.parentobj.upload_query = True
 		else:
 			self.inputfield.Enable()
 			self.inputfield.SetValue("")
-			#self.parentobj.query_from_ac = False
 			self.parentobj.query_from = 0 # from field
-			self.parentobj.upload_query = True
+		self.parentobj.upload_query = True
+		self.CheckIfOk()
 
 	def OnClear(self, event):
 		self.inputfield.SetValue('')
@@ -118,6 +118,7 @@ class QueryGui:
 		#self.parentobj.query_from_ac = False
 		self.parentobj.query_from = 0 # field
 		self.parentobj.upload_query = True
+		self.CheckIfOk()
 
 	def OnTypeSelect(self, event):
 		self.parentobj.upload_query = True
@@ -133,6 +134,24 @@ class QueryGui:
 		elif self.radio_list.GetValue():
 			self.parentobj.query_type = 1
 			self.fromaccmd.Enable()
+		self.CheckIfOk()
 
 	def OnTextChange(self, event):
 		self.parentobj.upload_query = True
+	
+	def CheckIfOk(self):
+		if self.parentobj.query_from == 2:
+			self.parentobj.SetQueryOk(True)
+		elif self.parentobj.query_from == 0:
+			if self.inputfield.GetValue() == "":
+				self.parentobj.SetQueryOk(False)
+			else:
+			 self.parentobj.SetQueryOk(True)
+		elif self.parentobj.query_from == 1:
+			if self.parentobj.query_file is None:
+				self.parentobj.SetQueryOk(False)
+			else:
+				 self.parentobj.SetQueryOk(True)
+		else:
+			self.parentobj.SetQueryOk(False)
+ 

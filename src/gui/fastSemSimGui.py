@@ -22,27 +22,27 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 import wx
 from GO import GeneOntology
 from GO import AnnotationCorpus
-from gui import loadGeneOntologyGui
-from gui import loadAnnotationCorpusGui
-from gui import OperationGui
-from gui import OutputCtrlGui
-from gui import QueryGui
+from gui.GeneOntologyGui import GeneOntologyGui
+from gui.AnnotationCorpusGui import AnnotationCorpusGui
+from gui.OperationGui import OperationGui
+from gui.OutputCtrlGui import OutputCtrlGui
+from gui.OutputGui import OutputGui
+from gui.ControlGui import ControlGui
+from gui.QueryGui import QueryGui
+from gui.StatusGui import StatusGui
 from SemSim import SemSimMeasures
 from SemSim import ObjSemSim
-#from loadAnnotationCorpusGUI import *
-#from loadGeneOntologyGUI import *
-#from configOperationGUI import *
-#from configOutputGUI import *
-#from pairsGUI import *
+from gui import WorkThread
 
 class fastSemSimGui(wx.Frame):
+	debug = True
 	#Components handles
-	LoadGOgui = None
-	LoadACgui = None
-	Operationgui = None
-	Querygui = None
-	OutputCtrlgui = None
-	Outputgui = None
+	GOGui = None
+	ACGui = None
+	OperationGui = None
+	QueryGui = None
+	OutputCtrlGui = None
+	OutputGui = None
 	
 	#data structures
 	go = None
@@ -68,6 +68,7 @@ class fastSemSimGui(wx.Frame):
 	query_ok = False
 	outputctrl_ok = False
 	operation_ok = False
+	start_cmd = None # main command to start execution
 	
 	#flags signaling whether some structures should be updated
 	update_query = True
@@ -75,370 +76,231 @@ class fastSemSimGui(wx.Frame):
 	update_ac = True
 	
 	#other data
-	Ok_pic = 'gui/V_75.png'
-	Warning_pic = 'gui/W_75.png'
+	Ok_pic = 'gui/V_30.png'
+	Warning_pic = 'gui/W_30.png'
 	show_pics = True
-	gopicture = None
-	acpicture = None
-	qpicture = None
-	ocpicture = None
-	oppicture = None
-	statuspicture = None
-	gocmd = None
+	go_status_pic = None
+	ac_status_pic = None
+	query_status_pic = None
+	outputctrl_status_pic = None
+	output_status_pic = None
+	operation_status_pic = None
+	status_pic = None
+
+	def __init__(self, parent):
+		super(fastSemSimGui, self).__init__(parent, title="fastSemSim - Copyright 2011, Marco Mina (src version)", size=(620,600))
+		self.InitUI()
+		
+	def InitUI(self):
+		self.font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
+		self.font.SetPointSize(9)
+
+		self.panel = wx.Panel(self)
+		self.mainbox = wx.BoxSizer(wx.VERTICAL)
+
+		# Define main regions
+		self.go_boxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Gene Ontology')
+		self.go_box = wx.StaticBoxSizer(self.go_boxline, wx.HORIZONTAL)
+		self.ac_boxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Annotation Corpus')
+		self.ac_box = wx.StaticBoxSizer(self.ac_boxline, wx.HORIZONTAL)
+		self.operation_boxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Semantic Similarity Measure')
+		self.operation_box = wx.StaticBoxSizer(self.operation_boxline, wx.HORIZONTAL)
+		self.query_boxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Query')
+		self.query_box = wx.StaticBoxSizer(self.query_boxline, wx.HORIZONTAL)
+		self.outputctrl_boxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Output Parameters')
+		self.outputctrl_box = wx.StaticBoxSizer(self.outputctrl_boxline, wx.HORIZONTAL)
+		self.control_boxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Controls')
+		self.control_box = wx.StaticBoxSizer(self.control_boxline, wx.HORIZONTAL)
+		self.status_boxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Status')
+		self.status_box = wx.StaticBoxSizer(self.status_boxline, wx.HORIZONTAL)
+		
+		# Put everything together. Merge AC and GO in the same line
+		self.superior_box = wx.BoxSizer(wx.HORIZONTAL)
+		self.superior_left_box = wx.BoxSizer(wx.VERTICAL)
+		self.goac_box = wx.BoxSizer(wx.HORIZONTAL) #### Draw ac and go on the same line
+		self.goac_box.Add(self.go_box, flag=wx.EXPAND, border=5)
+		self.goac_box.Add(self.ac_box, flag=wx.EXPAND, border=5)
+		self.goac_box.Add ( ( 0, 0 ), 1, flag = wx.EXPAND )
+		#self.mainbox.Add(self.go_box, 0, flag=wx.EXPAND)
+		#self.mainbox.Add(self.ac_box, 0, flag=wx.EXPAND)
+
+		self.operationoutputctrl_box = wx.BoxSizer(wx.HORIZONTAL)
+		self.operationoutputctrl_box .Add(self.operation_box, flag=wx.EXPAND, border=5)
+		#self.operationoutputctrl_box .Add(self.outputctrl_box, flag=wx.EXPAND, border=5)
+		self.operationoutputctrl_box.Add ( ( 0, 0 ), 1, wx.EXPAND )
+		#self.mainbox.Add(self.ss_box, 0, flag=wx.EXPAND)
+		#self.mainbox.Add(self.outputctrl_box, 0, flag=wx.EXPAND)
+		
+		self.superior_left_box.Add(self.goac_box, 0, flag=wx.EXPAND)
+		self.superior_left_box.Add(self.operationoutputctrl_box , 0, flag=wx.EXPAND)
+		
+		self.superior_box.Add(self.superior_left_box, 0, flag=wx.EXPAND)
+		self.superior_box.Add(self.status_box, 0, flag=wx.EXPAND)
+		
+		self.mainbox.Add(self.superior_box, 0, flag=wx.EXPAND)
+		self.mainbox.Add(self.query_box, 0, flag=wx.EXPAND)
+		self.mainbox.Add(self.outputctrl_box, 0, flag=wx.EXPAND)
+		self.mainbox.Add(self.control_box, 0, flag=wx.EXPAND)
+		
+		self.panel.SetSizerAndFit(self.mainbox)
+
+		#### initialize other components
+		self.StatusGui = StatusGui(self)
+		self.GOGui = GeneOntologyGui(self)
+		self.ACGui = AnnotationCorpusGui(self)
+		self.OperationGui = OperationGui(self)
+		self.OutputCtrlGui = OutputCtrlGui(self)
+		self.QueryGui = QueryGui(self)
+		self.OutputGui = OutputGui(self)
+		self.ControlGui = ControlGui(self)
+		
+		
+		self.Connect(-1, -1, WorkThread.EVT_PROGRESS_ID, self.OnProgress)
+		self.Connect(-1, -1, WorkThread.EVT_COMPLETED_ID, self.OnCompleted)
+		self.Connect(-1, -1, WorkThread.EVT_LOGDATA_ID, self.OnLogData)
+		self.Connect(-1, -1, WorkThread.EVT_OUTPUTDATA_ID, self.OnOutputData)
+		self.running = False
+		self.activateGoCmd()
+		return
+
+#----------------------------------------------------------------------------------------------------------------------------------
 
 	# routines to manage flags, status, and variables in general
 	def SetGoOk(self, status):
 		self.go_ok = status
 		if self.show_pics:
 			if self.go_ok:
-				self.gopicture.SetBitmap(wx.Bitmap(self.Ok_pic))
+				self.StatusGui.go_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
 			else:
-				self.gopicture.SetBitmap(wx.Bitmap(self.Warning_pic))
+				self.StatusGui.go_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
 		self.activateGoCmd()
 		
 	def SetAcOk(self, status):
 		self.ac_ok = status
 		if self.show_pics:
 			if self.ac_ok:
-				self.acpicture.SetBitmap(wx.Bitmap(self.Ok_pic))
+				self.StatusGui.ac_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
 			else:
-				self.acpicture.SetBitmap(wx.Bitmap(self.Warning_pic))
+				self.StatusGui.ac_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
 		self.activateGoCmd()
 		
 	def SetQueryOk(self, status):
 		self.query_ok = status
 		if self.show_pics:
 			if self.query_ok:
-				self.qpicture.SetBitmap(wx.Bitmap(self.Ok_pic))
+				self.StatusGui.query_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
 			else:
-				self.qpicture.SetBitmap(wx.Bitmap(self.Warning_pic))
+				self.StatusGui.query_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
 		self.activateGoCmd()
 		
 	def SetOutputCtrlOk(self, status):
 		self.outputctrl_ok = status
 		if self.show_pics:
 			if self.outputctrl_ok:
-				self.ocpicture.SetBitmap(wx.Bitmap(self.Ok_pic))
+				self.StatusGui.output_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
 			else:
-				self.ocpicture.SetBitmap(wx.Bitmap(self.Warning_pic))
+				self.StatusGui.output_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
 		self.activateGoCmd()
 
 	def SetOperationOk(self, status):
 		self.operation_ok = status
 		if self.show_pics:
 			if self.operation_ok:
-				self.oppicture.SetBitmap(wx.Bitmap(self.Ok_pic))
+				self.StatusGui.operation_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
 			else:
-				self.oppicture.SetBitmap(wx.Bitmap(self.Warning_pic))
+				self.StatusGui.operation_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
 		self.activateGoCmd()
-		
+
+	def activateGoCmd(self): # should not be called if status is 2
+		if self.status == -1:
+			return
+		if self.debug or (self.go_ok and self.ac_ok and self.query_ok and self.outputctrl_ok and self.operation_ok):
+			self.SetStatus(1) # set to 0
+		else:
+			self.SetStatus(0)
+
 	def SetStatus(self, status):
 		self.status = status
 		if self.show_pics:
-			if self.status == -1:
-				#self.statuspicture.SetBitmap(wx.Bitmap(self.se_pic))
-				if not self.gocmd is None:
-					self.gocmd.Disable()
-			if self.status == 0:
-				#self.statuspicture.SetBitmap(wx.Bitmap(self.s0_pic))
-				if not self.gocmd is None:
-					self.gocmd.Disable()
-			if self.status == 1:
-				#self.statuspicture.SetBitmap(wx.Bitmap(self.s1_pic))
-				if not self.gocmd is None:
-					self.gocmd.Enable()
-			if self.status == 2:
-				#self.statuspicture.SetBitmap(wx.Bitmap(self.s0_pic))
-				if not self.gocmd is None:
-					self.gocmd.Disable()
-
-
-	def __init__(self, parent):
-		super(fastSemSimGui, self).__init__(parent, title="fastSemSim - Copyright 2011, Marco Mina (src version)", size=(850,600))
-		self.InitUI()
-
-	def InitUI(self):
-		self.font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
-		self.font.SetPointSize(9)
-        
-		self.panel = wx.Panel(self)
-		self.mainbox = wx.BoxSizer(wx.VERTICAL)
-
-		self.gocmd = wx.Button(self.panel, wx.ID_ANY, 'Start')
-#----------------------------------------------------------------------------------------------------------------------------------
-		#GO and GOA Sections
-		self.goacbox = wx.BoxSizer(wx.HORIZONTAL)
-#		---------------------------------------------------------------------------
-		# GO File Section
-		self.goboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Gene Ontology')
-		self.gobox = wx.StaticBoxSizer(self.goboxline, wx.HORIZONTAL)
-		#self.golabel = wx.StaticText(self.panel, label='Not loaded')
-		#self.golabel.SetFont(self.font)
-		#self.golabel.Hide()
-		self.gopicture = wx.StaticBitmap(self.panel)
-		self.SetGoOk(False)
-		
-		self.gochoosecmd = wx.Button(self.panel, wx.ID_ANY, 'Manage GO...')
-		#self.gobox.Add(self.golabel,flag=wx.ALL|wx.CENTER, border = 8)
-		self.gobox.Add(self.gochoosecmd,flag=wx.ALL|wx.CENTER, border = 8)
-		self.gobox.Add(self.gopicture,flag=wx.ALL|wx.CENTER, border = 8)
-		self.Bind(wx.EVT_BUTTON, self.OnGOBrowse, id=self.gochoosecmd.GetId())
-		
-#		---------------------------------------------------------------------------
-		## Annotation Corpus File Chooser
-		self.acboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Annotation Corpus')
-		self.acbox = wx.StaticBoxSizer(self.acboxline, wx.HORIZONTAL)
-		#self.aclabel = wx.StaticText(self.panel, label = 'Not loaded')
-		#self.aclabel.SetFont(self.font)
-		#self.aclabel.Hide()
-		self.acpicture = wx.StaticBitmap(self.panel)
-		self.SetAcOk(False)
-		#self.acpicture.SetBitmap(wx.Bitmap('W_75.png'))
-		self.acchoosecmd = wx.Button(self.panel, wx.ID_ANY, 'Manage AC...')
-		#self.acchoosecmd.Disable()
-		#self.acbox.Add(self.aclabel, flag=wx.ALL|wx.CENTER, border = 8)
-		self.acbox.Add(self.acchoosecmd, flag=wx.ALL|wx.CENTER, border = 8)
-		self.acbox.Add(self.acpicture,flag=wx.ALL|wx.CENTER, border = 8)
-		self.Bind(wx.EVT_BUTTON, self.OnACBrowse, id=self.acchoosecmd.GetId())
-		
-#		---------------------------------------------------------------------------
-		#self.goacbox.Add ( ( 0, 0 ), 1, wx.EXPAND )
-		self.goacbox.Add(self.gobox, flag=wx.EXPAND, border=5)
-		#self.goacbox.Add ( ( 0, 0 ), 1, wx.EXPAND )
-		self.goacbox.Add(self.acbox, flag=wx.EXPAND, border=5)
-		#self.goacbox.Add ( ( 0, 0 ), 1, wx.EXPAND )
-
-#----------------------------------------------------------------------------------------------------------------------------------
-		## Operation Section
-		self.operationboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Operation')
-		self.operationbox = wx.StaticBoxSizer(self.operationboxline, wx.HORIZONTAL)
-		self.oppicture = wx.StaticBitmap(self.panel)
-		#self.queryoutputctrlbox.Add(self.qocpicture,flag=wx.ALL|wx.CENTER, border = 8)
-		self.Operationgui = OperationGui.OperationGui(self)
-		self.operationbox.Add(self.oppicture,flag=wx.ALL|wx.CENTER, border = 8)
-		self.SetOperationOk(False)
-#----------------------------------------------------------------------------------------------------------------------------------
-		## Query and output Sections
-		self.queryoutputctrlbox = wx.BoxSizer(wx.HORIZONTAL)
-		#self.qocpicture = wx.StaticBitmap(self.panel)
-		#self.qocpicture.SetBitmap(wx.Bitmap('W_75.png'))
-		#self.queryoutputctrlbox.Add(self.qocpicture,flag=wx.ALL|wx.CENTER, border = 8)
-#----------------------------------------------------------------------------------
-		## Query Chooser
-		self.queryboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Query pairs')
-		self.querybox = wx.StaticBoxSizer(self.queryboxline, wx.HORIZONTAL)
-		self.Querygui = QueryGui.QueryGui(self)
-		self.qpicture = wx.StaticBitmap(self.panel)
-		self.querybox.Add(self.qpicture,flag=wx.ALL|wx.CENTER, border = 8)
-		self.SetQueryOk(True)
-#----------------------------------------------------------------------------------
-		## Output Chooser
-		self.superoutputctrlboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Output format')
-		self.superoutputctrlbox = wx.StaticBoxSizer(self.superoutputctrlboxline, wx.HORIZONTAL)
-		#self.outputctrlboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Output format')
-		#self.outputctrlbox = wx.StaticBoxSizer(self.outputctrlboxline, wx.VERTICAL)
-		self.ocpicture = wx.StaticBitmap(self.panel)
-		self.outputctrlbox = wx.BoxSizer(wx.VERTICAL)
-		self.superoutputctrlbox.Add(self.outputctrlbox,flag=wx.ALL|wx.CENTER, border = 8)
-		self.OutputCrtlgui = OutputCtrlGui.OutputCtrlGui(self)
-
-		self.SetOutputCtrlOk(True)
-		self.superoutputctrlbox.Add(self.ocpicture,flag=wx.ALL|wx.CENTER, border = 8)
-		
-#----------------------------------------------------------------------------------
-		self.queryoutputctrlbox.Add(self.querybox, flag=wx.EXPAND, border=5)
-		self.queryoutputctrlbox.Add(self.superoutputctrlbox, flag=wx.EXPAND, border=5)
-		
-#----------------------------------------------------------------------------------------------------------------------------------
-		## Control and output Section 
-		self.interactionboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Controls and Output')
-		self.interactionbox = wx.StaticBoxSizer(self.interactionboxline, wx.HORIZONTAL)
-		
-#----------------------------------------------------------------------------------
-		#Control zone
-		self.commandlogbox = wx.BoxSizer(wx.VERTICAL)
-		self.commandbox = wx.BoxSizer(wx.HORIZONTAL)
-		#self.gocmd = wx.Button(self.panel, wx.ID_ANY, 'Start')
-		self.exitcmd = wx.Button(self.panel, wx.ID_ANY, 'Exit')
-		self.commandbox.Add(self.gocmd)
-		self.commandbox.Add(self.exitcmd)
-		self.Bind(wx.EVT_BUTTON, self.OnGoCmd, id=self.gocmd.GetId())
-		self.Bind(wx.EVT_BUTTON, self.OnExitCmd, id=self.exitcmd.GetId())
-		
-#----------------------------------------------------------------------------------
-		#Log zone
-		self.logboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Log')
-		self.logbox = wx.StaticBoxSizer(self.logboxline, wx.VERTICAL)
-		self.logfield = wx.TextCtrl(self.panel, size=(300,120), style = wx.TE_MULTILINE|wx.TE_READONLY|wx.TE_AUTO_URL)
-		self.logbox.Add(self.logfield, flag=wx.EXPAND)
-		
-		self.commandlogbox.Add(self.commandbox, flag=wx.EXPAND)
-		self.commandlogbox.Add(self.logbox, flag=wx.EXPAND)
-#----------------------------------------------------------------------------------
-		#Output zone
-		self.outputline = wx.StaticBox(self.panel, wx.ID_ANY, 'Output')
-		self.outputbox = wx.StaticBoxSizer(self.outputline, wx.HORIZONTAL)
-		self.outputfield = wx.TextCtrl(self.panel, size=(350,150), style = wx.TE_MULTILINE|wx.TE_READONLY)
-		self.outputbox.Add(self.outputfield, flag=wx.EXPAND)
-		
-#----------------------------------------------------------------------------------
-		self.interactionbox.Add(self.commandlogbox, flag=wx.EXPAND|wx.CENTER|wx.TOP, border=10)
-		#self.interactionbox.Add(self.logbox, flag=wx.EXPAND|wx.CENTER|wx.ALL, border=10)
-		self.interactionbox.Add(self.outputbox, flag=wx.EXPAND|wx.CENTER|wx.ALL, border=10)
-
-#----------------------------------------------------------------------------------------------------------------------------------
-		## Put everything together
-		self.mainbox.Add(self.goacbox, 0, flag=wx.EXPAND)
-		self.mainbox.Add(self.operationbox, flag=wx.EXPAND, border=5)
-		self.mainbox.Add(self.queryoutputctrlbox, flag=wx.EXPAND, border=5)
-		self.mainbox.Add(self.interactionbox, flag=wx.EXPAND|wx.CENTER|wx.ALL, border=5)
-		self.panel.SetSizerAndFit(self.mainbox)
+			if self.status == -1: # Fatal error
+				if not self.start_cmd is None:
+					self.start_cmd.Disable()
+					self.start_cmd.SetLabel("Start")
+			if self.status == 0: # Not running. Not Ready
+				if not self.start_cmd is None:
+					self.start_cmd.Disable()
+					self.start_cmd.SetLabel("Start")
+			if self.status == 1: # Not Running. Ready
+				if not self.start_cmd is None:
+					self.start_cmd.SetLabel("Start")
+					self.start_cmd.Enable()
+			if self.status == 2: # Running. (Completed)
+				if not self.start_cmd is None:
+					self.start_cmd.SetLabel("Stop")
+					#self.statuspicture.SetBitmap(wx.Bitmap(self.s0_pic))
+					self.start_cmd.Enable()
 
 #----------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------
-#----------------------------------------------------------------------------------------------------------------------------------
-	def OnGOBrowse(self, event):
-		if self.LoadGOgui is None:
-			self.LoadGOgui = loadGeneOntologyGui.LoadGO(self)
-		self.LoadGOgui.Show()
-
-	def OnACBrowse(self, event):
-		if self.LoadACgui is None:
-			self.LoadACgui = loadAnnotationCorpusGui.LoadAC(self)
-		self.LoadACgui.Show()  
-
-	def OnExitCmd(self, event):
-		self.Close()
-
-	def OnGoCmd(self, event):
-		if self.status == 1:
-			if self.start():
-				self.gocmd.SetLabel("Stop")
-				self.SetStatus(2)
-			# add code to disable all controls
-		elif self.status == 0:
-			self.SetStatus(1)
-		elif self.status == 2:
-			if self.start():
-				self.gocmd.SetLabel("Start")
-				self.SetStatus(1)
-			# add code to enable all controls
-
 #--------------------------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------------------------
 
-	def start(self):
-		self.skip_checks = False
-		self.outputfield.Clear()
-		self.logfield.AppendText('--------------------------------------\n')
-#----------------------------------------------------------------------------------------------------
-		#check if everything is configured
-		if not self.skip_checks:
-			if not self.go_ok:
-				self.logfield.AppendText("Check Gene Ontology. Aborted\n")
-				#self.logfield.AppendText("Aborted.\n")
+	def buildSSobject(self):
+		if self.update_ssobject or self.ssobject == None:
+			self.ssobject = None
+			if self.ssmeasure is None:
 				return False
-			if not self.ac_ok:
-				self.logfield.AppendText("Check Annotation Corpus. Aborted.\n")
+			#if SemSimMeasures.SemSimMeasures[self.Operationgui.ssmeasure][1]:
+				#if self.mixingstrategy is None:
+					#return False 
+			if self.go is None or self.ac is None:
 				return False
-			if not self.query_ok:
-				self.logfield.AppendText("Check query. Aborted.\n")
-				#self.logfield.AppendText("Aborted.\n")
-				return False
-			if not self.outputctrl_ok:
-				self.logfield.AppendText("Check output parameters. Aborted.\n")
-				#self.logfield.AppendText("Aborted.\n")
-				return False
-			if not self.operation_ok:
-				self.logfield.AppendText("Check operation parameters. Aborted.\n")
-			#self.logfield.AppendText("Aborted.\n")
-				return False
-#----------------------------------------------------------------------------------------------------
-		self.logfield.AppendText("Data seems to be ok. Inizializing structures.\n")
-		#Prepare sem sim object
-		self.logfield.AppendText("-> Setting up semantic similarity...\n")
-		if not self.buildSSobject():
-			return False
-#----------------------------------------------------------------------------------------------------
-		# Prepare query
-		self.logfield.AppendText("-> Setting up query...\n")
-		if not self.buildQuery():
-			self.logfield.AppendText("Failed to load query. Aborted.\n")
-		else:
-			if self.query_type == 0:
-				self.logfield.AppendText("\tQuery loaded:" + (str(len(self.query))) + " pairs\n")
-			elif self.query_type == 1:
-				self.logfield.AppendText("Query loaded: " + str(len(self.query)) + " items.\n")
-				print self.query
-#----------------------------------------------------------------------------------------------------
-		# Calculate SS scores
-		self.logfield.AppendText("Evaluating semantic similarity...\n")
-		self.sample_threshold = 100
-		little_sample = 0
-		if self.output_type==1:
-			self.output_file_handle = open(self.output_file, 'w')
-			self.outputfield.AppendText("Preview text. Complete output can be found here: "+str(self.output_file)+".\n")
-		if self.query_type == 1: # list
-			for i in range(0,len(self.query)):
-				for j in range(i+1, len(self.query)):
-					#print self.ssobject
-					test = self.ssobject.SemSim(self.query[i],self.query[j], self.selectedGO)
-					if type(test) is float:
-						test = str('%.4f' %test)
-					if self.output_type == 0:
-						self.outputfield.AppendText(str(self.query[i]) + "\t" + str(self.query[j]) + "\t" + str(test) + "\n")
-					else:
-						self.output_file_handle.write(str(self.query[i]) + "\t" + str(self.query[j]) + "\t" + str(test) + "\n")
-						if little_sample < self.sample_threshold:
-							self.outputfield.AppendText(str(self.query[i]) + "\t" + str(self.query[j]) + "\t" + str(test) + "\n")
-					little_sample+=1
-		elif self.query_type == 0: # pairs
-			for i in self.query:
-				test = self.ssobject.SemSim(i[0],i[1], self.selectedGO)
-				if self.output_type == 0:
-					self.outputfield.AppendText(str(i[0]) + "\t" + str(i[1]) + "\t" + str(test) + "\n")
+			##print self.ssmeasure
+			#print self.mixingstrategy
+			self.ssobject = ObjSemSim.ObjSemSim(self.ac, self.go, self.ssmeasure, self.mixingstrategy, None)
+			if not self.ssobject is None:
+				self.update_ssobject = False
+				if not self.mixingstrategy is None:
+					self.log_field.AppendText("Semantic similarity object created: " + str(self.ssmeasure) + " " + str(self.mixingstrategy) + ".\n")
 				else:
-					self.output_file_handle.write(str(i[0]) + "\t" + str(i[1]) + "\t" + str(test) + "\n")
-					if little_sample < self.sample_threshold:
-						self.outputfield.AppendText(str(i[0]) + "\t" + str(i[1]) + "\t" + str(test) + "\n")
-				little_sample+=1
-		if self.output_type==1:
-			self.outputfield.AppendText("Preview text. Complete output can be found here: "+str(self.output_file)+".\n")
-			self.output_file_handle.close()
-#----------------------------------------------------------------------------------------------------
-		self.logfield.AppendText("Task correctly completed.\n")
-		return False
+					self.log_field.AppendText("Semantic similarity object created: " + str(self.ssmeasure) + ".\n")
+			else:
+				#self.log_field.AppendText("Unable to create semantic similarity of type " + str(self.ssmeasure) + " " + str(self.mixingstrategy) + ".\n")
+				return False
+		else:
+			self.log_field.AppendText("Using previous semantic similarity object.\n")
+		return True
 
 	def buildQuery(self):
-		self.SetQueryOk(False)
+		#self.SetQueryOk(False)
 		result = True
 		if self.query_from == 0: # from field
 			result = False
-			self.logfield.AppendText("\tLoading query from text field...\n")
+			self.log_field.AppendText("\tLoading query from text field...\n")
 			result = self.loadFromField()
 			self.update_query = False
 			result = True
 		elif self.update_query: 
 			self.query = None
 			if self.query_from == 1: # from file
-				self.logfield.AppendText("\tLoading query from file " + str(self.query_file) +"...\n")
+				self.log_field.AppendText("\tLoading query from file " + str(self.query_file) +"...\n")
 				result = self.loadFromFile()
 			elif self.query_from == 2: # from ac
 				if self.query_type == 0:
-					self.logfield.AppendText("Cannot get pairs from Annotation Corpus.\n")
+					self.log_field.AppendText("Cannot get pairs from Annotation Corpus.\n")
 				elif self.query_type == 1:
-					self.logfield.AppendText("\tLoading query list from Annotation Corpus...\n")
+					self.log_field.AppendText("\tLoading query list from Annotation Corpus...\n")
 					result = self.loadFromAC()
 		else:
-			self.logfield.AppendText("Using previous query...\n")
+			self.log_field.AppendText("Using previous query...\n")
 			result = True
 		if result:
 			self.update_query = False
 		else:
 			self.update_query = True
 			self.query = None
-		self.SetQueryOk(result)
+		#self.SetQueryOk(result)
 		return result
 
 	def loadFromFile(self):
@@ -480,40 +342,93 @@ class fastSemSimGui(wx.Frame):
 		return True
 	
 	def stop(self):
+		if self.running:
+			print "Stop"
 		return True
 
-	def buildSSobject(self):
-		if self.update_ssobject or self.ssobject == None:
-			self.ssobject = None
-			if self.ssmeasure is None:
+	def start(self):
+		#if not self.running:
+		self.log_field.AppendText("Evaluating semantic similarity...\n")
+		self.OutputGui.output_field.Clear()
+		self.OutputGui.Show()
+		#self.ssthread = WorkThread.WorkThread(self)
+		#self.running = True
+		#self.ssthread.start()
+		self.skip_checks = False
+		self.log_field.AppendText('--------------------------------------\n')
+			#----------------------------------------------------------------------------------------------------
+		#check if everything is configured
+		if not self.skip_checks:
+			if not self.go_ok:
+				self.log_field.AppendText("Check Gene Ontology. Aborted\n")
+				#self.logfield.AppendText("Aborted.\n")
 				return False
-			#if SemSimMeasures.SemSimMeasures[self.Operationgui.ssmeasure][1]:
-				#if self.mixingstrategy is None:
-					#return False 
-			if self.go is None or self.ac is None:
+			if not self.ac_ok:
+				self.log_field.AppendText("Check Annotation Corpus. Aborted.\n")
 				return False
-			##print self.ssmeasure
-			#print self.mixingstrategy
-			self.ssobject = ObjSemSim.ObjSemSim(self.ac, self.go, self.ssmeasure, self.mixingstrategy, None)
-			if not self.ssobject is None:
-				self.update_ssobject = False
-				if not self.mixingstrategy is None:
-					self.logfield.AppendText("Semantic similarity object created: " + str(self.ssmeasure) + " " + str(self.mixingstrategy) + ".\n")
-				else:
-					self.logfield.AppendText("Semantic similarity object created: " + str(self.ssmeasure) + ".\n")
-			else:
-				self.logfield.AppendText("Unable to create semantic similarity of type " + str(self.ssmeasure) + " " + str(self.mixingstrategy) + ".\n")
+			if not self.query_ok:
+				self.log_field.AppendText("Check query. Aborted.\n")
+				#self.logfield.AppendText("Aborted.\n")
 				return False
+			if not self.outputctrl_ok:
+				self.log_field.AppendText("Check output parameters. Aborted.\n")
+				#self.logfield.AppendText("Aborted.\n")
+				return False
+			if not self.operation_ok:
+				self.log_field.AppendText("Check operation parameters. Aborted.\n")
+			#self.logfield.AppendText("Aborted.\n")
+				return False
+		#----------------------------------------------------------------------------------------------------
+		self.log_field.AppendText("Data seems to be ok. Inizializing structures...\n")
+		#Prepare sem sim object
+		self.log_field.AppendText("-> Setting up semantic similarity...\n")
+		if not self.buildSSobject():
+			self.log_field.AppendText("-> Failed to initialize semantic similarity measure. Aborted.\n")
+			return False
+		#----------------------------------------------------------------------------------------------------
+		# Prepare query
+		self.log_field.AppendText("-> Setting up query...\n")
+		if not self.buildQuery():
+			self.log_field.AppendText("Failed to load query. Aborted.\n")
 		else:
-			self.logfield.AppendText("Using previous semantic similarity object.\n")
+			if self.query_type == 0:
+				self.log_field.AppendText("\tQuery loaded:" + (str(len(self.query))) + " pairs\n")
+			elif self.query_type == 1:
+				self.log_field.AppendText("Query loaded: " + str(len(self.query)) + " items.\n")
+				print self.query
+		#----------------------------------------------------------------------------------------------------
+		# Calculate SS scores
+		self.log_field.AppendText("Evaluating semantic similarity...\n")
+		self.ssthread = WorkThread.WorkThread(self)
+		self.running = True
+		self.ssthread.start()
+		print "Done"
 		return True
 
-	def activateGoCmd(self):
-		#print "activateGoCmd"
-		if self.go_ok and self.ac_ok and self.query_ok and self.outputctrl_ok and self.operation_ok:
-			self.SetStatus(1)
-		else:
-			self.SetStatus(0)
+
+
+#################################################################################################################################
+
+	def OnProgress(self, msg):
+		t = msg.data
+		gaugerange = self.progress.GetRange()
+		self.progress.SetValue(t*gaugerange)
+
+
+	def OnCompleted(self, msg):
+		t = msg.data
+		self.log_field.AppendText("Completed\n")
+		self.running = False
+		
+	def OnOutputData(self, msg):
+		t = msg.data
+		self.OutputGui.output_field.AppendText(t)
+		
+	def OnLogData(self, msg):
+		t = msg.data
+		self.log_field.AppendText(t)
+
+#################################################################################################################################
 
 if __name__ == "__main__":
 	app = wx.App()

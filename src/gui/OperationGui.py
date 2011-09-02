@@ -35,17 +35,16 @@ class OperationGui:
 	
 	def InitUI(self):
 		ssmeasure = None
-		self.mainbox = self.parentobj.operationbox
+		self.mainbox = self.parentobj.operation_box
 		self.panel = self.parentobj.panel
 #------------------------------------------------------------------------------------------------------------------
 		#SS section
 		self.mainsubbox = wx.BoxSizer(wx.HORIZONTAL)
 		
-		# SSbox
-		self.ssboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Semantic Similarity')
-		self.ssbox = wx.StaticBoxSizer(self.ssboxline, wx.HORIZONTAL)
-		
-		# SSbox - SS
+		# SSbox - SS and MS
+		#self.ssboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Semantic Similarity')
+		#self.ssbox = wx.StaticBoxSizer(self.ssboxline, wx.HORIZONTAL)
+		self.ssbox = wx.BoxSizer(wx.VERTICAL)
 		self.tsbox = wx.BoxSizer(wx.VERTICAL)
 		self.availablemeasures = []
 		self.requiremixing = []
@@ -56,8 +55,7 @@ class OperationGui:
 		self.ss_label = wx.StaticText(self.panel, label='Semantic Measure')
 		self.tsbox.Add(self.ss_label, flag=wx.UP|wx.DOWN|wx.LEFT|wx.RIGHT, border=5)
 		self.tsbox.Add(self.ss, flag=wx.LEFT|wx.RIGHT, border=10)
-
-		# SSbox - MS
+		
 		self.msbox = wx.BoxSizer(wx.VERTICAL)
 		self.availablemixing = []
 		for i in SemSimMeasures.MixingStrategies:
@@ -94,10 +92,8 @@ class OperationGui:
 		for i in self.goradius:
 			self.parentobj.Bind(wx.EVT_RADIOBUTTON, self.OnSelectGO, id=i.GetId())
 
-#------------------------------------------------------------------------------------------------------------------
 		self.mainbox.Add(self.mainsubbox, flag=wx.EXPAND)
-		#self.mainbox.Add(self.mainsubbox2, flag=wx.EXPAND)
-		#self.panel.SetSizerAndFit(self.mainbox)
+		self.parentobj.SetOperationOk(False)
 #------------------------------------------------------------------------------------------------------------------
 	def OnSelectGO(self, event):
 		for i in range(0,len(self.goradius)):
