@@ -54,12 +54,12 @@ class WorkProcess(multiprocessing.Process):
 		ssu.det_freq_table()
 		ssu.det_GO_division()
 		ssu.det_ICs_table()
-		print ssu.IC
+		#print ssu.IC
 		self.ssobject = ObjSemSim.ObjSemSim(self.ac, self.go, self.ssmeasure, self.mixingstrategy, ssu)
-		print "ssmeasure: " + str(self.ssmeasure)
-		print "mixing: " + str(self.mixingstrategy)
-		print "real ss: " + str(self.ssobject.TSS)
-		print "real mixing: " + str(self.ssobject.mixSS)
+		#print "ssmeasure: " + str(self.ssmeasure)
+		#print "mixing: " + str(self.mixingstrategy)
+		#print "real ss: " + str(self.ssobject.TSS)
+		#print "real mixing: " + str(self.ssobject.mixSS)
 		return True
 	
 	#def run(self):
@@ -90,6 +90,10 @@ class WorkProcess(multiprocessing.Process):
 		self.selectedGO = data[7]
 		self.output_type = data[8]
 		self.output_file = data[9]
+		
+		print "query: " + str(self.query)
+		return
+		
 		self.buildSSobject()
 		#print "AC:" + str(self.ac.annotations)
 		#print "GO nodes: " + str(self.go.node_num())
@@ -97,6 +101,7 @@ class WorkProcess(multiprocessing.Process):
 		#print "AC nodes: " + str(len(self.ac.annotations))
 		#print "AC terms: " + str(len(self.ac.reverse_annotations))
 		#print "query nodes: " + str(len(self.query))
+		
 		self.buffer = None # data will be stored here
 		if self.output_type==1:
 			self.output_file_handle = open(self.output_file, 'w')
@@ -112,6 +117,7 @@ class WorkProcess(multiprocessing.Process):
 				self.buffer = [None]*self.total_number
 			for i in range(0,len(self.query)):
 				for j in range(i+1, len(self.query)):
+					print str(self.query[i]) + "\t" + str(self.query[j])
 					#print self.selectedGO
 					test = self.ssobject.SemSim(self.query[i],self.query[j], self.selectedGO)
 					counter += 1
@@ -122,8 +128,8 @@ class WorkProcess(multiprocessing.Process):
 						#self.gui.update_event.wait()
 						#self.gui.update_event.clear()
 					if type(test) is float:
-						pass
-						#test = str('%.4f' %test)
+						#pass
+						test = str('%.4f' %test)
 					if self.output_type == 0:
 						#if not test == None:
 						#print str((str(self.query[i]), str(self.query[j]), str(test)))

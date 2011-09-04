@@ -75,6 +75,7 @@ class QueryGui:
 		
 		self.parentobj.Bind(wx.EVT_BUTTON, self.OnClear, id=self.clear.GetId())
 		self.parentobj.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.filechooser.GetId())
+		self.parentobj.Bind(wx.EVT_TEXT, self.OnFieldChange, id=self.inputfield.GetId())
 		self.inputcommands.Add(self.listchooserbox, flag=wx.BOTTOM|wx.TOP, border=10)
 		self.inputcommands.Add(self.fromaccmd)
 		#self.inputcommands.Add(self.fromfile)
@@ -85,8 +86,15 @@ class QueryGui:
 		self.mainsubbox.Add(self.inputcommands, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 #------------------------------------------------------------------------------------------------------------------
 		self.mainbox.Add(self.mainsubbox, flag=wx.EXPAND)
+		self.parentobj.query_from = 0
 		self.parentobj.SetQueryOk(False)
 #------------------------------------------------------------------------------------------------------------------
+	def OnFieldChange(self, event):
+		if str(self.inputfield.GetValue()) == "":
+			pass
+		self.CheckIfOk()
+		#print "a"
+
 	def OnFileBrowse(self, event):
 		dialog = wx.FileDialog(None, style = wx.OPEN)
 		if dialog.ShowModal() == wx.ID_OK:
@@ -143,10 +151,13 @@ class QueryGui:
 		if self.parentobj.query_from == 2:
 			self.parentobj.SetQueryOk(True)
 		elif self.parentobj.query_from == 0:
-			if self.inputfield.GetValue() == "":
+			print "A"
+			if str(self.inputfield.GetValue()) == "":
+				print "B"
 				self.parentobj.SetQueryOk(False)
 			else:
-			 self.parentobj.SetQueryOk(True)
+				print "C"
+				self.parentobj.SetQueryOk(True)
 		elif self.parentobj.query_from == 1:
 			if self.parentobj.query_file is None:
 				self.parentobj.SetQueryOk(False)

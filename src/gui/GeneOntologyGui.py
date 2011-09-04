@@ -22,6 +22,7 @@ import wx
 from GO import GeneOntology
 
 class GeneOntologyGui(wx.Frame):
+	go_filename  = None
 	
 	def __init__(self, parent):
 		self.parentobj = parent
@@ -95,6 +96,7 @@ class GeneOntologyGui(wx.Frame):
 		if dialog.ShowModal() == wx.ID_OK:
 			#print 'Selected: ', dialog.GetPath()
 			self.filename.SetLabel(dialog.GetPath())
+			self.go_filename = dialog.GetPath()
 			self.status_label.SetLabel("Loading ontology... Please wait.")
 			self.status_label.Show()
 			self.gochooser.Disable()
@@ -110,8 +112,8 @@ class GeneOntologyGui(wx.Frame):
 		self.parentobj.SetGoOk(False)
 		self.parentobj.update_ac = True
 		self.parentobj.update_ssobject = True
-		self.tree = GeneOntology.load_GO_XML(open(self.filename.GetLabel(),'r'))
-		if self.tree is not None:
+		self.tree = GeneOntology.load_GO_XML(open(self.go_filename,'r'))
+		if not self.tree == None:
 			self.gochooser.Enable()
 			self.doneb.Enable()
 			self.gonodes.SetLabel(str(self.tree.node_num()))
@@ -120,6 +122,8 @@ class GeneOntologyGui(wx.Frame):
 			#self.parentobj.ac_cmd.Enable()
 			self.parentobj.go = self.tree
 			self.parentobj.SetGoOk(True)
+			return True
+		return False
 
 	def OnGOBrowseDone(self, event):
 		self.Hide()

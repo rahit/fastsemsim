@@ -58,13 +58,8 @@ class ControlGui:
 
 	def OnStartCmd(self, event):
 		if self.parentobj.status == 1: # Ready. Not Running
-			if self.parentobj.start():
-				self.parentobj.SetStatus(2) # set to Ready, running
-			# add code to disable all controls
+			self.parentobj.start()
+		elif self.parentobj.status == 2: # running
+			self.parentobj.stop() # set to not running and stops thread
 		elif self.parentobj.status == 0: # Not ready. Should not be active.
 			self.parentobj.activateGoCmd()
-			#self.parentobj.SetStatus(0)
-		elif self.parentobj.status == 2: # running
-			if self.parentobj.stop(): # set to not running and stops thread
-				self.parentobj.activateGoCmd()
-			# add code to enable all controls

@@ -26,6 +26,7 @@ from GO import AnnotationCorpus
 class AnnotationCorpusGui(wx.Frame):
 	filetype = None
 	plainfileorder = 0
+	ac_filename = None
 		
 	def __init__(self, parent):
 		self.parentobj = parent
@@ -152,6 +153,7 @@ class AnnotationCorpusGui(wx.Frame):
 		dialog = wx.FileDialog(None, style = wx.OPEN)
 		if dialog.ShowModal() == wx.ID_OK:
 			self.filename.SetLabel(dialog.GetPath())
+			self.ac_filename = dialog.GetPath()
 			if (not self.filename == None) and (not self.filetype == None):
 				self.acload.Enable()
 
@@ -178,7 +180,9 @@ class AnnotationCorpusGui(wx.Frame):
 		elif self.plainfileorder == 1:
 			param['AC_TERM_FIRST'] = None
 		try:
-			if self.ac.parse(str(self.filename.GetLabel()), self.filetype, param):
+			#print self.plainfileorder
+			#print param
+			if self.ac.parse(str(self.ac_filename), self.filetype, param):
 				if self.ac.sanitize():
 					#self.acobjs.SetLabel(str(len(self.ac.annotations)))
 					#self.acterms.SetLabel(str(len(self.ac.reverse_annotations)))
@@ -186,10 +190,16 @@ class AnnotationCorpusGui(wx.Frame):
 					self.parentobj.SetAcOk(True)
 					self.parentobj.update_ac = False
 					self.status_label.SetLabel("Annotation Corpus loaded.")
-					return
+					return True
+				#else:
+					#print("Failed to sanitize Annotation Corpus.")
 			self.status_label.SetLabel("Failed to load Annotation Corpus.")
+			print("Failed to load Annotation Corpus.")
+			return False
 		except:
+			print("Failed to load Annotation Corpus.")
 			self.status_label.SetLabel("Failed to load Annotation Corpus.")
+			return False
 				
 
 	def OnACBrowseDone(self, event):
