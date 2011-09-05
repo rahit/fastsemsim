@@ -403,7 +403,7 @@ class fastSemSimGui(wx.Frame):
 				self.query.append((str(line[0]), str(line[1])))
 			else: # list
 				self.query.append(str(line))
-		print self.query
+		#print self.query
 		return True
 
 	def loadFromAC(self):
@@ -529,7 +529,6 @@ class fastSemSimGui(wx.Frame):
 		#self.OnUpdateDone()
 
 	def OnCompleted(self):
-		print str(self.sscompleted.value)
 		if self.sscompleted.value == 1:
 			self.log_field.AppendText("Task Completed\n")
 			#self.running = False

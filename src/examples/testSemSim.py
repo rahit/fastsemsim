@@ -30,11 +30,13 @@ from SemSim import SemSimUtils
 import sys
 import os
 
+fromac = True
+
 if __name__ == "__main__":
 	#### load ontology
 	tree = GeneOntology.load_GO_XML(open(sys.argv[1]))
 	print "Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
-	
+
 	#### load annotations
 	gp = AnnotationCorpus.AnnotationCorpus(tree)
 	gp.parse(sys.argv[2], 'GOA')
@@ -54,23 +56,36 @@ if __name__ == "__main__":
 	ssu.det_freq_table()
 	ssu.det_GO_division()
 	ssu.det_ICs_table()
-
+	print ssu.IC
+	#sys.exit()
 	# create SemSim object. It is not mandatory to supply a SemSimUtils object. ObjSemSim builds his own SemSimUtils object in this case.
-	SS_Resnik_BMA = ObjSemSim.ObjSemSim(gp, tree, "Resnik", "BMA", ssu)
+	SS_Resnik_BMA = ObjSemSim.ObjSemSim(gp, tree, "Resnik", "max", ssu)
 
 	# load a list of proteins
-	inf = open(sys.argv[3],'r')
-	human_pairs = []
-	for line in inf:
-		line = line.rstrip('\n')
-		line = line.rstrip('\r')
-		human_pairs.append(line)
-	test_set = human_pairs
-	inf.close()
+	if fromac:
+		test_set = gp.annotations.keys()
+	else:
+		inf = open(sys.argv[3],'r')
+		human_pairs = []
+		for line in inf:
+			line = line.rstrip('\n')
+			line = line.rstrip('\r')
+			human_pairs.append(line)
+		test_set = human_pairs
+		inf.close()
 	
+	print "GO nodes: " + str(tree.node_num())
+	print "GO edges: " + str(tree.edge_num())
+	print "AC nodes: " + str(len(gp.annotations))
+	print "AC terms: " + str(len(gp.reverse_annotations))
+	print "query nodes: " + str(len(test_set))
+	print "real ss: " + str(SS_Resnik_BMA.TSS)
+	print "real mixing: " + str(SS_Resnik_BMA.mixSS)
+	print "AC: " + str(gp.annotations)
+		
 	# determine pairwise semantic similarity and print it on console. Molecular Function (MF) ontology is used
 	for i in range(len(test_set)):
 		for j in range(i+1, len(test_set)):
-			test = SS_Resnik_BMA.SemSim(test_set[i],test_set[i],"MF")
+			test = SS_Resnik_BMA.SemSim(test_set[i],test_set[j],"MF")
 			print(str(test_set[i]) + "\t" + str(test_set[j]) + "\t" + str(test))
 	print("-----------------------------------------------------------------")

@@ -204,11 +204,12 @@ class AnnotationCorpus:
 		self.parse(fname, ftype)
 
 	def parse(self, fname, ftype, params=None):
-		if ftype is 'GOA':
+		#print type(ftype)
+		if ftype == 'GOA':
 			#print "GOA load"
 			temp = GOAAnnotationCorpus()
 			return temp.parse(fname, self)
-		elif ftype is 'plain':
+		elif ftype == 'plain':
 			temp = PlainAnnotationCorpus()
 			temp.objfirst = True
 			if not(params == None):
@@ -217,6 +218,9 @@ class AnnotationCorpus:
 				elif 'AC_TERM_FIRST' in params:
 					temp.objfirst = False
 			return temp.parse(fname, self)
+		else:
+			print "Format not recognized"
+			return None
 
 
 #if __name__ == "__main__":

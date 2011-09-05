@@ -56,7 +56,7 @@ class TermSemSim:
 		"""
 		id1 = self.util.go_2ids(term1)
 		#print(id1
-		if self.SS_type is self.P_TSS:
+		if self.SS_type == self.P_TSS:
 			if type(id1) is int:
 				if id1 in self.go.nodes_edges:
 					#print("Valid id P."
@@ -70,7 +70,7 @@ class TermSemSim:
 			else:
 					print("More than one term passed to a pairwise term SS measure.")
 					return None
-		elif self.SS_type is self.G_TSS:
+		elif self.SS_type == self.G_TSS:
 			if type(id1) is int:
 				temp_id1 = []
 				temp_id1.append(id1)
@@ -83,7 +83,7 @@ class TermSemSim:
 					return None
 				if current_onto is None:
 					current_onto = self.util.root[i]
-				elif not current_onto is self.util.root[i]:
+				elif not current_onto == self.util.root[i]:
 					print("Terms are not from the same ontology")
 					return None
 				if self.IC_based and not i in self.util.IC:
@@ -102,14 +102,14 @@ class TermSemSim:
 			return None
 		id1 = self.int_format_data(term1)
 		id2 = self.int_format_data(term2)
-		if id1 is None or id2 is None or (self.SS_type is self.G_TSS and len(id1) == 0) or (self.SS_type is self.G_TSS and len(id2) == 0):
+		if id1 is None or id2 is None or (self.SS_type == self.G_TSS and len(id1) == 0) or (self.SS_type == self.G_TSS and len(id2) == 0):
 			print(str(term1) + " or " + str(term2) + "   not valid.")
 			return None
-		if self.SS_type is self.P_TSS:
+		if self.SS_type == self.P_TSS:
 			if not self.util.root[id1] == self.util.root[id2]:
 				print("Terms are not from the same ontology")
 				return None
-		elif self.SS_type is self.G_TSS:
+		elif self.SS_type == self.G_TSS:
 			for i in id1:
 				t1 = i
 				break

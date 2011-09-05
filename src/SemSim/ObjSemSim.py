@@ -85,20 +85,27 @@ class ObjSemSim:
 				continue
 			if i not in self.util.GO_division:
 				print(str(i) + " not in GO!")
-			elif self.util.GO_division[i] is onto:
+			elif self.util.GO_division[i] == onto:
 				terms.append(i)
 		return terms
 		
 	def SemSim(self, obj1, obj2, ontology):
+		#print "|" + str(ontology) + "|"
+		#print "|" + str(self.util.BP_ontology) + "|"
+		##print "|" + str(self.util.MF_ontology) + "|"
+		#print "|" + str(self.util.CC_ontology) + "|"
 		#### translate into id format & check data
-		if ontology is self.util.BP_ontology:
+		if str(ontology) == self.util.BP_ontology:
 			onto = self.util.BP_root
-		elif ontology is self.util.MF_ontology:
+			#print "selected BP"
+		elif str(ontology) == self.util.MF_ontology:
 			onto = self.util.MF_root
-		elif ontology is self.util.CC_ontology:
+			#print "selected MF"
+		elif str(ontology) == self.util.CC_ontology:
 			onto = self.util.CC_root
+			#print "selected CC"
 		else:
-			print("No valid ontology selected.")
+			print("No valid ontology selected: " + str(ontology))
 			return None
 		t1 = self.int_format_data(obj1, onto)
 		if t1 is  None:
@@ -106,6 +113,8 @@ class ObjSemSim:
 		t2 = self.int_format_data(obj2, onto)
 		if t2 is  None:
 			return None
+		#print "Call int_SemSim in ObjSemSim for " + obj1 + " and " + obj2 
+		#print "sets: " + str(t1) + " and " + str(t2)
 		return self.int_SemSim(t1, t2)
 
 	def int_SemSim(self, term1, term2):
@@ -113,9 +122,10 @@ class ObjSemSim:
 			return None
 		#print self.TSS
 		#print self.TSS.SS_type
-		if self.TSS.SS_type is self.TSS.P_TSS:
+		if self.TSS.SS_type == self.TSS.P_TSS:
+			#print "Called mixSS for " + 
 			sscore = self.mixSS.SemSim(term1, term2, self.TSS)
-		elif self.TSS.SS_type is self.TSS.G_TSS:
+		elif self.TSS.SS_type == self.TSS.G_TSS:
 			sscore = self.TSS.SemSim(term1, term2)
 		else:
 			raise "Semantic Similarity measure not properly configured."

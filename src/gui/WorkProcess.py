@@ -26,6 +26,7 @@ from SemSim import ObjSemSim
 from SemSim import SemSimUtils
 
 class WorkProcess(multiprocessing.Process):
+	store_all = False
 	use_main_ss_object = True
 	#interprocess communication data
 	gui2ssprocess_commands_queue = None
@@ -62,8 +63,8 @@ class WorkProcess(multiprocessing.Process):
 			#self.gui2ssprocess_commands_queue.get()
 	def set_completed(self):
 		self.sscompleted.value = 1
-		
-	def run(self):
+	
+	def parse_data(self):
 		'''
 		0 self.go, 
 		1 self.ac, 
@@ -81,18 +82,11 @@ class WorkProcess(multiprocessing.Process):
 		self.ac = data[1]
 		self.ssmeasure = data[2]
 		self.mixingstrategy = data[3]
-		#self.ssobject = data[4]
-		#self.original_ssobject = data[4]
 		self.query = data[5]
 		self.query_type = data[6]
 		self.selectedGO = data[7]
 		self.output_type = data[8]
 		self.output_file = data[9]
-
-		if not self.use_main_ss_object:
-			self.buildSSobject()
-		else:
-			self.ssobject = data[4]
 		#print "query: " + str(self.query)
 		#self.ssobject = self.original_ssobject
 		#print "AC:" + str(self.ac.annotations)
@@ -101,81 +95,112 @@ class WorkProcess(multiprocessing.Process):
 		#print "AC nodes: " + str(len(self.ac.annotations))
 		#print "AC terms: " + str(len(self.ac.reverse_annotations))
 		#print "query nodes: " + str(len(self.query))
-		
+		if not self.use_main_ss_object:
+			self.buildSSobject()
+		else:
+			self.ssobject = data[4]
+		return True
+
+	def init_structures(self):
 		self.buffer = None # data will be stored here
 		if self.output_type==1:
 			self.output_file_handle = open(self.output_file, 'w')
-		counter = 0
-		last_percentual = -1
+		self.counter = 0
+		self.last_percentual = -1
 		self.last_sent = -1
 		self.last_added = -1
 		if self.query_type == 1: # list
 			self.total_number = len(self.query) * (len(self.query)-1) / 2
-			self.sstodo = self.total_number
-			if self.output_type==0:
-				#self.buffer = [(None, None, None)]*self.total_number
-				self.buffer = [None]*self.total_number
+		elif self.query_type == 0: # pairs
+			self.total_number = len(self.query)
+		if self.output_type==0:
+			if self.store_all:
+				self.buffer_size = self.total_number
+			else:
+				self.buffer_size = self.MAX_CACHE_SIZE
+			self.buffer = [None]*self.buffer_size
+			#self.buffer = [(None, None, None)]*self.buffer_size
+		self.sstodo.value = self.total_number
+		return True
+
+	def flush_data(self):
+		if self.output_type == 0:
+			self.flushOutput()
+		if self.output_type==1:
+			self.output_file_handle.close()
+		return True
+
+	def abort(self):
+		self.set_completed()
+		return True
+
+	def run(self):
+		if not self.parse_data():
+			return self.abort()
+		if not self.init_structures():
+			return self.abort()
+		print "Total pairs to process: " + str(self.total_number)
+		if self.query_type == 1: # list
 			for i in range(0,len(self.query)):
 				for j in range(i+1, len(self.query)):
-					#print str(self.query[i]) + "\t" + str(self.query[j])
-					#print self.selectedGO
 					test = self.ssobject.SemSim(self.query[i],self.query[j], self.selectedGO)
-					counter += 1
-					if not int(counter*100/self.total_number) == last_percentual:
-						last_percentual = int(counter*100/self.total_number)
-						self.sspdone.value = float(counter)/self.total_number
+					self.counter += 1
+					if not int(self.counter*100/self.total_number) == self.last_percentual:
+						self.last_percentual = int(self.counter*100/self.total_number)
+						self.sspdone.value = float(self.counter)/self.total_number
 					if type(test) is float:
 						test = str('%.4f' %test)
 					if self.output_type == 0:
 						#if not test == None:
-						#print str((str(self.query[i]), str(self.query[j]), str(test)))
 						self.sendOutput(str(self.query[i]), str(self.query[j]), str(test))
 					else:
 						self.writeOutput(str(self.query[i]), str(self.query[j]), str(test))
-			if self.output_type == 0:
-				self.flushOutput()
+
 		elif self.query_type == 0: # pairs
-			self.total_number = len(self.query)
-			self.sstodo = self.total_number
-			if self.output_type==0:
-				#self.buffer = [(None, None, None)]*self.total_number
-				self.buffer = [None]*self.total_number
 			for i in self.query:
 				test = self.ssobject.SemSim(i[0],i[1], self.selectedGO)
-				counter += 1
-				if not int(counter*100/self.total_number) == last_percentual:
-					last_percentual = int(counter*100/self.total_number)
-					self.sspdone.value = float(counter)/self.total_number
+				self.counter += 1
+				if not int(self.counter*100/self.total_number) == self.last_percentual:
+					self.last_percentual = int(self.counter*100/self.total_number)
+					self.sspdone.value = float(self.counter)/self.total_number
 				if type(test) is float:
 					test = str('%.4f' %test)
 				if self.output_type == 0:
 					self.sendOutput(str(i[0]), str(i[1]), str(test))
 				else:
 					self.writeOutput(str(i[0]), str(i[1]), str(test))
-			if self.output_type == 0:
-				self.flushOutput()
-		if self.output_type==1:
-			self.output_file_handle.close()
-		self.set_completed()
+		if not self.flush_data():
+			return self.abort()
+		if not self.counter == self.total_number:
+			print "Count error. Total pairs to process: " + str(self.total_number) + ". Total pairs processed: " + str(self.counter)
+			return self.abort()
+		return self.set_completed()
 
 	def sendOutput(self, a, b, c):
-		#if self.KEEP_MODE:
-		self.last_added += 1
-		self.buffer[self.last_added] = ((str(a),str(b),str(c)))
-		if self.last_added - (self.last_sent + 1) > self.MAX_CACHE_SIZE:
-			self.ssprocess2gui_pipe.send(self.buffer[self.last_sent+1: self.last_added])
-			#print "Before waiting in post event"
-			#self.gui.update_event.wait()
-			#self.gui.update_event.clear()
-			#print "after waiting in post event"
-			self.last_sent = self.last_added
+		if self.store_all:
+			self.last_added += 1
+			self.buffer[self.last_added] = ((str(a),str(b),str(c)))
+			if self.last_added - (self.last_sent + 1) > self.MAX_CACHE_SIZE:
+				self.ssprocess2gui_pipe.send(self.buffer[self.last_sent+1: self.last_added+1])
+				self.last_sent = self.last_added
+		else:
+			self.last_added += 1
+			if self.last_added == self.buffer_size:
+				self.ssprocess2gui_pipe.send(self.buffer[0: self.last_added])
+				self.last_added = -1
+			self.buffer[self.last_added] = ((str(a),str(b),str(c)))
 
 	def flushOutput(self):
-		print "Here"
-		if self.last_sent == self.last_added:
-			return
-		self.ssprocess2gui_pipe.send(self.buffer[self.last_sent+1: self.last_added])
-		self.last_sent = self.last_added
+		if self.store_all:
+			if self.last_sent == self.last_added:
+				return
+			self.ssprocess2gui_pipe.send(self.buffer[self.last_sent+1: self.last_added+1])
+			self.last_sent = self.last_added
+		else:
+			if self.last_added == -1:
+				return
+			self.ssprocess2gui_pipe.send(self.buffer[0: self.last_added+1])
+			self.last_added = -1
 
 	def writeOutput(self, a, b, c):
 		self.output_file_handle.write(str(a) + "\t" + str(b) + "\t" + str(c) + "\n")
