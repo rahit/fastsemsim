@@ -25,20 +25,15 @@ from SemSim import SemSimMeasures
 from SemSim import ObjSemSim
 from SemSim import SemSimUtils
 
-#def f(n, a):
-    #n.value = 3.1415927
-    #for i in range(len(a)):
-        #a[i] = -a[i]
-
 class WorkProcess(multiprocessing.Process):
-	
+	use_main_ss_object = True
 	#interprocess communication data
 	gui2ssprocess_commands_queue = None
 	MAX_CACHE_SIZE = 5000
 	KEEP_MODE = True
 
 	#def __init__(self, gui2ssprocess_commands_queue):
-	def __init__(self, gui2ssprocess_queue, gui2ssprocess_pipe, ssprocess2gui_pipe, sspdone, sstodo):
+	def __init__(self, gui2ssprocess_queue, gui2ssprocess_pipe, ssprocess2gui_pipe, sspdone, sstodo, sscompleted):
 		multiprocessing.Process.__init__(self)
 		#self.gui2ssprocess_commands_queue = gui2ssprocess_commands_queue
 		self.gui2ssprocess_queue = gui2ssprocess_queue
@@ -46,6 +41,7 @@ class WorkProcess(multiprocessing.Process):
 		self.ssprocess2gui_pipe = ssprocess2gui_pipe
 		self.sspdone = sspdone
 		self.sstodo = sstodo
+		self.sscompleted = sscompleted
 
 	def buildSSobject(self):
 		ssu = SemSimUtils.SemSimUtils(self.ac, self.go)
@@ -54,7 +50,6 @@ class WorkProcess(multiprocessing.Process):
 		ssu.det_freq_table()
 		ssu.det_GO_division()
 		ssu.det_ICs_table()
-		#print ssu.IC
 		self.ssobject = ObjSemSim.ObjSemSim(self.ac, self.go, self.ssmeasure, self.mixingstrategy, ssu)
 		#print "ssmeasure: " + str(self.ssmeasure)
 		#print "mixing: " + str(self.mixingstrategy)
@@ -65,6 +60,8 @@ class WorkProcess(multiprocessing.Process):
 	#def run(self):
 		#while True:
 			#self.gui2ssprocess_commands_queue.get()
+	def set_completed(self):
+		self.sscompleted.value = 1
 		
 	def run(self):
 		'''
@@ -84,17 +81,20 @@ class WorkProcess(multiprocessing.Process):
 		self.ac = data[1]
 		self.ssmeasure = data[2]
 		self.mixingstrategy = data[3]
-		self.ssobject = data[4]
+		#self.ssobject = data[4]
+		#self.original_ssobject = data[4]
 		self.query = data[5]
 		self.query_type = data[6]
 		self.selectedGO = data[7]
 		self.output_type = data[8]
 		self.output_file = data[9]
-		
-		print "query: " + str(self.query)
-		return
-		
-		self.buildSSobject()
+
+		if not self.use_main_ss_object:
+			self.buildSSobject()
+		else:
+			self.ssobject = data[4]
+		#print "query: " + str(self.query)
+		#self.ssobject = self.original_ssobject
 		#print "AC:" + str(self.ac.annotations)
 		#print "GO nodes: " + str(self.go.node_num())
 		#print "GO edges: " + str(self.go.edge_num())
@@ -117,26 +117,21 @@ class WorkProcess(multiprocessing.Process):
 				self.buffer = [None]*self.total_number
 			for i in range(0,len(self.query)):
 				for j in range(i+1, len(self.query)):
-					print str(self.query[i]) + "\t" + str(self.query[j])
+					#print str(self.query[i]) + "\t" + str(self.query[j])
 					#print self.selectedGO
 					test = self.ssobject.SemSim(self.query[i],self.query[j], self.selectedGO)
 					counter += 1
 					if not int(counter*100/self.total_number) == last_percentual:
 						last_percentual = int(counter*100/self.total_number)
 						self.sspdone.value = float(counter)/self.total_number
-						#wx.PostEvent(self.gui, ProgressEvent(float(counter)/self.total_number))
-						#self.gui.update_event.wait()
-						#self.gui.update_event.clear()
 					if type(test) is float:
-						#pass
 						test = str('%.4f' %test)
 					if self.output_type == 0:
 						#if not test == None:
 						#print str((str(self.query[i]), str(self.query[j]), str(test)))
 						self.sendOutput(str(self.query[i]), str(self.query[j]), str(test))
 					else:
-						pass
-						#self.writeOutput(str(self.query[i]), str(self.query[j]), str(test))
+						self.writeOutput(str(self.query[i]), str(self.query[j]), str(test))
 			if self.output_type == 0:
 				self.flushOutput()
 		elif self.query_type == 0: # pairs
@@ -151,20 +146,17 @@ class WorkProcess(multiprocessing.Process):
 				if not int(counter*100/self.total_number) == last_percentual:
 					last_percentual = int(counter*100/self.total_number)
 					self.sspdone.value = float(counter)/self.total_number
-					#wx.PostEvent(self.gui, ProgressEvent(float(counter)/self.total_number))
+				if type(test) is float:
+					test = str('%.4f' %test)
 				if self.output_type == 0:
-					pass
-					#self.sendOutput(str(i[0]), str(i[1]), str(test))
+					self.sendOutput(str(i[0]), str(i[1]), str(test))
 				else:
-					pass
-					#self.writeOutput(str(i[0]), str(i[1]), str(test))
+					self.writeOutput(str(i[0]), str(i[1]), str(test))
 			if self.output_type == 0:
 				self.flushOutput()
 		if self.output_type==1:
 			self.output_file_handle.close()
-		#wx.PostEvent(self.gui, CompletedEvent("Completed"))
-		return True
-		
+		self.set_completed()
 
 	def sendOutput(self, a, b, c):
 		#if self.KEEP_MODE:
@@ -179,6 +171,7 @@ class WorkProcess(multiprocessing.Process):
 			self.last_sent = self.last_added
 
 	def flushOutput(self):
+		print "Here"
 		if self.last_sent == self.last_added:
 			return
 		self.ssprocess2gui_pipe.send(self.buffer[self.last_sent+1: self.last_added])

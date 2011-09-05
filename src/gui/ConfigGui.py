@@ -150,7 +150,7 @@ class LoadConfigGui(wx.Dialog):
 		self.tags = self.config.load()
 		print self.tags
 		#process configuration
-
+		wx.PostEvent(self, DummyEvent(self.EVT_QUERY_ID))
 		wx.PostEvent(self, DummyEvent(self.EVT_GO_ID))
 	
 	def ProcessGO(self,event):
@@ -178,8 +178,14 @@ class LoadConfigGui(wx.Dialog):
 		self.parentobj.selectedGO = self.tags['ss']['ss_go_tree']
 		self.parentobj.mixingstrategy = self.tags['ss']['ss_mixing_strategy']
 		self.parentobj.ssmeasure = self.tags['ss']['ss_measure']
+		if not self.tags['ss']['ss_measure'] == None:
+			self.parentobj.OperationGui.set_ss(self.tags['ss']['ss_measure'])
+		if not self.tags['ss']['ss_mixing_strategy'] == None:
+			self.parentobj.OperationGui.set_ms(self.tags['ss']['ss_mixing_strategy'])
+		if not self.tags['ss']['ss_go_tree'] == None:
+			self.parentobj.OperationGui.set_go(self.tags['ss']['ss_go_tree'])
 		self.ss_pic.SetBitmap(wx.Bitmap(self.parentobj.Ok_pic))
-		self.ss_pic.SetBitmap(wx.Bitmap(self.parentobj.Warning_pic))
+		#self.ss_pic.SetBitmap(wx.Bitmap(self.parentobj.Warning_pic))
 		wx.PostEvent(self, DummyEvent(self.EVT_QUERY_ID))
 
 	def ProcessQuery(self,event):
@@ -187,16 +193,25 @@ class LoadConfigGui(wx.Dialog):
 		self.parentobj.query_file = self.tags['query']['query_filename']
 		self.parentobj.query_type = int(self.tags['query']['query_format'])
 		self.parentobj.query_from = int(self.tags['query']['query_from'])
+		if not self.tags['query']['query_format'] == None:
+			self.parentobj.QueryGui.set_query_format(int(self.tags['query']['query_format']))
+		if not self.tags['query']['query_from'] == None:
+			self.parentobj.QueryGui.set_query_from(int(self.tags['query']['query_from']))
 		self.query_pic.SetBitmap(wx.Bitmap(self.parentobj.Ok_pic))
-		self.query_pic.SetBitmap(wx.Bitmap(self.parentobj.Warning_pic))
+		#self.query_pic.SetBitmap(wx.Bitmap(self.parentobj.Warning_pic))
+		print self.parentobj.query_file
+		print self.parentobj.query_type
+		print self.parentobj.query_from
 		wx.PostEvent(self, DummyEvent(self.EVT_OUTPUT_ID))
 
 	def ProcessOutput(self,event):
 		self.output_label.Enable()
 		self.parentobj.output_type = int(self.tags['output']['output_to'])
 		self.parentobj.output_filename = self.tags['output']['output_filename']
+		if not self.tags['output']['output_to'] == None:
+			self.parentobj.OutputCtrlGui.set_output_type(int(self.tags['output']['output_to']))
 		self.output_pic.SetBitmap(wx.Bitmap(self.parentobj.Ok_pic))
-		self.output_pic.SetBitmap(wx.Bitmap(self.parentobj.Warning_pic))
+		#self.output_pic.SetBitmap(wx.Bitmap(self.parentobj.Warning_pic))
 		wx.PostEvent(self, DummyEvent(self.EVT_DONE_ID))
 	
 	def ProcessDone(self,event):
@@ -211,48 +226,6 @@ class SaveConfigGui(wx.Dialog):
 		#self.InitUI()
 		self.CollectData()
 		self.SaveData()
-	
-	#def InitUI(self):
-		#self.panel = wx.Panel(self, -1)
-		#self.mainbox = wx.BoxSizer(wx.VERTICAL)
-		#self.filebox = wx.BoxSizer(wx.HORIZONTAL)
-		#self.file_label = wx.StaticText(self.panel, label='Configuration file: ')
-		#self.filename_label = wx.StaticText(self.panel, label='')
-		#self.filebox.Add(self.file_label)
-		#self.filebox.Add(self.filename_label)
-		#self.mainbox.Add(self.filebox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
-		
-		#self.go_label = wx.StaticText(self.panel, label='Saving Gene Ontology...')
-		#self.ac_label = wx.StaticText(self.panel, label='Saving Annotation Corpus...')
-		#self.ss_label = wx.StaticText(self.panel, label='Saving Semantic Similarity parameters...')
-		#self.query_label = wx.StaticText(self.panel, label='Saving Query...')
-		#self.output_label = wx.StaticText(self.panel, label='Saving Output parameters...')
-		#self.go_label.SetFont(self.parentobj.font)
-		#self.ac_label.SetFont(self.parentobj.font)
-		#self.ss_label.SetFont(self.parentobj.font)
-		#self.query_label.SetFont(self.parentobj.font)
-		#self.output_label.SetFont(self.parentobj.font)
-		
-		#self.go_label.Disable()
-		#self.ac_label.Disable()
-		#self.ss_label.Disable()
-		#self.query_label.Disable()
-		#self.output_label.Disable()
-		
-		#self.go_pic = wx.StaticBitmap(self.panel)
-		#self.ac_pic = wx.StaticBitmap(self.panel)
-		#self.query_pic = wx.StaticBitmap(self.panel)
-		#self.ss_pic = wx.StaticBitmap(self.panel)
-		#self.output_pic = wx.StaticBitmap(self.panel)
-		
-		#self.descbox = wx.FlexGridSizer(rows = 5, cols = 2, vgap = 6, hgap = 20)
-		#self.descbox.AddMany([(self.go_label), (self.go_pic), (self.ac_label), (self.ac_pic), (self.ss_label), (self.ss_pic), (self.query_label), (self.query_pic), (self.output_label), (self.output_pic)])
-		
-		#self.mainbox.Add(self.descbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
-		##self.progress = wx.Gauge(self.panel, -1, 50, size=(250, 25))
-		##self.mainbox.Add(self.progress, flag=wx.TOP, border = 5)
-		#self.panel.SetSizerAndFit(self.mainbox)
-		#self.Show()
 	
 	def CollectData(self):
 		self.config = ConfigFileParser(self.parentobj.config_file)

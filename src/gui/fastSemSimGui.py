@@ -39,8 +39,8 @@ from gui import WorkProcess
 import threading
 import multiprocessing
 
-#debugging = False
-debugging = True
+debugging = False
+#debugging = True
 
 class fastSemSimGui(wx.Frame):
 	debug = True
@@ -100,7 +100,7 @@ class fastSemSimGui(wx.Frame):
 	ssprocess = []
 
 	def __init__(self, parent):
-		super(fastSemSimGui, self).__init__(parent, title="fastSemSim - Copyright 2011, Marco Mina (src version)", size=(620,600))
+		super(fastSemSimGui, self).__init__(parent, title="fastSemSim - Copyright 2011, Marco Mina (src version)", size=(605,630))
 		self.InitUI()
 		
 	def InitUI(self):
@@ -319,31 +319,31 @@ class fastSemSimGui(wx.Frame):
 #--------------------------------------------------------------------------------------------------------------
 #--------------------------------------------------------------------------------------------------------------
 
-	#def buildSSobject(self):
-		#if self.update_ssobject or self.ssobject == None:
-			#self.ssobject = None
-			#if self.ssmeasure is None:
-				#return False
-			##if SemSimMeasures.SemSimMeasures[self.Operationgui.ssmeasure][1]:
-				##if self.mixingstrategy is None:
-					##return False 
-			#if self.go is None or self.ac is None:
-				#return False
-			###print self.ssmeasure
-			##print self.mixingstrategy
-			#self.ssobject = ObjSemSim.ObjSemSim(self.ac, self.go, self.ssmeasure, self.mixingstrategy, None)
-			#if not self.ssobject is None:
-				#self.update_ssobject = False
-				#if not self.mixingstrategy is None:
-					#self.log_field.AppendText("Semantic similarity object created: " + str(self.ssmeasure) + " " + str(self.mixingstrategy) + ".\n")
-				#else:
-					#self.log_field.AppendText("Semantic similarity object created: " + str(self.ssmeasure) + ".\n")
-			#else:
-				##self.log_field.AppendText("Unable to create semantic similarity of type " + str(self.ssmeasure) + " " + str(self.mixingstrategy) + ".\n")
-				#return False
-		#else:
-			#self.log_field.AppendText("Using previous semantic similarity object.\n")
-		#return True
+	def buildSSobject(self):
+		if self.update_ssobject or self.ssobject == None:
+			self.ssobject = None
+			if self.ssmeasure is None:
+				return False
+			#if SemSimMeasures.SemSimMeasures[self.Operationgui.ssmeasure][1]:
+				#if self.mixingstrategy is None:
+					#return False 
+			if self.go is None or self.ac is None:
+				return False
+			##print self.ssmeasure
+			#print self.mixingstrategy
+			self.ssobject = ObjSemSim.ObjSemSim(self.ac, self.go, self.ssmeasure, self.mixingstrategy, None)
+			if not self.ssobject is None:
+				self.update_ssobject = False
+				if not self.mixingstrategy is None:
+					self.log_field.AppendText("Semantic similarity object created: " + str(self.ssmeasure) + " " + str(self.mixingstrategy) + ".\n")
+				else:
+					self.log_field.AppendText("Semantic similarity object created: " + str(self.ssmeasure) + ".\n")
+			else:
+				#self.log_field.AppendText("Unable to create semantic similarity of type " + str(self.ssmeasure) + " " + str(self.mixingstrategy) + ".\n")
+				return False
+		else:
+			self.log_field.AppendText("Using previous semantic similarity object.\n")
+		return True
 
 	def buildQuery(self):
 		#self.SetQueryOk(False)
@@ -413,99 +413,105 @@ class fastSemSimGui(wx.Frame):
 		for line in self.ac.annotations:
 			self.query.append(line)
 		return True
-	
+
+#################################
+#'''
+#Following routines start/stop ss computation
+#'''
+
 	def stop(self):
+		self.stop_process()
 		self.SetStatus(1)
-		if self.running:
-			self.ssprocess[0].terminate()
-			self.ssprocess[0] = None
-			self.running = False
-			print "Stop"
 		return True
 
-	def test(self):
-		if self.ssprocess[0] == None:
+	def start_process(self):
+		if not self.running:
 			self.gui2ssprocess_queue = multiprocessing.Queue()
 			self.gui2ssprocess_pipe, self.ssprocess2gui_pipe = multiprocessing.Pipe()
 			self.sspdone = multiprocessing.Value('d', 0.0)
 			self.sstodo = multiprocessing.Value('i', 0)
-    
-			self.ssprocess[0] = WorkProcess.WorkProcess(self.gui2ssprocess_queue, self.ssprocess2gui_pipe, self.gui2ssprocess_pipe, self.sspdone, self.sstodo)
+			self.sscompleted = multiprocessing.Value('i', 0)
+			self.ssprocess[0] = WorkProcess.WorkProcess(self.gui2ssprocess_queue, self.ssprocess2gui_pipe, self.gui2ssprocess_pipe, self.sspdone, self.sstodo, self.sscompleted)
 			self.running = True
 			self.SetStatus(2)
 			self.timer.Start(1000)
 			self.ssprocess[0].start()
 			self.gui2ssprocess_queue.put((self.go, self.ac, self.ssmeasure, self.mixingstrategy, self.ssobject, self.query, self.query_type, self.selectedGO, self.output_type, self.output_file))
+			return True
 		else:
 			print "Already executing"
+			return False
+
+	def stop_process(self):
+		self.timer.Stop()
+		self.ssprocess[0].terminate()
+		self.ssprocess[0] = None
+		self.gui2ssprocess_queue.close()
+		self.gui2ssprocess_queue = None
+		self.gui2ssprocess_pipe.close()
+		self.gui2ssprocess_pipe = None
+		self.ssprocess2gui_pipe.close()
+		self.ssprocess2gui_pipe = None
+		self.sspdone = None
+		self.sstodo = None
+		self.sscompleted = None
+		self.running = False
+		self.progress.SetValue(int(0))
 		return True
-		
+
 	def start(self):
-		if debugging:
-			self.buildQuery()
-			return self.test()
-			return True
-		#if not self.running:
-		self.log_field.AppendText("Evaluating semantic similarity...\n")
-		self.OutputGui.output_field.Clear()
-		self.OutputGui.Show()
-		#return self.test()
-		self.skip_checks = False
 		self.log_field.AppendText('--------------------------------------\n')
-			#----------------------------------------------------------------------------------------------------
-		#check if everything is configured
+		#if debugging:
+			#self.buildQuery()
+			#return self.start_process()
+			#return True
+		self.skip_checks = False							#check if everything is configured
 		if not self.skip_checks:
 			if not self.go_ok:
 				self.log_field.AppendText("Check Gene Ontology. Aborted\n")
-				#self.logfield.AppendText("Aborted.\n")
 				return False
 			if not self.ac_ok:
 				self.log_field.AppendText("Check Annotation Corpus. Aborted.\n")
 				return False
 			if not self.query_ok:
 				self.log_field.AppendText("Check query. Aborted.\n")
-				#self.logfield.AppendText("Aborted.\n")
 				return False
 			if not self.outputctrl_ok:
 				self.log_field.AppendText("Check output parameters. Aborted.\n")
-				#self.logfield.AppendText("Aborted.\n")
 				return False
 			if not self.operation_ok:
 				self.log_field.AppendText("Check operation parameters. Aborted.\n")
-			#self.logfield.AppendText("Aborted.\n")
 				return False
 		#----------------------------------------------------------------------------------------------------
-		self.log_field.AppendText("Data seems to be ok. Inizializing structures...\n")
-		#Prepare sem sim object
+		#self.log_field.AppendText("Data seems to be ok. Inizializing structures...\n")
 		#self.log_field.AppendText("-> Setting up semantic similarity...\n")
-		#if not self.buildSSobject():
+		if not self.buildSSobject():						#Prepare sem sim object
 			#self.log_field.AppendText("-> Failed to initialize semantic similarity measure. Aborted.\n")
-			#return False
+			return False
 		#----------------------------------------------------------------------------------------------------
-		# Prepare query
-		self.log_field.AppendText("-> Setting up query...\n")
-		if not self.buildQuery():
-			self.log_field.AppendText("Failed to load query. Aborted.\n")
-		else:
-			if self.query_type == 0:
-				self.log_field.AppendText("\tQuery loaded:" + (str(len(self.query))) + " pairs\n")
-			elif self.query_type == 1:
-				self.log_field.AppendText("Query loaded: " + str(len(self.query)) + " items.\n")
-				print self.query
+		#self.log_field.AppendText("-> Setting up query...\n")
+		if not self.buildQuery():							# Prepare query
+			#self.log_field.AppendText("Failed to load query. Aborted.\n")
+			return False
+		#else:
+			#if self.query_type == 0:
+				#self.log_field.AppendText("\tQuery loaded:" + (str(len(self.query))) + " pairs\n")
+			#elif self.query_type == 1:
+				#self.log_field.AppendText("Query loaded: " + str(len(self.query)) + " items.\n")
 		#----------------------------------------------------------------------------------------------------
 		# Calculate SS scores
 		self.log_field.AppendText("Evaluating semantic similarity...\n")
-		return self.test()
-		#self.ssprocess[0] = WorkThread.WorkThread(self)
-		#self.update_event = threading.Event()
-		#self.running = True
-		#self.ssprocess[0].start()
-		#print "Done"
-		#return True
+		if self.output_type == 0:
+			self.OutputGui.output_field.Clear()
+			self.OutputGui.Show()
+		return self.start_process()
 
+#################################
 
+#'''
+#Following routines handle communications with other processes 
+#'''
 
-#################################################################################################################################
 
 	def OnCheckPipes(self,event):
 		#print "timer elapsed"
@@ -514,27 +520,29 @@ class fastSemSimGui(wx.Frame):
 			tmp = self.ssprocess2gui_pipe.recv()
 			self.OnOutputData(tmp)
 		self.OnProgress()
+		self.OnCompleted()
 
 	def OnProgress(self):
-		print "Updating progress bar..."
+		#print "Updating progress bar..."
 		gaugerange = self.progress.GetRange()
 		self.progress.SetValue(self.sspdone.value*gaugerange)
 		#self.OnUpdateDone()
 
-	def OnCompleted(self, msg):
-		t = msg.data
-		self.log_field.AppendText("Completed\n")
-		self.running = False
-		#self.OnUpdateDone()
+	def OnCompleted(self):
+		print str(self.sscompleted.value)
+		if self.sscompleted.value == 1:
+			self.log_field.AppendText("Task Completed\n")
+			#self.running = False
+			self.stop()
 		
 	def OnOutputData(self, t):
-		print "Printing output data"
+		#print "Printing output data"
 		#print t
 		for i in t: #range(t[0], t[1] + 1):
 			#frase = self.ssprocess[0].buffer[i][0] + "\t" + self.ssprocess[0].buffer[i][1] + "\t" + self.ssprocess[0].buffer[i][2] + "\n"
 			frase = str(i[0]) + "\t" + str(i[1]) + "\t" + str(i[2]) + "\n"
 			self.OutputGui.output_field.AppendText(frase)
-		print "Output data printed"
+		#print "Output data printed"
 		#self.OnUpdateDone()
 
 	def OnLogData(self, msg):
@@ -543,8 +551,9 @@ class fastSemSimGui(wx.Frame):
 		#self.OnUpdateDone()
 		
 	def OnUpdateDone(self):
-		print "Update done"
-		self.update_event.set()
+		pass
+		#print "Update done"
+		#self.update_event.set()
 
 #################################################################################################################################
 

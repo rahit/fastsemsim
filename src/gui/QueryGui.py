@@ -98,19 +98,29 @@ class QueryGui:
 	def OnFileBrowse(self, event):
 		dialog = wx.FileDialog(None, style = wx.OPEN)
 		if dialog.ShowModal() == wx.ID_OK:
-			self.inputfield.Disable()
+			#self.inputfield.Disable()
 			self.parentobj.query_file = dialog.GetPath()
-			self.inputfield.SetValue("Data will be loaded from " + str(self.parentobj.query_file))
-			self.parentobj.query_from = 1 # from file
-			self.fromaccmd.SetValue(False)
-			self.parentobj.upload_query = True
-		self.CheckIfOk()
+			self.OnFromFile(None)
+			#self.inputfield.SetValue("Data will be loaded from " + str(self.parentobj.query_file))
+			#self.parentobj.query_from = 1 # from file
+			#self.fromaccmd.SetValue(False)
+			#self.parentobj.upload_query = True
+		#self.CheckIfOk()
 
+	def OnFromFile(self, event):
+		self.inputfield.Disable()
+		self.inputfield.SetValue("Data will be loaded from " + str(self.parentobj.query_file))
+		self.parentobj.query_from = 1 # from file
+		self.fromaccmd.SetValue(False)
+		self.parentobj.upload_query = True
+		self.CheckIfOk()
+		
 	def OnFromAC(self, event):
 		if self.fromaccmd.GetValue():
 			self.inputfield.Disable()
 			self.parentobj.query_from = 2 # from ac
 			self.inputfield.SetValue("Data will be loaded from Annotation Corpus")
+			self.parentobj.query_file = None
 		else:
 			self.inputfield.Enable()
 			self.inputfield.SetValue("")
@@ -132,7 +142,7 @@ class QueryGui:
 		self.parentobj.upload_query = True
 		if self.radio_pairs.GetValue():
 			self.parentobj.query_type = 0
-			if self.parentobj.query_from == 2:
+			if self.parentobj.query_from == 2: # from ac
 				self.parentobj.query_from_ac = False
 				self.parentobj.query_from = 0
 				self.inputfield.SetValue("")
@@ -151,12 +161,12 @@ class QueryGui:
 		if self.parentobj.query_from == 2:
 			self.parentobj.SetQueryOk(True)
 		elif self.parentobj.query_from == 0:
-			print "A"
+			#print "A"
 			if str(self.inputfield.GetValue()) == "":
-				print "B"
+				#print "B"
 				self.parentobj.SetQueryOk(False)
 			else:
-				print "C"
+				#print "C"
 				self.parentobj.SetQueryOk(True)
 		elif self.parentobj.query_from == 1:
 			if self.parentobj.query_file is None:
@@ -166,3 +176,26 @@ class QueryGui:
 		else:
 			self.parentobj.SetQueryOk(False)
  
+ #--------------------------------------------------------------
+# Utilities to set front-end values
+	def set_query_format(self, qform):
+		if qform == 0: #pairs
+			self.radio_pairs.SetValue(True)
+			self.radio_list.SetValue(False)
+		elif qform == 1:
+			self.radio_pairs.SetValue(False)
+			self.radio_list.SetValue(True)
+		self.OnTypeSelect(None)
+
+	def set_query_from(self, qfrom):
+		if qfrom == 2: # from ac
+			self.fromaccmd.Enable()
+			self.fromaccmd.SetValue(True)
+			self.OnFromAC(None)
+		elif qfrom == 0: # from field
+			self.fromaccmd.Enable()
+			self.fromaccmd.SetValue(False)
+		elif qfrom == 1: # from file
+			self.fromaccmd.Enable()
+			self.fromaccmd.SetValue(False)
+			self.OnFromFile(None)

@@ -109,3 +109,12 @@ class OutputCtrlGui():
 			#self.parentobj.query_from_ac = True
 			self.parentobj.output_type = 0 # text field
 			self.parentobj.SetOutputCtrlOk(True)
+
+#--------------------------------------------------------------
+# Utilities to set front-end values
+	def set_output_type(self, ot):
+		if ot == 1:
+			self.output2file.SetValue(True)
+		elif ot == 0:
+			self.output2file.SetValue(False)
+		self.OnToFile(None)

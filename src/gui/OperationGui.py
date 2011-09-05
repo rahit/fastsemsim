@@ -125,3 +125,22 @@ class OperationGui:
 		else:
 			self.mixing.Disable()
 			self.parentobj.SetOperationOk(True)
+			
+#--------------------------------------------------------------
+# Utilities to set front-end values
+	def set_ss(self, measure):
+		self.ss.SetStringSelection(measure)
+		self.OnSelectSS(None)
+
+	def set_ms(self, ms):
+		self.mixing.SetStringSelection(ms)
+		self.OnSelectMS(None)
+
+	def set_go(self, go):
+		i = -1
+		for j in range(0,len(self.goradius)):
+			self.goradius[j].SetValue(False)
+			if self.gocodes[j] == go:
+				i = j
+		self.goradius[i].SetValue(True)
+		self.OnSelectGO(None)
