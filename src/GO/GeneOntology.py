@@ -42,8 +42,11 @@ def get_goid(id):
 	return int(id[3:])
 
 class GOHandler(ContentHandler):
+	ignore_part_of = False
+	
 	def __init__(self,):
-		self.isId, self.isIsA, self.isPartOf, self.isaltId = 0,0,0,0
+		self.isId, self.isIsA, self.isPartOf, self.isaltId, self.isRelationship = 0,0,0,0,0
+		self.isRelationshipTo, self.isRelationshipType = 0,0
 		self.inTerm = 0
 		self.edges = []
 		self.terms = []
@@ -66,6 +69,16 @@ class GOHandler(ContentHandler):
 			elif name == 'alt_id':
 				self.isaltId = 1
 				self.curaltid = ''
+			elif name == 'relationship':
+				self.isRelationship = 1
+			elif name == 'type':
+				if self.isRelationship:
+					self.isRelationshipType = 1
+					self.parent_type = ''
+			elif name == 'to':
+				if self.isRelationship:
+					self.isRelationshipTo = 1
+					self.parent = ''
 	
 	def endElement(self, name):
 		if self.inTerm == 1:
@@ -77,14 +90,30 @@ class GOHandler(ContentHandler):
 				self.isId = 0
 				self.id = get_goid(self.id)
 			elif name == 'is_a':
+				#print "original is_a"
 				self.isIsA = 0
 				self.edges.append( (self.id, get_goid(self.isa), IS_A ) )
 			elif name == 'part_of':
+				print "original part_of"
 				self.isPartOf = 0
 				self.edges.append( (self.id, get_goid(self.partof), PART_OF ) )
 			elif name == 'alt_id':
+				#print "original alt_id"
 				self.isaltId = 0
 				self.alt_ids[get_goid(self.curaltid)] = self.id
+			elif name == 'relationship':
+				self.isRelationship = 0
+			elif name == 'type':
+				if self.isRelationship:
+					self.isRelationshipType = 0
+					#self.parent_type = ''
+			elif name == 'to':
+				if self.isRelationship:
+					self.isRelationshipTo = 0
+					if str(self.parent_type) == 'part_of' and not self.ignore_part_of:
+						self.edges.append( (self.id, get_goid(self.parent), PART_OF ) )
+					elif self.parent_type == 'is_a':
+						self.edges.append( (self.id, get_goid(self.parent), IS_A ) )
 	
 	def characters(self, ch):
 		if self.isId == 1:
@@ -95,6 +124,11 @@ class GOHandler(ContentHandler):
 			self.partof += ch
 		elif self.isaltId == 1:
 			self.curaltid += ch
+		elif self.isRelationshipTo == 1:
+			self.parent += ch
+		elif self.isRelationshipType == 1:
+			self.parent_type += ch
+			#print "set: " + ch
 
 class GeneOntology:
 	"""

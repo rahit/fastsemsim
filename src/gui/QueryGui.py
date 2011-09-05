@@ -104,7 +104,7 @@ class QueryGui:
 			#self.inputfield.SetValue("Data will be loaded from " + str(self.parentobj.query_file))
 			#self.parentobj.query_from = 1 # from file
 			#self.fromaccmd.SetValue(False)
-			#self.parentobj.upload_query = True
+			#self.parentobj.update_query = True
 		#self.CheckIfOk()
 
 	def OnFromFile(self, event):
@@ -112,7 +112,7 @@ class QueryGui:
 		self.inputfield.SetValue("Data will be loaded from " + str(self.parentobj.query_file))
 		self.parentobj.query_from = 1 # from file
 		self.fromaccmd.SetValue(False)
-		self.parentobj.upload_query = True
+		self.parentobj.update_query = True
 		self.CheckIfOk()
 		
 	def OnFromAC(self, event):
@@ -125,7 +125,7 @@ class QueryGui:
 			self.inputfield.Enable()
 			self.inputfield.SetValue("")
 			self.parentobj.query_from = 0 # from field
-		self.parentobj.upload_query = True
+		self.parentobj.update_query = True
 		self.CheckIfOk()
 
 	def OnClear(self, event):
@@ -135,11 +135,11 @@ class QueryGui:
 		self.parentobj.query_file = None
 		#self.parentobj.query_from_ac = False
 		self.parentobj.query_from = 0 # field
-		self.parentobj.upload_query = True
+		self.parentobj.update_query = True
 		self.CheckIfOk()
 
 	def OnTypeSelect(self, event):
-		self.parentobj.upload_query = True
+		self.parentobj.update_query = True
 		if self.radio_pairs.GetValue():
 			self.parentobj.query_type = 0
 			if self.parentobj.query_from == 2: # from ac
@@ -155,7 +155,7 @@ class QueryGui:
 		self.CheckIfOk()
 
 	def OnTextChange(self, event):
-		self.parentobj.upload_query = True
+		self.parentobj.update_query = True
 	
 	def CheckIfOk(self):
 		if self.parentobj.query_from == 2:
@@ -175,6 +175,7 @@ class QueryGui:
 				 self.parentobj.SetQueryOk(True)
 		else:
 			self.parentobj.SetQueryOk(False)
+		self.parentobj.update_query = True
  
  #--------------------------------------------------------------
 # Utilities to set front-end values

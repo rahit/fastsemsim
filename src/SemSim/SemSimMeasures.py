@@ -22,9 +22,18 @@ from SemSim.ResnikSemSim import *
 from SemSim.LinSemSim import *
 from SemSim.JiangConrathSemSim import *
 from SemSim.SimGICSemSim import *
+from SemSim.SimICSemSim import *
+from SemSim.SimRelSemSim import *
 from SemSim.avgSemSim import *
 from SemSim.maxSemSim import *
 from SemSim.BMASemSim import *
+from SemSim.DiceSemSim import *
+from SemSim.SimTOSemSim import *
+from SemSim.SimNTOSemSim import *
+from SemSim.JaccardSemSim import *
+from SemSim.CzekanowskiDiceSemSim import *
+from SemSim.CosineSemSim import *
+from SemSim.GSESAMESemSim import *
 
 '''
 Struct SemSimMeasures.
@@ -37,8 +46,14 @@ SemSimMeasures = {
 'SimGIC': (SimGICSemSim, False),
 'Lin' :(LinSemSim, True),
 'Jiang and Conrath' :(JiangConrathSemSim, True),
-#'SimIC' :(SimGICSemSim, True)
-#'G-SESAME' :(True, ResnikSemSim)}
+'SimIC' :(SimICSemSim, True),
+'Dice' :(DiceSemSim, False),
+'TO' :(SimTOSemSim, False),
+'NTO' :(SimNTOSemSim, False),
+'Jaccard' :(JaccardSemSim, False),
+'Czekanowski-Dice' :(CzekanowskiDiceSemSim, False),
+'Cosine' :(CosineSemSim, False),
+'G-SESAME' :(GSESAMESemSim, True)
 }
 
 '''

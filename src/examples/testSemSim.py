@@ -37,6 +37,11 @@ if __name__ == "__main__":
 	tree = GeneOntology.load_GO_XML(open(sys.argv[1]))
 	print "Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
 
+	for i in tree.nodes_edges:
+		for j in tree.nodes_edges[i]:
+			#if tree.edge_types[j] > 0:
+			print str(i) + "\t" + str(j) + "\t" + str(tree.edges_nodes[j])
+				#print tree.edge_types[j]
 	#### load annotations
 	gp = AnnotationCorpus.AnnotationCorpus(tree)
 	gp.parse(sys.argv[2], 'GOA')

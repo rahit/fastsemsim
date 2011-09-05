@@ -30,11 +30,41 @@ import sys
 import os
 import math
 
-class LinSemSim(TermSemSim) :
-	SS_type = TermSemSim.P_TSS
-	IC_based = True
+class CosineSemSim(TermSemSim):
+	SS_type = TermSemSim.G_TSS
+	IC_based = False
+	extend_annotations = True
 
+	def dotprod(self, vector1, vector2):
+		dotprod = 0.0
+		for i in range(0,len(vector1)):
+			dotprod += vector1[i]*vector2[i]
+		return dotprod
+		
 	def int_SemSim(self, term1, term2):
-		termid = self.util.det_MICA(term1, term2)
-		sim = (2 * self.util.IC[termid])/(self.util.IC[term1] + self.util.IC[term2])
-		return sim
+		if self.extend_annotations:
+			anc1 = self.util.get_ancestors(term1)
+			anc2 = self.util.get_ancestors(term2)
+		else:
+			anc1 = term1
+			anc2 = term2
+
+		self.vector1 = []
+		self.vector2 = []
+		for i in anc1:
+			self.vector1.append(1)
+			if i in anc2:
+				self.vector2.append(1) 
+			else:
+				self.vector2.append(0)
+		for i in anc2:
+			if i in anc1:
+				pass
+			else:
+				self.vector2.append(1)
+				self.vector1.append(0)
+
+		num = self.dotprod(vector1,vector2)
+		den1 = math.sqrt(self.dotprod(vector1,vector1))
+		den2 = math.sqrt(self.dotprod(vector2,vector2))
+		return float(num)/float(den1*den2)

@@ -30,11 +30,10 @@ import sys
 import os
 import math
 
-class LinSemSim(TermSemSim) :
-	SS_type = TermSemSim.P_TSS
-	IC_based = True
+class SimTOSemSim(TermSemSim) :
+	SS_type = TermSemSim.G_TSS
+	IC_based = False
 
 	def int_SemSim(self, term1, term2):
-		termid = self.util.det_MICA(term1, term2)
-		sim = (2 * self.util.IC[termid])/(self.util.IC[term1] + self.util.IC[term2])
-		return sim
+		inters = self.util.det_common_ancestors(term1, term2)
+		return len(inters)

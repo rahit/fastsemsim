@@ -51,20 +51,30 @@ class OperationGui:
 		for i in SemSimMeasures.SemSimMeasures:
 			self.availablemeasures.append(i)
 			self.requiremixing.append(i[1])
-		self.ss = wx.ComboBox(self.panel, wx.ID_ANY, choices=self.availablemeasures, style=wx.CB_READONLY)
+		self.ss = wx.ComboBox(self.panel, wx.ID_ANY, choices=self.availablemeasures, style=wx.CB_READONLY, size=(150,25))
 		self.ss_label = wx.StaticText(self.panel, label='Semantic Measure')
-		self.tsbox.Add(self.ss_label, flag=wx.UP|wx.DOWN|wx.LEFT|wx.RIGHT, border=5)
-		self.tsbox.Add(self.ss, flag=wx.LEFT|wx.RIGHT, border=10)
+		self.ss_advanced_cmd = wx.BitmapButton(self.panel, -1, wx.Bitmap('gui/advanced.png'))
+		self.tsbox.Add(self.ss_label, flag=wx.LEFT|wx.RIGHT, border=5)
+		self.tssubbox = wx.BoxSizer(wx.HORIZONTAL)
+		self.tssubbox.Add(self.ss, flag=wx.LEFT, border=10)
+		self.tssubbox.Add(self.ss_advanced_cmd)
+		self.tsbox.Add(self.tssubbox)
 		
 		self.msbox = wx.BoxSizer(wx.VERTICAL)
 		self.availablemixing = []
 		for i in SemSimMeasures.MixingStrategies:
 			self.availablemixing.append(i)
-		self.mixing = wx.ComboBox(self.panel, wx.ID_ANY, choices=self.availablemixing, style=wx.CB_READONLY)
+		self.mixing = wx.ComboBox(self.panel, wx.ID_ANY, choices=self.availablemixing, style=wx.CB_READONLY, size=(150,25))
 		self.mixing_label = wx.StaticText(self.panel, label='Mixing Strategy')
-		self.msbox.Add(self.mixing_label, flag=wx.UP|wx.DOWN|wx.LEFT|wx.RIGHT, border=5)
-		self.msbox.Add(self.mixing, flag=wx.LEFT|wx.RIGHT, border=10)
+		self.ms_advanced_cmd = wx.BitmapButton(self.panel, -1, wx.Bitmap('gui/advanced.png'))
+		self.msbox.Add(self.mixing_label, flag=wx.UP|wx.LEFT|wx.RIGHT, border=5)
+		self.mssubbox = wx.BoxSizer(wx.HORIZONTAL)
+		self.mssubbox.Add(self.mixing, flag=wx.LEFT, border=10)
+		self.mssubbox.Add(self.ms_advanced_cmd)
+		self.msbox.Add(self.mssubbox)
 		self.mixing.Disable()
+		
+		#self.ssadvancedbox = wx.BoxSizer(wx.VERTICAL)
 		
 		# GObox
 		self.goboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Ontology')
@@ -84,8 +94,9 @@ class OperationGui:
 		#self.ssbox.Add(self.hint, flag=wx.EXPAND|wx.ALL, border=10)
 		self.ssbox.Add(self.tsbox, flag=wx.EXPAND)
 		self.ssbox.Add(self.msbox, flag=wx.EXPAND)
-		self.mainsubbox.Add(self.ssbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
-		self.mainsubbox.Add(self.gobox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+		self.mainsubbox.Add(self.ssbox, flag=wx.EXPAND|wx.TOP|wx.RIGHT, border=5)
+		self.mainsubbox.Add(self.gobox, flag=wx.EXPAND|wx.LEFT, border=10)
+		#self.mainsubbox.Add(self.ssadvancedbox, flag=wx.LEFT|wx.RIGHT, border=10)
 		
 		self.parentobj.Bind(wx.EVT_COMBOBOX, self.OnSelectSS, id=self.ss.GetId())
 		self.parentobj.Bind(wx.EVT_COMBOBOX, self.OnSelectMS, id=self.mixing.GetId())

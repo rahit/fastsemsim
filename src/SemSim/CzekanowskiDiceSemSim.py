@@ -30,11 +30,19 @@ import sys
 import os
 import math
 
-class LinSemSim(TermSemSim) :
-	SS_type = TermSemSim.P_TSS
-	IC_based = True
+class CzekanowskiDiceSemSim(TermSemSim):
+	SS_type = TermSemSim.G_TSS
+	IC_based = False
+	extend_annotations = True
 
 	def int_SemSim(self, term1, term2):
-		termid = self.util.det_MICA(term1, term2)
-		sim = (2 * self.util.IC[termid])/(self.util.IC[term1] + self.util.IC[term2])
-		return sim
+		if self.extend_annotations:
+			anc1 = self.util.get_ancestors(term1)
+			anc2 = self.util.get_ancestors(term2)
+		else:
+			anc1 = term1
+			anc2 = term2
+		inters = self.util.intersection(anc1, anc2)
+		union = self.util.int_merge_sets(anc1, anc2)
+		allanc = self.util.int_merge_sets(self.util.difference(anc1, anc2) , self.util.difference(anc2, anc1))
+		return float(len(allanc))/float(len(union) + len(inters))

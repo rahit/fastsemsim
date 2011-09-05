@@ -43,6 +43,9 @@ debugging = False
 #debugging = True
 
 class fastSemSimGui(wx.Frame):
+	# temp variables to be removed
+	superconta = 0
+	
 	debug = True
 	#Components handles
 	GOGui = None
@@ -482,6 +485,7 @@ class fastSemSimGui(wx.Frame):
 			if not self.operation_ok:
 				self.log_field.AppendText("Check operation parameters. Aborted.\n")
 				return False
+		self.log_field.AppendText("Initializing structures...\n")
 		#----------------------------------------------------------------------------------------------------
 		#self.log_field.AppendText("Data seems to be ok. Inizializing structures...\n")
 		#self.log_field.AppendText("-> Setting up semantic similarity...\n")
@@ -530,15 +534,18 @@ class fastSemSimGui(wx.Frame):
 
 	def OnCompleted(self):
 		if self.sscompleted.value == 1:
-			self.log_field.AppendText("Task Completed\n")
+			self.log_field.AppendText("Finished.\n")
+			print self.superconta
 			#self.running = False
 			self.stop()
 		
 	def OnOutputData(self, t):
 		#print "Printing output data"
 		#print t
+		
 		for i in t: #range(t[0], t[1] + 1):
 			#frase = self.ssprocess[0].buffer[i][0] + "\t" + self.ssprocess[0].buffer[i][1] + "\t" + self.ssprocess[0].buffer[i][2] + "\n"
+			self.superconta += 1
 			frase = str(i[0]) + "\t" + str(i[1]) + "\t" + str(i[2]) + "\n"
 			self.OutputGui.output_field.AppendText(frase)
 		#print "Output data printed"

@@ -30,11 +30,18 @@ import sys
 import os
 import math
 
-class LinSemSim(TermSemSim) :
-	SS_type = TermSemSim.P_TSS
-	IC_based = True
+class JaccardSemSim(TermSemSim):
+	SS_type = TermSemSim.G_TSS
+	IC_based = False
+	extend_annotations = True
 
 	def int_SemSim(self, term1, term2):
-		termid = self.util.det_MICA(term1, term2)
-		sim = (2 * self.util.IC[termid])/(self.util.IC[term1] + self.util.IC[term2])
-		return sim
+		if self.extend_annotations:
+			inters = self.util.det_common_ancestors(term1, term2)
+			anc1 = self.util.get_ancestors(term1)
+			anc2 = self.util.get_ancestors(term2)
+			allanc = self.int_merge_sets(anc1, anc2)
+		else:
+			inters = self.util.intersection(term1, term2)
+			allanc = self.int_merge_sets(term1, term2)
+		return float(len(inters))/float(len(allanc))

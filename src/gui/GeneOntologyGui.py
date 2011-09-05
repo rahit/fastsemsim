@@ -83,7 +83,7 @@ class GeneOntologyGui(wx.Frame):
 		#### Populate GO section in main window
 		#self.parentobj.go_status_pic = wx.StaticBitmap(self.parentobj.panel)
 		self.parentobj.SetGoOk(False)
-		self.parentobj.go_cmd = wx.Button(self.parentobj.panel, wx.ID_ANY, 'Load a Gene Ontology...')
+		self.parentobj.go_cmd = wx.Button(self.parentobj.panel, wx.ID_ANY, 'Load Gene Ontology...')
 		self.parentobj.go_box.Add(self.parentobj.go_cmd,flag=wx.ALL|wx.CENTER, border = 8)
 		#self.parentobj.go_box.Add(self.parentobj.go_status_pic,flag=wx.ALL|wx.CENTER, border = 8)
 		self.parentobj.Bind(wx.EVT_BUTTON, self.OnGOBrowse, id=self.parentobj.go_cmd.GetId())

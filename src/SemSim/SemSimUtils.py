@@ -173,6 +173,21 @@ class SemSimUtils:
 		self.GO_division = assigns
 		self.root = self.GO_division
 
+	def det_prob(self,term_id):
+		if term_id in self.freqs:
+			if self.freqs[term_id] == 0:
+				return -1
+			if self.GO_division[term_id] == self.BP_root:
+				rootf = self.freqs[self.go_name2id(self.BP_root)]
+			elif self.GO_division[term_id] == self.MF_root:
+				rootf = self.freqs[self.go_name2id(self.MF_root)]
+			elif self.GO_division[term_id] == self.CC_root:
+				rootf = self.freqs[self.go_name2id(self.CC_root)]
+			temp_p = float(self.freqs[term_id])/float(rootf)
+			return temp_p
+		else:
+			return -1
+		
 	def det_freq(self,term_id):
 		freq = 0
 		children_set = self.offspring[term_id]
@@ -233,7 +248,21 @@ class SemSimUtils:
 		for i in set2:
 			ca[i] = None
 		return ca
-		
+
+	def intersection(self, set1, set2):
+		ca = {}
+		for i in set1:
+			if i in set2:
+				ca[i] = None
+		return ca
+
+	def difference(self, set1, set2):
+		ca = {}
+		for i in set1:
+			if not i in set2:
+				ca[i] = None
+		return ca
+
 	def det_common_ancestors(self, term1, term2):
 		if type(term1) is int:
 			gene1anc = self.ancestors[term1]

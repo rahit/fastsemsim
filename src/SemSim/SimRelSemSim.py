@@ -30,11 +30,17 @@ import sys
 import os
 import math
 
-class LinSemSim(TermSemSim) :
+class SimRelSemSim(TermSemSim) :
+	use_Lin = True
 	SS_type = TermSemSim.P_TSS
 	IC_based = True
 
 	def int_SemSim(self, term1, term2):
 		termid = self.util.det_MICA(term1, term2)
-		sim = (2 * self.util.IC[termid])/(self.util.IC[term1] + self.util.IC[term2])
+		if self.use_Lin:
+			sim = (2 * self.util.IC[termid])/(self.util.IC[term1] + self.util.IC[term2])
+		else:
+			return None
+		factor = self.util.det_prob(termid)
+		sim *= (1 - factor)
 		return sim

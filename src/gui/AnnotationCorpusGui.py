@@ -124,7 +124,7 @@ class AnnotationCorpusGui(wx.Frame):
 	def InitMainUI(self):
 		#self.parentobj.ac_status_pic= wx.StaticBitmap(self.parentobj.panel)
 		self.parentobj.SetAcOk(False)
-		self.parentobj.ac_cmd = wx.Button(self.parentobj.panel, wx.ID_ANY, 'Load an Annotation Corpus...')
+		self.parentobj.ac_cmd = wx.Button(self.parentobj.panel, wx.ID_ANY, 'Load Annotation Corpus...')
 		self.parentobj.ac_box.Add(self.parentobj.ac_cmd, flag=wx.ALL|wx.CENTER, border = 8)
 		#self.parentobj.ac_box.Add(self.parentobj.ac_status_pic,flag=wx.ALL|wx.CENTER, border = 8)
 		self.parentobj.Bind(wx.EVT_BUTTON, self.OnACBrowse, id=self.parentobj.ac_cmd.GetId())
