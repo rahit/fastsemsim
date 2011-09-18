@@ -54,7 +54,6 @@ SemSimMeasures = {
 'Czekanowski-Dice' :(CzekanowskiDiceSemSim, False),
 'Cosine' :(CosineSemSim, False),
 'G-SESAME' :(GSESAMESemSim, True)
-
 }
 
 '''

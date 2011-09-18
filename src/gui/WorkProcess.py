@@ -24,7 +24,6 @@ import copy
 from SemSim import SemSimMeasures
 from SemSim import ObjSemSim
 from SemSim import SemSimUtils
-from GO import GeneOntology
 
 class WorkProcess(multiprocessing.Process):
 	store_all = False
@@ -34,77 +33,17 @@ class WorkProcess(multiprocessing.Process):
 	MAX_CACHE_SIZE = 5000
 	KEEP_MODE = True
 
-
-	def __init__(self, gui2ssprocess_queue, ssprocess2gui_queue, in_pipe, out_pipe):
+	#def __init__(self, gui2ssprocess_commands_queue):
+	def __init__(self, gui2ssprocess_queue, gui2ssprocess_pipe, ssprocess2gui_pipe, sspdone, sstodo, sscompleted):
 		multiprocessing.Process.__init__(self)
+		#self.gui2ssprocess_commands_queue = gui2ssprocess_commands_queue
 		self.gui2ssprocess_queue = gui2ssprocess_queue
-		self.ssprocess2gui_queue = ssprocess2gui_queue
-		self.in_pipe = in_pipe
-		self.out_pipe = out_pipe
-		self.reset()
-		self.commands = {
-			'reset':self.reset,
-			'init':self.initialize,
-			'run':self.calculate,
-			'go':self.go,
-			'ac':self.ac,
-			'query':self.query,
-			'outputctrl':self.outputctrl,
-			'ss':self.ss,
-			'abort':self.abort
-			}
+		self.gui2ssprocess_pipe = gui2ssprocess_pipe
+		self.ssprocess2gui_pipe = ssprocess2gui_pipe
+		self.sspdone = sspdone
+		self.sstodo = sstodo
+		self.sscompleted = sscompleted
 
-	def run(self):
-		while True:
-			data = self.gui2ssprocess_queue.get() # every packet should be in the form ('command', params)
-			print "Received " + str(data)
-			if data in self.commands:
-				self.commands[data]()
-			#elif data[0] in self.commands:
-				#self.commands[data[0]](data)
-		return True
-
-	def reset(self):
-		print "Reset"
-		#self.in_pipe.flush()
-		#self.out_pipe.flush()
-		return True
-
-	def initialize(self):
-		print "Initialization..."
-		return True
-
-	def calculate(self):
-		pass
-	def go(self):
-		print "Go"
-		if not self.in_pipe.poll():
-			return False
-		data = self.in_pipe.recv()
-		print type(data)
-		if type(data) is str:
-			self.go_filename = data
-		elif type(data) is list or type(data) is tuple:
-			self.go_filename = data[0]
-		self.go = GeneOntology.load_GO_XML(open(self.go_filename,'r'))
-		if not self.go == None:
-			self.go_ok = True
-			self.out_pipe.send(('go', 'ok'))
-		else:
-			self.go_ok = False
-			self.out_pipe.send(('go', 'fail'))
-		pass
-	def ac(self):
-		pass
-	def query(self):
-		pass
-	def outputctrl(self):
-		pass
-	def ss(self):
-		pass
-	def abort(self):
-		pass
-	
 	def buildSSobject(self):
 		ssu = SemSimUtils.SemSimUtils(self.ac, self.go)
 		ssu.det_offspring_table()
@@ -119,7 +58,9 @@ class WorkProcess(multiprocessing.Process):
 		#print "real mixing: " + str(self.ssobject.mixSS)
 		return True
 	
-
+	#def run(self):
+		#while True:
+			#self.gui2ssprocess_commands_queue.get()
 	def set_completed(self):
 		self.sscompleted.value = 1
 	
@@ -193,7 +134,7 @@ class WorkProcess(multiprocessing.Process):
 		self.set_completed()
 		return True
 
-	def orun(self):
+	def run(self):
 		if not self.parse_data():
 			return self.abort()
 		if not self.init_structures():
