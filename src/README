@@ -1,6 +1,6 @@
-Copyright 2011 Marco Mina. All rights reserved.
+FastSemSim project
 
-This file is part of fastSemSim
+Copyright 2011 Marco Mina. All rights reserved.
 
 fastSemSim is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,12 +15,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 
+Even though this work is released under GNU GPL license, this software is currently unpublished work.
+You must contact us before using it or its results or any application/tool based on it in any published work.
 
-fastSemSim is a tool to efficiently determine semantic similarity between gene products
-A coprehensive manual of the tool is not available yet.
-In this build there are some useful examples though.
+Corresponding author: Marco Mina.
+Email: marco.mina.85@gmail.com
 
-testSemSim.sh is a example illustrating how to use fastSemSim library. It takes as input the Gene Ontology (in XML format), an annotation corpus (in GOA format), and a list of pairs of objects (proteins) to compare.
-It stores in log.txt the semantic similarity scores between proteins listed in the file passed as third parameter.
-
-fastSemSimGui.sh launches a gui (graphical user interface) that allows to calculate semantic similarity scores using fastSemSim library.

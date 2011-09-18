@@ -60,7 +60,7 @@ class fastResnikSemSim():
 		terms = []
 		for i in self.annotation_corpus.annotations[obj]:
 			#print i
-			if i in self.annotation_corpus.obsoletes:
+			if i in self.go.obsolete_ids:
 				#print(str(i) + " obsolete!")
 				continue
 			if i not in self.util.GO_division:
@@ -85,7 +85,7 @@ class fastResnikSemSim():
 		temp_IC = {}
 		temp_temps = self.util.get_ancestors(self.annotation_corpus.reverse_annotations.keys())
 		for i in temp_temps:
-			if not i in self.annotation_corpus.obsoletes:
+			if not i in self.go.obsolete_ids:
 				temp_IC[i] = self.util.IC[i]
 		self.sortedTerms = sorted(temp_IC, key  = temp_IC.__getitem__, reverse=True)
 		self.sortedTermsDict = {}
@@ -158,11 +158,11 @@ class fastResnikSemSim():
 		self.stream1 = stream1
 		#self.stream2 = stream2
 		#### translate into id format & check data
-		if ontology is self.util.BP_ontology:
+		if ontology == self.util.BP_ontology:
 			onto = self.util.BP_root
-		elif ontology is self.util.MF_ontology:
+		elif ontology == self.util.MF_ontology:
 			onto = self.util.MF_root
-		elif ontology is self.util.CC_ontology:
+		elif ontology == self.util.CC_ontology:
 			onto = self.util.CC_root
 		else:
 			print("No valid ontology selected.")
@@ -201,7 +201,7 @@ if __name__ == "__main__":
 	print "Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
 
 	gp = AnnotationCorpus.AnnotationCorpus(tree)	
-	gp.parse(sys.argv[2],'plain')
+	gp.parse(sys.argv[2],'plain', {'AC_TERM_FIRST'})
 
 	print("Annotated proteins: " + str(len(gp.annotations)))
 	print("Annotated terms: " + str(len(gp.reverse_annotations)))
@@ -214,9 +214,14 @@ if __name__ == "__main__":
 	ssu.det_freq_table()
 	ssu.det_GO_division()
 	ssu.det_ICs_table()
-
+	print "------------ IC list -----------"
+	for i in ssu.IC:
+		print str(i) + "\t" + str(ssu.IC[i])
+	print "------------ end IC list -----------"
 	SS = fastResnikSemSim(gp, tree, ssu)
-	ontology = "MF"
+	
+	ontology = str(sys.argv[4]) # "MF" or "BP" or "CC"
+	print ontology
 	outfile1 = open(sys.argv[3], 'w')
 	SS.SemSim(ontology, outfile1)
 	outfile1.close()
