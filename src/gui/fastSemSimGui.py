@@ -443,38 +443,31 @@ class fastSemSimGui(wx.Frame):
 			return False
 			
 	def test_process(self):
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_AC, 'prova'))
+		#self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_AC, 'prova'))
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_STATUS, 'prova'))
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_GO, 'prova'))
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_SS, 'prova'))
+		#self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_GO, 'prova'))
+		#self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_SS, 'prova'))
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, 'prova'))
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_OUTPUT, 'prova'))
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_START, 'prova'))
+		#time.sleep(2)
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_PAUSE, 'prova'))
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_STOP, 'prova'))
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_PAUSE, 'prova'))
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_STATUS, 'prova'))
 
 	def start_process(self):
-		if not self.running:
-			self.gui2ssprocess_queue = multiprocessing.Queue()
-			self.ssprocess2gui_queue = multiprocessing.Queue()
-			self.gui2ssprocess_pipe, self.ssprocess2gui_pipe = multiprocessing.Pipe()
-			self.sspdone = multiprocessing.Value('d', 0.0)
-			self.sstodo = multiprocessing.Value('i', 0)
-			self.sscompleted = multiprocessing.Value('i', 0)
-			#self.ssprocess[0] = WorkProcess.WorkProcess(self.gui2ssprocess_queue, self.ssprocess2gui_pipe, self.gui2ssprocess_pipe, self.sspdone, self.sstodo, self.sscompleted)
-			self.ssprocess[0] = WorkProcess.WorkProcess(self.gui2ssprocess_queue, self.ssprocess2gui_queue, self.ssprocess2gui_pipe, self.gui2ssprocess_pipe)
-			self.running = True
-			self.SetStatus(2)
-			self.timer.Start(1000)
-			self.ssprocess[0].start()
-			#self.gui2ssprocess_queue.put((self.go, self.ac, self.ssmeasure, self.mixingstrategy, self.ssobject, self.query, self.query_type, self.selectedGO, self.output_type, self.output_file))
-			self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_AC, 'prova'))
-			return True
-		else:
-			print "Already executing"
-			return False
+		#### data format: (ss measure, ss measure params, mixing strat., mixing strat. params, ontology)
+		self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_SS, self.ssmeasure, None, self.mixingstrategy, None, self.selectedGO))
+		if self.output_type == 0:
+			self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_OUTPUT, WorkProcess.OUTPUT2GUI, None))
+		elif self.output_type == 1:
+			self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_OUTPUT, WorkProcess.OUTPUT2FILE, self.output_file, None, None))
+
+					#####self.gui2ssprocess_queue.put((self.go, self.ac, self.ssmeasure, self.mixingstrategy, self.ssobject, self.query, self.query_type, self.selectedGO, self.output_type, self.output_file))
+		self.SetStatus(2)
+		#self.timer.Start(1000)
+		return True
 
 	def stop_process(self):
 		self.timer.Stop()

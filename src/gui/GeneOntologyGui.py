@@ -20,6 +20,7 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 
 import wx
 from GO import GeneOntology
+from gui import WorkProcess
 
 class GeneOntologyGui(wx.Frame):
 	go_filename  = None
@@ -109,6 +110,7 @@ class GeneOntologyGui(wx.Frame):
 
 
 	def OnGOLoad(self, event):
+		self.parentobj.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_GO, self.go_filename))
 		self.parentobj.SetGoOk(False)
 		self.parentobj.update_ac = True
 		self.parentobj.update_ssobject = True

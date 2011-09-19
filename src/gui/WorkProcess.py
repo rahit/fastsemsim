@@ -25,6 +25,7 @@ from SemSim import SemSimMeasures
 from SemSim import ObjSemSim
 from SemSim import SemSimUtils
 from GO import GeneOntology
+from GO import AnnotationCorpus
 
 STATUS_BASE = 0
 STATUS_INIT = STATUS_BASE + 0
@@ -51,8 +52,8 @@ CMD_LOAD_SS = CMD_BASE + 9
 CMD_LOAD_OUTPUT = CMD_BASE + 10
 CMD_DESTROY =  CMD_BASE + 11
 
-
-
+OUTPUT2GUI = 0
+OUTPUT2FILE = 1
 
 class WorkProcess(multiprocessing.Process):
 	status = STATUS_INIT
@@ -87,7 +88,7 @@ class WorkProcess(multiprocessing.Process):
 					self.status()
 				else:
 					pass # ignore any other command!
-			except multiprocessing.Queue.Empty:
+			except Exception:
 				pass
 		elif self.status == STATUS_PAUSE:
 			print "check in status PAUSE"
@@ -139,11 +140,23 @@ class WorkProcess(multiprocessing.Process):
 
 	def reset(self):
 		print "func reset"
+		self.ss_ok = False
+		self.ac_ok = False
+		self.go_ok = False
+		self.query_ok = False
+		self.output_ok = False
+		self.go = None
+		self.ac = None
+		self.query = None
+		self.ss = None
+		self.output = None
+		self.results = None
 		# reinitialize structures
 		self.status = STATUS_WAIT
 
 	def stop(self):
 		print "func stop"
+		self.results = None
 		# clear data
 		self.status = STATUS_WAIT
 
@@ -159,29 +172,69 @@ class WorkProcess(multiprocessing.Process):
 		self.status = STATUS_RUN
 		print "func start"
 
-	def load_AC(self, data):
+	def load_AC(self, data): #### data format: (filename, other) other = (file format, file format params)
 		self.status = STATUS_LOAD_AC
 		print "func Load AC"
+		self.ac_ok = False
+		#self.query_ok = False
+		try:
+			self.ac = AnnotationCorpus.AnnotationCorpus(self.go) #### what if go is missing?
+			self.ac_filename = data[0]
+			self.ac_filetype = data[1]
+			self.ac_filetypeparams = data[2]
+			if self.ac.parse(str(self.ac_filename), self.ac_filetype, self.ac_filetypeparams):
+				if self.ac.sanitize():
+					self.ac_ok = True
+					#self.parentobj.update_ac = False
+		except:
+			print("Failed to load Annotation Corpus.")
 		self.status = STATUS_WAIT
 
-	def load_GO(self, data):
+	def load_GO(self, data): #### data format: (filename)
 		self.status = STATUS_LOAD_GO
 		print "func Load GO"
+		self.go_ok = False
+		#self.parentobj.update_ac = True
+		#self.parentobj.update_ssobject = True
+		if len(data[0]) == 0:
+			return
+		self.go_filename = data[0]
+		self.go = GeneOntology.load_GO_XML(open(self.go_filename,'r'))
+		if not self.go == None:
+			self.go_ok = True
 		self.status = STATUS_WAIT
 
-	def load_query(self, data):
+	def load_query(self, data): #### data format: (query from, query_params) query_params: none (fom ac), filename (from file), data (from gui)
 		self.status = STATUS_LOAD_QUERY
 		print "func Load query"
 		self.status = STATUS_WAIT
 
-	def load_SS(self, data):
+	def load_SS(self, data): #### data format: (ss measure, ss measure params, mixing strat., mixing strat. params, ontology)
 		self.status = STATUS_LOAD_SS
 		print "func Load SS"
+		self.ss_ok = False
+		self.ss_name = data[0]
+		self.ss_params = data[1]
+		self.ms_name = data[2]
+		self.ms_params = data[3]
+		self.ss_ontology = data[4]
+		self.ss = False
+		self.ss_ok = True
 		self.status = STATUS_WAIT
 
-	def load_output(self, data):
+	def load_output(self, data): #### data format: (output_to, output_params) output_params: for file: (filename, type, params), for gui: (how many scores)
 		self.status = STATUS_LOAD_OUTPUT
 		print "func Load output"
+		self.output_ok = False
+		self.output_to = data[0]
+		if self.output_to == OUTPUT2FILE:
+			self.output_filename = data[1]
+			self.output_filetype = data[2]
+			self.output_filetypeparams = data[3]
+		elif  self.output_to == OUTPUT2GUI:
+			self.output_filename = None
+			self.output_params = data[1]
+		self.output_ok = True
 		self.status = STATUS_WAIT
 
 

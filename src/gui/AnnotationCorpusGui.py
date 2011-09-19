@@ -22,6 +22,7 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 import wx
 from GO import GeneOntology
 from GO import AnnotationCorpus
+from gui import WorkProcess
 
 class AnnotationCorpusGui(wx.Frame):
 	filetype = None
@@ -179,6 +180,9 @@ class AnnotationCorpusGui(wx.Frame):
 			param['AC_OBJ_FIRST'] = None
 		elif self.plainfileorder == 1:
 			param['AC_TERM_FIRST'] = None
+			
+		self.parentobj.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_AC, self.ac_filename, self.filetype, param))
+
 		try:
 			#print self.plainfileorder
 			#print param
