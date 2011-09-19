@@ -55,7 +55,6 @@ CMD_DESTROY =  CMD_BASE + 11
 
 
 class WorkProcess(multiprocessing.Process):
-<<<<<<< HEAD
 	status = STATUS_INIT
 
 	def __init__(self, gui2ssprocess_queue, ssprocess2gui_queue, gui2ssprocess_pipe, ssprocess2gui_pipe):
