@@ -63,7 +63,8 @@ QUERY_LIST = 1
 
 class WorkProcess(multiprocessing.Process):
 	status = STATUS_INIT
-
+	MAX_BUFFER_SIZE = 5000
+	CHECK_INTERVAL = 5000
 	def __init__(self, gui2ssprocess_queue, ssprocess2gui_queue, gui2ssprocess_pipe, ssprocess2gui_pipe):
 		multiprocessing.Process.__init__(self)
 		self.ssprocess2gui_queue = ssprocess2gui_queue
@@ -176,6 +177,8 @@ class WorkProcess(multiprocessing.Process):
 		self.query_update = True
 		self.output_update = True
 		
+		self.output_file = None
+		self.output_buffer = None
 		# reinitialize structures
 		self.status = STATUS_WAIT
 
@@ -183,11 +186,17 @@ class WorkProcess(multiprocessing.Process):
 		print "func stop"
 		#self.results = None
 		# clear data
+		if self.output_to == OUTPUT2FILE and not self.output_file == None:
+			self.output_file.close()
+		self.output_file = None
+		self.output_buffer = None
+		self.ssprocess2gui_queue.put((CMD_STOP, True))
 		self.status = STATUS_WAIT
 
 	def pause(self):
 		print "func pause"
 		# do not clear data
+		self.ssprocess2gui_queue.put((CMD_PAUSE, True))
 		self.status = STATUS_PAUSE
 		
 	def _status(self):
@@ -235,6 +244,7 @@ class WorkProcess(multiprocessing.Process):
 			print "SS is not ok"
 		print "--------------------"
 		print "Current status"
+		self.ssprocess2gui_queue.put((CMD_STATUS, self.status))
 
 	def load_AC(self, data): #### data format: (filename, other) other = (file format, file format params)
 		self.status = STATUS_LOAD_AC
@@ -251,9 +261,14 @@ class WorkProcess(multiprocessing.Process):
 				if self.ac.sanitize():
 					self.ac_ok = True
 					self.ac_update = False
-					#self.parentobj.update_ac = False
+					self.ssprocess2gui_queue.put((CMD_LOAD_AC, True, len(self.ac.annotations), len(self.ac.reverse_annotations)))
+				else:
+					self.ssprocess2gui_queue.put((CMD_LOAD_AC, False))
+			else:
+				self.ssprocess2gui_queue.put((CMD_LOAD_AC, False))
 		except:
 			print("Failed to load Annotation Corpus.")
+			self.ssprocess2gui_queue.put((CMD_LOAD_AC, False))
 		self.status = STATUS_WAIT
 
 	def load_GO(self, data): #### data format: (filename)
@@ -270,6 +285,9 @@ class WorkProcess(multiprocessing.Process):
 		if not self.go == None:
 			self.go_ok = True
 			self.go_update = False
+			self.ssprocess2gui_queue.put((CMD_LOAD_GO, True, self.go.node_num(), self.go.edge_num()))
+		else:
+			self.ssprocess2gui_queue.put((CMD_LOAD_GO, False))
 		self.status = STATUS_WAIT
 
 	def load_query(self, data): #### data format: (query from, query_params) query_params: none (fom ac), filename (from file), data (from gui)
@@ -295,6 +313,10 @@ class WorkProcess(multiprocessing.Process):
 			self.query_update = True
 		else:
 			pass
+		if self.query_ok:
+			self.ssprocess2gui_queue.put((CMD_LOAD_QUERY, True))
+		else:
+			self.ssprocess2gui_queue.put((CMD_LOAD_QUERY, False))
 		self.status = STATUS_WAIT
 
 	def load_SS(self, data): #### data format: (ss measure, ss measure params, mixing strat., mixing strat. params, ontology)
@@ -309,6 +331,12 @@ class WorkProcess(multiprocessing.Process):
 		self.ss = False
 		self.ss_ok = True
 		self.ss_update = True
+		if self.ss_ok:
+			self.ssprocess2gui_queue.put((CMD_LOAD_SS, True))
+			print "load SS answer"
+		else:
+			self.ssprocess2gui_queue.put((CMD_LOAD_SS, False))
+			print "load SS answer"
 		self.status = STATUS_WAIT
 
 	def load_output(self, data): #### data format: (output_to, output_params) output_params: for file: (filename, type, params), for gui: (how many scores)
@@ -324,15 +352,21 @@ class WorkProcess(multiprocessing.Process):
 			self.output_filename = None
 			self.output_params = data[1]
 		self.output_ok = True
-		self.output_update = False
+		self.output_update = True
+		if self.query_ok:
+			self.ssprocess2gui_queue.put((CMD_LOAD_OUTPUT, True))
+		else:
+			self.ssprocess2gui_queue.put((CMD_LOAD_OUTPUT, False))
 		self.status = STATUS_WAIT
 
 	def _start(self, data):
 		self.status = STATUS_RUN
 		print "func start"
 		if not self.init_structures():
+			self.ssprocess2gui_queue.put((CMD_START, False))
 			self.status = STATUS_WAIT
 		else:
+			self.ssprocess2gui_queue.put((CMD_START, True, self.query_pairs_number))
 			self._calculate()
 			pass
 
@@ -388,12 +422,17 @@ class WorkProcess(multiprocessing.Process):
 		self.query_update = False
 
 	def init_output(self):
+		print "init_output"
 		if self.output_update:
 			if self.output_to == OUTPUT2FILE:
+				print "output to file"
 				self.output_file = open(self.output_filename, 'w')
 			elif self.output_to == OUTPUT2GUI:
-				self.output_buffer = []
+				print "output to gui"
+				self.output_buffer = [[]] * self.MAX_BUFFER_SIZE
+				self.query_pairs_saved = 0
 			else: 
+				print "else"
 				return
 			self.output_update = False
 
@@ -438,18 +477,19 @@ class WorkProcess(multiprocessing.Process):
 
 	def _calculate(self):
 		self.query_pairs_done = 0
+		self.last_percentual = 0
 		print "Total pairs to process: " + str(self.query_pairs_number)
 		if self.query_type == QUERY_LIST:
 			for self.C_i in range(0,len(self.query)):
 				for self.C_j in range(self.C_i + 1, len(self.query)):
-					if self.query_pairs_done%20 == 0:
+					if self.query_pairs_done%self.CHECK_INTERVAL == 0:
 						if not self.control():
 							return
 					test = self.ss.SemSim(self.query[self.C_i],self.query[self.C_j], self.ss_ontology)
 					self.query_pairs_done += 1
-					#if not int(self.counter*100/self.total_number) == self.last_percentual:
-						#self.last_percentual = int(self.counter*100/self.total_number)
-						#self.sspdone.value = float(self.counter)/self.total_number
+					if not int(self.query_pairs_done*100/self.query_pairs_number) == self.last_percentual:
+						self.last_percentual = int(self.query_pairs_done*100/self.query_pairs_number)
+						self.ssprocess2gui_queue.put((float(self.query_pairs_done)/self.query_pairs_number))
 					if type(test) is float:
 						test = str('%.4f' %test)
 					if self.output_to == OUTPUT2GUI:
@@ -466,9 +506,9 @@ class WorkProcess(multiprocessing.Process):
 						return
 				test = self.ssobject.SemSim(self.C_i[0],self.C_i[1], self.ss_ontology)
 				self.query_pairs_done += 1
-				#if not int(self.counter*100/self.total_number) == self.last_percentual:
-					#self.last_percentual = int(self.counter*100/self.total_number)
-					#self.sspdone.value = float(self.counter)/self.total_number
+					#if not int(self.query_pairs_done*100/self.query_pairs_number) == self.last_percentual:
+						#self.last_percentual = int(self.query_pairs_done*100/self.query_pairs_number)
+						#self.ssprocess2gui_queue.put((float(self.query_pairs_done)/self.query_pairs_number))
 				if type(test) is float:
 					test = str('%.4f' %test)
 				if self.output_to == OUTPUT2GUI:
@@ -476,8 +516,8 @@ class WorkProcess(multiprocessing.Process):
 				else:
 					self.writeOutput(str(self.C_i[0]), str(self.C_i[1]), str(test))
 
-		#if not self.flush_data():
-			#return self.abort()
+		if self.output_to == OUTPUT2GUI:
+			self.flushOutput()
 		#if not self.counter == self.total_number:
 			#print "Count error. Total pairs to process: " + str(self.total_number) + ". Total pairs processed: " + str(self.counter)
 			#return self.abort()
@@ -501,7 +541,7 @@ class WorkProcess(multiprocessing.Process):
 
 
 	def sendOutput(self, a, b, c):
-		print (str(a),str(b),str(c))
+		#print (str(a),str(b),str(c))
 		#if self.store_all:
 			#self.last_added += 1
 			#self.buffer[self.last_added] = ((str(a),str(b),str(c)))
@@ -509,23 +549,23 @@ class WorkProcess(multiprocessing.Process):
 				#self.ssprocess2gui_pipe.send(self.buffer[self.last_sent+1: self.last_added+1])
 				#self.last_sent = self.last_added
 		#else:
-			#self.last_added += 1
-			#if self.last_added == self.buffer_size:
-				#self.ssprocess2gui_pipe.send(self.buffer[0: self.last_added])
-				#self.last_added = -1
-			#self.buffer[self.last_added] = ((str(a),str(b),str(c)))
+		self.output_buffer[self.query_pairs_saved] = (a,b,c)
+		self.query_pairs_saved += 1
+		if self.query_pairs_saved == len(self.output_buffer):
+			self.ssprocess2gui_pipe.send(self.output_buffer)
+			self.query_pairs_saved = 0
 
-	#def flushOutput(self):
+	def flushOutput(self):
 		#if self.store_all:
 			#if self.last_sent == self.last_added:
 				#return
 			#self.ssprocess2gui_pipe.send(self.buffer[self.last_sent+1: self.last_added+1])
 			#self.last_sent = self.last_added
 		#else:
-			#if self.last_added == -1:
-				#return
-			#self.ssprocess2gui_pipe.send(self.buffer[0: self.last_added+1])
-			#self.last_added = -1
+		if self.query_pairs_saved == 0:
+			return
+		self.ssprocess2gui_pipe.send(self.output_buffer[0: self.query_pairs_saved])
+		self.query_pairs_saved = 0
 
 	def writeOutput(self, a, b, c):
 		self.output_file.write(str(a) + "\t" + str(b) + "\t" + str(c) + "\n")

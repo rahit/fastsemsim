@@ -171,40 +171,46 @@ class AnnotationCorpusGui(wx.Frame):
 		wx.PostEvent(self.GetEventHandler(), event)
 
 	def OnFakeCmd(self, event):
-		self.filechoosecmd.Enable()
-		self.doneb.Enable()
-		self.acload.Enable()
+		self.parentobj.ac_running = True
+		self.filechoosecmd.Disable()
+		self.doneb.Disable()
+		self.acload.Disable()
 		self.ac = AnnotationCorpus.AnnotationCorpus(self.parentobj.go)
 		param = {}
 		if self.plainfileorder == 0:
 			param['AC_OBJ_FIRST'] = None
 		elif self.plainfileorder == 1:
 			param['AC_TERM_FIRST'] = None
-			
-		self.parentobj.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_AC, self.ac_filename, self.filetype, param))
 
+		self.parentobj.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_AC, self.ac_filename, self.filetype, param))
+		self.status_label.SetLabel("Loading Annotation Corpus from file " + str(self.ac_filename))
+		self.TIMER_ID = 1000
+		self.timer = wx.Timer(self.parentobj.panel, self.TIMER_ID)
+		wx.EVT_TIMER(self.parentobj.panel, self.TIMER_ID, self.AC_timer)
+		self.timer.Start(self.parentobj.UPDATE_INTERVAL)
+		return False
+
+	def AC_timer(self, event):
 		try:
-			#print self.plainfileorder
-			#print param
-			if self.ac.parse(str(self.ac_filename), self.filetype, param):
-				if self.ac.sanitize():
-					#self.acobjs.SetLabel(str(len(self.ac.annotations)))
-					#self.acterms.SetLabel(str(len(self.ac.reverse_annotations)))
-					self.parentobj.ac = self.ac
+			data = self.parentobj.ssprocess2gui_queue.get(False)
+			self.filechoosecmd.Enable()
+			self.doneb.Enable()
+			self.acload.Enable()
+			self.timer.Stop()
+			if data[0] == WorkProcess.CMD_LOAD_AC:
+				if data[1]:
 					self.parentobj.SetAcOk(True)
 					self.parentobj.update_ac = False
 					self.status_label.SetLabel("Annotation Corpus loaded.")
+					self.parentobj.ac_running = False
 					return True
-				#else:
-					#print("Failed to sanitize Annotation Corpus.")
-			self.status_label.SetLabel("Failed to load Annotation Corpus.")
+				self.status_label.SetLabel("Failed to load Annotation Corpus.")
 			print("Failed to load Annotation Corpus.")
+			self.parentobj.ac_running = False
 			return False
-		except:
-			print("Failed to load Annotation Corpus.")
-			self.status_label.SetLabel("Failed to load Annotation Corpus.")
+		except Exception:
+			#self.parentobj.ac_running = False
 			return False
-				
 
 	def OnACBrowseDone(self, event):
 		self.Hide()

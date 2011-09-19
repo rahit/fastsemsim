@@ -156,22 +156,47 @@ class LoadConfigGui(wx.Dialog):
 	def ProcessGO(self,event):
 		self.go_label.Enable()
 		self.parentobj.GOGui.go_filename = self.tags['go']['go_filename']
-		if self.parentobj.GOGui.OnGOLoad(None):
-			self.go_pic.SetBitmap(wx.Bitmap(self.parentobj.Ok_pic))
-		else:
-			self.go_pic.SetBitmap(wx.Bitmap(self.parentobj.Warning_pic))
-		wx.PostEvent(self, DummyEvent(self.EVT_AC_ID))
+		self.parentobj.GOGui.OnGOLoad(None)
+		self.parentobj.go_running = True
+		self.TIMER_ID = 1015
+		self.timer = wx.Timer(self.parentobj.panel, self.TIMER_ID)
+		wx.EVT_TIMER(self.parentobj.panel, self.TIMER_ID, self.GO_check_timer)
+		self.timer.Start(self.parentobj.UPDATE_INTERVAL)
+		return False
 
+	def GO_check_timer(self, event):
+		print self.parentobj.go_running
+		if not self.parentobj.go_running:
+			self.timer.Stop()
+			if self.parentobj.go_ok:
+				self.go_pic.SetBitmap(wx.Bitmap(self.parentobj.Ok_pic))
+			else:
+				self.go_pic.SetBitmap(wx.Bitmap(self.parentobj.Warning_pic))
+			wx.PostEvent(self, DummyEvent(self.EVT_AC_ID))
+		
 	def ProcessAC(self,event):
 		self.ac_label.Enable()
 		self.parentobj.ACGui.filetype = self.tags['ac']['ac_format']
 		self.parentobj.ACGui.plainfileorder = int(self.tags['ac']['ac_format_params'])
 		self.parentobj.ACGui.ac_filename = self.tags['ac']['ac_filename']
-		if self.parentobj.ACGui.OnFakeCmd(None):
-			self.ac_pic.SetBitmap(wx.Bitmap(self.parentobj.Ok_pic))
-		else:
-			self.ac_pic.SetBitmap(wx.Bitmap(self.parentobj.Warning_pic))
-		wx.PostEvent(self, DummyEvent(self.EVT_SS_ID))
+		self.parentobj.ACGui.OnFakeCmd(None)
+		self.parentobj.ac_running = True
+		self.TIMER_ID = 1006
+		self.timer = wx.Timer(self.parentobj.panel, self.TIMER_ID)
+		wx.EVT_TIMER(self.parentobj.panel, self.TIMER_ID, self.AC_check_timer)
+		self.timer.Start(self.parentobj.UPDATE_INTERVAL)
+		return False
+
+	def AC_check_timer(self, event):
+		if not self.parentobj.ac_running:
+			self.timer.Stop()
+			if self.parentobj.ac_ok:
+				self.ac_pic.SetBitmap(wx.Bitmap(self.parentobj.Ok_pic))
+			else:
+				self.ac_pic.SetBitmap(wx.Bitmap(self.parentobj.Warning_pic))
+			wx.PostEvent(self, DummyEvent(self.EVT_SS_ID))
+			wx.PostEvent(self, DummyEvent(self.EVT_QUERY_ID))
+			wx.PostEvent(self, DummyEvent(self.EVT_OUTPUT_ID))
 
 	def ProcessSS(self,event):
 		self.ss_label.Enable()
@@ -186,7 +211,7 @@ class LoadConfigGui(wx.Dialog):
 			self.parentobj.OperationGui.set_go(self.tags['ss']['ss_go_tree'])
 		self.ss_pic.SetBitmap(wx.Bitmap(self.parentobj.Ok_pic))
 		#self.ss_pic.SetBitmap(wx.Bitmap(self.parentobj.Warning_pic))
-		wx.PostEvent(self, DummyEvent(self.EVT_QUERY_ID))
+		#wx.PostEvent(self, DummyEvent(self.EVT_QUERY_ID))
 
 	def ProcessQuery(self,event):
 		self.query_label.Enable()
@@ -202,7 +227,7 @@ class LoadConfigGui(wx.Dialog):
 		print self.parentobj.query_file
 		print self.parentobj.query_type
 		print self.parentobj.query_from
-		wx.PostEvent(self, DummyEvent(self.EVT_OUTPUT_ID))
+		#wx.PostEvent(self, DummyEvent(self.EVT_OUTPUT_ID))
 
 	def ProcessOutput(self,event):
 		self.output_label.Enable()

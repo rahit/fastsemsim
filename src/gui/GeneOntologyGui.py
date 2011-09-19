@@ -110,23 +110,42 @@ class GeneOntologyGui(wx.Frame):
 
 
 	def OnGOLoad(self, event):
-		self.parentobj.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_GO, self.go_filename))
+		self.parentobj.go_running = True
 		self.parentobj.SetGoOk(False)
-		self.parentobj.update_ac = True
-		self.parentobj.update_ssobject = True
-		self.tree = GeneOntology.load_GO_XML(open(self.go_filename,'r'))
-		if not self.tree == None:
-			self.gochooser.Enable()
-			self.doneb.Enable()
-			self.gonodes.SetLabel(str(self.tree.node_num()))
-			self.goedges.SetLabel(str(self.tree.edge_num()))
-			self.status_label.SetLabel("Ontology loaded.")
-			#self.parentobj.ac_cmd.Enable()
-			self.parentobj.go = self.tree
-			self.parentobj.SetGoOk(True)
-			return True
+		#self.parentobj.update_ac = True
+		#self.parentobj.update_ssobject = True
+		#self.OnGOLoad()
+		self.status_label.SetLabel("Loading ontology from file " + str(self.go_filename))
+		self.gochooser.Disable()
+		self.doneb.Disable()
+		self.parentobj.ac_cmd.Disable()
+		self.parentobj.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_GO, self.go_filename))
+		self.TIMER_ID = 1000
+		self.timer = wx.Timer(self.parentobj.panel, self.TIMER_ID)
+		wx.EVT_TIMER(self.parentobj.panel, self.TIMER_ID, self.GO_timer)
+		self.timer.Start(self.parentobj.UPDATE_INTERVAL)
 		return False
 
+	def GO_timer(self, event):
+		try:
+			data = self.parentobj.ssprocess2gui_queue.get(False)
+			self.timer.Stop()
+			if data[0] == WorkProcess.CMD_LOAD_GO:
+				if data[1]:
+					self.gochooser.Enable()
+					self.doneb.Enable()
+					self.gonodes.SetLabel(str(data[2]))
+					self.goedges.SetLabel(str(data[3]))
+					self.status_label.SetLabel("Ontology loaded from file " + str(self.go_filename))
+					self.parentobj.ac_cmd.Enable()
+					#self.parentobj.go = self.tree
+					self.parentobj.SetGoOk(True)
+					self.parentobj.go_running = False
+					return True
+		except Exception:
+			#self.parentobj.go_running = False
+			return False
+		
 	def OnGOBrowseDone(self, event):
 		self.Hide()
 		
