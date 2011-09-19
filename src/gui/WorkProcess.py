@@ -24,6 +24,7 @@ import copy
 from SemSim import SemSimMeasures
 from SemSim import ObjSemSim
 from SemSim import SemSimUtils
+from GO import GeneOntology
 
 STATUS_BASE = 0
 STATUS_INIT = STATUS_BASE + 0
@@ -54,6 +55,7 @@ CMD_DESTROY =  CMD_BASE + 11
 
 
 class WorkProcess(multiprocessing.Process):
+<<<<<<< HEAD
 	status = STATUS_INIT
 
 	def __init__(self, gui2ssprocess_queue, ssprocess2gui_queue, gui2ssprocess_pipe, ssprocess2gui_pipe):
@@ -198,11 +200,13 @@ class WorkProcess(multiprocessing.Process):
 		##print "real mixing: " + str(self.ssobject.mixSS)
 		#return True
 	
+
 	##def run(self):
 		##while True:
 			##self.gui2ssprocess_commands_queue.get()
 	#def set_completed(self):
 		#self.sscompleted.value = 1
+
 	
 	#def parse_data(self):
 		#'''
@@ -295,6 +299,7 @@ class WorkProcess(multiprocessing.Process):
 						#self.sendOutput(str(self.query[i]), str(self.query[j]), str(test))
 					#else:
 						#self.writeOutput(str(self.query[i]), str(self.query[j]), str(test))
+
 
 		#elif self.query_type == 0: # pairs
 			#for i in self.query:
