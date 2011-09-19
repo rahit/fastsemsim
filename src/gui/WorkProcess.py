@@ -54,6 +54,12 @@ CMD_DESTROY =  CMD_BASE + 11
 
 OUTPUT2GUI = 0
 OUTPUT2FILE = 1
+QUERYFROMGUI = 0
+QUERYFROMAC = 2
+QUERYFROMFILE = 1
+
+QUERY_PAIRS = 0
+QUERY_LIST = 1
 
 class WorkProcess(multiprocessing.Process):
 	status = STATUS_INIT
@@ -80,29 +86,36 @@ class WorkProcess(multiprocessing.Process):
 				# check if data is stop or pause. In this case make actions. Otherwise don't do anything
 				if data[0] == CMD_STOP:
 					self.stop()
+					return False
 				elif data[0] == CMD_PAUSE:
 					self.pause()
+					return True
 				elif data[0] == CMD_RESET:
 					self.reset()
+					return False
 				elif data[0] == CMD_STATUS:
-					self.status()
+					self._status()
 				else:
 					pass # ignore any other command!
 			except Exception:
 				pass
+			return True
 		elif self.status == STATUS_PAUSE:
 			print "check in status PAUSE"
 			data = self.gui2ssprocess_queue.get()
 			if data[0] == CMD_STOP:
 				self.stop()
+				return False
 			elif data[0] == CMD_RESET:
 				self.reset()
+				return False
 			elif data[0] == CMD_STATUS:
 				self._status()
 			elif data[0] == CMD_START:
-				self._start(data[1:len(data)])
+				pass
 			else:
 				pass # ignore any other command!
+			return True
 		elif self.status == STATUS_INIT:
 			print "check in status INIT"
 			self.reset()
@@ -138,6 +151,11 @@ class WorkProcess(multiprocessing.Process):
 			self.reset()
 		return True
 
+	#def check_commands(self):
+		
+		
+		#return True
+
 	def reset(self):
 		print "func reset"
 		self.ss_ok = False
@@ -151,12 +169,19 @@ class WorkProcess(multiprocessing.Process):
 		self.ss = None
 		self.output = None
 		self.results = None
+		
+		self.ss_update = True
+		self.ac_update = True
+		self.go_update = True
+		self.query_update = True
+		self.output_update = True
+		
 		# reinitialize structures
 		self.status = STATUS_WAIT
 
 	def stop(self):
 		print "func stop"
-		self.results = None
+		#self.results = None
 		# clear data
 		self.status = STATUS_WAIT
 
@@ -166,17 +191,57 @@ class WorkProcess(multiprocessing.Process):
 		self.status = STATUS_PAUSE
 		
 	def _status(self):
-		print "func status"
-		
-	def _start(self, data):
-		self.status = STATUS_RUN
-		print "func start"
+		print "----------GO----------"
+		if self.go_ok:
+			print "GO is ok"
+			print "GO loaded: " + str(self.go_filename)
+			print "Nodes: " + str(self.go.node_num()) + ". Edges: " + str(self.go.edge_num())
+		else:
+			print "GO is not ok"
+		print "----------AC----------"
+		if self.ac_ok:
+			print "AC is ok"
+			print "AC loaded: " + str(self.ac_filename)
+			print "Nodes: " + str(len(self.ac.annotations))
+		else:
+			print "AC is not ok"
+		print "----------Query----------"
+		if self.query_ok:
+			print "Query is ok"
+			if self.query_from == QUERYFROMGUI:
+				print "Query loaded from gui"
+			elif self.query_from == QUERYFROMFILE:
+				print "Query loaded from file " + str(self.query_filename)
+			elif  self.query_from == QUERYFROMAC:
+				print "Query loaded from ac"
+		else:
+			print "Query is not ok"
+		print "----------Output----------"
+		if self.output_ok:
+			print "Output is ok"
+			if self.query_from == OUTPUT2GUI:
+				print "Output to gui"
+			elif self.query_from == OUTPUT2FILE:
+				print "Output to file " + str(self.output_filename)
+		else:
+			print "Output is not ok"
+		print "----------SS----------"
+		if self.ss_ok:
+			print "SS is ok"
+			print "SS: " + self.ss_name
+			print "MS: " + self.ms_name
+			print "Ontology selected: " + self.ss_ontology
+		else:
+			print "SS is not ok"
+		print "--------------------"
+		print "Current status"
 
 	def load_AC(self, data): #### data format: (filename, other) other = (file format, file format params)
 		self.status = STATUS_LOAD_AC
 		print "func Load AC"
 		self.ac_ok = False
-		#self.query_ok = False
+		self.ss_update = True
+		self.query_update = True
 		try:
 			self.ac = AnnotationCorpus.AnnotationCorpus(self.go) #### what if go is missing?
 			self.ac_filename = data[0]
@@ -185,6 +250,7 @@ class WorkProcess(multiprocessing.Process):
 			if self.ac.parse(str(self.ac_filename), self.ac_filetype, self.ac_filetypeparams):
 				if self.ac.sanitize():
 					self.ac_ok = True
+					self.ac_update = False
 					#self.parentobj.update_ac = False
 		except:
 			print("Failed to load Annotation Corpus.")
@@ -194,19 +260,41 @@ class WorkProcess(multiprocessing.Process):
 		self.status = STATUS_LOAD_GO
 		print "func Load GO"
 		self.go_ok = False
-		#self.parentobj.update_ac = True
-		#self.parentobj.update_ssobject = True
+		self.ss_update = True
+		self.ac_update = True
+		self.query_update = True
 		if len(data[0]) == 0:
 			return
 		self.go_filename = data[0]
 		self.go = GeneOntology.load_GO_XML(open(self.go_filename,'r'))
 		if not self.go == None:
 			self.go_ok = True
+			self.go_update = False
 		self.status = STATUS_WAIT
 
 	def load_query(self, data): #### data format: (query from, query_params) query_params: none (fom ac), filename (from file), data (from gui)
 		self.status = STATUS_LOAD_QUERY
 		print "func Load query"
+		self.query_ok = False
+		self.query_from = data[0]
+		if self.query_from == QUERYFROMAC:
+			self.query_ok = True
+			self.query_update = True
+			self.query_type = 1
+		elif self.query_from == QUERYFROMFILE:
+			self.query_type = data[1]
+			self.query_filename = data[2]
+			self.query_filetype = data[3]
+			self.query_filetypeparams = data[4]
+			self.query_ok = True
+			self.query_update = True
+		elif self.query_from == QUERYFROMGUI:
+			self.query = data[2]
+			self.query_type = data[1]
+			self.query_ok = True
+			self.query_update = True
+		else:
+			pass
 		self.status = STATUS_WAIT
 
 	def load_SS(self, data): #### data format: (ss measure, ss measure params, mixing strat., mixing strat. params, ontology)
@@ -220,6 +308,7 @@ class WorkProcess(multiprocessing.Process):
 		self.ss_ontology = data[4]
 		self.ss = False
 		self.ss_ok = True
+		self.ss_update = True
 		self.status = STATUS_WAIT
 
 	def load_output(self, data): #### data format: (output_to, output_params) output_params: for file: (filename, type, params), for gui: (how many scores)
@@ -235,80 +324,99 @@ class WorkProcess(multiprocessing.Process):
 			self.output_filename = None
 			self.output_params = data[1]
 		self.output_ok = True
+		self.output_update = False
 		self.status = STATUS_WAIT
 
+	def _start(self, data):
+		self.status = STATUS_RUN
+		print "func start"
+		if not self.init_structures():
+			self.status = STATUS_WAIT
+		else:
+			self._calculate()
+			pass
 
-	#def buildSSobject(self):
-		#ssu = SemSimUtils.SemSimUtils(self.ac, self.go)
-		#ssu.det_offspring_table()
-		#ssu.det_ancestors_table()
-		#ssu.det_freq_table()
-		#ssu.det_GO_division()
-		#ssu.det_ICs_table()
-		#self.ssobject = ObjSemSim.ObjSemSim(self.ac, self.go, self.ssmeasure, self.mixingstrategy, ssu)
-		##print "ssmeasure: " + str(self.ssmeasure)
-		##print "mixing: " + str(self.mixingstrategy)
-		##print "real ss: " + str(self.ssobject.TSS)
-		##print "real mixing: " + str(self.ssobject.mixSS)
-		#return True
-	
+	def init_go(self):
+		if self.go_update:
+			temp = []
+			temp.append(self.go_filename)
+			self.load_GO(temp)
 
-	##def run(self):
-		##while True:
-			##self.gui2ssprocess_commands_queue.get()
-	#def set_completed(self):
-		#self.sscompleted.value = 1
+	def init_ac(self):
+		if self.ac_update:
+			self.load_AC((self.ac_filename,self.ac_filetype,self.ac_filetypeparams))
 
-	
-	#def parse_data(self):
-		#'''
-		#0 self.go, 
-		#1 self.ac, 
-		#2 self.ssmeasure, 
-		#3 self.mixingstrategy, 
-		#4 self.ssobject, 
-		#5 self.query, 
-		#6 self.query_type, 
-		#7 self.selectedGO, 
-		#8 self.output_type, 
-		#9 self.output_file
-		#'''
-		#data = self.gui2ssprocess_queue.get()
-		#self.go = data[0]
-		#self.ac = data[1]
-		#self.ssmeasure = data[2]
-		#self.mixingstrategy = data[3]
-		#self.query = data[5]
-		#self.query_type = data[6]
-		#self.selectedGO = data[7]
-		#self.output_type = data[8]
-		#self.output_file = data[9]
-		##print "query: " + str(self.query)
-		##self.ssobject = self.original_ssobject
-		##print "AC:" + str(self.ac.annotations)
-		##print "GO nodes: " + str(self.go.node_num())
-		##print "GO edges: " + str(self.go.edge_num())
-		##print "AC nodes: " + str(len(self.ac.annotations))
-		##print "AC terms: " + str(len(self.ac.reverse_annotations))
-		##print "query nodes: " + str(len(self.query))
-		#if not self.use_main_ss_object:
-			#self.buildSSobject()
-		#else:
-			#self.ssobject = data[4]
-		#return True
+	def init_ss(self):
+		if self.ss_update:
+			self.build_ss()
 
-	#def init_structures(self):
+	def init_query(self):
+		if self.query_update:
+			if self.query_from == QUERYFROMGUI:
+				self.query_update = False
+			elif self.query_from == QUERYFROMFILE:
+				self.build_query_from_file()
+			elif self.query_from == QUERYFROMAC:
+				self.build_query_from_ac()
+			else:
+				return
+		if self.query_type == 0:
+			self.query_pairs_number = len(self.query) 
+		elif self.query_type == 1:
+			self.query_pairs_number = len(self.query) * (len(self.query)-1) / 2
+
+	def build_query_from_file(self):
+		h = open(self.query_filename,'r')
+		self.query = []
+		for line in h:
+			line = line.rstrip('\n')
+			line = line.rstrip('\r')
+			if self.query_type == 0: #pairs
+				line = line.rsplit('\t')
+				self.query.append((line[0], line[1]))
+			else: # list
+				self.query.append(line)
+		h.close()
+		self.query_update = False
+
+	def build_query_from_ac(self):
+		self.query = []
+		if self.ac == None:
+			return
+		for line in self.ac.annotations:
+			self.query.append(line)
+		self.query_update = False
+
+	def init_output(self):
+		if self.output_update:
+			if self.output_to == OUTPUT2FILE:
+				self.output_file = open(self.output_filename, 'w')
+			elif self.output_to == OUTPUT2GUI:
+				self.output_buffer = []
+			else: 
+				return
+			self.output_update = False
+
+	def init_structures(self):
 		#self.buffer = None # data will be stored here
-		#if self.output_type==1:
-			#self.output_file_handle = open(self.output_file, 'w')
-		#self.counter = 0
-		#self.last_percentual = -1
-		#self.last_sent = -1
-		#self.last_added = -1
-		#if self.query_type == 1: # list
-			#self.total_number = len(self.query) * (len(self.query)-1) / 2
-		#elif self.query_type == 0: # pairs
-			#self.total_number = len(self.query)
+		if not self.go_ok or not self.ac_ok or not self.ss_ok or not self.query_ok or not self.output_ok:
+			print "Something is not ready."
+			return False
+		self.init_go()
+		self.init_ac()
+		self.init_ss()
+		self.init_query()
+		self.init_output()
+		if self.go_update or self.ac_update or self.ss_update or self.query_update or self.output_update:
+			print "Something is not updated."
+			return False
+		return True
+
+		##self.counter = 0
+		##self.last_percentual = -1
+		##self.last_sent = -1
+		##self.last_added = -1
+	
 		#if self.output_type==0:
 			#if self.store_all:
 				#self.buffer_size = self.total_number
@@ -317,7 +425,67 @@ class WorkProcess(multiprocessing.Process):
 			#self.buffer = [None]*self.buffer_size
 			##self.buffer = [(None, None, None)]*self.buffer_size
 		#self.sstodo.value = self.total_number
-		#return True
+
+	def build_ss(self):
+		ssu = SemSimUtils.SemSimUtils(self.ac, self.go)
+		ssu.det_offspring_table()
+		ssu.det_ancestors_table()
+		ssu.det_freq_table()
+		ssu.det_GO_division()
+		ssu.det_ICs_table()
+		self.ss = ObjSemSim.ObjSemSim(self.ac, self.go, self.ss_name, self.ms_name, ssu)
+		self.ss_update = False
+
+	def _calculate(self):
+		self.query_pairs_done = 0
+		print "Total pairs to process: " + str(self.query_pairs_number)
+		if self.query_type == QUERY_LIST:
+			for self.C_i in range(0,len(self.query)):
+				for self.C_j in range(self.C_i + 1, len(self.query)):
+					if self.query_pairs_done%20 == 0:
+						if not self.control():
+							return
+					test = self.ss.SemSim(self.query[self.C_i],self.query[self.C_j], self.ss_ontology)
+					self.query_pairs_done += 1
+					#if not int(self.counter*100/self.total_number) == self.last_percentual:
+						#self.last_percentual = int(self.counter*100/self.total_number)
+						#self.sspdone.value = float(self.counter)/self.total_number
+					if type(test) is float:
+						test = str('%.4f' %test)
+					if self.output_to == OUTPUT2GUI:
+						#if not test == None:
+						self.sendOutput(str(self.query[self.C_i]), str(self.query[self.C_j]), str(test))
+					else:
+						self.writeOutput(str(self.query[self.C_i]), str(self.query[self.C_j]), str(test))
+
+
+		elif self.query_type == QUERY_PAIRS:
+			for self.C_i in self.query:
+				if self.query_pairs_done%20 == 0:
+					if not self.control():
+						return
+				test = self.ssobject.SemSim(self.C_i[0],self.C_i[1], self.ss_ontology)
+				self.query_pairs_done += 1
+				#if not int(self.counter*100/self.total_number) == self.last_percentual:
+					#self.last_percentual = int(self.counter*100/self.total_number)
+					#self.sspdone.value = float(self.counter)/self.total_number
+				if type(test) is float:
+					test = str('%.4f' %test)
+				if self.output_to == OUTPUT2GUI:
+					self.sendOutput(str(self.C_i[0]), str(self.C_i[1]), str(test))
+				else:
+					self.writeOutput(str(self.C_i[0]), str(self.C_i[1]), str(test))
+
+		#if not self.flush_data():
+			#return self.abort()
+		#if not self.counter == self.total_number:
+			#print "Count error. Total pairs to process: " + str(self.total_number) + ". Total pairs processed: " + str(self.counter)
+			#return self.abort()
+		self.stop()
+		#return self.set_completed()
+
+	#def set_completed(self):
+		#self.sscompleted.value = 1
 
 	#def flush_data(self):
 		#if self.output_type == 0:
@@ -330,50 +498,10 @@ class WorkProcess(multiprocessing.Process):
 		#self.set_completed()
 		#return True
 
-	#def run(self):
-		#if not self.parse_data():
-			#return self.abort()
-		#if not self.init_structures():
-			#return self.abort()
-		#print "Total pairs to process: " + str(self.total_number)
-		#if self.query_type == 1: # list
-			#for i in range(0,len(self.query)):
-				#for j in range(i+1, len(self.query)):
-					#test = self.ssobject.SemSim(self.query[i],self.query[j], self.selectedGO)
-					#self.counter += 1
-					#if not int(self.counter*100/self.total_number) == self.last_percentual:
-						#self.last_percentual = int(self.counter*100/self.total_number)
-						#self.sspdone.value = float(self.counter)/self.total_number
-					#if type(test) is float:
-						#test = str('%.4f' %test)
-					#if self.output_type == 0:
-						##if not test == None:
-						#self.sendOutput(str(self.query[i]), str(self.query[j]), str(test))
-					#else:
-						#self.writeOutput(str(self.query[i]), str(self.query[j]), str(test))
 
 
-		#elif self.query_type == 0: # pairs
-			#for i in self.query:
-				#test = self.ssobject.SemSim(i[0],i[1], self.selectedGO)
-				#self.counter += 1
-				#if not int(self.counter*100/self.total_number) == self.last_percentual:
-					#self.last_percentual = int(self.counter*100/self.total_number)
-					#self.sspdone.value = float(self.counter)/self.total_number
-				#if type(test) is float:
-					#test = str('%.4f' %test)
-				#if self.output_type == 0:
-					#self.sendOutput(str(i[0]), str(i[1]), str(test))
-				#else:
-					#self.writeOutput(str(i[0]), str(i[1]), str(test))
-		#if not self.flush_data():
-			#return self.abort()
-		#if not self.counter == self.total_number:
-			#print "Count error. Total pairs to process: " + str(self.total_number) + ". Total pairs processed: " + str(self.counter)
-			#return self.abort()
-		#return self.set_completed()
-
-	#def sendOutput(self, a, b, c):
+	def sendOutput(self, a, b, c):
+		print (str(a),str(b),str(c))
 		#if self.store_all:
 			#self.last_added += 1
 			#self.buffer[self.last_added] = ((str(a),str(b),str(c)))
@@ -399,7 +527,7 @@ class WorkProcess(multiprocessing.Process):
 			#self.ssprocess2gui_pipe.send(self.buffer[0: self.last_added+1])
 			#self.last_added = -1
 
-	#def writeOutput(self, a, b, c):
-		#self.output_file_handle.write(str(a) + "\t" + str(b) + "\t" + str(c) + "\n")
-		#return True
-	
+	def writeOutput(self, a, b, c):
+		self.output_file.write(str(a) + "\t" + str(b) + "\t" + str(c) + "\n")
+		return True
+

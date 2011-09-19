@@ -463,9 +463,16 @@ class fastSemSimGui(wx.Frame):
 			self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_OUTPUT, WorkProcess.OUTPUT2GUI, None))
 		elif self.output_type == 1:
 			self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_OUTPUT, WorkProcess.OUTPUT2FILE, self.output_file, None, None))
+		if self.query_from == 0:
+			self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, WorkProcess.QUERYFROMGUI, self.query_type, self.query))
+		elif self.query_from == 2:
+			self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, WorkProcess.QUERYFROMAC))
+		elif self.query_from == 1:
+			self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, WorkProcess.QUERYFROMFILE, self.query_type, self.query_file, None, None))
 
-					#####self.gui2ssprocess_queue.put((self.go, self.ac, self.ssmeasure, self.mixingstrategy, self.ssobject, self.query, self.query_type, self.selectedGO, self.output_type, self.output_file))
 		self.SetStatus(2)
+		self.gui2ssprocess_queue.put((WorkProcess.CMD_STATUS, None))
+		self.gui2ssprocess_queue.put((WorkProcess.CMD_START, None))
 		#self.timer.Start(1000)
 		return True
 
