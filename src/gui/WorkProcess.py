@@ -290,33 +290,36 @@ class WorkProcess(multiprocessing.Process):
 			self.ssprocess2gui_queue.put((CMD_LOAD_GO, False))
 		self.status = STATUS_WAIT
 
-	def load_query(self, data): #### data format: (query from, query_params) query_params: none (fom ac), filename (from file), data (from gui)
+	def load_query(self, data): #### data format: (query from, query_params) query_params: none (fom ac), (type, filename) (from file), type (from gui)
 		self.status = STATUS_LOAD_QUERY
 		print "func Load query"
 		self.query_ok = False
 		self.query_from = data[0]
 		if self.query_from == QUERYFROMAC:
+			print "Query from AC selected."
 			self.query_ok = True
 			self.query_update = True
 			self.query_type = 1
 		elif self.query_from == QUERYFROMFILE:
+			print "Query from FILE selected."
 			self.query_type = data[1]
 			self.query_filename = data[2]
-			self.query_filetype = data[3]
-			self.query_filetypeparams = data[4]
+			#self.query_filetype = data[3]
+			#self.query_filetypeparams = data[4]
 			self.query_ok = True
 			self.query_update = True
-		elif self.query_from == QUERYFROMGUI:
-			self.query = data[2]
+		elif self.query_from == QUERYFROMGUI: # expect to find query as input parameter of start messages
+			print "Query from GUI selected."
+			#self.query = data[2]
 			self.query_type = data[1]
 			self.query_ok = True
 			self.query_update = True
 		else:
 			pass
-		if self.query_ok:
-			self.ssprocess2gui_queue.put((CMD_LOAD_QUERY, True))
-		else:
-			self.ssprocess2gui_queue.put((CMD_LOAD_QUERY, False))
+		#if self.query_ok: #### DANGER! If I enable this, I should read data back from pipe in gui process, otherwise application hangs!
+			#self.ssprocess2gui_queue.put((CMD_LOAD_QUERY, True))
+		#else:
+			#self.ssprocess2gui_queue.put((CMD_LOAD_QUERY, False))
 		self.status = STATUS_WAIT
 
 	def load_SS(self, data): #### data format: (ss measure, ss measure params, mixing strat., mixing strat. params, ontology)
@@ -361,6 +364,7 @@ class WorkProcess(multiprocessing.Process):
 
 	def _start(self, data):
 		self.status = STATUS_RUN
+		self.start_data = data
 		print "func start"
 		if not self.init_structures():
 			self.ssprocess2gui_queue.put((CMD_START, False))
@@ -388,6 +392,8 @@ class WorkProcess(multiprocessing.Process):
 		if self.query_update:
 			if self.query_from == QUERYFROMGUI:
 				self.query_update = False
+				self.query = []
+				self.query = self.start_data[0];
 			elif self.query_from == QUERYFROMFILE:
 				self.build_query_from_file()
 			elif self.query_from == QUERYFROMAC:
@@ -504,7 +510,7 @@ class WorkProcess(multiprocessing.Process):
 				if self.query_pairs_done%20 == 0:
 					if not self.control():
 						return
-				test = self.ssobject.SemSim(self.C_i[0],self.C_i[1], self.ss_ontology)
+				test = self.ss.SemSim(self.C_i[0],self.C_i[1], self.ss_ontology)
 				self.query_pairs_done += 1
 					#if not int(self.query_pairs_done*100/self.query_pairs_number) == self.last_percentual:
 						#self.last_percentual = int(self.query_pairs_done*100/self.query_pairs_number)

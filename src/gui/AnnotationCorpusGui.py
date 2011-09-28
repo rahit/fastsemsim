@@ -181,7 +181,7 @@ class AnnotationCorpusGui(wx.Frame):
 			param['AC_OBJ_FIRST'] = None
 		elif self.plainfileorder == 1:
 			param['AC_TERM_FIRST'] = None
-
+		self.parentobj.lock()
 		self.parentobj.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_AC, self.ac_filename, self.filetype, param))
 		self.status_label.SetLabel("Loading Annotation Corpus from file " + str(self.ac_filename))
 		self.TIMER_ID = 1000
@@ -197,6 +197,7 @@ class AnnotationCorpusGui(wx.Frame):
 			self.doneb.Enable()
 			self.acload.Enable()
 			self.timer.Stop()
+			self.parentobj.unlock()
 			if data[0] == WorkProcess.CMD_LOAD_AC:
 				if data[1]:
 					self.parentobj.SetAcOk(True)
@@ -209,6 +210,7 @@ class AnnotationCorpusGui(wx.Frame):
 			self.parentobj.ac_running = False
 			return False
 		except Exception:
+			self.parentobj.unlock()
 			#self.parentobj.ac_running = False
 			return False
 

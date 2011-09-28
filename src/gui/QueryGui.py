@@ -22,6 +22,7 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 import wx
 from GO import GeneOntology
 from GO import AnnotationCorpus
+from gui import WorkProcess
 #from SSmeasures import *
 
 class QueryGui:
@@ -87,6 +88,7 @@ class QueryGui:
 #------------------------------------------------------------------------------------------------------------------
 		self.mainbox.Add(self.mainsubbox, flag=wx.EXPAND)
 		self.parentobj.query_from = 0
+		#self.parentobj.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, WorkProcess.QUERYFROMGUI))
 		self.parentobj.SetQueryOk(False)
 #------------------------------------------------------------------------------------------------------------------
 	def OnFieldChange(self, event):
@@ -111,6 +113,9 @@ class QueryGui:
 		self.inputfield.Disable()
 		self.inputfield.SetValue("Data will be loaded from " + str(self.parentobj.query_file))
 		self.parentobj.query_from = 1 # from file
+		self.parentobj.lock()
+		self.parentobj.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, WorkProcess.QUERYFROMFILE, self.parentobj.query_type, self.parentobj.query_file))
+		self.parentobj.unlock()
 		self.fromaccmd.SetValue(False)
 		self.parentobj.update_query = True
 		self.CheckIfOk()
@@ -121,10 +126,16 @@ class QueryGui:
 			self.parentobj.query_from = 2 # from ac
 			self.inputfield.SetValue("Data will be loaded from Annotation Corpus")
 			self.parentobj.query_file = None
+			self.parentobj.lock()
+			self.parentobj.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, WorkProcess.QUERYFROMAC, self.parentobj.query_type))
+			self.parentobj.unlock()
 		else:
 			self.inputfield.Enable()
 			self.inputfield.SetValue("")
 			self.parentobj.query_from = 0 # from field
+			self.parentobj.lock()
+			self.parentobj.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, WorkProcess.QUERYFROMGUI, self.parentobj.query_type))
+			self.parentobj.unlock()
 		self.parentobj.update_query = True
 		self.CheckIfOk()
 
@@ -135,6 +146,9 @@ class QueryGui:
 		self.parentobj.query_file = None
 		#self.parentobj.query_from_ac = False
 		self.parentobj.query_from = 0 # field
+		self.parentobj.lock()
+		self.parentobj.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, WorkProcess.QUERYFROMGUI, self.parentobj.query_type))
+		self.parentobj.unlock()
 		self.parentobj.update_query = True
 		self.CheckIfOk()
 
@@ -145,13 +159,23 @@ class QueryGui:
 			if self.parentobj.query_from == 2: # from ac
 				self.parentobj.query_from_ac = False
 				self.parentobj.query_from = 0
+				self.parentobj.lock()
+				self.parentobj.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, WorkProcess.QUERYFROMGUI, self.parentobj.query_type))
+				self.parentobj.unlock()
 				self.inputfield.SetValue("")
 				self.inputfield.Enable()
+			else:
+				self.parentobj.lock()
+				self.parentobj.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, self.parentobj.query_from, self.parentobj.query_type, self.parentobj.query_file))
+				self.parentobj.unlock()
 			self.fromaccmd.Disable()
 			self.fromaccmd.SetValue(False)
 		elif self.radio_list.GetValue():
 			self.parentobj.query_type = 1
 			self.fromaccmd.Enable()
+			self.parentobj.lock()
+			self.parentobj.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, self.parentobj.query_from, self.parentobj.query_type, self.parentobj.query_file))
+			self.parentobj.unlock()
 		self.CheckIfOk()
 
 	def OnTextChange(self, event):

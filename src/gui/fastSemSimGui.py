@@ -36,13 +36,16 @@ from SemSim import SemSimMeasures
 from SemSim import ObjSemSim
 #from gui import WorkThread
 from gui import WorkProcess
-import threading
+#import threading
 import multiprocessing
 
 debugging = False
 #debugging = True
 
 class fastSemSimGui(wx.Frame):
+	process_busy = False
+	process_busy_lock = None
+	process_busy_event = None
 	UPDATE_INTERVAL = 500
 	# temp variables to be removed
 	superconta = 0
@@ -105,8 +108,11 @@ class fastSemSimGui(wx.Frame):
 
 	def __init__(self, parent):
 		super(fastSemSimGui, self).__init__(parent, title="fastSemSim - Copyright 2011, Marco Mina (src version)", size=(605,630))
+		self.process_busy = False
+		self.process_busy_lock = multiprocessing.Lock()
+		self.process_busy_event = multiprocessing.Event()
 		self.InitUI()
-		
+
 	def InitUI(self):
 		self.font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
 		self.font.SetPointSize(9)
@@ -349,21 +355,7 @@ class fastSemSimGui(wx.Frame):
 		return result
 
 
-	def loadFromField(self):
-		h = self.QueryGui.inputfield.GetValue()
-		self.query= []
-		h = h.splitlines()
-		#print h
-		for line in h:
-			#print line
-			if self.query_type == 0: #pairs
-				line = line.rsplit(' ')
-				#print line
-				self.query.append((str(line[0]), str(line[1])))
-			else: # list
-				self.query.append(str(line))
-		#print self.query
-		return True
+
 
 
 #################################
@@ -388,25 +380,48 @@ class fastSemSimGui(wx.Frame):
 		else:
 			print "Already executing"
 			return False
-			
-	def test_process(self):
-		#self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_AC, 'prova'))
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_STATUS, 'prova'))
-		#self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_GO, 'prova'))
-		#self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_SS, 'prova'))
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, 'prova'))
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_OUTPUT, 'prova'))
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_START, 'prova'))
-		#time.sleep(2)
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_PAUSE, 'prova'))
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_STOP, 'prova'))
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_PAUSE, 'prova'))
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_STATUS, 'prova'))
 
+	def loadFromField(self):
+		h = self.QueryGui.inputfield.GetValue()
+		self.query= []
+		h = h.splitlines()
+		#print h
+		for line in h:
+			#print line
+			if self.query_type == 0: #pairs
+				line = line.rsplit(' ')
+				#print line
+				self.query.append((str(line[0]), str(line[1])))
+			else: # list
+				self.query.append(str(line))
+		#print self.query
+		return True
+
+	def lock(self):
+		self.process_busy_lock.acquire()
+		if self.process_busy:
+			self.process_busy_lock.release()
+			#self.process_busy_event.wait()
+			return False
+		self.process_busy = True
+		self.process_busy_event.clear()
+		self.process_busy_lock.release()
+		return True
+	
+	def unlock(self):
+		self.process_busy_lock.acquire()
+		self.process_busy = False
+		self.process_busy_event.set()
+		self.process_busy_lock.release()
+		
 	def start_process(self):
+		self.progress.SetValue(float(0));
 		#### data format: (ss measure, ss measure params, mixing strat., mixing strat. params, ontology)
+		self.lock()
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_SS, self.ssmeasure, None, self.mixingstrategy, None, self.selectedGO))
 		data = self.ssprocess2gui_queue.get()
+		self.unlock()
+		self.lock()
 		if self.output_type == 0:
 			#print "OOOOOOOOOOOOOO"
 			self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_OUTPUT, WorkProcess.OUTPUT2GUI, None))
@@ -414,18 +429,25 @@ class fastSemSimGui(wx.Frame):
 			#print "OOOOOOOOOOOOOO1111"
 			self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_OUTPUT, WorkProcess.OUTPUT2FILE, self.output_file, None, None))
 		data = self.ssprocess2gui_queue.get()
-		if self.query_from == 0:
-			self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, WorkProcess.QUERYFROMGUI, self.query_type, self.query))
-		elif self.query_from == 2:
-			self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, WorkProcess.QUERYFROMAC))
-		elif self.query_from == 1:
-			self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, WorkProcess.QUERYFROMFILE, self.query_type, self.query_file, None, None))
-		data = self.ssprocess2gui_queue.get()
+		#if self.query_from == 0:
+			#self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, WorkProcess.QUERYFROMGUI, self.query_type, self.query))
+		#elif self.query_from == 2:
+			#self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, WorkProcess.QUERYFROMAC))
+		#elif self.query_from == 1:
+			#self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, WorkProcess.QUERYFROMFILE, self.query_type, self.query_file, None, None))
+		#data = self.ssprocess2gui_queue.get()
 		self.SetStatus(2)
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_STATUS, None))
 		data = self.ssprocess2gui_queue.get()
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_START, None))
+		self.unlock()
+		self.lock()
+		if self.query_from == 0:
+			self.loadFromField()
+			self.gui2ssprocess_queue.put((WorkProcess.CMD_START, self.query))
+		else:
+			self.gui2ssprocess_queue.put((WorkProcess.CMD_START, None))
 		data = self.ssprocess2gui_queue.get()
+		self.unlock()
 		#print data[0]
 		#sys.exit(0)
 		if data[0] == WorkProcess.CMD_START and data[1]:
@@ -436,18 +458,19 @@ class fastSemSimGui(wx.Frame):
 		return True
 
 	def stop_process(self):
+		print "stop called"
 		self.timer.Stop()
-		self.ssprocess[0].terminate()
-		self.ssprocess[0] = None
-		self.gui2ssprocess_queue.close()
-		self.gui2ssprocess_queue = None
-		self.gui2ssprocess_pipe.close()
-		self.gui2ssprocess_pipe = None
-		self.ssprocess2gui_pipe.close()
-		self.ssprocess2gui_pipe = None
-		self.sspdone = None
-		self.sstodo = None
-		self.sscompleted = None
+		#self.ssprocess[0].terminate()
+		#self.ssprocess[0] = None
+		#self.gui2ssprocess_queue.close()
+		#self.gui2ssprocess_queue = None
+		#self.gui2ssprocess_pipe.close()
+		#self.gui2ssprocess_pipe = None
+		#self.ssprocess2gui_pipe.close()
+		#self.ssprocess2gui_pipe = None
+		#self.sspdone = None
+		#self.sstodo = None
+		#self.sscompleted = None
 		self.running = False
 		self.progress.SetValue(int(0))
 		return True
@@ -511,6 +534,16 @@ class fastSemSimGui(wx.Frame):
 			self.OnOutputData(tmp)
 			gaugerange = self.progress.GetRange()
 			self.progress.SetValue((float(self.superconta)/self.pairs_to_process)*gaugerange)
+			
+		if self.lock():
+			print "THIS CHECK"
+			if not self.ssprocess2gui_queue.empty():
+				data = self.ssprocess2gui_queue.get()
+				print data
+			self.unlock()
+		else:
+			print "Busy"
+		
 		#self.OnProgress()
 		#self.OnCompleted()
 
