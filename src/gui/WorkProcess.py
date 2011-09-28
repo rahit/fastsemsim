@@ -493,9 +493,9 @@ class WorkProcess(multiprocessing.Process):
 							return
 					test = self.ss.SemSim(self.query[self.C_i],self.query[self.C_j], self.ss_ontology)
 					self.query_pairs_done += 1
-					if not int(self.query_pairs_done*100/self.query_pairs_number) == self.last_percentual:
-						self.last_percentual = int(self.query_pairs_done*100/self.query_pairs_number)
-						self.ssprocess2gui_queue.put((float(self.query_pairs_done)/self.query_pairs_number))
+					#if not int(self.query_pairs_done*100/self.query_pairs_number) == self.last_percentual:
+						#self.last_percentual = int(self.query_pairs_done*100/self.query_pairs_number)
+						#self.ssprocess2gui_queue.put((float(self.query_pairs_done)/self.query_pairs_number))
 					if type(test) is float:
 						test = str('%.4f' %test)
 					if self.output_to == OUTPUT2GUI:

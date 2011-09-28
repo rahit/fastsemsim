@@ -119,9 +119,7 @@ class GeneOntologyGui(wx.Frame):
 		self.gochooser.Disable()
 		self.doneb.Disable()
 		self.parentobj.ac_cmd.Disable()
-		while not self.parentobj.lock():
-			self.process_busy_event.wait()
-		#self.parentobj.process_busy_lock.acquire()
+		self.parentobj.lock()
 		self.parentobj.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_GO, self.go_filename))
 		self.TIMER_ID = 1000
 		self.timer = wx.Timer(self.parentobj.panel, self.TIMER_ID)
@@ -148,7 +146,7 @@ class GeneOntologyGui(wx.Frame):
 					self.parentobj.go_running = False
 					return True
 		except Exception:
-			self.parentobj.unlock() #### add a clean
+			#self.parentobj.unlock() #### add a clean
 			#self.parentobj.process_busy_lock.release()
 			#self.parentobj.go_running = False
 			return False

@@ -193,11 +193,11 @@ class AnnotationCorpusGui(wx.Frame):
 	def AC_timer(self, event):
 		try:
 			data = self.parentobj.ssprocess2gui_queue.get(False)
+			self.parentobj.unlock()
 			self.filechoosecmd.Enable()
 			self.doneb.Enable()
 			self.acload.Enable()
 			self.timer.Stop()
-			self.parentobj.unlock()
 			if data[0] == WorkProcess.CMD_LOAD_AC:
 				if data[1]:
 					self.parentobj.SetAcOk(True)
@@ -210,7 +210,7 @@ class AnnotationCorpusGui(wx.Frame):
 			self.parentobj.ac_running = False
 			return False
 		except Exception:
-			self.parentobj.unlock()
+			#self.parentobj.unlock()
 			#self.parentobj.ac_running = False
 			return False
 
