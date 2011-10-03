@@ -165,7 +165,7 @@ class LoadConfigGui(wx.Dialog):
 		return False
 
 	def GO_check_timer(self, event):
-		print self.parentobj.go_running
+		#print self.parentobj.go_running
 		if not self.parentobj.go_running:
 			self.timer.Stop()
 			if self.parentobj.go_ok:
@@ -224,9 +224,9 @@ class LoadConfigGui(wx.Dialog):
 			self.parentobj.QueryGui.set_query_from(int(self.tags['query']['query_from']))
 		self.query_pic.SetBitmap(wx.Bitmap(self.parentobj.Ok_pic))
 		#self.query_pic.SetBitmap(wx.Bitmap(self.parentobj.Warning_pic))
-		print self.parentobj.query_file
-		print self.parentobj.query_type
-		print self.parentobj.query_from
+		#print self.parentobj.query_file
+		#print self.parentobj.query_type
+		#print self.parentobj.query_from
 		#wx.PostEvent(self, DummyEvent(self.EVT_OUTPUT_ID))
 
 	def ProcessOutput(self,event):

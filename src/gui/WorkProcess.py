@@ -86,6 +86,7 @@ class WorkProcess(multiprocessing.Process):
 				data = self.gui2ssprocess_queue.get(False)
 				# check if data is stop or pause. In this case make actions. Otherwise don't do anything
 				if data[0] == CMD_STOP:
+					print "Stop received"
 					self.stop()
 					return False
 				elif data[0] == CMD_PAUSE:
@@ -102,7 +103,7 @@ class WorkProcess(multiprocessing.Process):
 				pass
 			return True
 		elif self.status == STATUS_PAUSE:
-			print "check in status PAUSE"
+			#print "check in status PAUSE"
 			data = self.gui2ssprocess_queue.get()
 			if data[0] == CMD_STOP:
 				self.stop()
@@ -118,12 +119,12 @@ class WorkProcess(multiprocessing.Process):
 				pass # ignore any other command!
 			return True
 		elif self.status == STATUS_INIT:
-			print "check in status INIT"
+			#print "check in status INIT"
 			self.reset()
 		elif self.status == STATUS_WAIT:
-			print "check in status WAIT"
+			#print "check in status WAIT"
 			data = self.gui2ssprocess_queue.get()
-			print str(data)
+			#print str(data)
 			if data[0] == CMD_STOP or data[0] == CMD_PAUSE:
 				pass
 			elif data[0] == CMD_RESET:
@@ -147,7 +148,7 @@ class WorkProcess(multiprocessing.Process):
 			else:
 				pass
 		else:
-			print "check in other status."
+			#print "check in other status."
 			# something went wrong. Inconsistent state. Reset!
 			self.reset()
 		return True
@@ -158,7 +159,7 @@ class WorkProcess(multiprocessing.Process):
 		#return True
 
 	def reset(self):
-		print "func reset"
+		#print "func reset"
 		self.ss_ok = False
 		self.ac_ok = False
 		self.go_ok = False
@@ -194,7 +195,7 @@ class WorkProcess(multiprocessing.Process):
 		self.status = STATUS_WAIT
 
 	def pause(self):
-		print "func pause"
+		#print "func pause"
 		# do not clear data
 		self.ssprocess2gui_queue.put((CMD_PAUSE, True))
 		self.status = STATUS_PAUSE
@@ -248,7 +249,7 @@ class WorkProcess(multiprocessing.Process):
 
 	def load_AC(self, data): #### data format: (filename, other) other = (file format, file format params)
 		self.status = STATUS_LOAD_AC
-		print "func Load AC"
+		#print "func Load AC"
 		self.ac_ok = False
 		self.ss_update = True
 		self.query_update = True
@@ -267,13 +268,13 @@ class WorkProcess(multiprocessing.Process):
 			else:
 				self.ssprocess2gui_queue.put((CMD_LOAD_AC, False))
 		except:
-			print("Failed to load Annotation Corpus.")
+			#print("Failed to load Annotation Corpus.")
 			self.ssprocess2gui_queue.put((CMD_LOAD_AC, False))
 		self.status = STATUS_WAIT
 
 	def load_GO(self, data): #### data format: (filename)
 		self.status = STATUS_LOAD_GO
-		print "func Load GO"
+		#print "func Load GO"
 		self.go_ok = False
 		self.ss_update = True
 		self.ac_update = True
@@ -292,16 +293,16 @@ class WorkProcess(multiprocessing.Process):
 
 	def load_query(self, data): #### data format: (query from, query_params) query_params: none (fom ac), (type, filename) (from file), type (from gui)
 		self.status = STATUS_LOAD_QUERY
-		print "func Load query"
+		#print "func Load query"
 		self.query_ok = False
 		self.query_from = data[0]
 		if self.query_from == QUERYFROMAC:
-			print "Query from AC selected."
+			#print "Query from AC selected."
 			self.query_ok = True
 			self.query_update = True
 			self.query_type = 1
 		elif self.query_from == QUERYFROMFILE:
-			print "Query from FILE selected."
+			#print "Query from FILE selected."
 			self.query_type = data[1]
 			self.query_filename = data[2]
 			#self.query_filetype = data[3]
@@ -309,7 +310,7 @@ class WorkProcess(multiprocessing.Process):
 			self.query_ok = True
 			self.query_update = True
 		elif self.query_from == QUERYFROMGUI: # expect to find query as input parameter of start messages
-			print "Query from GUI selected."
+			#print "Query from GUI selected."
 			#self.query = data[2]
 			self.query_type = data[1]
 			self.query_ok = True
@@ -324,7 +325,7 @@ class WorkProcess(multiprocessing.Process):
 
 	def load_SS(self, data): #### data format: (ss measure, ss measure params, mixing strat., mixing strat. params, ontology)
 		self.status = STATUS_LOAD_SS
-		print "func Load SS"
+		#print "func Load SS"
 		self.ss_ok = False
 		self.ss_name = data[0]
 		self.ss_params = data[1]
@@ -336,15 +337,15 @@ class WorkProcess(multiprocessing.Process):
 		self.ss_update = True
 		if self.ss_ok:
 			self.ssprocess2gui_queue.put((CMD_LOAD_SS, True))
-			print "load SS answer"
+			#print "load SS answer"
 		else:
 			self.ssprocess2gui_queue.put((CMD_LOAD_SS, False))
-			print "load SS answer"
+			#print "load SS answer"
 		self.status = STATUS_WAIT
 
 	def load_output(self, data): #### data format: (output_to, output_params) output_params: for file: (filename, type, params), for gui: (how many scores)
 		self.status = STATUS_LOAD_OUTPUT
-		print "func Load output"
+		#print "func Load output"
 		self.output_ok = False
 		self.output_to = data[0]
 		if self.output_to == OUTPUT2FILE:
@@ -365,7 +366,7 @@ class WorkProcess(multiprocessing.Process):
 	def _start(self, data):
 		self.status = STATUS_RUN
 		self.start_data = data
-		print "func start"
+		#print "func start"
 		if not self.init_structures():
 			self.ssprocess2gui_queue.put((CMD_START, False))
 			self.status = STATUS_WAIT
@@ -428,24 +429,24 @@ class WorkProcess(multiprocessing.Process):
 		self.query_update = False
 
 	def init_output(self):
-		print "init_output"
+		#print "init_output"
 		if self.output_update:
 			if self.output_to == OUTPUT2FILE:
-				print "output to file"
+				#print "output to file"
 				self.output_file = open(self.output_filename, 'w')
 			elif self.output_to == OUTPUT2GUI:
-				print "output to gui"
+				#print "output to gui"
 				self.output_buffer = [[]] * self.MAX_BUFFER_SIZE
 				self.query_pairs_saved = 0
 			else: 
-				print "else"
+				#print "else"
 				return
 			self.output_update = False
 
 	def init_structures(self):
 		#self.buffer = None # data will be stored here
 		if not self.go_ok or not self.ac_ok or not self.ss_ok or not self.query_ok or not self.output_ok:
-			print "Something is not ready."
+			#print "Something is not ready."
 			return False
 		self.init_go()
 		self.init_ac()
@@ -453,7 +454,7 @@ class WorkProcess(multiprocessing.Process):
 		self.init_query()
 		self.init_output()
 		if self.go_update or self.ac_update or self.ss_update or self.query_update or self.output_update:
-			print "Something is not updated."
+			#print "Something is not updated."
 			return False
 		return True
 
@@ -484,7 +485,7 @@ class WorkProcess(multiprocessing.Process):
 	def _calculate(self):
 		self.query_pairs_done = 0
 		self.last_percentual = 0
-		print "Total pairs to process: " + str(self.query_pairs_number)
+		#print "Total pairs to process: " + str(self.query_pairs_number)
 		if self.query_type == QUERY_LIST:
 			for self.C_i in range(0,len(self.query)):
 				for self.C_j in range(self.C_i + 1, len(self.query)):

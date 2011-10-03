@@ -120,6 +120,7 @@ class fastSemSimGui(wx.Frame):
 
 		self.panel = wx.Panel(self)
 		self.mainbox = wx.BoxSizer(wx.VERTICAL)
+		self.Bind(wx.EVT_CLOSE, self.OnQuit, id=self.GetId())
 
 		# Define main regions
 		self.go_boxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Gene Ontology')
@@ -464,7 +465,7 @@ class fastSemSimGui(wx.Frame):
 
 	def stop_process(self):
 		print "stop called"
-		self.timer.Stop()
+		#self.timer.Stop()
 		#self.ssprocess[0].terminate()
 		#self.ssprocess[0] = None
 		#self.gui2ssprocess_queue.close()
@@ -476,8 +477,15 @@ class fastSemSimGui(wx.Frame):
 		#self.sspdone = None
 		#self.sstodo = None
 		#self.sscompleted = None
+		self.lock()
+		print "got lock"
+		self.gui2ssprocess_queue.put((WorkProcess.CMD_STOP, None))
+		print "data sent"
+		#data = self.ssprocess2gui_queue.get()
+		print "got answer"
+		self.unlock()
 		self.running = False
-		self.progress.SetValue(int(0))
+		self.SetStatus(1)
 		return True
 
 	def start(self):
@@ -541,16 +549,19 @@ class fastSemSimGui(wx.Frame):
 			self.progress.SetValue((float(self.superconta)/self.pairs_to_process)*gaugerange)
 			
 		if self.lock(wait = False):
-			print "THIS CHECK"
+			#print "THIS CHECK"
 			if not self.ssprocess2gui_queue.empty():
 				data = self.ssprocess2gui_queue.get()
-				print data
+				#print data
 				if data[0] == WorkProcess.CMD_STOP:
 					if data[1]:
 						self.completed()
+					else:
+						self.completed()
 			self.unlock()
 		else:
-			print "Busy"
+			pass
+			#print "Busy"
 		
 		#self.OnProgress()
 		#self.OnCompleted()
@@ -590,6 +601,10 @@ class fastSemSimGui(wx.Frame):
 		#print "Update done"
 		#self.update_event.set()
 
+	def OnQuit(self, event):
+		self.ssprocess[0].terminate()
+		sys.exit()
+		
 #################################################################################################################################
 
 if __name__ == "__main__":
