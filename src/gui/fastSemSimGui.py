@@ -583,11 +583,17 @@ class fastSemSimGui(wx.Frame):
 		#print "Printing output data"
 		#print t
 		
+		#for i in t: #range(t[0], t[1] + 1):
+			##frase = self.ssprocess[0].buffer[i][0] + "\t" + self.ssprocess[0].buffer[i][1] + "\t" + self.ssprocess[0].buffer[i][2] + "\n"
+			#self.superconta += 1
+			#frase = str(i[0]) + "\t" + str(i[1]) + "\t" + str(i[2]) + "\n"
+			#self.OutputGui.output_field.AppendText(frase)
+		frase = ""
 		for i in t: #range(t[0], t[1] + 1):
 			#frase = self.ssprocess[0].buffer[i][0] + "\t" + self.ssprocess[0].buffer[i][1] + "\t" + self.ssprocess[0].buffer[i][2] + "\n"
 			self.superconta += 1
-			frase = str(i[0]) + "\t" + str(i[1]) + "\t" + str(i[2]) + "\n"
-			self.OutputGui.output_field.AppendText(frase)
+			frase = frase + str(i[0]) + "\t" + str(i[1]) + "\t" + str(i[2]) + "\n"
+		self.OutputGui.output_field.AppendText(frase)
 		#print "Output data printed"
 		#self.OnUpdateDone()
 
@@ -608,6 +614,7 @@ class fastSemSimGui(wx.Frame):
 #################################################################################################################################
 
 if __name__ == "__main__":
+	multiprocessing.freeze_support()
 	app = wx.App()
 	window = fastSemSimGui(None)
 	window.Centre()
