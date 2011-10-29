@@ -177,10 +177,13 @@ class AnnotationCorpusGui(wx.Frame):
 		self.acload.Disable()
 		self.ac = AnnotationCorpus.AnnotationCorpus(self.parentobj.go)
 		param = {}
-		if self.plainfileorder == 0:
-			param['AC_OBJ_FIRST'] = None
-		elif self.plainfileorder == 1:
-			param['AC_TERM_FIRST'] = None
+		if self.filetype == 'GOA':
+			param= {'simplify':True}
+		else:
+			if self.plainfileorder == 0:
+				param['AC_OBJ_FIRST'] = None
+			elif self.plainfileorder == 1:
+				param['AC_TERM_FIRST'] = None
 		self.parentobj.lock()
 		self.parentobj.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_AC, self.ac_filename, self.filetype, param))
 		self.status_label.SetLabel("Loading Annotation Corpus from file " + str(self.ac_filename))

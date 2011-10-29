@@ -27,26 +27,40 @@ This class reads plain annotation corpus files.
 #Plain format 3: protein ID - Taxonomy - Term ID - EC
 '''
 import sys
-import copy
-#from pairs import rowscounter
-#from GO import GeneOntology
-import GeneOntology
-import AnnotationCorpus
+#import copy
+from GO import GeneOntology
+#from GO.AnnotationCorpus import AnnotationCorpus
 
 class PlainAnnotationCorpus():
 	separator = '\t'
-	objfirst = False
-	
-	#def __init__(self, tree=None):
-		#AnnotationCorpus.__init__(tree)
+	comment = '#'
 
-	# deepcopy missing but not needed for now.
-	#def load(self, fname):
-		#self.parse(fname, self)
-			
-	def parse(self, fname, trueclass):
+	def __init__(self, parameters=None, ac = None):
+		self.ac = ac
+		if self.ac == None:
+			#ac = AnnotationCorpus()
+			print "Unexpected Error"
+			sys.exit()
+		self.parameters = parameters
+
+	def interpret_parameters(self):
+		self.obj_first = True
+		self.one_association_per_line = True
+		if self.parameters == None:
+			return
+		if len(self.parameters) > 0:
+			self.obj_first = self.parameters[0]
+			if len(self.parameters) > 1:
+				self.one_association_per_line = self.parameters[1]
+
+	def set_fields(self):
+		self.ac.reset_fields()
+
+	def parse(self, fname):
+		self.interpret_parameters()
+		self.set_fields()
 		if type(fname) is str:
-			stream = open(fname)
+			stream = open(fname, 'r')
 		else:
 			stream = fname
 		#filenum = rowcount(fname);
@@ -59,67 +73,69 @@ class PlainAnnotationCorpus():
 		for line in stream:
 			line = line.rstrip('\n')
 			line = line.rstrip('\r')
+			if line[0] == self.comment:
+				continue
 			line = line.split(self.separator)
 			if len(line) == 0:
 				continue
 			if len(line) < 2:
 				print("Strange line: " + str(line))
 				continue
-			if self.objfirst:
-				obj_id = line[0]
-				term = line[1]
+			temp_to_add = []
+			if self.one_association_per_line:
+				if self.obj_first:
+					obj_id = line[0]
+					term = line[1]
+				else:
+					obj_id = line[1]
+					term = line[0]
+				temp_to_add.append(obj_id, term)
 			else:
-				obj_id = line[1]
-				term = line[0]
-			if trueclass.exclude_GO_root:
-				if term == GeneOntology.BP_root:
-					continue
-				if term == GeneOntology.CC_root:
-					continue
-				if term == GeneOntology.MF_root:
-					continue
-			term = int(term[3:])
-			if not trueclass.go == None and not trueclass.go.alt_ids == None:
-				if not term in trueclass.go.alt_ids:
-					#print(str(term) + " not in GO.")
-					continue
-				if not term in trueclass.go.nodes_edges:
-					#print(str(term) + " obsolete.")
-					continue
-				if not term == trueclass.go.alt_ids[term]:
-					#print("Remapping " + str(term) + " to " + str(trueclass.go.alt_ids[term])
-					term = trueclass.go.alt_ids[term]
-						
-			#### Build up genes set
-			if obj_id not in trueclass.obj_set:
-				trueclass.obj_set[obj_id] = {}
-			if term not in trueclass.term_set:
-				trueclass.term_set[term] = {}
-			#### Build up annotations set
-			if obj_id not in trueclass.annotations:
-				trueclass.annotations[obj_id] = {}
-			if term not in trueclass.annotations[obj_id]:
-				trueclass.annotations[obj_id][term] = {}
-			#### Build up reverse annotations set
-			if term not in trueclass.reverse_annotations:
-				trueclass.reverse_annotations[term] = {}
-			if obj_id not in trueclass.reverse_annotations[term]:
-				trueclass.reverse_annotations[term][obj_id] = {}
+				obj_id = line[0]
+				for i in range(1,len(line)):
+					term = line[i]
+					temp_to_add.append(obj_id, term)
+
+			for i in temp_to_add:
+				obj_id = i[0]
+				term = i[1]
+				if ac.exclude_GO_root:
+					if term == GeneOntology.BP_root:
+						continue
+					if term == GeneOntology.CC_root:
+						continue
+					if term == GeneOntology.MF_root:
+						continue
+				term = int(term[3:])
+				if not ac.go == None and not ac.go.alt_ids == None:
+					if not term in ac.go.alt_ids:
+						#print(str(term) + " not in GO.")
+						continue
+					if not term in ac.go.nodes_edges:
+						#print(str(term) + " obsolete.")
+						continue
+					if not term == ac.go.alt_ids[term]:
+						#print("Remapping " + str(term) + " to " + str(ac.go.alt_ids[term])
+						term = ac.go.alt_ids[term]
+							
+				#### Build up genes set
+				if obj_id not in ac.obj_set:
+					ac.obj_set[obj_id] = {}
+				if term not in ac.term_set:
+					ac.term_set[term] = {}
+				#### Build up annotations set
+				if obj_id not in ac.annotations:
+					ac.annotations[obj_id] = {}
+				if term not in ac.annotations[obj_id]:
+					ac.annotations[obj_id][term] = {}
+				#### Build up reverse annotations set
+				if term not in ac.reverse_annotations:
+					ac.reverse_annotations[term] = {}
+				if obj_id not in ac.reverse_annotations[term]:
+					ac.reverse_annotations[term][obj_id] = {}
 			lines_counter += 1
-			#if trueclass.SHOW_PROCESS and (lines_counter%(filenum/20)==0):
+			#if ac.SHOW_PROCESS and (lines_counter%(filenum/20)==0):
 				#print("Lines processed: " + str(lines_counter) + " on " + str(filenum) + " (" + str(int(100*float(lines_counter)/float(filenum))) + "%)")
 		if type(fname) is str:
 			stream.close()
 		return True
-
-
-#if __name__ == "__main__":
-	#tree = GeneOntology.load_GO_XML(open(sys.argv[1]))
-	#print "Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
-	
-	#gp = PlainAnnotationCorpus(tree)
-	#gp.parse(sys.argv[2])
-	#for i in gp.annotations:
-		#print(str(i) + ": " + str(gp.annotations[i]))
-	#gp.check_consistency()
-	#gp.sanitize()

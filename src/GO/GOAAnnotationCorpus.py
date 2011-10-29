@@ -31,8 +31,8 @@ import AnnotationCorpus
 class GOAAnnotationCorpus():
 	separator = '\t'
 
-	#def __init__(self, ac):
-		#self.ac = ac
+	def __init__(self, parameters=None):
+		pass
 
 	def parse(self, fname, trueclass):
 		if type(fname) is str:

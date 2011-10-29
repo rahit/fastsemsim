@@ -200,8 +200,8 @@ if __name__ == "__main__":
 	tree = GeneOntology.load_GO_XML(open(sys.argv[1]))
 	print "Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
 
-	gp = AnnotationCorpus.AnnotationCorpus(tree)	
-	gp.parse(sys.argv[2],'plain', {'AC_TERM_FIRST'})
+	gp = AnnotationCorpus.AnnotationCorpus(tree)
+	gp.parse(sys.argv[2],'gaf-2.0')
 
 	print("Annotated proteins: " + str(len(gp.annotations)))
 	print("Annotated terms: " + str(len(gp.reverse_annotations)))

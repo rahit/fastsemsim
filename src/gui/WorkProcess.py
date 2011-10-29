@@ -238,9 +238,9 @@ class WorkProcess(multiprocessing.Process):
 		print "----------SS----------"
 		if self.ss_ok:
 			print "SS is ok"
-			print "SS: " + self.ss_name
-			print "MS: " + self.ms_name
-			print "Ontology selected: " + self.ss_ontology
+			print "SS: " + str(self.ss_name)
+			print "MS: " + str(self.ms_name)
+			print "Ontology selected: " + str(self.ss_ontology)
 		else:
 			print "SS is not ok"
 		print "--------------------"
@@ -258,7 +258,10 @@ class WorkProcess(multiprocessing.Process):
 			self.ac_filename = data[0]
 			self.ac_filetype = data[1]
 			self.ac_filetypeparams = data[2]
+			self.ac_filetypeparams = None
+			print "Fix me. Workprocess.py in load_AC"
 			if self.ac.parse(str(self.ac_filename), self.ac_filetype, self.ac_filetypeparams):
+				print "ok"
 				if self.ac.sanitize():
 					self.ac_ok = True
 					self.ac_update = False

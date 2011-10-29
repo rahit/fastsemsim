@@ -40,8 +40,8 @@ class JaccardSemSim(TermSemSim):
 			inters = self.util.det_common_ancestors(term1, term2)
 			anc1 = self.util.get_ancestors(term1)
 			anc2 = self.util.get_ancestors(term2)
-			allanc = self.int_merge_sets(anc1, anc2)
+			allanc = self.util.int_merge_sets(anc1, anc2)
 		else:
 			inters = self.util.intersection(term1, term2)
-			allanc = self.int_merge_sets(term1, term2)
+			allanc = self.util.int_merge_sets(term1, term2)
 		return float(len(inters))/float(len(allanc))
