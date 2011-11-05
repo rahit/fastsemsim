@@ -103,11 +103,6 @@ class AnnotationCorpusGui(wx.Dialog):
 		self.commandbox.Add(self.button_reset, flag=wx.LEFT|wx.RIGHT, border=10)
 		self.commandbox.Add(self.button_done, flag=wx.LEFT|wx.RIGHT, border=10)
 
-		self.fakecmd = wx.Button(self.panel, wx.ID_ANY, 'Load')
-		self.fakecmd.Hide()
-		self.fakecmd.Disable()
-		self.Bind(wx.EVT_BUTTON, self.OnFakeCmd, id=self.fakecmd.GetId())
-
 
 		#statusbox
 		#self.statusbox = wx.BoxSizer(wx.HORIZONTAL)
@@ -144,6 +139,7 @@ class AnnotationCorpusGui(wx.Dialog):
 		self.params = None
 		self.button_load.Disable()
 		self.button_filetypeparams.Disable()
+		print "Fix Me. Should Reset ac in main process!!"
 
 	def OnAdvanced(self, event):
 		self.advancedGui = AdvancedGui(self)
@@ -164,7 +160,11 @@ class AnnotationCorpusGui(wx.Dialog):
 		else:
 			self.button_load.Disable()
 
-#------------------------------------------------------------------------------------------------------------------
+	def OnLoad(self, event):
+		self.loadACGui = LoadACGui(self)
+		self.loadACGui.ShowModal()
+		self.loadACGui.OnStart()
+
 #------------------------------------------------------------------------------------------------------------------
 	def InitMainUI(self):
 		#self.parent.ac_status_pic= wx.StaticBitmap(self.parent.panel)
@@ -177,72 +177,6 @@ class AnnotationCorpusGui(wx.Dialog):
 	def OnShowAC(self, event):
 		self.parent.ACGui.ShowModal()
 #---------------------------------------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------------------------------------
-
-	def OnLoad(self, event):
-		self.filechoosecmd.Disable()
-		self.doneb.Disable()
-		self.acload.Disable()
-		self.parent.ac = None
-		self.parent.SetAcOk(False)
-		self.parent.update_ac = True
-		self.parent.update_ssobject = True
-		self.parent.update_query = True
-		event = wx.PyCommandEvent(wx.EVT_BUTTON.typeId, self.fakecmd.GetId())
-		wx.PostEvent(self.GetEventHandler(), event)
-
-	def OnFakeCmd(self, event):
-		self.parent.ac_running = True
-		self.filechoosecmd.Disable()
-		self.doneb.Disable()
-		self.acload.Disable()
-		self.ac = AnnotationCorpus.AnnotationCorpus(self.parent.go)
-		param = {}
-		if self.filetype == 'GOA':
-			param= {'simplify':True}
-		elif self.filetype == 'plain':
-			param = {}
-			param['multiple'] = False
-			param['term first'] = False
-			param['separator'] = '\t'
-		else:
-			param = None
-			#if self.plainfileorder == 0:
-				#param['AC_OBJ_FIRST'] = None
-			#elif self.plainfileorder == 1:
-				#param['AC_TERM_FIRST'] = None
-		self.parent.lock()
-		self.parent.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_AC, self.filename, self.filetype, param))
-		self.status_label.SetLabel("Loading Annotation Corpus from file " + str(self.filename))
-		self.TIMER_ID = 1000
-		self.timer = wx.Timer(self.parent.panel, self.TIMER_ID)
-		wx.EVT_TIMER(self.parent.panel, self.TIMER_ID, self.AC_timer)
-		self.timer.Start(self.parent.UPDATE_INTERVAL)
-		return False
-
-	def AC_timer(self, event):
-		try:
-			data = self.parent.ssprocess2gui_queue.get(False)
-			self.parent.unlock()
-			self.filechoosecmd.Enable()
-			self.doneb.Enable()
-			self.acload.Enable()
-			self.timer.Stop()
-			if data[0] == WorkProcess.CMD_LOAD_AC:
-				if data[1]:
-					self.parent.SetAcOk(True)
-					self.parent.update_ac = False
-					self.status_label.SetLabel("Annotation Corpus loaded.")
-					self.parent.ac_running = False
-					return True
-				self.status_label.SetLabel("Failed to load Annotation Corpus.")
-			print("Failed to load Annotation Corpus.")
-			self.parent.ac_running = False
-			return False
-		except Exception:
-			#self.parent.unlock()
-			#self.parent.ac_running = False
-			return False
 
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
@@ -274,7 +208,7 @@ class AdvancedGui(wx.Dialog):
 
 			self.label_separatorlabel = wx.StaticText(self.panel, wx.ID_ANY, 'Separator')
 			self.separatorbox = wx.BoxSizer(wx.VERTICAL)
-			self.separatoroptions = ['[tab] (\\t)\'','[space]','']
+			self.separatoroptions = ['[tab] (\\t)','[space]','']
 			self.radius_separator_1 = wx.RadioButton(self.panel, wx.ID_ANY, self.separatoroptions[0], (10, 10), style=wx.RB_GROUP)
 			self.radius_separator_2 = wx.RadioButton(self.panel, wx.ID_ANY, self.separatoroptions[1], (10, 10))
 			self.customseparatorbox = wx.BoxSizer(wx.HORIZONTAL)
@@ -358,73 +292,9 @@ class AdvancedGui(wx.Dialog):
 				self.text_separator.Disable()
 			else:
 				self.text_separator.Enable()
+				self.text_separator.SetFocus()
 
-	#def OnLoad(self, event):
-		#self.filechoosecmd.Disable()
-		#self.doneb.Disable()
-		#self.acload.Disable()
-		#self.parent.ac = None
-		#self.parent.SetAcOk(False)
-		#self.parent.update_ac = True
-		#self.parent.update_ssobject = True
-		#self.parent.update_query = True
-		#event = wx.PyCommandEvent(wx.EVT_BUTTON.typeId, self.fakecmd.GetId())
-		#wx.PostEvent(self.GetEventHandler(), event)
 
-	#def OnFakeCmd(self, event):
-		#self.parent.ac_running = True
-		#self.filechoosecmd.Disable()
-		#self.doneb.Disable()
-		#self.acload.Disable()
-		#self.ac = AnnotationCorpus.AnnotationCorpus(self.parent.go)
-		#param = {}
-		#if self.filetype == 'GOA':
-			#param= {'simplify':True}
-		#elif self.filetype == 'plain':
-			#param = {}
-			#param['multiple'] = False
-			#param['term first'] = False
-			#param['separator'] = '\t'
-		#else:
-			#param = None
-			##if self.plainfileorder == 0:
-				##param['AC_OBJ_FIRST'] = None
-			##elif self.plainfileorder == 1:
-				##param['AC_TERM_FIRST'] = None
-		#self.parent.lock()
-		#self.parent.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_AC, self.filename, self.filetype, param))
-		#self.status_label.SetLabel("Loading Annotation Corpus from file " + str(self.filename))
-		#self.TIMER_ID = 1000
-		#self.timer = wx.Timer(self.parent.panel, self.TIMER_ID)
-		#wx.EVT_TIMER(self.parent.panel, self.TIMER_ID, self.AC_timer)
-		#self.timer.Start(self.parent.UPDATE_INTERVAL)
-		#return False
-
-	#def AC_timer(self, event):
-		#try:
-			#data = self.parent.ssprocess2gui_queue.get(False)
-			#self.parent.unlock()
-			#self.filechoosecmd.Enable()
-			#self.doneb.Enable()
-			#self.acload.Enable()
-			#self.timer.Stop()
-			#if data[0] == WorkProcess.CMD_LOAD_AC:
-				#if data[1]:
-					#self.parent.SetAcOk(True)
-					#self.parent.update_ac = False
-					#self.status_label.SetLabel("Annotation Corpus loaded.")
-					#self.parent.ac_running = False
-					#return True
-				#self.status_label.SetLabel("Failed to load Annotation Corpus.")
-			#print("Failed to load Annotation Corpus.")
-			#self.parent.ac_running = False
-			#return False
-		#except Exception:
-			##self.parent.unlock()
-			##self.parent.ac_running = False
-			#return False
-
-		
 ##self.descbox = wx.FlexGridSizer(rows = 4, cols = 2, vgap = 6, hgap = 20)
 ##self.filename_label = wx.StaticText(self.panel, label='AC File')
 ##self.filename_label.SetFont(self.parent.font)
@@ -440,30 +310,83 @@ class AdvancedGui(wx.Dialog):
 ###self.descbox.AddMany([(self.filename_label), (self.filename), (self.acobjs_label), (self.acobjs), (self.acterms_label), (self.acterms)])
 ##self.descbox.AddMany([(self.filename_label), (self.filename)])
 
-	#def OnFileBrowse(self, event):
-		#dialog = wx.FileDialog(None, style = wx.OPEN)
-		#if dialog.ShowModal() == wx.ID_OK:
-			#self.label_filename.SetLabel(dialog.GetPath())
-			#self.filename = dialog.GetPath()
-			#if (not self.filename == None) and (not self.filetype == None):
-				#self.button_load.Enable()
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 
-	#def OnDone(self, event):
-		#self.Hide()
-		
-	#def OnQuit(self, event):
-		#self.OnDone(event)
-		
-	#def OnReset(self, event):
-		#self.filename = None
-		#self.filetype = None
-		#self.label_filename.SetLabel("None specified.")
-		#self.box_filetype.SetValue('')
-		#self.params = None
-		
-	#def OnShowAC(self, event):
-		#self.parent.ACGui.ShowModal()
+class LoadACGui(wx.Dialog):
 
-	#def OnAdvanced(self, event):
-		#self.advancedGui = AdvancedGui(self, self.params)
-		#self.advancedGui.ShowModal()
+	def __init__(self, parent):
+		self.parent = parent
+		super(LoadACGui, self).__init__(self.parent, title="Loading Annotation Corpus", size=(300,300))
+		self.InitUI()
+	
+	def InitUI(self):
+		self.panel = wx.Panel(self)
+		self.mainbox = wx.BoxSizer(wx.VERTICAL)
+		self.loadbarboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Progress Bar')
+		self.loadbarbox = wx.StaticBoxSizer(self.loadbarboxline, wx.HORIZONTAL)
+		self.gauge_loadprogress = wx.Gauge(self.panel, -1, 50, size=(250, 25))
+		self.loadbarbox.Add(self.gauge_loadprogress, flag=wx.EXPAND | wx.TOP, border = 5)
+
+		self.button_abort = wx.Button(self.panel, wx.ID_ANY, 'Abort')
+		self.button_ok = wx.Button(self.panel, wx.ID_ANY, 'Ok')
+		self.button_ok.Disable()
+		self.commandbox = wx.BoxSizer(wx.HORIZONTAL)
+		self.commandbox.Add(self.button_abort)
+		self.commandbox.Add(self.button_ok)
+		self.Bind(wx.EVT_BUTTON, self.OnAbort, id=self.button_abort.GetId())
+		self.Bind(wx.EVT_BUTTON, self.OnOk, id=self.button_ok.GetId())
+		
+		self.mainbox.Add(self.loadbarbox)
+		#self.mainbox.Add(self.statsbarbox)
+		self.mainbox.Add(self.commandbox)
+		self.panel.SetSizerAndFit(self.mainbox)
+
+	def OnOk(self, event):
+		self.Quit()
+	
+	def OnAbort(self, event):
+		print "OnAbort. Fix Me."
+		self.Quit()
+
+	def OnStart(self):
+		pass
+
+		#self.parent.SetAcOk(False)
+		#self.parent.update_ac = True
+		##self.parent.update_ssobject = True
+		#self.parent.update_query = True
+
+		#self.ac = AnnotationCorpus.AnnotationCorpus(self.parent.go)
+
+		self.parent.parent.lock()
+		self.parent.parent.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_AC, self.parent.filename, self.parent.filetype, self.parent.param))
+		self.TIMER_ID = 1000
+		self.timer = wx.Timer(self.panel, self.TIMER_ID)
+		wx.EVT_TIMER(self.panel, self.TIMER_ID, self.AC_timer)
+		self.timer.Start(self.parent.parent.UPDATE_INTERVAL)
+		return False
+
+	def AC_timer(self, event):
+		try:
+			data = self.parent.ssprocess2gui_queue.get(False)
+			self.parent.unlock()
+			self.filechoosecmd.Enable()
+			self.doneb.Enable()
+			self.acload.Enable()
+			self.timer.Stop()
+			if data[0] == WorkProcess.CMD_LOAD_AC:
+				if data[1]:
+					self.parent.SetAcOk(True)
+					self.parent.update_ac = False
+					self.status_label.SetLabel("Annotation Corpus loaded.")
+					self.parent.ac_running = False
+					return True
+				self.status_label.SetLabel("Failed to load Annotation Corpus.")
+			print("Failed to load Annotation Corpus.")
+			self.parent.ac_running = False
+			return False
+		except Exception:
+			#self.parent.unlock()
+			#self.parent.ac_running = False
+			return False
+			
