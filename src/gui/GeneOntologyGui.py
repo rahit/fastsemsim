@@ -22,7 +22,7 @@ import wx
 from GO import GeneOntology
 from gui import WorkProcess
 
-class GeneOntologyGui(wx.Frame):
+class GeneOntologyGui(wx.Dialog):
 	go_filename  = None
 	
 	def __init__(self, parent):
@@ -158,4 +158,4 @@ class GeneOntologyGui(wx.Frame):
 		self.Hide()
 		
 	def OnGOBrowse(self, event):
-			self.parentobj.GOGui.Show()
+			self.parentobj.GOGui.ShowModal()

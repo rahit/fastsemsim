@@ -38,6 +38,7 @@ class GAF2AnnotationCorpus():
 			#ac = AnnotationCorpus()
 			print "Unexpected Error"
 		self.parameters = parameters
+		self.interpret_parameters()
 
 	def interpret_parameters(self):
 		self.simplify = False
@@ -79,7 +80,6 @@ class GAF2AnnotationCorpus():
 		return True
 				
 	def parse(self, fname):
-		self.interpret_parameters()
 		self.set_fields()
 		if type(fname) is str:
 			stream = open(fname,'r')

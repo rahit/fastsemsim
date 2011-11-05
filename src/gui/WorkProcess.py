@@ -258,10 +258,7 @@ class WorkProcess(multiprocessing.Process):
 			self.ac_filename = data[0]
 			self.ac_filetype = data[1]
 			self.ac_filetypeparams = data[2]
-			self.ac_filetypeparams = None
-			print "Fix me. Workprocess.py in load_AC"
 			if self.ac.parse(str(self.ac_filename), self.ac_filetype, self.ac_filetypeparams):
-				print "ok"
 				if self.ac.sanitize():
 					self.ac_ok = True
 					self.ac_update = False

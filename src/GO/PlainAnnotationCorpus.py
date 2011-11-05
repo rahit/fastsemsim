@@ -31,6 +31,10 @@ import sys
 from GO import GeneOntology
 #from GO.AnnotationCorpus import AnnotationCorpus
 
+MANYASSPERROW = 'multiple'
+TERMFIRST = 'term first'
+SEPARATOR = 'separator'
+
 class PlainAnnotationCorpus():
 	separator = '\t'
 	comment = '#'
@@ -38,26 +42,36 @@ class PlainAnnotationCorpus():
 	def __init__(self, parameters=None, ac = None):
 		self.ac = ac
 		if self.ac == None:
-			#ac = AnnotationCorpus()
 			print "Unexpected Error"
 			sys.exit()
 		self.parameters = parameters
+		self.interpret_parameters()
 
 	def interpret_parameters(self):
 		self.obj_first = True
-		self.one_association_per_line = True
+		self.one_association_per_row = True
+		self.separator = '\t'
+
 		if self.parameters == None:
 			return
 		if len(self.parameters) > 0:
-			self.obj_first = self.parameters[0]
-			if len(self.parameters) > 1:
-				self.one_association_per_line = self.parameters[1]
+			if MANYASSPERROW in self.parameters:
+				if self.parameters[MANYASSPERROW]:
+					self.one_association_per_row = False
+				else:
+					self.one_association_per_row = True
+			if TERMFIRST in self.parameters:
+				if self.parameters[TERMFIRST]:
+					self.obj_first = False
+				else:
+					self.obj_first = True
+			if SEPARATOR in self.parameters:
+				self.separator = self.parameters[SEPARATOR]
 
 	def set_fields(self):
 		self.ac.reset_fields()
 
 	def parse(self, fname):
-		self.interpret_parameters()
 		self.set_fields()
 		if type(fname) is str:
 			stream = open(fname, 'r')
@@ -82,59 +96,59 @@ class PlainAnnotationCorpus():
 				print("Strange line: " + str(line))
 				continue
 			temp_to_add = []
-			if self.one_association_per_line:
+			if self.one_association_per_row:
 				if self.obj_first:
 					obj_id = line[0]
 					term = line[1]
 				else:
 					obj_id = line[1]
 					term = line[0]
-				temp_to_add.append(obj_id, term)
+				temp_to_add.append((obj_id, term))
 			else:
 				obj_id = line[0]
 				for i in range(1,len(line)):
 					term = line[i]
-					temp_to_add.append(obj_id, term)
+					temp_to_add.append((obj_id, term))
 
 			for i in temp_to_add:
 				obj_id = i[0]
 				term = i[1]
-				if ac.exclude_GO_root:
-					if term == GeneOntology.BP_root:
+				if self.ac.exclude_GO_root:
+					if str(term) == GeneOntology.BP_root:
 						continue
-					if term == GeneOntology.CC_root:
+					if str(term) == GeneOntology.CC_root:
 						continue
-					if term == GeneOntology.MF_root:
+					if str(term) == GeneOntology.MF_root:
 						continue
 				term = int(term[3:])
-				if not ac.go == None and not ac.go.alt_ids == None:
-					if not term in ac.go.alt_ids:
+				if not self.ac.go == None and not self.ac.go.alt_ids == None:
+					if not term in self.ac.go.alt_ids:
 						#print(str(term) + " not in GO.")
 						continue
-					if not term in ac.go.nodes_edges:
+					if not term in self.ac.go.nodes_edges:
 						#print(str(term) + " obsolete.")
 						continue
-					if not term == ac.go.alt_ids[term]:
+					if not term == self.ac.go.alt_ids[term]:
 						#print("Remapping " + str(term) + " to " + str(ac.go.alt_ids[term])
-						term = ac.go.alt_ids[term]
+						term = self.ac.go.alt_ids[term]
 							
 				#### Build up genes set
-				if obj_id not in ac.obj_set:
-					ac.obj_set[obj_id] = {}
-				if term not in ac.term_set:
-					ac.term_set[term] = {}
+				if obj_id not in self.ac.obj_set:
+					self.ac.obj_set[obj_id] = {}
+				if term not in self.ac.term_set:
+					self.ac.term_set[term] = {}
 				#### Build up annotations set
-				if obj_id not in ac.annotations:
-					ac.annotations[obj_id] = {}
-				if term not in ac.annotations[obj_id]:
-					ac.annotations[obj_id][term] = {}
+				if obj_id not in self.ac.annotations:
+					self.ac.annotations[obj_id] = {}
+				if term not in self.ac.annotations[obj_id]:
+					self.ac.annotations[obj_id][term] = {}
 				#### Build up reverse annotations set
-				if term not in ac.reverse_annotations:
-					ac.reverse_annotations[term] = {}
-				if obj_id not in ac.reverse_annotations[term]:
-					ac.reverse_annotations[term][obj_id] = {}
+				if term not in self.ac.reverse_annotations:
+					self.ac.reverse_annotations[term] = {}
+				if obj_id not in self.ac.reverse_annotations[term]:
+					self.ac.reverse_annotations[term][obj_id] = {}
 			lines_counter += 1
-			#if ac.SHOW_PROCESS and (lines_counter%(filenum/20)==0):
+			#if self.ac.SHOW_PROCESS and (lines_counter%(filenum/20)==0):
 				#print("Lines processed: " + str(lines_counter) + " on " + str(filenum) + " (" + str(int(100*float(lines_counter)/float(filenum))) + "%)")
 		if type(fname) is str:
 			stream.close()
