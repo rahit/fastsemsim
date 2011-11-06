@@ -52,6 +52,10 @@ CMD_LOAD_SS = CMD_BASE + 9
 CMD_LOAD_OUTPUT = CMD_BASE + 10
 CMD_DESTROY =  CMD_BASE + 11
 
+LOAD_AC_BASE = 200 
+LOAD_AC_END = LOAD_AC_BASE + 1
+LOAD_AC_STATUS = LOAD_AC_BASE + 2
+
 OUTPUT2GUI = 0
 OUTPUT2FILE = 1
 QUERYFROMGUI = 0
@@ -253,25 +257,32 @@ class WorkProcess(multiprocessing.Process):
 		self.ac_ok = False
 		self.ss_update = True
 		self.query_update = True
-		try:
-			self.ac = AnnotationCorpus.AnnotationCorpus(self.go) #### what if go is missing?
-			self.ac_filename = data[0]
-			self.ac_filetype = data[1]
-			self.ac_filetypeparams = data[2]
-			if self.ac.parse(str(self.ac_filename), self.ac_filetype, self.ac_filetypeparams):
-				if self.ac.sanitize():
-					self.ac_ok = True
-					self.ac_update = False
-					self.ssprocess2gui_queue.put((CMD_LOAD_AC, True, len(self.ac.annotations), len(self.ac.reverse_annotations)))
-				else:
-					self.ssprocess2gui_queue.put((CMD_LOAD_AC, False))
+		#try:
+		self.ac = AnnotationCorpus.AnnotationCorpus(self.go) #### what if go is missing?
+		self.ac_filename = data[0]
+		self.ac_filetype = data[1]
+		self.ac_filetypeparams = data[2]
+		if self.ac.parse(str(self.ac_filename), self.ac_filetype, self.ac_filetypeparams):
+			if self.go == None or self.ac.sanitize():
+				self.ac_ok = True
+				self.ac_update = False
+				self.communicate_AC(True)
 			else:
-				self.ssprocess2gui_queue.put((CMD_LOAD_AC, False))
-		except:
-			#print("Failed to load Annotation Corpus.")
-			self.ssprocess2gui_queue.put((CMD_LOAD_AC, False))
+				self.communicate_AC(False)
+		else:
+			self.communicate_AC(False)
+		#except Exception:
+			#print("Exception while loading annotation corpus.")
+			self.communicate_AC(False)
 		self.status = STATUS_WAIT
 
+	def communicate_AC(self, result):
+		if result:
+			self.ssprocess2gui_queue.put((CMD_LOAD_AC, LOAD_AC_END, True, len(self.ac.annotations), len(self.ac.reverse_annotations)))
+		else:
+			self.ssprocess2gui_queue.put((CMD_LOAD_AC, LOAD_AC_END, False))
+
+					
 	def load_GO(self, data): #### data format: (filename)
 		self.status = STATUS_LOAD_GO
 		#print "func Load GO"

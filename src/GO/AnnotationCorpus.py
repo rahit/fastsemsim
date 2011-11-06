@@ -65,6 +65,8 @@ AnnotationCorpusFormat = {'gaf-2.0':GAF2AnnotationCorpus,
 													'plain':PlainAnnotationCorpus
 													}
 
+FILTER_PARAM = 'filter'
+
 class AnnotationCorpus:
 	exclude_GO_root = True
 
@@ -180,12 +182,18 @@ class AnnotationCorpus:
 	def setFilter(self, field, selector):
 		self.filters[field] = selector
 
+	def set_filters(self, inf):
+		if 'taxonomy' in inf:
+			self.set_taxonomy_filter(inf['taxonomy'])
+		if 'EC' in inf:
+			self.set_EC_filter(inf['EC'])
+
 	def reset_filter(self, field):
 		if field in self.filters:
 			del self.filters[field]
 
 	def set_taxonomy_filter(self, tax):
-		self.taxonomy_filter = tax
+		self.filter_taxonomy = tax
 		self.setFilter('taxonomy', self.taxonomy_selector)
 
 	def reset_taxonomy_filter(self):
@@ -301,10 +309,9 @@ class AnnotationCorpus:
 		self.parse(fname, ftype)
 
 	def parse(self, fname, ftype, params=None):
-		#print type(ftype)
+		if not params== None and FILTER_PARAM in params:
+			self.set_filters(params[FILTER_PARAM])
 		if ftype in AnnotationCorpusFormat:
-			#print ftype + " found."
-			#print AnnotationCorpusFormat[ftype]
 			temp = AnnotationCorpusFormat[ftype](params, self)
 			return temp.parse(fname)
 		else:

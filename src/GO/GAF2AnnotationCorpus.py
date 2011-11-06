@@ -62,9 +62,9 @@ class GAF2AnnotationCorpus():
 		self.ac.reverse_annotations_field2pos= {'EC':0}
 
 	def is_ok(self, line):
-		if 'taxonomy' in self.ac.filters and not self.ac.taxonomy_selector(self.temp_taxonomy):
+		if 'taxonomy' in self.ac.filters and not self.ac.taxonomy_selector(int(self.temp_taxonomy)):
 			return False
-		if 'EC' in self.ac.filters and not self.ac.EC_selection(self.temp_EC):
+		if 'EC' in self.ac.filters and not self.ac.EC_selector(self.temp_EC):
 			return False
 		if self.ac.exclude_GO_root:
 			if self.temp_term == GeneOntology.BP_root or self.temp_term == GeneOntology.CC_root or self.temp_term == GeneOntology.MF_root:
@@ -99,7 +99,7 @@ class GAF2AnnotationCorpus():
 			if len(line) < 14:
 				print("GAF2AnnotationCorpus loader. Incomplete line: " + str(line))
 				continue
-			self.temp_taxonomy = line[12]
+			self.temp_taxonomy = line[12][6:]
 			self.temp_obj = line[1]
 			self.temp_term = line[4]
 			self.temp_EC = line[6]
