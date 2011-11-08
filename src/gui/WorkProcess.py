@@ -21,6 +21,7 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 import multiprocessing
 import time 
 import copy
+import os
 from SemSim import SemSimMeasures
 from SemSim import ObjSemSim
 from SemSim import SemSimUtils
@@ -55,6 +56,11 @@ CMD_DESTROY =  CMD_BASE + 11
 LOAD_AC_BASE = 200 
 LOAD_AC_END = LOAD_AC_BASE + 1
 LOAD_AC_STATUS = LOAD_AC_BASE + 2
+
+LOAD_GO_BASE = 300 
+LOAD_GO_END = LOAD_GO_BASE + 1
+LOAD_GO_STATUS = LOAD_GO_BASE + 2
+
 
 OUTPUT2GUI = 0
 OUTPUT2FILE = 1
@@ -297,9 +303,9 @@ class WorkProcess(multiprocessing.Process):
 		if not self.go == None:
 			self.go_ok = True
 			self.go_update = False
-			self.ssprocess2gui_queue.put((CMD_LOAD_GO, True, self.go.node_num(), self.go.edge_num()))
+			self.ssprocess2gui_queue.put((CMD_LOAD_GO, LOAD_GO_END, True, self.go.node_num(), self.go.edge_num()))
 		else:
-			self.ssprocess2gui_queue.put((CMD_LOAD_GO, False))
+			self.ssprocess2gui_queue.put((CMD_LOAD_GO, LOAD_GO_END, False))
 		self.status = STATUS_WAIT
 
 	def load_query(self, data): #### data format: (query from, query_params) query_params: none (fom ac), (type, filename) (from file), type (from gui)

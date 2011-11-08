@@ -55,7 +55,6 @@ import sys
 import copy
 
 from GO.GeneOntology import *
-from GO.GOAAnnotationCorpus import GOAAnnotationCorpus
 from GO.PlainAnnotationCorpus import PlainAnnotationCorpus
 from GO.GAF2AnnotationCorpus import GAF2AnnotationCorpus
 

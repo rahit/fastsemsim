@@ -23,6 +23,7 @@ from GO import AnnotationCorpus
 from GO import PlainAnnotationCorpus
 from GO import GAF2AnnotationCorpus
 from gui import WorkProcess
+import os
 
 GAF2_FILE_TYPE = 'GAF 2.0 (GOA)'
 GAF2_FILE_TYPE_REF = 'gaf-2.0'
@@ -36,7 +37,7 @@ class AnnotationCorpusGui(wx.Dialog):
 		
 	def __init__(self, parent):
 		self.parent = parent
-		super(AnnotationCorpusGui, self).__init__(self.parent, title="Load Annotation Corpus")
+		super(AnnotationCorpusGui, self).__init__(self.parent, title="Load Annotation Corpus", size=(500,300))
 		self.InitUI()
 	
 	def InitUI(self):
@@ -66,7 +67,7 @@ class AnnotationCorpusGui(wx.Dialog):
 		
 #FILE CHOOSER
 		self.label_filenamelabel = wx.StaticText(self.panel, label='File name')
-		self.label_filename = wx.StaticText(self.panel, label='', size=(200,20), style = wx.ST_NO_AUTORESIZE) #style= wx.ST_ELLIPSIZE_MIDDLE | 
+		self.label_filename = wx.StaticText(self.panel, label='', size=(250,20), style = wx.ST_NO_AUTORESIZE) #style= wx.ST_ELLIPSIZE_MIDDLE | 
 		self.button_selectfile = wx.Button(self.panel, wx.ID_ANY, 'Select...')
 		self.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.button_selectfile.GetId())
 
@@ -79,7 +80,7 @@ class AnnotationCorpusGui(wx.Dialog):
 
 # STATISTICS
 		self.label_statuslabel = wx.StaticText(self.panel, label = "File loaded")
-		self.label_status = wx.StaticText(self.panel, label = "", size=(200,30))
+		self.label_status = wx.StaticText(self.panel, label = "", size=(250,30))
 		self.label_objslabel = wx.StaticText(self.panel, label = "Annotated Genes/Proteins")
 		self.label_objs = wx.StaticText(self.panel, label = "")
 		self.label_termslabel = wx.StaticText(self.panel, label = "GO Terms involved")
@@ -131,8 +132,8 @@ class AnnotationCorpusGui(wx.Dialog):
 	def OnFileBrowse(self, event):
 		dialog = wx.FileDialog(None, style = wx.OPEN)
 		if dialog.ShowModal() == wx.ID_OK:
-			self.label_filename.SetLabel(dialog.GetPath())
 			self.filename = dialog.GetPath()
+			self.label_filename.SetLabel(os.path.basename(self.filename))
 			self.OnCanStart()
 
 	def OnDone(self, event):
@@ -187,7 +188,7 @@ class AnnotationCorpusGui(wx.Dialog):
 		
 	def OnLoadDone(self):
 		if self.ac_status:
-			self.label_status.SetLabel(self.filename)
+			self.label_status.SetLabel(os.path.basename(self.filename))
 			self.label_objs.SetLabel(str(self.ac_objs))
 			self.label_terms.SetLabel(str(self.ac_terms))
 			self.parent.SetAcOk(True)
@@ -416,6 +417,8 @@ class AdvancedGui(wx.Dialog):
 			else:
 				self.text_separator.Enable()
 				self.text_separator.SetFocus()
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 
 class LoadACGui(wx.Dialog):
 

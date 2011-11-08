@@ -21,141 +21,184 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 import wx
 from GO import GeneOntology
 from gui import WorkProcess
+import os
 
+#class AnnotationCorpusGui(wx.Dialog):
+	#filetype = None
+	#filename = None
+	
+
+		
 class GeneOntologyGui(wx.Dialog):
-	go_filename  = None
+	filename  = None
 	
 	def __init__(self, parent):
-		self.parentobj = parent
-		super(GeneOntologyGui, self).__init__(self.parentobj, title="Load Gene Ontology", size=(500,200))
+		self.parent = parent
+		super(GeneOntologyGui, self).__init__(self.parent, title="Load Gene Ontology", size=(500,200))
 		self.InitUI()
 	
 	def InitUI(self):
 		self.Bind(wx.EVT_CLOSE, self.OnQuit, id=self.GetId())
-        
+
 		self.panel = wx.Panel(self)
-		self.mainbox = wx.BoxSizer(wx.VERTICAL)
-		self.descbox = wx.FlexGridSizer(rows = 4, cols = 2, vgap = 6, hgap = 20)
-		self.commanbox = wx.BoxSizer(wx.HORIZONTAL)
-		self.statusbox = wx.BoxSizer(wx.HORIZONTAL)
-		self.mainbox.Add(self.statusbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
-		self.mainbox.Add(self.descbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
-		self.mainbox.Add(self.commanbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+		self.mainbox = wx.BoxSizer(wx.HORIZONTAL)
 
-		# Descbox
-		self.filename_label = wx.StaticText(self.panel, label='File:')
-		self.filename_label.SetFont(self.parentobj.font)
-		self.filename = wx.StaticText(self.panel, label='')
-		self.gonodes_label = wx.StaticText(self.panel, label='Nodes:')
-		self.gonodes_label.SetFont(self.parentobj.font)
-		self.gonodes = wx.StaticText(self.panel, label='')
-		self.gonodes.SetFont(self.parentobj.font)
-		self.goedges_label = wx.StaticText(self.panel, label='Edges:')
-		self.goedges_label.SetFont(self.parentobj.font)
-		self.goedges = wx.StaticText(self.panel, label='')
-		self.goedges.SetFont(self.parentobj.font)
-		self.descbox.AddMany([(self.filename_label), (self.filename), (self.gonodes_label), (self.gonodes), (self.goedges_label), (self.goedges)])
+# COMMAND BOX
+		self.commandbox = wx.BoxSizer(wx.VERTICAL)
+		self.button_selectfile = wx.Button(self.panel, wx.ID_ANY, 'Select file...')
+		self.button_reset = wx.Button(self.panel, wx.ID_ANY, 'Reset')
+		self.button_done = wx.Button(self.panel, wx.ID_ANY, 'Close')
+		self.Bind(wx.EVT_BUTTON, self.OnQuit, id=self.button_done.GetId())
+		self.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.button_selectfile.GetId())
+		self.Bind(wx.EVT_BUTTON, self.OnReset, id=self.button_reset.GetId())
 
-		# commanbox
-		self.gochooser = wx.Button(self.panel, wx.ID_ANY, 'Select file...')
-		self.goload = wx.Button(self.panel, wx.ID_ANY, 'Load...')
-		self.goload.Hide()
-		self.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.gochooser.GetId())
-		self.Bind(wx.EVT_BUTTON, self.OnGOLoad, id=self.goload.GetId())
-		self.doneb = wx.Button(self.panel, wx.ID_ANY, 'Done')
-		self.Bind(wx.EVT_BUTTON, self.OnGOBrowseDone, id=self.doneb.GetId())
-		self.commanbox.Add(self.gochooser, flag=wx.LEFT|wx.RIGHT|wx.TOP, border=10)
-		self.commanbox.Add(self.doneb, flag=wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+		self.commandbox.Add(self.button_selectfile, flag=wx.LEFT | wx.RIGHT, border=10)
+		self.commandbox.Add(self.button_reset, flag=wx.LEFT|wx.RIGHT, border=10)
+		self.commandbox.Add(self.button_done, flag=wx.LEFT|wx.RIGHT, border=10)
+
+# STATISTICS
+		self.gostatsboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Statistics')
+		self.gostatsbox = wx.StaticBoxSizer(self.gostatsboxline, wx.HORIZONTAL)
+		self.label_statuslabel = wx.StaticText(self.panel, label = "File loaded")
+		self.label_status = wx.StaticText(self.panel, label = "", size=(250,30))
+		self.label_termslabel = wx.StaticText(self.panel, label = "GO Terms")
+		self.label_terms = wx.StaticText(self.panel, label = "")
+		self.statusgridbox= wx.FlexGridSizer(rows = 3, cols = 2, vgap = 10, hgap = 10)
+		self.statusgridbox.AddMany([wx.Size(5,2), wx.Size(5,2), self.label_statuslabel, self.label_status, self.label_termslabel, self.label_terms])
+		self.gostatsbox.Add(self.statusgridbox)
+
+		self.mainbox.Add(self.gostatsbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+		self.mainbox.Add(self.commandbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 		
-		#statusbox
-		self.status_label = wx.StaticText(self.panel, label='No Ontology loaded.')
-		self.status_label.SetFont(self.parentobj.font)
-		#self.status_label.Hide()
-		self.statusbox.Add(self.status_label, border=10)
-
 		self.panel.SetSizerAndFit(self.mainbox)
 		self.InitMainUI()
+		self.OnReset(None)
 		return True
-
 
 #------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------------------
 	def InitMainUI(self):
 		#### Populate GO section in main window
-		#self.parentobj.go_status_pic = wx.StaticBitmap(self.parentobj.panel)
-		self.parentobj.SetGoOk(False)
-		self.parentobj.go_cmd = wx.Button(self.parentobj.panel, wx.ID_ANY, 'Load Gene Ontology...')
-		self.parentobj.go_box.Add(self.parentobj.go_cmd,flag=wx.ALL|wx.CENTER, border = 8)
-		#self.parentobj.go_box.Add(self.parentobj.go_status_pic,flag=wx.ALL|wx.CENTER, border = 8)
-		self.parentobj.Bind(wx.EVT_BUTTON, self.OnGOBrowse, id=self.parentobj.go_cmd.GetId())
+		#self.parent.go_status_pic = wx.StaticBitmap(self.parent.panel)
+		self.parent.SetGoOk(False)
+		self.parent.go_cmd = wx.Button(self.parent.panel, wx.ID_ANY, 'Load Gene Ontology...')
+		self.parent.go_box.Add(self.parent.go_cmd,flag=wx.ALL|wx.CENTER, border = 8)
+		#self.parent.go_box.Add(self.parent.go_status_pic,flag=wx.ALL|wx.CENTER, border = 8)
+		self.parent.Bind(wx.EVT_BUTTON, self.OnGOBrowse, id=self.parent.go_cmd.GetId())
 
 ###############################################################################################################
 ###############################################################################################################
 
-	def OnFileBrowse(self, event):
-		dialog = wx.FileDialog(None, style = wx.OPEN)
-		if dialog.ShowModal() == wx.ID_OK:
-			#print 'Selected: ', dialog.GetPath()
-			self.filename.SetLabel(dialog.GetPath())
-			self.go_filename = dialog.GetPath()
-			self.status_label.SetLabel("Loading ontology... Please wait.")
-			self.status_label.Show()
-			self.gochooser.Disable()
-			self.doneb.Disable()
-			self.gonodes.SetLabel("")
-			self.goedges.SetLabel("")
-			#self.parentobj.acchoosecmd.Disable()
-			event = wx.PyCommandEvent(wx.EVT_BUTTON.typeId, self.goload.GetId())
-			wx.PostEvent(self.GetEventHandler(), event)
-
-
-	def OnGOLoad(self, event):
-		self.parentobj.go_running = True
-		self.parentobj.SetGoOk(False)
-		#self.parentobj.update_ac = True
-		#self.parentobj.update_ssobject = True
-		#self.OnGOLoad()
-		self.status_label.SetLabel("Loading ontology from file " + str(self.go_filename))
-		self.gochooser.Disable()
-		self.doneb.Disable()
-		self.parentobj.ac_cmd.Disable()
-		self.parentobj.lock()
-		self.parentobj.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_GO, self.go_filename))
-		self.TIMER_ID = 1000
-		self.timer = wx.Timer(self.parentobj.panel, self.TIMER_ID)
-		wx.EVT_TIMER(self.parentobj.panel, self.TIMER_ID, self.GO_timer)
-		self.timer.Start(self.parentobj.UPDATE_INTERVAL)
-		return False
-
-	def GO_timer(self, event):
-		try:
-			data = self.parentobj.ssprocess2gui_queue.get(False)
-			self.timer.Stop()
-			self.parentobj.unlock()
-			#self.parentobj.process_busy_lock.release()
-			if data[0] == WorkProcess.CMD_LOAD_GO:
-				if data[1]:
-					self.gochooser.Enable()
-					self.doneb.Enable()
-					self.gonodes.SetLabel(str(data[2]))
-					self.goedges.SetLabel(str(data[3]))
-					self.status_label.SetLabel("Ontology loaded from file " + str(self.go_filename))
-					self.parentobj.ac_cmd.Enable()
-					#self.parentobj.go = self.tree
-					self.parentobj.SetGoOk(True)
-					self.parentobj.go_running = False
-					return True
-		except Exception:
-			#self.parentobj.unlock() #### add a clean
-			#self.parentobj.process_busy_lock.release()
-			#self.parentobj.go_running = False
-			return False
-		
-	def OnGOBrowseDone(self, event):
-		self.Hide()
-		
 	def OnQuit(self, event):
 		self.Hide()
 		
 	def OnGOBrowse(self, event):
-			self.parentobj.GOGui.ShowModal()
+			self.parent.GOGui.ShowModal()
+
+	def OnFileBrowse(self, event):
+		dialog = wx.FileDialog(None, style = wx.OPEN)
+		if dialog.ShowModal() == wx.ID_OK:
+			self.filename = dialog.GetPath()
+			#self.label_filename.SetLabel(os.path.basename(self.filename))
+			self.loadGOGui = LoadGOGui(self)
+			self.loadGOGui.ShowModal()
+			self.OnLoadDone()
+
+	def OnLoadDone(self):
+		if self.go_status:
+			self.label_status.SetLabel(os.path.basename(self.filename))
+			self.label_terms.SetLabel(str(self.go_terms))
+			self.parent.SetGoOk(True)
+			self.parent.update_ac = True
+		else:
+			self.label_status.SetLabel('')
+			self.label_terms.SetLabel('')
+			self.parent.SetGoOk(False)
+			#self.parent.update_ac = Falseo
+
+	def OnReset(self, event):
+		self.filename = None
+		self.go_status = False
+		self.label_status.SetLabel('')
+		self.label_terms.SetLabel('')
+		print "Fix Me. Should Reset go in main process!!"
+		self.OnLoadDone()
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+
+class LoadGOGui(wx.Dialog):
+
+	def __init__(self, parent):
+		self.parent = parent
+		super(LoadGOGui, self).__init__(self.parent, title="Loading Gene Ontology", size=(300,250))
+		self.InitUI()
+
+	def InitUI(self):
+		self.panel = wx.Panel(self)
+		self.mainbox = wx.BoxSizer(wx.VERTICAL)
+		self.loadbarboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Progress Bar')
+		self.loadbarbox = wx.StaticBoxSizer(self.loadbarboxline, wx.HORIZONTAL)
+		self.gauge_loadprogress = wx.Gauge(self.panel, -1, 50, size=(250, 25))
+		self.loadbarbox.Add(self.gauge_loadprogress, flag=wx.EXPAND | wx.ALIGN_CENTER | wx.TOP, border = 5)
+		
+		self.statsbox = wx.BoxSizer(wx.HORIZONTAL)
+		self.label_status = wx.StaticText(self.panel, wx.ID_ANY, 'Loading Gene Ontology. Please wait...')
+		self.statsbox.Add(self.label_status, flag = wx.ALIGN_CENTER)
+		
+		self.commandbox = wx.BoxSizer(wx.HORIZONTAL)
+		self.button_abort = wx.Button(self.panel, wx.ID_ANY, 'Abort')
+		self.button_ok = wx.Button(self.panel, wx.ID_ANY, 'Ok')
+		self.button_ok.Disable()
+		self.button_abort.Disable()
+		self.commandbox.Add(self.button_abort, flag = wx.ALIGN_CENTER )
+		self.commandbox.Add(self.button_ok, flag = wx.ALIGN_CENTER )
+		self.Bind(wx.EVT_BUTTON, self.OnAbort, id=self.button_abort.GetId())
+		self.Bind(wx.EVT_BUTTON, self.OnOk, id=self.button_ok.GetId())
+
+		self.mainbox.Add(self.loadbarbox, flag = wx.ALIGN_CENTER)
+		self.mainbox.Add(wx.Size(5,10), flag = wx.ALIGN_CENTER)
+		self.mainbox.Add(self.statsbox, flag = wx.ALIGN_CENTER)
+		self.mainbox.Add(wx.Size(5,10), flag = wx.ALIGN_CENTER)
+		self.mainbox.Add(self.commandbox, flag = wx.ALIGN_CENTER)
+		self.panel.SetSizerAndFit(self.mainbox)
+		self.OnStart()
+
+	def OnOk(self, event):
+		self.Close()
+	
+	def OnAbort(self, event):
+		print "OnAbort. Fix Me."
+		#self.Close()
+
+	def OnStart(self):
+		self.parent.parent.lock()
+		self.parent.parent.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_GO, self.parent.filename))
+		self.TIMER_ID = 1000
+		self.timer = wx.Timer(self.panel, self.TIMER_ID)
+		wx.EVT_TIMER(self.panel, self.TIMER_ID, self.GO_timer)
+		self.timer.Start(1000)
+		return False
+
+	def GO_timer(self, event):
+		if not self.parent.parent.ssprocess2gui_queue.empty():
+			data = self.parent.parent.ssprocess2gui_queue.get(False)
+			if data[0] == WorkProcess.CMD_LOAD_GO:
+				if data[1] == WorkProcess.LOAD_GO_END:
+					self.parent.parent.unlock()
+					self.timer.Stop()
+					self.button_ok.Enable()
+					self.button_abort.Disable()
+					if data[2]:
+						self.label_status.SetLabel("Task correctly completed.")
+						self.parent.go_status = True
+						self.parent.go_terms = data[3]
+						self.gauge_loadprogress.SetValue(self.gauge_loadprogress.GetRange())
+					else:
+						self.label_status.SetLabel("Error. Please check parse parameters.")
+						self.parent.go_status = False
+						self.parent.go_terms = None
+						self.gauge_loadprogress.SetValue(0)
+				elif data[1] == WorkProcess.LOAD_GO_STATUS:
+					print "Status"
+					gaugerange = self.gauge_loadprogress.GetRange()
+					self.gauge_loadprogress.SetValue((float(data[2]))*gaugerange)
