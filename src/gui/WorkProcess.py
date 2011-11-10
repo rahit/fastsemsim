@@ -263,23 +263,21 @@ class WorkProcess(multiprocessing.Process):
 		self.ac_ok = False
 		self.ss_update = True
 		self.query_update = True
-		#try:
-		self.ac = AnnotationCorpus.AnnotationCorpus(self.go) #### what if go is missing?
-		self.ac_filename = data[0]
-		self.ac_filetype = data[1]
-		self.ac_filetypeparams = data[2]
-		if self.ac.parse(str(self.ac_filename), self.ac_filetype, self.ac_filetypeparams):
-			if self.go == None or self.ac.sanitize():
-				self.ac_ok = True
-				self.ac_update = False
-				self.communicate_AC(True)
-			else:
-				self.communicate_AC(False)
-		else:
-			self.communicate_AC(False)
-		#except Exception:
-			#print("Exception while loading annotation corpus.")
-			self.communicate_AC(False)
+		try:
+			self.ac = AnnotationCorpus.AnnotationCorpus(self.go)
+			self.ac_filename = data[0]
+			self.ac_filetype = data[1]
+			self.ac_filetypeparams = data[2]
+			if self.ac.parse(str(self.ac_filename), self.ac_filetype, self.ac_filetypeparams):
+				if self.go == None:
+					self.ac_ok = True
+					self.ac_update = True
+				elif self.ac.sanitize():
+					self.ac_ok = True
+					self.ac_update = False
+		except Exception:
+			pass
+		self.communicate_AC(self.ac_ok)
 		self.status = STATUS_WAIT
 
 	def communicate_AC(self, result):
@@ -388,6 +386,9 @@ class WorkProcess(multiprocessing.Process):
 			self.ssprocess2gui_queue.put((CMD_START, False))
 			self.status = STATUS_WAIT
 		else:
+			if self.ac_update:
+				self.ac.sanitize()
+				self.ac_update = False
 			self.ssprocess2gui_queue.put((CMD_START, True, self.query_pairs_number))
 			self._calculate()
 			pass
@@ -503,6 +504,7 @@ class WorkProcess(multiprocessing.Process):
 		self.query_pairs_done = 0
 		self.last_percentual = 0
 		#print "Total pairs to process: " + str(self.query_pairs_number)
+
 		if self.query_type == QUERY_LIST:
 			for self.C_i in range(0,len(self.query)):
 				for self.C_j in range(self.C_i + 1, len(self.query)):
