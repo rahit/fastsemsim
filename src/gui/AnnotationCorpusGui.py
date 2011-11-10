@@ -231,8 +231,8 @@ class AdvancedGui(wx.Dialog):
 			self.fileformatboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Parse parameters')
 			self.fileformatbox = wx.StaticBoxSizer(self.fileformatboxline, wx.VERTICAL)
 			self.gridbox= wx.FlexGridSizer(rows = 4, cols = 3, vgap = 15, hgap = 20)
-			self.mainbox.Add(self.fileformatbox, flag=wx.LEFT|wx.RIGHT|wx.TOP, border=10)
-			self.fileformatbox.Add(self.gridbox, flag=wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+			self.mainbox.Add(self.fileformatbox, flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, border=10)
+			self.fileformatbox.Add(self.gridbox, flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, border=10)
 
 			self.label_separatorlabel = wx.StaticText(self.panel, wx.ID_ANY, 'Separator')
 			self.separatorbox = wx.BoxSizer(wx.VERTICAL)
@@ -264,12 +264,12 @@ class AdvancedGui(wx.Dialog):
 			#self.rowformatboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Row format')
 			#self.rowformatbox = wx.StaticBoxSizer(self.rowformatboxline, wx.VERTICAL)
 			self.rowformatbox = wx.BoxSizer(wx.VERTICAL)
-			self.rowformatoptions = ['object name\tGO term','GO term\tobject name']
+			self.rowformatoptions = ['Gene -> GO Term','GO Term -> Gene']
 			self.radius_rowformat_1 = wx.RadioButton(self.panel, wx.ID_ANY, self.rowformatoptions[0], (10, 10), style=wx.RB_GROUP)
 			self.radius_rowformat_2 = wx.RadioButton(self.panel, wx.ID_ANY, self.rowformatoptions[1], (10, 10))
 			self.rowformatbox.Add(self.radius_rowformat_1)
 			self.rowformatbox.Add(self.radius_rowformat_2)
-			self.label_rowformatexplanation = wx.StaticText(self.panel, wx.ID_ANY, 'Select whether the first field of each row is the protein\gene or a GO Term.', size=(250,60))
+			self.label_rowformatexplanation = wx.StaticText(self.panel, wx.ID_ANY, 'Select whether the first field of each row is a protein\gene or a GO Term.', size=(250,60))
 			
 			self.gridbox.AddMany([wx.Size(5,10), wx.Size(5,10), wx.Size(5,10), (self.label_separatorlabel), (self.separatorbox), (self.label_separatorexplanation), (self.label_rowtypelabel), (self.check_manyperline), (self.label_rowtypeexplanation), self.label_rowformatlabel, self.rowformatbox, self.label_rowformatexplanation])
 
@@ -337,7 +337,7 @@ class AdvancedGui(wx.Dialog):
 		self.commandbox.Add(wx.Size(5,20))
 		self.commandbox.Add(self.button_save, flag=wx.LEFT|wx.RIGHT|wx.TOP)
 		self.commandbox.Add(self.button_cancel, flag=wx.LEFT|wx.RIGHT|wx.TOP)
-		self.mainbox.Add(self.commandbox, flag=wx.LEFT|wx.RIGHT|wx.TOP)
+		self.mainbox.Add(self.commandbox, flag= wx.EXPAND |wx.LEFT|wx.RIGHT|wx.TOP)
 
 		self.panel.SetSizerAndFit(self.mainbox)
 		self.OnRestore()
@@ -392,7 +392,7 @@ class AdvancedGui(wx.Dialog):
 					self.text_separator.SetFocus()
 					return
 			self.parent.params[PlainAnnotationCorpus.MANYASSPERROW] = self.check_manyperline.GetValue()
-			self.parent.params[PlainAnnotationCorpus.TERMFIRST] = self.radius_rowformat_1.GetValue()
+			self.parent.params[PlainAnnotationCorpus.TERMFIRST] = self.radius_rowformat_2.GetValue()
 		elif self.parent.filetypesel == GAF2_FILE_TYPE:
 			self.parent.params[GAF2AnnotationCorpus.SIMPLIFY] = self.check_simplify.GetValue()
 			self.parent.params[AnnotationCorpus.FILTER_PARAM] = {}

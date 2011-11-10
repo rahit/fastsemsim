@@ -50,7 +50,7 @@ class OutputCtrlGui():
 		#self.choosefile_cmd.Disable()
 		#self.parentobj.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.choosefile_cmd.GetId())
 		#self.fileparams_box.Add(self.choosefile_cmd, flag=wx.BOTTOM|wx.TOP, border=10)
-		self.outputformat_cmd = wx.Button(self.parentobj.panel, wx.ID_ANY, 'Output parameters...')
+		self.outputformat_cmd = wx.Button(self.parentobj.panel, wx.ID_ANY, 'Output file...')
 		self.outputformat_cmd.Disable()
 		self.parentobj.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.outputformat_cmd.GetId())
 		#self.fileparams_box.Add(self.outputformat_cmd, flag=wx.BOTTOM|wx.TOP, border=10)

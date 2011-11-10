@@ -34,7 +34,7 @@ class GeneOntologyGui(wx.Dialog):
 	
 	def __init__(self, parent):
 		self.parent = parent
-		super(GeneOntologyGui, self).__init__(self.parent, title="Load Gene Ontology", size=(500,200))
+		super(GeneOntologyGui, self).__init__(self.parent, title="Load Gene Ontology", size=(500,150))
 		self.InitUI()
 	
 	def InitUI(self):
@@ -63,12 +63,12 @@ class GeneOntologyGui(wx.Dialog):
 		self.label_status = wx.StaticText(self.panel, label = "", size=(250,30))
 		self.label_termslabel = wx.StaticText(self.panel, label = "GO Terms")
 		self.label_terms = wx.StaticText(self.panel, label = "")
-		self.statusgridbox= wx.FlexGridSizer(rows = 3, cols = 2, vgap = 10, hgap = 10)
-		self.statusgridbox.AddMany([wx.Size(5,2), wx.Size(5,2), self.label_statuslabel, self.label_status, self.label_termslabel, self.label_terms])
+		self.statusgridbox= wx.FlexGridSizer(rows = 4, cols = 3, vgap = 10, hgap = 10)
+		self.statusgridbox.AddMany([wx.Size(5,2), wx.Size(5,2), wx.Size(15,2), self.label_statuslabel, self.label_status,wx.Size(5,2), self.label_termslabel, self.label_terms, wx.Size(5,2),wx.Size(5,2),wx.Size(5,2)])
 		self.gostatsbox.Add(self.statusgridbox)
 
-		self.mainbox.Add(self.gostatsbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
-		self.mainbox.Add(self.commandbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+		self.mainbox.Add(self.gostatsbox, flag=wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+		self.mainbox.Add(self.commandbox, flag=wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 		
 		self.panel.SetSizerAndFit(self.mainbox)
 		self.InitMainUI()
