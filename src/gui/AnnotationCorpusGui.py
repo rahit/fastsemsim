@@ -152,7 +152,6 @@ class AnnotationCorpusGui(wx.Dialog):
 		self.button_load.Disable()
 		self.button_filetypeparams.Disable()
 		self.filetypesel = None
-		self.filter = None
 		self.OnLoadDone()
 		print "Fix Me. Should Reset ac in main process!!"
 
@@ -178,8 +177,10 @@ class AnnotationCorpusGui(wx.Dialog):
 	def OnCanStart(self):
 		if (not self.filename == None) and (not self.filetype == None):
 			self.button_load.Enable()
+			return True
 		else:
 			self.button_load.Disable()
+			return False
 
 	def OnLoad(self, event):
 		self.loadACGui = LoadACGui(self)
@@ -213,6 +214,22 @@ class AnnotationCorpusGui(wx.Dialog):
 		self.parent.ACGui.ShowModal()
 #---------------------------------------------------------------------------------------------------------------
 
+	def batch_save(self):
+		save = {}
+		save['ac_filename'] = self.filename
+		save['ac_filetype'] = self.filetype
+		save['ac_params'] = self.params
+		return save
+
+	def batch_load(self, save):
+		if 'ac_filename' in save:
+			self.filename = save['ac_filename']
+		if 'ac_filetype' in save:
+			self.filetype = save['ac_filetype']
+		if 'ac_params' in save:
+			self.params = save['ac_params']
+		if self.OnCanStart():
+			self.OnLoad()
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 

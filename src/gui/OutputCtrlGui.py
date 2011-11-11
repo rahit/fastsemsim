@@ -22,99 +22,82 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 import wx
 from GO import GeneOntology
 from GO import AnnotationCorpus
+from gui import WorkProcess
+import os 
 
 class OutputCtrlGui():
 	def __init__(self, parent):
-		self.parentobj = parent
+		self.parent = parent
 		self.InitUI()
 	
 	def InitUI(self):
-		#self.panel = self.parentobj.panel
 		self.InitMainUI()
 		
 	def InitMainUI(self):
 		#------------------------------------------------------------------------------------------------------------------
 		self.mainbox = wx.BoxSizer(wx.HORIZONTAL)
-		self.parentobj.outputctrl_box.Add(self.mainbox)
+		self.parent.outputctrl_box.Add(self.mainbox)
 
-		#version 2
-		self.output2file = wx.CheckBox(self.parentobj.panel, wx.ID_ANY, 'Redirect output to file', (10,10))
-		self.parentobj.Bind(wx.EVT_CHECKBOX, self.OnToFile, id=self.output2file.GetId())
-		self.output2file.SetValue(False)
-		#self.outputfile_label = wx.StaticText(self.parentobj.panel, label = 'No file selected')
-		#self.outputfile_label.SetFont(self.parentobj.font)
-		
-		#self.fileparams_boxline  = wx.StaticBox(self.panel, wx.ID_ANY, 'Output file parameters')
-		#self.fileparams_box = wx.StaticBoxSizer(self.fileparams_boxline, wx.HORIZONTAL)
-		#self.choosefile_cmd = wx.Button(self.parentobj.panel, wx.ID_ANY, 'Choose file...')
-		#self.choosefile_cmd.Disable()
-		#self.parentobj.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.choosefile_cmd.GetId())
-		#self.fileparams_box.Add(self.choosefile_cmd, flag=wx.BOTTOM|wx.TOP, border=10)
-		self.outputformat_cmd = wx.Button(self.parentobj.panel, wx.ID_ANY, 'Output file...')
-		self.outputformat_cmd.Disable()
-		self.parentobj.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.outputformat_cmd.GetId())
-		#self.fileparams_box.Add(self.outputformat_cmd, flag=wx.BOTTOM|wx.TOP, border=10)
-		
-		self.mainbox.Add(self.output2file, flag= wx.EXPAND  | wx.RIGHT, border=30)
-		#self.mainbox.Add(self.outputfile_label)
-		self.mainbox.Add(self.outputformat_cmd)
-		#version 1
-		#self.destinationboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Output destination')
-		#self.destinationbox= wx.StaticBoxSizer(self.destinationboxline, wx.HORIZONTAL)
-		#self.outputtypes = ['output field','file']
-		#self.radio_field = wx.RadioButton(self.panel, wx.ID_ANY, self.outputtypes[0], (10, 10), style=wx.RB_GROUP)
-		#self.radio_file = wx.RadioButton(self.panel, wx.ID_ANY, self.outputtypes[1], (10, 10))
-		#self.destinationbox.Add(self.radio_field,wx.EXPAND)
-		#self.destinationbox.Add(self.radio_file,wx.EXPAND)
-		#self.parentobj.Bind(wx.EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_field.GetId())
-		#self.parentobj.Bind(wx.EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_file.GetId())
-		#self.parentobj.output_type = 0
-		#self.parentobj.SetOutputCtrlOk(True)
+		self.check_output2file = wx.CheckBox(self.parent.panel, wx.ID_ANY, 'Redirect output to file:', (10,10))
+		self.label_outputfile = wx.StaticText(self.parent.panel, label = '')
+		self.button_outputfile = wx.Button(self.parent.panel, wx.ID_ANY, 'Select file...')
 
-		#self.commandsline  = wx.StaticBox(self.panel, wx.ID_ANY, 'Output file')
-		#self.commands = wx.StaticBoxSizer(self.commandsline, wx.HORIZONTAL)
-		#self.outputlabel = wx.StaticText(self.panel, label = 'Not selected')
-		#self.outputlabel.SetFont(self.parentobj.font)
-		#self.filechooser = wx.Button(self.panel, wx.ID_ANY, 'Choose file...')
-		#self.filechooser.Disable()
-		#self.parentobj.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.filechooser.GetId())
-		#self.commands.Add(self.outputlabel, flag=wx.BOTTOM|wx.TOP, border=10)
-		#self.commands.Add(self.filechooser)
+		self.mainbox.Add(self.check_output2file, flag= wx.EXPAND  | wx.RIGHT| wx.CENTER , border=30)
+		self.mainbox.Add(self.label_outputfile, flag= wx.EXPAND  | wx.RIGHT| wx.CENTER , border=30)
+		self.mainbox.Add(self.button_outputfile, flag= wx.EXPAND | wx.CENTER | wx.RIGHT, border=30)
+
+		self.parent.Bind(wx.EVT_CHECKBOX, self.OnToFile, id=self.check_output2file.GetId())
+		self.parent.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.button_outputfile.GetId())
 		
-		#self.mainbox.Add(self.destinationbox)
-		#self.mainbox.Add(self.commands)
-		self.parentobj.output_type = 0 # text field
-		self.parentobj.SetOutputCtrlOk(True)
+		self.OnReset()
+
+	def OnReset(self):
+		self.parent.output_type = WorkProcess.OUTPUT_TO_GUI
+		self.check_output2file.SetValue(False)
+		self.parent.output_file = None
+		self.label_outputfile.SetLabel('None specified')
+		self.label_outputfile.Disable()
+		self.button_outputfile.Disable()
+		self.OnUpdate()
+	
+	def OnUpdate(self):
+		if self.parent.output_type == WorkProcess.OUTPUT_TO_GUI:
+			self.parent.SetOutputCtrlOk(True)
+		elif self.parent.output_type == WorkProcess.OUTPUT_TO_FILE and not self.parent.output_file == None:
+			self.parent.SetOutputCtrlOk(True)
+			self.label_outputfile.SetLabel(os.path.basename(self.parent.output_file))
+		else:
+			self.parent.SetOutputCtrlOk(False)
+
+		self.parent.lock()
+		self.parent.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_OUTPUT, self.parent.output_type, self.parent.output_file, None, None))
+		data = self.parent.ssprocess2gui_queue.get()
+		self.parent.unlock()
+
 #------------------------------------------------------------------------------------------------------------------
 
 	def OnFileBrowse(self, event):
 		dialog = wx.FileDialog(None, style = wx.SAVE|wx.OVERWRITE_PROMPT)
 		if dialog.ShowModal() == wx.ID_OK:
-			self.parentobj.output_file = dialog.GetPath()
-			#self.outputlabel.SetLabel(self.parentobj.output_file)
-			self.parentobj.SetOutputCtrlOk(True)
-			#self.parentobj.mainbox.Fit()
+			self.parent.output_file = dialog.GetPath()
+		self.OnUpdate()
 
 	def OnToFile(self, event):
-		if self.output2file.GetValue():
-			self.outputformat_cmd.Enable()
-			#self.parentobj.query_from_ac = True
-			self.parentobj.output_type = 1 # to file
-			if self.parentobj.output_file == None:
-				self.parentobj.SetOutputCtrlOk(False)
-			else:
-				self.parentobj.SetOutputCtrlOk(True)
+		if self.check_output2file.GetValue():
+			self.button_outputfile.Enable()
+			self.label_outputfile.Enable()
+			self.parent.output_type = WorkProcess.OUTPUT_TO_FILE
 		else:
-			self.outputformat_cmd.Disable()
-			#self.parentobj.query_from_ac = True
-			self.parentobj.output_type = 0 # text field
-			self.parentobj.SetOutputCtrlOk(True)
+			self.button_outputfile.Disable()
+			self.label_outputfile.Disable()
+			self.parent.output_type = WorkProcess.OUTPUT_TO_GUI
+		self.OnUpdate()
 
 #--------------------------------------------------------------
 # Utilities to set front-end values
-	def set_output_type(self, ot):
-		if ot == 1:
-			self.output2file.SetValue(True)
-		elif ot == 0:
-			self.output2file.SetValue(False)
-		self.OnToFile(None)
+	#def set_output_type(self, ot):
+		#if ot == 1:
+			#self.check_output2file.SetValue(True)
+		#elif ot == 0:
+			#self.check_output2file.SetValue(False)
+		#self.OnToFile(None)

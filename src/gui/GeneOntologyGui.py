@@ -99,7 +99,9 @@ class GeneOntologyGui(wx.Dialog):
 		dialog = wx.FileDialog(None, style = wx.OPEN)
 		if dialog.ShowModal() == wx.ID_OK:
 			self.filename = dialog.GetPath()
-			#self.label_filename.SetLabel(os.path.basename(self.filename))
+			self.OnLoad()
+
+	def OnLoad(self):
 			self.loadGOGui = LoadGOGui(self)
 			self.loadGOGui.ShowModal()
 			self.OnLoadDone()
@@ -114,7 +116,6 @@ class GeneOntologyGui(wx.Dialog):
 			self.label_status.SetLabel('')
 			self.label_terms.SetLabel('')
 			self.parent.SetGoOk(False)
-			#self.parent.update_ac = Falseo
 
 	def OnReset(self, event):
 		self.filename = None
@@ -123,6 +124,16 @@ class GeneOntologyGui(wx.Dialog):
 		self.label_terms.SetLabel('')
 		print "Fix Me. Should Reset go in main process!!"
 		self.OnLoadDone()
+
+	def batch_save(self):
+		save = {}
+		save['go_filename'] = self.filename
+		return save
+
+	def batch_load(self, save):
+		if 'go_filename' in save:
+			self.filename = save['go_filename']
+		self.OnLoad()
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 

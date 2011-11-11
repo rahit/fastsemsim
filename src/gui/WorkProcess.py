@@ -62,11 +62,12 @@ LOAD_GO_END = LOAD_GO_BASE + 1
 LOAD_GO_STATUS = LOAD_GO_BASE + 2
 
 
-OUTPUT2GUI = 0
-OUTPUT2FILE = 1
-QUERYFROMGUI = 0
-QUERYFROMAC = 2
-QUERYFROMFILE = 1
+OUTPUT_TO_GUI = 0
+OUTPUT_TO_FILE = 1
+
+QUERY_FROM_GUI = 0
+QUERY_FROM_AC = 2
+QUERY_FROM_FILE = 1
 
 QUERY_PAIRS = 0
 QUERY_LIST = 1
@@ -89,7 +90,7 @@ class WorkProcess(multiprocessing.Process):
 
 	def control(self):
 		if self.status == STATUS_RUN:
-			print "check in status RUN"
+			#print "check in status RUN"
 			#if not self.gui2ssprocess_queue.empty(): #way 1
 				#data = self.gui2ssprocess_queue.get(False)
 			try: #way 2
@@ -197,10 +198,11 @@ class WorkProcess(multiprocessing.Process):
 		print "func stop"
 		#self.results = None
 		# clear data
-		if self.output_to == OUTPUT2FILE and not self.output_file == None:
+		if self.output_to == OUTPUT_TO_FILE and not self.output_file == None:
 			self.output_file.close()
 		self.output_file = None
 		self.output_buffer = None
+		self.output_update = True
 		self.ssprocess2gui_queue.put((CMD_STOP, True))
 		self.status = STATUS_WAIT
 
@@ -228,20 +230,20 @@ class WorkProcess(multiprocessing.Process):
 		print "----------Query----------"
 		if self.query_ok:
 			print "Query is ok"
-			if self.query_from == QUERYFROMGUI:
+			if self.query_from == QUERY_FROM_GUI:
 				print "Query loaded from gui"
-			elif self.query_from == QUERYFROMFILE:
+			elif self.query_from == QUERY_FROM_FILE:
 				print "Query loaded from file " + str(self.query_filename)
-			elif  self.query_from == QUERYFROMAC:
+			elif  self.query_from == QUERY_FROM_AC:
 				print "Query loaded from ac"
 		else:
 			print "Query is not ok"
 		print "----------Output----------"
 		if self.output_ok:
 			print "Output is ok"
-			if self.query_from == OUTPUT2GUI:
+			if self.query_from == OUTPUT_TO_GUI:
 				print "Output to gui"
-			elif self.query_from == OUTPUT2FILE:
+			elif self.query_from == OUTPUT_TO_FILE:
 				print "Output to file " + str(self.output_filename)
 		else:
 			print "Output is not ok"
@@ -286,7 +288,6 @@ class WorkProcess(multiprocessing.Process):
 		else:
 			self.ssprocess2gui_queue.put((CMD_LOAD_AC, LOAD_AC_END, False))
 
-					
 	def load_GO(self, data): #### data format: (filename)
 		self.status = STATUS_LOAD_GO
 		#print "func Load GO"
@@ -311,12 +312,12 @@ class WorkProcess(multiprocessing.Process):
 		#print "func Load query"
 		self.query_ok = False
 		self.query_from = data[0]
-		if self.query_from == QUERYFROMAC:
+		if self.query_from == QUERY_FROM_AC:
 			#print "Query from AC selected."
 			self.query_ok = True
 			self.query_update = True
 			self.query_type = 1
-		elif self.query_from == QUERYFROMFILE:
+		elif self.query_from == QUERY_FROM_FILE:
 			#print "Query from FILE selected."
 			self.query_type = data[1]
 			self.query_filename = data[2]
@@ -324,7 +325,7 @@ class WorkProcess(multiprocessing.Process):
 			#self.query_filetypeparams = data[4]
 			self.query_ok = True
 			self.query_update = True
-		elif self.query_from == QUERYFROMGUI: # expect to find query as input parameter of start messages
+		elif self.query_from == QUERY_FROM_GUI: # expect to find query as input parameter of start messages
 			#print "Query from GUI selected."
 			#self.query = data[2]
 			self.query_type = data[1]
@@ -363,11 +364,11 @@ class WorkProcess(multiprocessing.Process):
 		#print "func Load output"
 		self.output_ok = False
 		self.output_to = data[0]
-		if self.output_to == OUTPUT2FILE:
+		if self.output_to == OUTPUT_TO_FILE:
 			self.output_filename = data[1]
 			self.output_filetype = data[2]
 			self.output_filetypeparams = data[3]
-		elif  self.output_to == OUTPUT2GUI:
+		elif  self.output_to == OUTPUT_TO_GUI:
 			self.output_filename = None
 			self.output_params = data[1]
 		self.output_ok = True
@@ -409,13 +410,13 @@ class WorkProcess(multiprocessing.Process):
 
 	def init_query(self):
 		if self.query_update:
-			if self.query_from == QUERYFROMGUI:
+			if self.query_from == QUERY_FROM_GUI:
 				self.query_update = False
 				self.query = []
 				self.query = self.start_data[0];
-			elif self.query_from == QUERYFROMFILE:
+			elif self.query_from == QUERY_FROM_FILE:
 				self.build_query_from_file()
-			elif self.query_from == QUERYFROMAC:
+			elif self.query_from == QUERY_FROM_AC:
 				self.build_query_from_ac()
 			else:
 				return
@@ -449,10 +450,10 @@ class WorkProcess(multiprocessing.Process):
 	def init_output(self):
 		#print "init_output"
 		if self.output_update:
-			if self.output_to == OUTPUT2FILE:
+			if self.output_to == OUTPUT_TO_FILE:
 				#print "output to file"
 				self.output_file = open(self.output_filename, 'w')
-			elif self.output_to == OUTPUT2GUI:
+			elif self.output_to == OUTPUT_TO_GUI:
 				#print "output to gui"
 				self.output_buffer = [[]] * self.MAX_BUFFER_SIZE
 				self.query_pairs_saved = 0
@@ -518,7 +519,7 @@ class WorkProcess(multiprocessing.Process):
 						#self.ssprocess2gui_queue.put((float(self.query_pairs_done)/self.query_pairs_number))
 					if type(test) is float:
 						test = str('%.4f' %test)
-					if self.output_to == OUTPUT2GUI:
+					if self.output_to == OUTPUT_TO_GUI:
 						#if not test == None:
 						self.sendOutput(str(self.query[self.C_i]), str(self.query[self.C_j]), str(test))
 					else:
@@ -537,12 +538,12 @@ class WorkProcess(multiprocessing.Process):
 						#self.ssprocess2gui_queue.put((float(self.query_pairs_done)/self.query_pairs_number))
 				if type(test) is float:
 					test = str('%.4f' %test)
-				if self.output_to == OUTPUT2GUI:
+				if self.output_to == OUTPUT_TO_GUI:
 					self.sendOutput(str(self.C_i[0]), str(self.C_i[1]), str(test))
 				else:
 					self.writeOutput(str(self.C_i[0]), str(self.C_i[1]), str(test))
 
-		if self.output_to == OUTPUT2GUI:
+		if self.output_to == OUTPUT_TO_GUI:
 			self.flushOutput()
 		#if not self.counter == self.total_number:
 			#print "Count error. Total pairs to process: " + str(self.total_number) + ". Total pairs processed: " + str(self.counter)

@@ -114,6 +114,18 @@ class fastSemSimGui(wx.Frame):
 		self.process_busy_event = multiprocessing.Event()
 		self.InitUI()
 
+	def InitWorkProcess(self):
+		self.running = False
+		self.ssprocess.append(None)
+		
+		self.TIMER_ID = 100
+		self.timer = wx.Timer(self.panel, self.TIMER_ID)
+		wx.EVT_TIMER(self.panel, self.TIMER_ID, self.OnCheckPipes)
+   
+		self.activateGoCmd()
+		self.init_process()
+		self.timer.Start(1000)
+
 	def InitUI(self):
 		self.font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
 		self.font.SetPointSize(9)
@@ -121,6 +133,8 @@ class fastSemSimGui(wx.Frame):
 		self.panel = wx.Panel(self)
 		self.mainbox = wx.BoxSizer(wx.VERTICAL)
 		self.Bind(wx.EVT_CLOSE, self.OnQuit, id=self.GetId())
+
+		self.InitWorkProcess()
 
 		# Define main regions
 		self.go_boxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Gene Ontology')
@@ -179,16 +193,6 @@ class fastSemSimGui(wx.Frame):
 		self.ControlGui = ControlGui(self)
 		
 		self.InitMenu()
-		self.running = False
-		self.ssprocess.append(None)
-		
-		self.TIMER_ID = 100
-		self.timer = wx.Timer(self.panel, self.TIMER_ID)
-		wx.EVT_TIMER(self.panel, self.TIMER_ID, self.OnCheckPipes)
-   
-		self.activateGoCmd()
-		self.init_process()
-		self.timer.Start(1000)
 #----------------------------------------------------------------------------------------------------------------------------------
 	#'''
 	#Menubar
@@ -321,45 +325,6 @@ class fastSemSimGui(wx.Frame):
 					#self.statuspicture.SetBitmap(wx.Bitmap(self.s0_pic))
 					self.start_cmd.Enable()
 
-#----------------------------------------------------------------------------------------------------------------------------------
-#----------------------------------------------------------------------------------------------------------------------------------
-
-
-	def buildQuery(self):
-		#self.SetQueryOk(False)
-		result = True
-		if self.query_from == 0: # from field
-			result = False
-			self.log_field.AppendText("\tLoading query from text field...\n")
-			result = self.loadFromField()
-			self.update_query = False
-			result = True
-		elif self.update_query: 
-			self.query = None
-			if self.query_from == 1: # from file
-				self.log_field.AppendText("\tLoading query from file " + str(self.query_file) +"...\n")
-				result = self.loadFromFile()
-			elif self.query_from == 2: # from ac
-				if self.query_type == 0:
-					self.log_field.AppendText("Cannot get pairs from Annotation Corpus.\n")
-				elif self.query_type == 1:
-					self.log_field.AppendText("\tLoading query list from Annotation Corpus...\n")
-					result = self.loadFromAC()
-		else:
-			self.log_field.AppendText("Using previous query...\n")
-			result = True
-		if result:
-			self.update_query = False
-		else:
-			self.update_query = True
-			self.query = None
-		#self.SetQueryOk(result)
-		return result
-
-
-
-
-
 #################################
 #'''
 #Following routines start/stop ss computation
@@ -384,17 +349,14 @@ class fastSemSimGui(wx.Frame):
 			return False
 
 	def loadFromField(self):
-		h = self.QueryGui.inputfield.GetValue()
+		h = self.QueryGui.text_query.GetValue()
 		self.query= []
 		h = h.splitlines()
-		#print h
 		for line in h:
-			#print line
-			if self.query_type == 0: #pairs
+			if self.query_type == WorkProcess.QUERY_PAIRS:
 				line = line.rsplit(' ')
-				#print line
 				self.query.append((str(line[0]), str(line[1])))
-			else: # list
+			else:
 				self.query.append(str(line))
 		#print self.query
 		return True
@@ -432,29 +394,15 @@ class fastSemSimGui(wx.Frame):
 		
 	def start_process(self):
 		self.progress.SetValue(float(0))
-		#### data format: (ss measure, ss measure params, mixing strat., mixing strat. params, ontology)
 		self.lock()
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_SS, self.ssmeasure, None, self.mixingstrategy, None, self.selectedGO))
 		data = self.ssprocess2gui_queue.get()
-		#self.unlock()
-		#self.lock()
-		if self.output_type == 0:
-			self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_OUTPUT, WorkProcess.OUTPUT2GUI, None))
-		elif self.output_type == 1:
-			self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_OUTPUT, WorkProcess.OUTPUT2FILE, self.output_file, None, None))
-		data = self.ssprocess2gui_queue.get()
 		self.SetStatus(2)
-		#self.unlock()
-		#self.lock()
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_STATUS, None))
 		data = self.ssprocess2gui_queue.get()
-		#self.unlock()
-		#self.lock()
-		if self.query_from == 0:
+		if self.query_from == WorkProcess.QUERY_FROM_GUI:
 			self.loadFromField()
-			self.gui2ssprocess_queue.put((WorkProcess.CMD_START, self.query))
-		else:
-			self.gui2ssprocess_queue.put((WorkProcess.CMD_START, None))
+		self.gui2ssprocess_queue.put((WorkProcess.CMD_START, self.query))
 		data = self.ssprocess2gui_queue.get()
 		self.unlock()
 		if data[0] == WorkProcess.CMD_START and data[1]:
@@ -489,44 +437,26 @@ class fastSemSimGui(wx.Frame):
 		return True
 
 	def start(self):
-		self.log_field.AppendText('-------------\n')
+		self.log_field.AppendText('\n-------------\n')
 		self.skip_checks = False#check if everything is configured
 		if not self.skip_checks:
 			if not self.go_ok:
-				self.log_field.AppendText("Check Gene Ontology. Aborted\n")
+				self.log_field.AppendText("Check Gene Ontology.\nAborted\n")
 				return False
 			if not self.ac_ok:
-				self.log_field.AppendText("Check Annotation Corpus. Aborted.\n")
+				self.log_field.AppendText("Check Annotation Corpus.\nAborted.\n")
 				return False
 			if not self.query_ok:
-				self.log_field.AppendText("Check query. Aborted.\n")
+				self.log_field.AppendText("Check query.\nAborted.\n")
 				return False
 			if not self.outputctrl_ok:
-				self.log_field.AppendText("Check output parameters. Aborted.\n")
+				self.log_field.AppendText("Check output parameters.\nAborted.\n")
 				return False
 			if not self.operation_ok:
-				self.log_field.AppendText("Check operation parameters. Aborted.\n")
+				self.log_field.AppendText("Check operation parameters.\nAborted.\n")
 				return False
-		self.log_field.AppendText("Initializing structures...\n")
-		#----------------------------------------------------------------------------------------------------
-		#self.log_field.AppendText("Data seems to be ok. Inizializing structures...\n")
-		#self.log_field.AppendText("-> Setting up semantic similarity...\n")
-		#if not self.buildSSobject():						#Prepare sem sim object
-			#self.log_field.AppendText("-> Failed to initialize semantic similarity measure. Aborted.\n")
-			#return False
-		#----------------------------------------------------------------------------------------------------
-		#self.log_field.AppendText("-> Setting up query...\n")
-		#if not self.buildQuery():							# Prepare query
-			#self.log_field.AppendText("Failed to load query. Aborted.\n")
-			#return False
-		#else:
-			#if self.query_type == 0:
-				#self.log_field.AppendText("\tQuery loaded:" + (str(len(self.query))) + " pairs\n")
-			#elif self.query_type == 1:
-				#self.log_field.AppendText("Query loaded: " + str(len(self.query)) + " items.\n")
-		#----------------------------------------------------------------------------------------------------
-		# Calculate SS scores
-		self.log_field.AppendText("Evaluating semantic similarity...\n")
+		#self.log_field.AppendText("Parameters accepted. Starting computation...\n")
+		#self.log_field.AppendText("Evaluating semantic similarity...\n")
 		if self.output_type == 0:
 			self.OutputGui.output_field.Clear()
 			self.OutputGui.Show()
