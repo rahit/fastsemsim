@@ -1,6 +1,8 @@
-Thanks for downloading L1L2Py.
+Thanks for downloading FastSemSim.
 
-To install it, make sure you have Python>=2.5 and NumPy>=1.3.0 installed. 
+To install it, make sure you have Python>=2.5.
+WxWidgets library is required to run the graphical user interface.
+
 Then run this command from the command prompt:
 
     python setup.py install
