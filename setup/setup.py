@@ -40,8 +40,8 @@ pkg_path = os.path.dirname(__file__)
 ## Package description
 README = os.path.join(pkg_path, 'README')
 lines = open(README).readlines()
-description = ''.join(lines[:1])
-long_description = ''.join(lines[:2])
+description = ''.join(lines[:3])
+long_description = ''.join(lines[:4])
 
 ## Package Version
 version = 0.4.4
