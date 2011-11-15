@@ -31,7 +31,10 @@ description = ''.join(lines[:3])
 long_description = ''.join(lines[:4])
 
 ## Package Version
+vh = open('version','r')
+lines = vh.readlines()
 version = lines[0]
+vh.close()
 
 setup(
     name='fastSemSim',
