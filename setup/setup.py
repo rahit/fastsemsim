@@ -21,19 +21,6 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 from distutils.core import setup
 import os
 
-#################################################
-import py2exe
-setup(
-    options = {
-        "py2exe": {
-            "dll_excludes" : ["MSVCP90.dll"]
-        }
-    },
-    windows =['gui\\fastSemSimGui.py'])
-
-#################################################
-
-
 ## Package path
 pkg_path = os.path.dirname(__file__)
 
@@ -44,7 +31,7 @@ description = ''.join(lines[:3])
 long_description = ''.join(lines[:4])
 
 ## Package Version
-version = 0.4.4
+version = lines[0]
 
 setup(
     name='fastSemSim',
@@ -68,6 +55,7 @@ setup(
         'Programming Language :: Python',
     ],
 
+    package_dir={'fastSemSim':'src'},
     packages=['fastSemSim'],
     #package_data={'dir': ['data.?']},
     #requires=['wx (>=2.8)']
