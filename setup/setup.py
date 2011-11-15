@@ -19,8 +19,10 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 from distutils.core import setup
-import py2exe
+import os
 
+#################################################
+import py2exe
 setup(
     options = {
         "py2exe": {
@@ -28,3 +30,45 @@ setup(
         }
     },
     windows =['gui\\fastSemSimGui.py'])
+
+#################################################
+
+
+## Package path
+pkg_path = os.path.dirname(__file__)
+
+## Package description
+README = os.path.join(pkg_path, 'README')
+lines = open(README).readlines()
+description = ''.join(lines[:1])
+long_description = ''.join(lines[:2])
+
+## Package Version
+version = 0.4.4
+
+setup(
+    name='fastSemSim',
+    version=version,
+    url='https://sourceforge.net/p/fastsemsim/home/Home/',
+    description=description,
+    long_description=long_description,
+    keywords='semantic similarity, GO, Gene Ontology, GOA,',
+    author='Marco Mina',
+    author_email='marco.mina.85@gmail.com',
+    license='GNU GPL version 3',
+    download_url = 'https://sourceforge.net/projects/fastsemsim/files/',
+    classifiers=[
+        'Development Status :: 3 - Beta',
+        'Intended Audience :: Science/Research',
+        'License :: OSI Approved :: GNU General Public License (GPL)',
+        'Natural Language :: English',
+        'Operating System :: POSIX :: Linux',
+        'Operating System :: MacOS',
+        'Operating System :: Microsoft :: Windows',
+        'Programming Language :: Python',
+    ],
+
+    packages=['fastSemSim'],
+    #package_data={'dir': ['data.?']},
+    #requires=['wx (>=2.8)']
+)
