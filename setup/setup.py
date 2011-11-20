@@ -33,7 +33,7 @@ long_description = ''.join(lines[:4])
 ## Package Version
 vh = open('version','r')
 lines = vh.readlines()
-version = lines[0]
+version = lines[0].rstrip('\n').rstrip('\r')
 vh.close()
 
 setup(
@@ -59,7 +59,8 @@ setup(
     ],
 
     package_dir={'fastSemSim':'src'},
-    packages=['fastSemSim'],
+    package_data={'fastSemSim':['gui/*.png']},
+    packages=['fastSemSim', 'fastSemSim.GO', 'fastSemSim.SemSim', 'fastSemSim.gui', 'fastSemSim.fastResnik'],
     #package_data={'dir': ['data.?']},
     #requires=['wx (>=2.8)']
 )

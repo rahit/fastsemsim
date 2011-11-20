@@ -3,5 +3,6 @@ include INSTALL
 include README
 include LICENSE
 include CHANGELOG
+include version
 
 recursive-include src *.py *.png

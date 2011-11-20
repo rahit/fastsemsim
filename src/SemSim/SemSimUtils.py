@@ -43,6 +43,7 @@ import sys
 import os
 import math
 
+
 class SemSimUtils:
 	BP_root = "GO:0008150"
 	MF_root = "GO:0003674"
@@ -52,7 +53,7 @@ class SemSimUtils:
 	CC_ontology = "CC"
 
 	go = None
-	annotation_corpus = None
+	ac = None
 	parents = None
 	children = None
 	ancestors = None
@@ -63,48 +64,25 @@ class SemSimUtils:
 	
 	def __init__(self, ac, go):
 		self.go = go
-		self.annotation_corpus = ac
+		self.ac = ac
 		self.init_structures()
+		self.det_offspring_table()
+		self.det_ancestors_table()
+		self.det_GO_division()
 
-	def go_name2id(self,code):
-		return int(code[3:])
-
-	def go_id2name(self,code):
-		return "GO:" + '0'*(7 - len(str(code))) + str(code)
-
-	def go_2ids(self, codes):
-		if type(codes) is str:
-			return self.go_name2id(codes)
-		elif type(codes) is int:
-			return codes
-		elif type(codes) is dict or type(codes) is list:
-			ids = []
-			for i in codes:
-				ids.append(self.go_2ids(i))
-			return ids
-
-	def go_2names(self, codes):
-		if type(codes) is int:
-			return self.go_id2name(codes)
-		elif type(codes) is str:
-			return codes
-		elif type(codes) is dict or type(codes) is list:
-			ids = []
-			for i in codes:
-				ids.append(self.go_2names(i))
-			return ids
+		#self.det_freq_table()
+		#self.det_ICs_table()
 
 	def init_structures(self):
 		self.parents = {}
 		self.children = {}
 		for i in self.go.nodes_edges:
-			self.parents[i] = [] #### perche' non usare dicts?
-			self.children[i] = [] #### perche' non usare dicts?
-			for j in self.go.nodes_edges[i]:
+			self.parents[i] = []
+			self.children[i] = []
+			for j in self.go.nodes_edges[i]: # can improve this by considering only once the whole set of edges.
 				if self.go.edges_nodes[j][0] == i:
 					self.parents[i].append(self.go.edges_nodes[j][1])
 				else:
-					#print(str(i) + " " + str(j)
 					self.children[i].append(self.go.edges_nodes[j][0])
 
 	def det_offspring(self, goid):
@@ -160,9 +138,9 @@ class SemSimUtils:
 			self.ancestors[i] = self.det_ancestors(i)
 
 	def det_GO_division(self):
-		BP_GO = self.offspring[self.go_name2id(self.BP_root)]
-		MF_GO = self.offspring[self.go_name2id(self.MF_root)]
-		CC_GO = self.offspring[self.go_name2id(self.CC_root)]
+		BP_GO = self.offspring[self.go.name2id(self.BP_root)]
+		MF_GO = self.offspring[self.go.name2id(self.MF_root)]
+		CC_GO = self.offspring[self.go.name2id(self.CC_root)]
 		assigns = {}
 		for i in BP_GO:
 			assigns[i] = self.BP_root
@@ -178,11 +156,11 @@ class SemSimUtils:
 			if self.freqs[term_id] == 0:
 				return -1
 			if self.GO_division[term_id] == self.BP_root:
-				rootf = self.freqs[self.go_name2id(self.BP_root)]
+				rootf = self.freqs[self.go.name2id(self.BP_root)]
 			elif self.GO_division[term_id] == self.MF_root:
-				rootf = self.freqs[self.go_name2id(self.MF_root)]
+				rootf = self.freqs[self.go.name2id(self.MF_root)]
 			elif self.GO_division[term_id] == self.CC_root:
-				rootf = self.freqs[self.go_name2id(self.CC_root)]
+				rootf = self.freqs[self.go.name2id(self.CC_root)]
 			temp_p = float(self.freqs[term_id])/float(rootf)
 			return temp_p
 		else:
@@ -192,15 +170,15 @@ class SemSimUtils:
 		freq = 0
 		children_set = self.offspring[term_id]
 		for j in children_set:
-			if j in self.annotation_corpus.reverse_annotations:
-				freq += len(self.annotation_corpus.reverse_annotations[j])
+			if j in self.ac.reverse_annotations:
+				freq += len(self.ac.reverse_annotations[j])
 		return freq
 
 	def det_freq_table(self):
 		self.freqs = {}
 		for i in self.go.nodes_edges:
 			self.freqs[i] = self.det_freq(i)
-		#for i in self.annotation_corpus.reverse_annotations:
+		#for i in self.ac.reverse_annotations:
 			#if not i in self.go.nodes_edges:
 				#print("Errore: " + str(i)
 				#sys.exit(1)
@@ -210,11 +188,11 @@ class SemSimUtils:
 			if self.freqs[term_id] == 0:
 				return -1
 			if self.GO_division[term_id] == self.BP_root:
-				rootf = self.freqs[self.go_name2id(self.BP_root)]
+				rootf = self.freqs[self.go.name2id(self.BP_root)]
 			elif self.GO_division[term_id] == self.MF_root:
-				rootf = self.freqs[self.go_name2id(self.MF_root)]
+				rootf = self.freqs[self.go.name2id(self.MF_root)]
 			elif self.GO_division[term_id] == self.CC_root:
-				rootf = self.freqs[self.go_name2id(self.CC_root)]
+				rootf = self.freqs[self.go.name2id(self.CC_root)]
 			temp_IC = -math.log(float(self.freqs[term_id])/float(rootf))
 			return temp_IC
 		else:
@@ -329,26 +307,3 @@ class SemSimUtils:
 		for i in gene2anc:
 			ca[i] = None
 		return ca
-
-if __name__ == "__main__":
-	#### load ontology
-	tree = GeneOntology.get_go_graph(open(sys.argv[1]))
-	print("Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.V.__len__()) + ". Edges: " + str(tree.E.__len__()))
-	
-	#### load annotations
-	gp = AnnotationCorpus.AnnotationCorpus(tree)
-	gp.parse(sys.argv[2])
-
-	#### create SemSimUtils class
-	ssu = SemSimUtils(gp, tree)
-	ssu.det_offspring_table()
-	ssu.det_ancestors_table()
-	ssu.det_freq_table()
-	ssu.det_GO_division()
-	ssu.det_ICs_table()
-	for i in ssu.IC:
-		print(str(ssu.go_id2name(i)) + '\t' + str(ssu.IC[i]))
-		
-	for i in ssu.annotation_corpus.reverse_annotations:
-		if not i in ssu.go.nodes_edges:
-			print("Obsolete term: " + str(i))

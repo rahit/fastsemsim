@@ -54,15 +54,17 @@ class TermSemSim:
 		- an id is not in the GO tree
 		- ids come from from different ontologies.
 		"""
-		id1 = self.util.go_2ids(term1)
-		#print(id1
+		id1 = self.util.go.name2id(term1)
+		#print type(term1)
+		#print(term1)
+		#print(id1)
 		if self.SS_type == self.P_TSS:
 			if type(id1) is int:
 				if id1 in self.go.nodes_edges:
 					#print("Valid id P."
 					out_ids = id1
 				else:
-					print("Term " + str(i) + " not present in the GO.")
+					print("Term " + str(id1) + " not present in the GO.")
 					return None
 				if self.IC_based and not out_ids in self.util.IC:
 					print("Term " + str(out_ids) + " does not have an IC.")
