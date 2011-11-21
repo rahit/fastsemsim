@@ -22,9 +22,9 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 This class provides a template for using fastSemSim
 """
 
-from GO import AnnotationCorpus
-from GO import GeneOntology
-from SemSim import ObjSemSim
+from fastSemSim.GO import AnnotationCorpus
+from fastSemSim.GO import GeneOntology
+from fastSemSim.SemSim import ObjSemSim
 import sys
 import os
 import math

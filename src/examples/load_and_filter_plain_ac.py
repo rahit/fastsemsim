@@ -24,9 +24,9 @@ It loads a Gene Ontology, and then loads an annotation corpus (in GOA GAF-2 form
 It provides some hints on how using the filtering features implemented in FastSemSim.
 """
 
-from GO import AnnotationCorpus
-from GO import GeneOntology
-from SemSim import ResnikSemSim
+from fastSemSim.GO import AnnotationCorpus
+from fastSemSim.GO import GeneOntology
+from fastSemSim.SemSim import ResnikSemSim
 import sys
 
 if __name__ == "__main__":

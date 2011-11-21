@@ -23,9 +23,9 @@ This is an example program.
 It loads a Gene Ontology, an annotation corpus (in GOA GAF-2 format) and evaluate Resnik Sem Sim between all the pairs of GO Terms from BP ontology present in the annotation corpus.
 """
 
-from GO import AnnotationCorpus
-from GO import GeneOntology
-from SemSim import ResnikSemSim
+from fastSemSim.GO import AnnotationCorpus
+from fastSemSim.GO import GeneOntology
+from fastSemSim.SemSim import ResnikSemSim
 import sys
 
 if __name__ == "__main__":

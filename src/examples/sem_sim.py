@@ -23,10 +23,10 @@ This is an example program. It loads a Gene Ontology, an annotation corpus (GOA 
 It returns a list of protein pairs and their semantic similarity (Resnik BMA).
 """
 
-from GO import AnnotationCorpus
-from GO import GeneOntology
-from SemSim import ObjSemSim
-from SemSim import SemSimUtils
+from fastSemSim.GO import AnnotationCorpus
+from fastSemSim.GO import GeneOntology
+from fastSemSim.SemSim import ObjSemSim
+from fastSemSim.SemSim import SemSimUtils
 import sys
 import os
 
