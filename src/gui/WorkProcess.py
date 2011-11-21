@@ -73,6 +73,7 @@ QUERY_PAIRS = 0
 QUERY_LIST = 1
 
 class WorkProcess(multiprocessing.Process):
+	print_output = False
 	status = STATUS_INIT
 	MAX_BUFFER_SIZE = 5000
 	CHECK_INTERVAL = 5000
@@ -97,7 +98,7 @@ class WorkProcess(multiprocessing.Process):
 				data = self.gui2ssprocess_queue.get(False)
 				# check if data is stop or pause. In this case make actions. Otherwise don't do anything
 				if data[0] == CMD_STOP:
-					print "Stop received"
+					#print "Stop received"
 					self.stop()
 					return False
 				elif data[0] == CMD_PAUSE:
@@ -195,7 +196,7 @@ class WorkProcess(multiprocessing.Process):
 		self.status = STATUS_WAIT
 
 	def stop(self):
-		print "func stop"
+		#print "func stop"
 		#self.results = None
 		# clear data
 		if self.output_to == OUTPUT_TO_FILE and not self.output_file == None:
@@ -213,50 +214,51 @@ class WorkProcess(multiprocessing.Process):
 		self.status = STATUS_PAUSE
 		
 	def _status(self):
-		print "----------GO----------"
-		if self.go_ok:
-			print "GO is ok"
-			print "GO loaded: " + str(self.go_filename)
-			print "Nodes: " + str(self.go.node_num()) + ". Edges: " + str(self.go.edge_num())
-		else:
-			print "GO is not ok"
-		print "----------AC----------"
-		if self.ac_ok:
-			print "AC is ok"
-			print "AC loaded: " + str(self.ac_filename)
-			print "Nodes: " + str(len(self.ac.annotations))
-		else:
-			print "AC is not ok"
-		print "----------Query----------"
-		if self.query_ok:
-			print "Query is ok"
-			if self.query_from == QUERY_FROM_GUI:
-				print "Query loaded from gui"
-			elif self.query_from == QUERY_FROM_FILE:
-				print "Query loaded from file " + str(self.query_filename)
-			elif  self.query_from == QUERY_FROM_AC:
-				print "Query loaded from ac"
-		else:
-			print "Query is not ok"
-		print "----------Output----------"
-		if self.output_ok:
-			print "Output is ok"
-			if self.query_from == OUTPUT_TO_GUI:
-				print "Output to gui"
-			elif self.query_from == OUTPUT_TO_FILE:
-				print "Output to file " + str(self.output_filename)
-		else:
-			print "Output is not ok"
-		print "----------SS----------"
-		if self.ss_ok:
-			print "SS is ok"
-			print "SS: " + str(self.ss_name)
-			print "MS: " + str(self.ms_name)
-			print "Ontology selected: " + str(self.ss_ontology)
-		else:
-			print "SS is not ok"
-		print "--------------------"
-		print "Current status"
+		if self.print_output:
+			print "----------GO----------"
+			if self.go_ok:
+				print "GO is ok"
+				print "GO loaded: " + str(self.go_filename)
+				print "Nodes: " + str(self.go.node_num()) + ". Edges: " + str(self.go.edge_num())
+			else:
+				print "GO is not ok"
+			print "----------AC----------"
+			if self.ac_ok:
+				print "AC is ok"
+				print "AC loaded: " + str(self.ac_filename)
+				print "Nodes: " + str(len(self.ac.annotations))
+			else:
+				print "AC is not ok"
+			print "----------Query----------"
+			if self.query_ok:
+				print "Query is ok"
+				if self.query_from == QUERY_FROM_GUI:
+					print "Query loaded from gui"
+				elif self.query_from == QUERY_FROM_FILE:
+					print "Query loaded from file " + str(self.query_filename)
+				elif  self.query_from == QUERY_FROM_AC:
+					print "Query loaded from ac"
+			else:
+				print "Query is not ok"
+			print "----------Output----------"
+			if self.output_ok:
+				print "Output is ok"
+				if self.query_from == OUTPUT_TO_GUI:
+					print "Output to gui"
+				elif self.query_from == OUTPUT_TO_FILE:
+					print "Output to file " + str(self.output_filename)
+			else:
+				print "Output is not ok"
+			print "----------SS----------"
+			if self.ss_ok:
+				print "SS is ok"
+				print "SS: " + str(self.ss_name)
+				print "MS: " + str(self.ms_name)
+				print "Ontology selected: " + str(self.ss_ontology)
+			else:
+				print "SS is not ok"
+			print "--------------------"
+			print "Current status"
 		self.ssprocess2gui_queue.put((CMD_STATUS, self.status))
 
 	def load_AC(self, data): #### data format: (filename, other) other = (file format, file format params)
@@ -493,12 +495,9 @@ class WorkProcess(multiprocessing.Process):
 
 	def build_ss(self):
 		ssu = SemSimUtils.SemSimUtils(self.ac, self.go)
-		ssu.det_offspring_table()
-		ssu.det_ancestors_table()
-		ssu.det_freq_table()
-		ssu.det_GO_division()
-		ssu.det_ICs_table()
+		ssu.det_IC_table()
 		self.ss = ObjSemSim.ObjSemSim(self.ac, self.go, self.ss_name, self.ms_name, ssu)
+		self.ss.TSS.format_and_check_data = False
 		self.ss_update = False
 
 	def _calculate(self):

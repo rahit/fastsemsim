@@ -27,26 +27,39 @@ It keeps into account term attributes such as "obsolete" and "alternative" ids.
 
 Function load_GO_XML(file_stream) loads XML files. It returns a GeneOntology object.
 """
-
-IS_A = 0
-PART_OF = 1
-BP_root = "GO:0008150"
-MF_root = "GO:0003674"
-CC_root = "GO:0005575"
-
 import types
 from xml.sax import make_parser
 from xml.sax.handler import ContentHandler
 
+IS_A = 0
+PART_OF = 1
+
+BP_root = "GO:0008150"
+MF_root = "GO:0003674"
+CC_root = "GO:0005575"
+	
 def go_name2id(code):
 	return int(code[3:])
 
 def go_id2name(code):
 	return "GO:" + '0'*(7 - len(str(code))) + str(code)
 	
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 class GeneOntology:
+	
+	BP_root = 8150
+	MF_root = 3674
+	CC_root = 5575
 
+# variables
+	nodes_edges = None
+	edges_nodes = None
+	parents = None
+	children = None
+	alt_ids = None
+	obsolete_ids = None
+
+# functions available to the external world
 	def name2id(self, codes, alt_check = True):
 		nid = None
 		if type(codes) is str:
@@ -79,30 +92,49 @@ class GeneOntology:
 				sid.append(go_2names(i))
 		return sid
 
-	"""
-		Nodes are GO terms. Edges are links between GO Terms within GO.
-	"""
+	def node_num(self):
+		return len(self.nodes_edges)
+
+	def edge_num(self):
+		return len(self.edges_nodes)
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+	# internal functions
+
 	def __init__(self, terms, edges, alt_ids):
 		self.nodes_edges = {}
 		self.edges_nodes = {}
-		self.next_edge = 0
+		self.obsolete_ids = {}
+		self.alt_ids = alt_ids
+		self.parents = {}
+		self.children = {}
 
+		self.next_edge = 0
 		self.edge_types = [0 for i in range(len(edges))]
 		for (u,v,z) in edges:
-			self.add_edge(u,v,z)
-		self.alt_ids = alt_ids
-		self.obsolete_ids = {}
+			self.int_add_edge(u,v,z)
 		for i in self.alt_ids:
-			if i not in self.nodes_edges:
+			if self.alt_ids[i] not in self.nodes_edges:
+				#if not i == self.alt_ids[i]:
+						#print str(i) + " --> " + str(self.alt_ids[i]) + ": obsolete"
 				self.obsolete_ids[i] = {}
 
-	def add_node(self,n):
+		for i in self.nodes_edges:
+			self.parents[i] = []
+			self.children[i] = []
+			for j in self.nodes_edges[i]:
+				if self.edges_nodes[j][0] == i:
+					self.parents[i].append(self.edges_nodes[j][1])
+				else:
+					self.children[i].append(self.edges_nodes[j][0])
+
+	def int_add_node(self,n):
 		if n not in self.nodes_edges:
 			self.nodes_edges[n] = []
 		else:
 			raise(Exception, 'Node ' + str(n) + ' is already in the graph')
 
-	def add_edge(self, go1, go2, edge_type):
+	def int_add_edge(self, go1, go2, edge_type):
 		"""
 		Edge type might be IS_A, PART_OF, ???
 		"""
@@ -112,9 +144,9 @@ class GeneOntology:
 		self.next_edge += 1
 
 		if go1 not in self.nodes_edges:
-			self.add_node(go1)
+			self.int_add_node(go1)
 		if go2 not in self.nodes_edges:
-			self.add_node(go2)
+			self.int_add_node(go2)
 
 		self.edges_nodes[e] = (go1,go2)
 		self.nodes_edges[go1].append(e)
@@ -123,10 +155,7 @@ class GeneOntology:
 		self.edge_types[e] = edge_type
 		return e
 
-	def node_num(self):
-		return len(self.nodes_edges)
-	def edge_num(self):
-		return len(self.edges_nodes)
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 
 def load_GO_XML(file_stream):
 	parser = make_parser()
@@ -134,7 +163,6 @@ def load_GO_XML(file_stream):
 	parser.setContentHandler(handler)
 	parser.parse(file_stream)
 	return GeneOntology(handler.terms, handler.edges, handler.alt_ids)
-
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 

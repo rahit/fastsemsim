@@ -30,11 +30,17 @@ import sys
 import os
 import math
 
-class TermSemSim:
+class TermSemSim(object):
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+	format_and_check_data = True
+# variables
 	P_TSS = "Pairwise"
 	G_TSS = "Groupwise"
 	SS_type = None
 	IC_based = False
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+# private functions
 
 	def __init__(self, ac, go, util = None):
 		self.go = go
@@ -42,36 +48,32 @@ class TermSemSim:
 		self.util = util
 		if self.util == None:
 			self.util = SemSimUtils(ac, go)
-			self.ssu.det_offspring_table()
-			self.ssu.det_ancestors_table()
-			self.ssu.det_freq_table()
-			self.ssu.det_GO_division()
-			self.ssu.det_ICs_table()
+		if self.IC_based and self.util.IC == None:
+			self.util.det_IC_table()
+
+	def int_validate_single_term(self, term):
+		if not type(term) is int:
+			#print "Invalid term format: " + str(type(term))
+			return False
+		if term not in self.go.nodes_edges:
+			#print(str(term) + " is not a valid term.")
+			return False
+		#if (not ignore_IC) and self.IC_based:
+		if self.IC_based:
+			if not term in self.util.IC:
+				print("Term " + str(term) + " does not have an IC.")
+				return False
+			if self.util.IC[term] == None:
+				print("Term " + str(term) + " does not have an IC.")
+				return False
+		return True
 
 	def int_format_data(self, term1):
-		"""
-		Return None if:
-		- an id is not in the GO tree
-		- ids come from from different ontologies.
-		"""
 		id1 = self.util.go.name2id(term1)
-		#print type(term1)
-		#print(term1)
-		#print(id1)
 		if self.SS_type == self.P_TSS:
-			if type(id1) is int:
-				if id1 in self.go.nodes_edges:
-					#print("Valid id P."
-					out_ids = id1
-				else:
-					print("Term " + str(id1) + " not present in the GO.")
-					return None
-				if self.IC_based and not out_ids in self.util.IC:
-					print("Term " + str(out_ids) + " does not have an IC.")
-					return None
-			else:
-					print("More than one term passed to a pairwise term SS measure.")
-					return None
+			if self.int_validate_single_term(id1):
+				return id1
+			return None
 		elif self.SS_type == self.G_TSS:
 			if type(id1) is int:
 				temp_id1 = []
@@ -80,72 +82,45 @@ class TermSemSim:
 				temp_id1 = id1
 			current_onto = None
 			for i in temp_id1:
-				if i not in self.go.nodes_edges:
-					print("Term " + str(i) + " not present in the GO.")
+				if not self.int_validate_single_term(i):
 					return None
 				if current_onto is None:
-					current_onto = self.util.root[i]
-				elif not current_onto == self.util.root[i]:
-					print("Terms are not from the same ontology")
+					current_onto = self.util.GO_root[i]
+				elif not current_onto == self.util.GO_root[i]:
+					#print("Terms are not from the same ontology")
 					return None
-				if self.IC_based and not i in self.util.IC:
-					print("Term " + str(i) + " does not have an IC.")
-					return None
-			out_ids = temp_id1
-		return out_ids
+			return temp_id1
 
-	def SemSim(self, term1, term2):
-		"""
-		Terms are supposed to come from the same ontology.
-		Check is enabled by default. I should allow to disable the check to improve performance.
-		"""
-		#### translate into id format & check data.
-		if term1 is None or term2 is None:
-			return None
-		id1 = self.int_format_data(term1)
-		id2 = self.int_format_data(term2)
-		if id1 is None or id2 is None or (self.SS_type == self.G_TSS and len(id1) == 0) or (self.SS_type == self.G_TSS and len(id2) == 0):
-			print(str(term1) + " or " + str(term2) + "   not valid.")
-			return None
-		if self.SS_type == self.P_TSS:
-			if not self.util.root[id1] == self.util.root[id2]:
-				print("Terms are not from the same ontology")
-				return None
-		elif self.SS_type == self.G_TSS:
-			for i in id1:
-				t1 = i
-				break
-			for i in id2:
-				t2 = i
-				break
-			if not self.util.root[t1] == self.util.root[t2]:
-				print("Terms are not from the same ontology")
-				return None
-		return self.int_SemSim(id1, id2)
-
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+# public function
 	def int_SemSim(self, term1, term2):
-		#gene1anc = self.util.ancestors[term1]
-		#gene2anc = self.util.ancestors[term2]
+		print "Input data is ok, but no term sem sim specified."
 		return None
 
-#if __name__ == "__main__":
-	##### load ontology
-	#tree = GeneOntology.get_go_graph(open(sys.argv[1]))
-	
-	##### load annotations
-	#gp = AnnotationCorpus.AnnotationCorpus(tree)
-	#gp.parse(sys.argv[2])
-
-	##### create SemSimUtils class
-	#ssu = SemSimUtils(gp, tree)
-	#ssu.det_offspring_table()
-	#ssu.det_ancestors_table()
-	#ssu.det_freq_table()
-	#ssu.det_GO_division()
-	#ssu.det_ICs_table()
-
-	#TSS = TermSemSim(gp, tree, ssu)
-	#test = TSS.SemSim("GO:0008150","GO:0008150")
-	#print(test)
-	#test = TSS.SemSim("GO:0000001","GO:0009987")
-	#print(test)
+	def SemSim(self, term1, term2):
+		if self.format_and_check_data:
+			if term1 is None or term2 is None:
+				return None
+			id1 = self.int_format_data(term1)
+			id2 = self.int_format_data(term2)
+			if id1 is None or id2 is None or (self.SS_type == self.G_TSS and len(id1) == 0) or (self.SS_type == self.G_TSS and len(id2) == 0):
+				#print(str(term1) + " or " + str(term2) + "   not valid.")
+				return None
+			if self.SS_type == self.P_TSS:
+				if not self.util.GO_root[id1] == self.util.GO_root[id2]:
+					raise "Terms are not from the same ontology"
+					return None
+			elif self.SS_type == self.G_TSS:
+				for i in id1:
+					t1 = i
+					break
+				for i in id2:
+					t2 = i
+					break
+				if not self.util.GO_root[t1] == self.util.GO_root[t2]:
+					raise "Terms are not from the same ontology"
+					return None
+		else:
+			id1 = term1
+			id2 = term2
+		return self.int_SemSim(id1, id2)

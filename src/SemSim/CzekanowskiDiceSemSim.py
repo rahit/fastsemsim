@@ -35,6 +35,9 @@ class CzekanowskiDiceSemSim(TermSemSim):
 	IC_based = False
 	extend_annotations = True
 
+	def __init__(self, go, ac, util = None):
+		super(CzekanowskiDiceSemSim, self).__init__(go, ac, util)
+		
 	def int_SemSim(self, term1, term2):
 		if self.extend_annotations:
 			anc1 = self.util.get_ancestors(term1)

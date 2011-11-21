@@ -35,6 +35,9 @@ class CosineSemSim(TermSemSim):
 	IC_based = False
 	extend_annotations = True
 
+	def __init__(self, go, ac, util = None):
+		super(CosineSemSim, self).__init__(go, ac, util)
+	
 	def dotprod(self, vector1, vector2):
 		dotprod = 0.0
 		for i in range(0,len(vector1)):

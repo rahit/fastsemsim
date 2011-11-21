@@ -26,25 +26,21 @@ import sys
 import os
 import math
 
-class MixSemSim:
+class MixSemSim(object):
 
-	def __init__(self, ac, go):
+	def __init__(self, ac, go, util = None):
 		self.go = go
 		self.annotation_corpus = ac
-		#self.util = util
+		self.util = util
 		#if self.util == None:
 			#self.util = SemSimUtils(ac, go)
-			#self.ssu.det_offspring_table()
-			#self.ssu.det_ancestors_table()
-			#self.ssu.det_freq_table()
-			#self.ssu.det_GO_division()
-			#self.ssu.det_ICs_table()
+			#self.ssu.det_IC_table()
 
 	def int_format_data(self, term1):
 		if type(term1) is list or type(term1) is dict or type(term1) is set:
 			return term1
 		else:
-			return [term1]
+			return [term1,]
 		
 	def SemSim(self, set1, set2, TSS):
 		lset1 = self.int_format_data(set1)

@@ -34,6 +34,9 @@ class SimTOSemSim(TermSemSim) :
 	SS_type = TermSemSim.G_TSS
 	IC_based = False
 
+	def __init__(self, go, ac, util = None):
+		super(SimTOSemSim, self).__init__(go, ac, util)
+		
 	def int_SemSim(self, term1, term2):
 		inters = self.util.det_common_ancestors(term1, term2)
 		return len(inters)

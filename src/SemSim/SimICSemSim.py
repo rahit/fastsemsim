@@ -35,6 +35,9 @@ class SimICSemSim(TermSemSim) :
 	SS_type = TermSemSim.P_TSS
 	IC_based = True
 
+	def __init__(self, go, ac, util = None):
+		super(SimICSemSim, self).__init__(go, ac, util)
+		
 	def int_SemSim(self, term1, term2):
 		termid = self.util.det_MICA(term1, term2)
 		if self.use_Lin:

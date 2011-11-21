@@ -45,128 +45,104 @@ import math
 
 
 class SemSimUtils:
-	BP_root = "GO:0008150"
-	MF_root = "GO:0003674"
-	CC_root = "GO:0005575"
+	
+# internal functions
+
+# variables available
 	BP_ontology = "BP"
 	MF_ontology = "MF"
 	CC_ontology = "CC"
 
 	go = None
 	ac = None
-	parents = None
-	children = None
 	ancestors = None
 	offspring = None
 	IC = None
 	freq = None
-	GO_division = None
-	
+	GO_root = None
+	p = None
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+#internal functions
+
 	def __init__(self, ac, go):
 		self.go = go
 		self.ac = ac
-		self.init_structures()
-		self.det_offspring_table()
-		self.det_ancestors_table()
-		self.det_GO_division()
+		self.int_det_offspring_table()
+		self.int_det_ancestors_table()
+		self.int_det_GO_root()
 
 		#self.det_freq_table()
 		#self.det_ICs_table()
 
-	def init_structures(self):
-		self.parents = {}
-		self.children = {}
+	def int_det_offspring_table(self):
+		self.offspring = {}
 		for i in self.go.nodes_edges:
-			self.parents[i] = []
-			self.children[i] = []
-			for j in self.go.nodes_edges[i]: # can improve this by considering only once the whole set of edges.
-				if self.go.edges_nodes[j][0] == i:
-					self.parents[i].append(self.go.edges_nodes[j][1])
-				else:
-					self.children[i].append(self.go.edges_nodes[j][0])
+			self.offspring[i] = self.int_det_offspring(i)
 
-	def det_offspring(self, goid):
-		if goid not in self.children:
+	def int_det_ancestors_table(self):
+		self.ancestors = {}
+		for i in self.go.nodes_edges:
+			self.ancestors[i] = self.int_det_ancestors(i)
+
+	def int_det_offspring(self, goid):
+		if goid not in self.go.children:
 			return set()
 		anc = set()
 		anc.add(goid)
 		processed = {}
 		queue = []
-		for i in self.children[goid]:
+		for i in self.go.children[goid]:
 			queue.append(i)
 		#print(queue
 		while len(queue) > 0:
 			t = queue.pop()
 			anc.add(t)
 			#print(child_going[t]
-			for tp in self.children[t]:
+			for tp in self.go.children[t]:
 				#print(tp
 				if tp not in processed:
 					queue.append(tp)
 			processed[t] = 0
 		return anc
 
-	def det_ancestors(self, goid):
-		if goid not in self.parents:
+	def int_det_ancestors(self, goid):
+		if goid not in self.go.parents:
 			return set()
 		anc = set()
 		anc.add(goid)
 		processed = {}
 		queue = []
-		for i in self.parents[goid]:
+		for i in self.go.parents[goid]:
 			queue.append(i)
 		#print(queue
 		while len(queue) > 0:
 			t = queue.pop()
 			anc.add(t)
 			#print(parent_going[t]
-			for tp in self.parents[t]:
+			for tp in self.go.parents[t]:
 				#print(tp
 				if tp not in processed:
 					queue.append(tp)
 			processed[t] = 0
 		return anc
 
-	def det_offspring_table(self):
-		self.offspring = {}
-		for i in self.go.nodes_edges:
-			self.offspring[i] = self.det_offspring(i)
-
-	def det_ancestors_table(self):
-		self.ancestors = {}
-		for i in self.go.nodes_edges:
-			self.ancestors[i] = self.det_ancestors(i)
-
-	def det_GO_division(self):
-		BP_GO = self.offspring[self.go.name2id(self.BP_root)]
-		MF_GO = self.offspring[self.go.name2id(self.MF_root)]
-		CC_GO = self.offspring[self.go.name2id(self.CC_root)]
+	def int_det_GO_root(self):
+		#BP_GO = self.offspring[self.go.name2id(self.go.BP_root)]
+		#MF_GO = self.offspring[self.go.name2id(self.go.MF_root)]
+		#CC_GO = self.offspring[self.go.name2id(self.go.CC_root)]
+		BP_GO = self.offspring[self.go.BP_root]
+		MF_GO = self.offspring[self.go.MF_root]
+		CC_GO = self.offspring[self.go.CC_root]
 		assigns = {}
 		for i in BP_GO:
-			assigns[i] = self.BP_root
+			assigns[i] = self.go.BP_root
 		for i in MF_GO:
-			assigns[i] = self.MF_root
+			assigns[i] = self.go.MF_root
 		for i in CC_GO:
-			assigns[i] = self.CC_root
-		self.GO_division = assigns
-		self.root = self.GO_division
+			assigns[i] = self.go.CC_root
+		self.GO_root = assigns
 
-	def det_prob(self,term_id):
-		if term_id in self.freqs:
-			if self.freqs[term_id] == 0:
-				return -1
-			if self.GO_division[term_id] == self.BP_root:
-				rootf = self.freqs[self.go.name2id(self.BP_root)]
-			elif self.GO_division[term_id] == self.MF_root:
-				rootf = self.freqs[self.go.name2id(self.MF_root)]
-			elif self.GO_division[term_id] == self.CC_root:
-				rootf = self.freqs[self.go.name2id(self.CC_root)]
-			temp_p = float(self.freqs[term_id])/float(rootf)
-			return temp_p
-		else:
-			return -1
-		
-	def det_freq(self,term_id):
+	def int_det_freq(self,term_id):
 		freq = 0
 		children_set = self.offspring[term_id]
 		for j in children_set:
@@ -174,38 +150,61 @@ class SemSimUtils:
 				freq += len(self.ac.reverse_annotations[j])
 		return freq
 
-	def det_freq_table(self):
-		self.freqs = {}
+	def int_det_freq_table(self):
+		self.freq = {}
 		for i in self.go.nodes_edges:
-			self.freqs[i] = self.det_freq(i)
-		#for i in self.ac.reverse_annotations:
-			#if not i in self.go.nodes_edges:
-				#print("Errore: " + str(i)
-				#sys.exit(1)
+			self.freq[i] = self.int_det_freq(i)
 
-	def det_IC(self, term_id):
-		if term_id in self.freqs:
-			if self.freqs[term_id] == 0:
-				return -1
-			if self.GO_division[term_id] == self.BP_root:
-				rootf = self.freqs[self.go.name2id(self.BP_root)]
-			elif self.GO_division[term_id] == self.MF_root:
-				rootf = self.freqs[self.go.name2id(self.MF_root)]
-			elif self.GO_division[term_id] == self.CC_root:
-				rootf = self.freqs[self.go.name2id(self.CC_root)]
-			temp_IC = -math.log(float(self.freqs[term_id])/float(rootf))
-			return temp_IC
-		else:
-			return -1
+	def int_det_p_table(self):
+		self.p = {}
+		for i in self.go.nodes_edges:
+			self.p[i] = self.int_det_p(i)
 
-	def det_ICs_table(self):
+	def int_det_p(self,term_id):
+		if self.freq == None:
+			self.int_det_freq_table()
+		if not term_id in self.freq:
+			return None
+		if self.freq[term_id] == 0:
+			return float(0)
+		rootf = self.freq[self.GO_root[term_id]]
+		temp_p = float(self.freq[term_id])/float(rootf)
+		return temp_p
+
+	def int_det_IC(self, term_id):
+		pr = self.int_det_p(term_id)
+		if pr == None:
+			return None
+		if pr == 0:
+			return None
+		return -math.log(pr)
+
+	def int_det_IC_table(self):
 		self.IC = {}
+		conta = 0
 		for i in self.go.nodes_edges:
-			temp_IC = self.det_IC(i)
-			if not temp_IC == -1:
-				self.IC[i] = temp_IC
-			#else:				#### without this IC will not be complete
-				#self.IC[i] = -1 ####
+			conta+= 1
+			#print conta
+			#print len(self.go.nodes_edges)
+			temp_IC = self.int_det_IC(i)
+			#if not temp_IC == None:
+			self.IC[i] = temp_IC
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+# public functions
+
+# ASSUMPTION: Terms are passed as integers or lists of integers, not as strings!
+
+	def det_IC_table(self):
+		return self.int_det_IC_table()
+
+	def det_IC(self,term):
+		id = self.go.name2id(term)
+		if self.IC == None:
+			self.det_IC_table()
+		if id in self.IC:
+			return self.IC[id]
+		return None
 
 	def det_MICA(self, term1, term2):
 		gene1anc = self.ancestors[term1]

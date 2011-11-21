@@ -36,6 +36,9 @@ class GSESAMESemSim(TermSemSim) :
 	is_a_score = 0.8
 	part_of_score = 0.6
 
+	def __init__(self, go, ac, util = None):
+		super(GSESAMESemSim, self).__init__(go, ac, util)
+		
 	def score_ancestors(self, term):
 		processed = {}
 		queue = []
