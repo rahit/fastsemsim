@@ -21,6 +21,7 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 #from wx.Python.wx import *
 import wx
 import sys
+import os
 from fastSemSim.GO import GeneOntology
 from fastSemSim.GO import AnnotationCorpus
 from GeneOntologyGui import GeneOntologyGui
@@ -93,8 +94,9 @@ class fastSemSimGui(wx.Frame):
 	update_ac = True
 	
 	#other data
-	Ok_pic = 'gui/V_30.png'
-	Warning_pic = 'gui/W_30.png'
+	#Ok_pic = 'gui/V_30.png'
+	#Warning_pic = 'gui/W_30.png'
+
 	show_pics = True
 	go_status_pic = None
 	ac_status_pic = None
@@ -108,10 +110,16 @@ class fastSemSimGui(wx.Frame):
 	ssprocess = []
 
 	def __init__(self, parent):
-		super(fastSemSimGui, self).__init__(parent, title="fastSemSim - Copyright 2011, Marco Mina (src version)", size=(605,630))
+		super(fastSemSimGui, self).__init__(parent, title="fastSemSim - Copyright 2011, Marco Mina - beta version", size=(605,630))
 		self.process_busy = False
 		self.process_busy_lock = multiprocessing.Lock()
 		self.process_busy_event = multiprocessing.Event()
+		
+		self.programdirectory = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
+		self.Ok_pic = self.programdirectory + '/V_30.png'
+		self.Warning_pic = self.programdirectory + '/W_30.png'
+		self.Advanced_pic = self.programdirectory + '/advanced.png'
+	
 		self.InitUI()
 
 	def InitWorkProcess(self):
@@ -542,11 +550,14 @@ class fastSemSimGui(wx.Frame):
 		sys.exit()
 		
 #################################################################################################################################
-
-if __name__ == "__main__":
-	multiprocessing.freeze_support()
+def go():
 	app = wx.App()
 	window = fastSemSimGui(None)
 	window.Centre()
 	window.Show()  
 	app.MainLoop()
+
+
+if __name__ == "__main__":
+	multiprocessing.freeze_support()
+	go()

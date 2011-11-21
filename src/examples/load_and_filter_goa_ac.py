@@ -31,7 +31,7 @@ import sys
 
 if __name__ == "__main__":
 	#### load ontology
-	tree = GeneOntology.load_GO_XML(open('../../GO/GO_2011-09-16.obo-xml'))
+	tree = GeneOntology.load_GO_XML(open('GO_2011-09-16.obo-xml'))
 	print "Ontology infos: file name: " + str('GO_2011-09-16.obo-xml') + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
 
 	#### load annotations
@@ -40,14 +40,14 @@ if __name__ == "__main__":
 	params = {}
 	params['filter'] = {}
 	params['filter']['EC'] = 'IEA'
-	params['filter']['taxonomy'] = 9606
+	params['filter']['taxonomy'] = 7227
 	gp.parse('gene_association.goa_fly','GOA', params)
 	
 	print "Annotated proteins (IEA filtering): " + str(len(gp.annotations))
 	print "Annotated terms (IEA filtering): " + str(len(gp.reverse_annotations))
 
 	params = {}
-	gp.parse('../../GOA/gene_association.goa_human','GOA', params)
+	gp.parse('gene_association.goa_fly','GOA', params)
 	
 	print "Annotation corpus consistent with current GO: " + str(gp.check_consistency())
 	

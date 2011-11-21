@@ -5,4 +5,5 @@ include LICENSE
 include CHANGELOG
 include version
 
-recursive-include src *.py *.png
+recursive-include fastSemSim *.py *.png
+recursive-include gui *.py *.png
