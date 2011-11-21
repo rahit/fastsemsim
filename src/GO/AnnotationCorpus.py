@@ -308,7 +308,8 @@ class AnnotationCorpus:
 		self.parse(fname, ftype)
 
 	def parse(self, fname, ftype, params=None):
-		if not params== None and FILTER_PARAM in params:
+		self.reset()
+		if not params == None and FILTER_PARAM in params:
 			self.set_filters(params[FILTER_PARAM])
 		if ftype in AnnotationCorpusFormat:
 			temp = AnnotationCorpusFormat[ftype](params, self)

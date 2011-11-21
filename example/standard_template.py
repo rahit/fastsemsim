@@ -101,12 +101,3 @@ if __name__ == "__main__":
 		for j in range(i+1,len(pairs)):
 			scores[pairs[i]][pairs[j]] = SS.SemSim(pairs[i],pairs[j],ontology)
 	'''
-
-	#### Output to file, integrable with calculation code to avoid memory problems
-	#file, p1, p2, score
-	#file, score
-	#files: score, list of names
-	#file, matrix
-	
-	#threshold
-#------------------------------------------------------------------------------------------------------------------------------------

@@ -35,37 +35,31 @@ import math
 import copy
 
 class fastResnikSemSim():
-	#SS_type = TermSemSim.P_TSS
 	IC_based = True
 
-	def __init__(self, ac, go, util=None):
+	def __init__(self, ac, go, util = None):
 		self.go = go
-		self.annotation_corpus = ac
+		self.ac = ac
 		self.util = util
 		self.TSS = "Resnik"
 		self.mixSS = "max"
 		if self.util == None:
-			self.util = SemSimUtils.SemSimUtils(self.annotation_corpus, self.go)
-			self.util.det_offspring_table()
-			self.util.det_ancestors_table()
-			self.util.det_freq_table()
-			self.util.det_GO_division()
-			self.util.det_ICs_table()
+			self.util = SemSimUtils.SemSimUtils(self.ac, self.go)
+			self.util.det_IC_table()
 	  
 	def get_direct_annotations(self, obj, onto):
-		#print "Qui"
-		if not obj in self.annotation_corpus.annotations:
+		if not obj in self.ac.annotations:
 			print(str(obj) + " not found in Annotation Corpus!")
 			return None
 		terms = []
-		for i in self.annotation_corpus.annotations[obj]:
+		for i in self.ac.annotations[obj]:
 			#print i
 			if i in self.go.obsolete_ids:
 				#print(str(i) + " obsolete!")
 				continue
-			if i not in self.util.GO_division:
+			if i not in self.util.GO_root:
 				print(str(i) + " not in GO!")
-			elif self.util.GO_division[i] is onto:
+			elif self.util.GO_root[i] is onto:
 				terms.append(i)
 		return terms
 
@@ -83,7 +77,7 @@ class fastResnikSemSim():
 		self.matrice_names = []
 		# sort Terms by Term IC
 		temp_IC = {}
-		temp_temps = self.util.get_ancestors(self.annotation_corpus.reverse_annotations.keys())
+		temp_temps = self.util.get_ancestors(self.ac.reverse_annotations.keys())
 		for i in temp_temps:
 			if not i in self.go.obsolete_ids:
 				temp_IC[i] = self.util.IC[i]
@@ -95,8 +89,8 @@ class fastResnikSemSim():
 		conta = 0
 		# populate table... each row is a proteins
 		pos = 0
-		for i in self.annotation_corpus.annotations:
-			print "processing " + str(conta) + " on " + str(len(self.annotation_corpus.annotations))
+		for i in self.ac.annotations:
+			print "processing " + str(conta) + " on " + str(len(self.ac.annotations))
 			conta += 1
 			temp_row = len(self.sortedTerms)*[0]
 			temp_annot = self.int_format_data(i, onto)
@@ -151,19 +145,18 @@ class fastResnikSemSim():
 				#self.stream1.write(str(self.matrice_names[i]) + " - " + str(k) + ": " + str(temp_scores[k]) + "\n")
 				for k in temp_scores:
 					self.stream1.write(str(self.matrice_names[i]) + "\t" + str(k) + "\t" + str('%.4f' %temp_scores[k]) + "\n")
-			#for i in 
-			
+
 
 	def SemSim(self, ontology, stream1 = None):
 		self.stream1 = stream1
 		#self.stream2 = stream2
 		#### translate into id format & check data
 		if ontology == self.util.BP_ontology:
-			onto = self.util.BP_root
+			onto = self.go.BP_root
 		elif ontology == self.util.MF_ontology:
-			onto = self.util.MF_root
+			onto = self.go.MF_root
 		elif ontology == self.util.CC_ontology:
-			onto = self.util.CC_root
+			onto = self.go.CC_root
 		else:
 			print("No valid ontology selected.")
 			return None
@@ -177,23 +170,6 @@ class fastResnikSemSim():
 		##print(t2
 		return self.int_SemSim(onto)
 
-	#def int_SemSim(self, term1, term2):
-		#if term1 is None or term2 is None or len(term1) == 0 or len(term2) == 0:
-			#return None
-		#if self.TSS.SS_type is self.TSS.P_TSS:
-			#sscore = self.mixSS.SemSim(term1, term2, self.TSS)
-		#elif self.TSS.SS_type is self.TSS.G_TSS:
-			#sscore = self.TSS.SemSim(term1, term2)
-		#else:
-			#print("Unrecognized TSS.")
-			#sys.exit(1)
-		#return sscore
-		
-
-
-	#def int_SemSim(self, term1, term2):
-		#termid = self.util.det_MICA(term1, term2)
-		#return self.util.IC[termid]
 
 if __name__ == "__main__":
 	#### load ontology

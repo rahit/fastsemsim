@@ -165,7 +165,7 @@ class SemSimUtils:
 			self.int_det_freq_table()
 		if not term_id in self.freq:
 			return None
-		if self.freq[term_id] == 0:
+		if self.freq[term_id] == float(0):
 			return float(0)
 		rootf = self.freq[self.GO_root[term_id]]
 		temp_p = float(self.freq[term_id])/float(rootf)
@@ -175,9 +175,12 @@ class SemSimUtils:
 		pr = self.int_det_p(term_id)
 		if pr == None:
 			return None
-		if pr == 0:
+		if pr == float(0):
 			return None
-		return -math.log(pr)
+		pr = -math.log(pr)
+		if pr == float(-0):
+			pr = -pr 
+		return pr
 
 	def int_det_IC_table(self):
 		self.IC = {}

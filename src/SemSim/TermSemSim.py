@@ -108,7 +108,7 @@ class TermSemSim(object):
 				return None
 			if self.SS_type == self.P_TSS:
 				if not self.util.GO_root[id1] == self.util.GO_root[id2]:
-					raise "Terms are not from the same ontology"
+					#raise "Terms are not from the same ontology"
 					return None
 			elif self.SS_type == self.G_TSS:
 				for i in id1:
@@ -118,7 +118,7 @@ class TermSemSim(object):
 					t2 = i
 					break
 				if not self.util.GO_root[t1] == self.util.GO_root[t2]:
-					raise "Terms are not from the same ontology"
+					#raise "Terms are not from the same ontology"
 					return None
 		else:
 			id1 = term1

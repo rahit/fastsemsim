@@ -100,6 +100,9 @@ class GAF2AnnotationCorpus():
 				print("GAF2AnnotationCorpus loader. Incomplete line: " + str(line))
 				continue
 			self.temp_taxonomy = line[12][6:]
+			temp = self.temp_taxonomy.rsplit('|')
+			if len(temp) > 1:
+				self.temp_taxonomy = temp[0]
 			self.temp_obj = line[1]
 			self.temp_term = line[4]
 			self.temp_EC = line[6]
