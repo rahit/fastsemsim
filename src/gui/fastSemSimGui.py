@@ -21,21 +21,21 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 #from wx.Python.wx import *
 import wx
 import sys
-from GO import GeneOntology
-from GO import AnnotationCorpus
-from gui.GeneOntologyGui import GeneOntologyGui
-from gui.AnnotationCorpusGui import AnnotationCorpusGui
-from gui.OperationGui import OperationGui
-from gui.OutputCtrlGui import OutputCtrlGui
-from gui.OutputGui import OutputGui
-from gui.ConfigGui import *
-from gui.ControlGui import ControlGui
-from gui.QueryGui import QueryGui
-from gui.StatusGui import StatusGui
-from SemSim import SemSimMeasures
-from SemSim import ObjSemSim
+from fastSemSim.GO import GeneOntology
+from fastSemSim.GO import AnnotationCorpus
+from GeneOntologyGui import GeneOntologyGui
+from AnnotationCorpusGui import AnnotationCorpusGui
+from OperationGui import OperationGui
+from OutputCtrlGui import OutputCtrlGui
+from OutputGui import OutputGui
+from ConfigGui import *
+from ControlGui import ControlGui
+from QueryGui import QueryGui
+from StatusGui import StatusGui
+from fastSemSim.SemSim import SemSimMeasures
+from fastSemSim.SemSim import ObjSemSim
 #from gui import WorkThread
-from gui import WorkProcess
+import WorkProcess
 #import threading
 import multiprocessing
 

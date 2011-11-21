@@ -18,11 +18,11 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 import wx
-from GO import GeneOntology
-from GO import AnnotationCorpus
-from GO import PlainAnnotationCorpus
-from GO import GAF2AnnotationCorpus
-from gui import WorkProcess
+from fastSemSim.GO import GeneOntology
+from fastSemSim.GO import AnnotationCorpus
+from fastSemSim.GO import PlainAnnotationCorpus
+from fastSemSim.GO import GAF2AnnotationCorpus
+import WorkProcess
 import os
 
 GAF2_FILE_TYPE = 'GAF 2.0 (GOA)'

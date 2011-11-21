@@ -19,8 +19,8 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 import wx
-from GO import GeneOntology
-from gui import WorkProcess
+from fastSemSim.GO import GeneOntology
+import WorkProcess
 import os
 
 #class AnnotationCorpusGui(wx.Dialog):

@@ -19,9 +19,9 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 import wx
-from GO import GeneOntology
-from GO import AnnotationCorpus
-from SemSim import SemSimMeasures
+from fastSemSim.GO import GeneOntology
+from fastSemSim.GO import AnnotationCorpus
+from fastSemSim.SemSim import SemSimMeasures
 
 class OperationGui:
 

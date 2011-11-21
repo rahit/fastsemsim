@@ -22,11 +22,11 @@ import multiprocessing
 import time 
 import copy
 import os
-from SemSim import SemSimMeasures
-from SemSim import ObjSemSim
-from SemSim import SemSimUtils
-from GO import GeneOntology
-from GO import AnnotationCorpus
+from fastSemSim.SemSim import SemSimMeasures
+from fastSemSim.SemSim import ObjSemSim
+from fastSemSim.SemSim import SemSimUtils
+from fastSemSim.GO import GeneOntology
+from fastSemSim.GO import AnnotationCorpus
 
 STATUS_BASE = 0
 STATUS_INIT = STATUS_BASE + 0

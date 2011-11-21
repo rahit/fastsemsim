@@ -18,10 +18,10 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 import wx
-from GO import GeneOntology
-from GO import AnnotationCorpus
-from GO import PlainAnnotationCorpus
-from GO import GAF2AnnotationCorpus
+from fastSemSim.GO import GeneOntology
+from fastSemSim.GO import AnnotationCorpus
+from fastSemSim.GO import PlainAnnotationCorpus
+from fastSemSim.GO import GAF2AnnotationCorpus
 from gui import WorkProcess
 import os
 
@@ -260,6 +260,7 @@ class AdvancedGui(wx.Dialog):
 			self.radius_separator_3 = wx.RadioButton(self.panel, wx.ID_ANY, self.separatoroptions[2], (10, 10))
 			self.text_separator = wx.TextCtrl(self.panel) #size=(20,20))
 			self.text_separator.SetValue("     ")
+			self.text_separator.SetValue("")
 			self.Bind(wx.EVT_RADIOBUTTON, self.OnSelectSeparator, id=self.radius_separator_1.GetId())
 			self.Bind(wx.EVT_RADIOBUTTON, self.OnSelectSeparator, id=self.radius_separator_2.GetId())
 			self.Bind(wx.EVT_RADIOBUTTON, self.OnSelectSeparator, id=self.radius_separator_3.GetId())

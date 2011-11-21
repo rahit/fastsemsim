@@ -22,7 +22,7 @@ import os
 import wx
 #from GO import GeneOntology
 #from GO import AnnotationCorpus
-from gui import WorkProcess
+import WorkProcess
 
 class QueryGui:
 	def __init__(self, parent):

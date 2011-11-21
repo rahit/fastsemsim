@@ -20,9 +20,9 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 
 #from wx.Python.wx import *
 import wx
-from GO import GeneOntology
-from GO import AnnotationCorpus
-from gui import WorkProcess
+from fastSemSim.GO import GeneOntology
+from fastSemSim.GO import AnnotationCorpus
+import WorkProcess
 import os 
 
 class OutputCtrlGui():

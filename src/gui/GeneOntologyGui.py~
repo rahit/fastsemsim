@@ -116,7 +116,6 @@ class GeneOntologyGui(wx.Dialog):
 			self.label_status.SetLabel('')
 			self.label_terms.SetLabel('')
 			self.parent.SetGoOk(False)
-			#self.parent.update_ac = Falseo
 
 	def OnReset(self, event):
 		self.filename = None

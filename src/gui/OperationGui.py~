@@ -94,7 +94,7 @@ class OperationGui:
 		#self.ssbox.Add(self.hint, flag=wx.EXPAND|wx.ALL, border=10)
 		self.ssbox.Add(self.tsbox, flag=wx.EXPAND)
 		self.ssbox.Add(self.msbox, flag=wx.EXPAND)
-		self.mainsubbox.Add(self.ssbox, flag=wx.EXPAND|wx.TOP|wx.RIGHT, border=10)
+		self.mainsubbox.Add(self.ssbox, flag=wx.EXPAND|wx.TOP|wx.RIGHT, border=5)
 		self.mainsubbox.Add(self.gobox, flag=wx.EXPAND|wx.LEFT, border=10)
 		#self.mainsubbox.Add(self.ssadvancedbox, flag=wx.LEFT|wx.RIGHT, border=10)
 		

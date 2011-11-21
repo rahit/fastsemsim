@@ -61,10 +61,5 @@ class ControlGui:
 			self.parentobj.start()
 		elif self.parentobj.status == 2: # running
 			self.parentobj.stop() # set to not running and stops thread
-			# add code to disable all controls
 		elif self.parentobj.status == 0: # Not ready. Should not be active.
 			self.parentobj.activateGoCmd()
-			#self.parentobj.SetStatus(0)
-
-				#self.parentobj.activateGoCmd()
-			# add code to enable all controls

@@ -84,6 +84,7 @@ class QueryGui:
 		self.parent.query_from = WorkProcess.QUERY_FROM_GUI
 		self.parent.query_type = WorkProcess.QUERY_LIST
 		self.parent.query_file = None
+		self.parent.query = None
 		self.check_fromac.SetValue(False)
 		self.radio_list.SetValue(True)
 		self.text_query.Enable()

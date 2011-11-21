@@ -63,7 +63,6 @@ class OutputCtrlGui():
 	def OnUpdate(self):
 		if self.parent.output_type == WorkProcess.OUTPUT_TO_GUI:
 			self.parent.SetOutputCtrlOk(True)
-			self.label_outputfile.Disable()
 		elif self.parent.output_type == WorkProcess.OUTPUT_TO_FILE and not self.parent.output_file == None:
 			self.parent.SetOutputCtrlOk(True)
 			self.label_outputfile.SetLabel(os.path.basename(self.parent.output_file))
@@ -86,9 +85,11 @@ class OutputCtrlGui():
 	def OnToFile(self, event):
 		if self.check_output2file.GetValue():
 			self.button_outputfile.Enable()
+			self.label_outputfile.Enable()
 			self.parent.output_type = WorkProcess.OUTPUT_TO_FILE
 		else:
-			self.button_outputfile.Enable()
+			self.button_outputfile.Disable()
+			self.label_outputfile.Disable()
 			self.parent.output_type = WorkProcess.OUTPUT_TO_GUI
 		self.OnUpdate()
 

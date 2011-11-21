@@ -192,7 +192,7 @@ class fastSemSimGui(wx.Frame):
 		self.OutputGui = OutputGui(self)
 		self.ControlGui = ControlGui(self)
 		
-		self.InitMenu()
+		#self.InitMenu()
 #----------------------------------------------------------------------------------------------------------------------------------
 	#'''
 	#Menubar
