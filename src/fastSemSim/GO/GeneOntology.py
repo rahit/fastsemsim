@@ -33,6 +33,9 @@ from xml.sax.handler import ContentHandler
 
 IS_A = 0
 PART_OF = 1
+REGULATES = 2
+POS_REG = 3
+NEG_REG = 4
 
 BP_root = "GO:0008150"
 MF_root = "GO:0003674"
@@ -168,6 +171,7 @@ def load_GO_XML(file_stream):
 
 class GOHandler(ContentHandler):
 	ignore_part_of = False
+	ignore_regulates = False
 	
 	def __init__(self,):
 		self.isId, self.isIsA, self.isPartOf, self.isaltId, self.isRelationship = 0,0,0,0,0
@@ -219,7 +223,7 @@ class GOHandler(ContentHandler):
 				self.isIsA = 0
 				self.edges.append( (self.id, go_name2id(self.isa), IS_A ) )
 			elif name == 'part_of':
-				print "original part_of"
+				#print "original part_of"
 				self.isPartOf = 0
 				self.edges.append( (self.id, go_name2id(self.partof), PART_OF ) )
 			elif name == 'alt_id':
@@ -237,6 +241,12 @@ class GOHandler(ContentHandler):
 					self.isRelationshipTo = 0
 					if str(self.parent_type) == 'part_of' and not self.ignore_part_of:
 						self.edges.append( (self.id, go_name2id(self.parent), PART_OF ) )
+					elif str(self.parent_type) == 'regulates' and not self.ignore_regulates:
+						self.edges.append( (self.id, go_name2id(self.parent), REGULATES ) )
+					elif str(self.parent_type) == 'positively_regulates' and not self.ignore_regulates:
+						self.edges.append( (self.id, go_name2id(self.parent), POS_REG ) )
+					elif str(self.parent_type) == 'negatively_regulates' and not self.ignore_regulates:
+						self.edges.append( (self.id, go_name2id(self.parent), NEG_REG ) )
 					elif self.parent_type == 'is_a':
 						self.edges.append( (self.id, go_name2id(self.parent), IS_A ) )
 	
