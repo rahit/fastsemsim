@@ -110,7 +110,7 @@ class fastSemSimGui(wx.Frame):
 	ssprocess = []
 
 	def __init__(self, parent):
-		super(fastSemSimGui, self).__init__(parent, title="fastSemSim - Copyright 2011, Marco Mina - beta version", size=(605,630))
+		super(fastSemSimGui, self).__init__(parent, title="fastSemSim - Copyright 2011, Marco Mina - beta version", style = wx.RESIZE_BORDER | wx.DEFAULT_FRAME_STYLE)
 		self.process_busy = False
 		self.process_busy_lock = multiprocessing.Lock()
 		self.process_busy_event = multiprocessing.Event()
@@ -188,7 +188,7 @@ class fastSemSimGui(wx.Frame):
 		self.mainbox.Add(self.outputctrl_box, 0, flag=wx.EXPAND)
 		self.mainbox.Add(self.control_box, 0, flag=wx.EXPAND)
 		
-		self.panel.SetSizerAndFit(self.mainbox)
+		self.panel.SetSizer(self.mainbox)
 
 		#### initialize other components
 		self.StatusGui = StatusGui(self)
@@ -199,6 +199,17 @@ class fastSemSimGui(wx.Frame):
 		self.QueryGui = QueryGui(self)
 		self.OutputGui = OutputGui(self)
 		self.ControlGui = ControlGui(self)
+		self.OnAnyUpdate()
+
+	def OnAnyUpdate(self):
+		#self.statusgridbox.Fit(self)
+		#self.gostatsbox.Fit(self)
+		#self.commandbox.Fit(self)
+		self.mainbox.Fit(self)
+		#w,h = self.commandbox.GetSizeTuple()
+		#self.mainbox.SetItemMinSize(self.commandbox, w,h)
+		#self.GetBestSize()
+		self.mainbox.Layout()
 		
 		#self.InitMenu()
 #----------------------------------------------------------------------------------------------------------------------------------
@@ -548,7 +559,7 @@ class fastSemSimGui(wx.Frame):
 	def OnQuit(self, event):
 		self.ssprocess[0].terminate()
 		sys.exit()
-		
+
 #################################################################################################################################
 def go():
 	app = wx.App()

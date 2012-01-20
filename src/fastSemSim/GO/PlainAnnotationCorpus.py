@@ -18,61 +18,68 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-__author__="Marco Mina"
-
 '''
+# DESCRIPTION
 This class reads plain annotation corpus files.
-#Plain format 1: protein ID - Term ID
-#Plain format 1: protein ID - Taxonomy - Term ID
-#Plain format 3: protein ID - Taxonomy - Term ID - EC
+	Plain format 1: protein ID - Term ID
+	Plain format 1: protein ID - Taxonomy - Term ID
+	Plain format 3: protein ID - Taxonomy - Term ID - EC
 '''
+
 import sys
-#import copy
 import GeneOntology
-#from GO.AnnotationCorpus import AnnotationCorpus
 
 MANYASSPERROW = 'multiple'
 TERMFIRST = 'term first'
 SEPARATOR = 'separator'
+COMMENT = 'comment'
 
 class PlainAnnotationCorpus():
-	separator = '\t'
-	comment = '#'
+	
+#------------------------------------------------------
+# Inizialization routines
+#------------------------------------------------------
 
-	def __init__(self, parameters=None, ac = None):
+	def __init__(self, ac, parameters=None):
 		self.ac = ac
 		if self.ac == None:
-			print "Unexpected Error"
-			sys.exit()
+			raise Exception
 		self.parameters = parameters
-		self.interpret_parameters()
+		self.int_interpretParameters()
 
-	def interpret_parameters(self):
-		self.obj_first = True
-		self.one_association_per_row = True
-		self.separator = '\t'
+	def int_interpretParameters(self):
+		self.int_obj_first = True
+		self.int_one_association_per_row = True
+		self.int_separator = '\t'
+		self.int_comment = '#'
 
 		if self.parameters == None:
 			return
 		if len(self.parameters) > 0:
 			if MANYASSPERROW in self.parameters:
 				if self.parameters[MANYASSPERROW]:
-					self.one_association_per_row = False
+					self.int_one_association_per_row = False
 				else:
-					self.one_association_per_row = True
+					self.int_one_association_per_row = True
 			if TERMFIRST in self.parameters:
 				if self.parameters[TERMFIRST]:
-					self.obj_first = False
+					self.int_obj_first = False
 				else:
-					self.obj_first = True
+					self.int_obj_first = True
 			if SEPARATOR in self.parameters:
-				self.separator = self.parameters[SEPARATOR]
+				self.int_separator = self.parameters[SEPARATOR]
+			if COMMENT in self.parameters:
+				self.int_comment = self.parameters[COMMENT]
 
-	def set_fields(self):
-		self.ac.reset_fields()
+#------------------------------------------------------
+# Parsing routine
+#------------------------------------------------------
+	def setFields(self):
+		# there are no additional fields in plain annotation files,
+		pass
 
 	def parse(self, fname):
-		self.set_fields()
+		self.setFields()
 		if type(fname) is str:
 			stream = open(fname, 'r')
 		else:
@@ -87,17 +94,17 @@ class PlainAnnotationCorpus():
 		for line in stream:
 			line = line.rstrip('\n')
 			line = line.rstrip('\r')
-			if line[0] == self.comment:
+			if line[0] == self.int_comment:
 				continue
-			line = line.split(self.separator)
+			line = line.split(self.int_separator)
 			if len(line) == 0:
 				continue
 			if len(line) < 2:
 				print("Strange line: " + str(line))
 				continue
 			temp_to_add = []
-			if self.one_association_per_row:
-				if self.obj_first:
+			if self.int_one_association_per_row:
+				if self.int_obj_first:
 					obj_id = line[0]
 					term = line[1]
 				else:
@@ -113,7 +120,7 @@ class PlainAnnotationCorpus():
 			for i in temp_to_add:
 				obj_id = i[0]
 				term = i[1]
-				if self.ac.exclude_GO_root:
+				if self.ac.int_exclude_GO_root:
 					if str(term) == GeneOntology.BP_root:
 						continue
 					if str(term) == GeneOntology.CC_root:

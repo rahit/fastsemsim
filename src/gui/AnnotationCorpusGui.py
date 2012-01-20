@@ -37,7 +37,7 @@ class AnnotationCorpusGui(wx.Dialog):
 		
 	def __init__(self, parent):
 		self.parent = parent
-		super(AnnotationCorpusGui, self).__init__(self.parent, title="Load Annotation Corpus", size=(500,300))
+		super(AnnotationCorpusGui, self).__init__(self.parent, title="Load Annotation Corpus", style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
 		self.InitUI()
 	
 	def InitUI(self):
@@ -126,9 +126,19 @@ class AnnotationCorpusGui(wx.Dialog):
 		self.InitMainUI()
 		self.OnReset(None)
 		self.OnLoadDone()
+		#self.OnAnyUpdate()
 		return True
 
-
+	def OnAnyUpdate(self):
+		#self.statusgridbox.Fit(self)
+		#self.gostatsbox.Fit(self)
+		#self.commandbox.Fit(self)
+		self.mainbox.Fit(self)
+		#w,h = self.commandbox.GetSizeTuple()
+		#self.mainbox.SetItemMinSize(self.commandbox, w,h)
+		#self.GetBestSize()
+		self.mainbox.Layout()
+		
 	def OnFileBrowse(self, event):
 		dialog = wx.FileDialog(None, style = wx.OPEN)
 		if dialog.ShowModal() == wx.ID_OK:
@@ -153,6 +163,7 @@ class AnnotationCorpusGui(wx.Dialog):
 		self.button_filetypeparams.Disable()
 		self.filetypesel = None
 		self.OnLoadDone()
+		self.OnAnyUpdate()
 		print "Fix Me. Should Reset ac in main process!!"
 
 	def OnAdvanced(self, event):
@@ -200,6 +211,7 @@ class AnnotationCorpusGui(wx.Dialog):
 			self.label_terms.SetLabel('')
 			self.parent.SetAcOk(False)
 			self.parent.update_ac = False
+		self.OnAnyUpdate()
 
 #------------------------------------------------------------------------------------------------------------------
 	def InitMainUI(self):

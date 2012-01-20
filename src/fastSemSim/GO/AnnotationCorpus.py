@@ -37,18 +37,6 @@ specific_parameters: parameter that should be used to load a particular file for
 
 Each type of file carries different types of information. How to deal with that? Every operation is rerouted to the original file parser, that will take care of it. This is good since it avoids to duplicate data. 
 
-general methods:
-
-initialize
-reset
-parse
-sanitize
-isConsistent
-GROUP: filtering
-	filter
-	set_filter
-simplify: withdraw all the information but object, terms and annotations
-get <- retrieve the set of annotations. Output format? without any parameter the simplified one.
 '''
 
 import sys
@@ -58,35 +46,31 @@ from GeneOntology import *
 from PlainAnnotationCorpus import PlainAnnotationCorpus
 from GAF2AnnotationCorpus import GAF2AnnotationCorpus
 
+INT_DEBUG = True
+FILTER_PARAM = 'filter'
+RESET_PARAM = 'reset'
+
 AnnotationCorpusFormat = {'gaf-2.0':GAF2AnnotationCorpus,
 													'gaf-1.0':None,
 													'GOA':GAF2AnnotationCorpus,
 													'plain':PlainAnnotationCorpus
 													}
 
-FILTER_PARAM = 'filter'
-
 class AnnotationCorpus:
-	exclude_GO_root = True
+	#----------------------------------------------------------------------------------------
+	int_exclude_GO_root = True
 
-	taxonomy_filter = {}
-	EC_filter = {}
-	EC_filter_inclusive = True
-	
-	def __init__(self, go=None):
-		self.go = go
-		self.reset()
+	#----------------------------------------------------------------------------------------
 
 	def reset(self):
 		self.annotations = {}
 		self.reverse_annotations = {}
 		self.obj_set = {}
 		self.term_set = {}
-		
+		self.int_resetFields()
 		self.filters = {}
-		self.reset_fields()
 
-	def reset_fields(self):
+	def int_resetFields(self):
 		self.obj_fields = []
 		self.term_fields = []
 		self.annotations_fields = []
@@ -95,6 +79,10 @@ class AnnotationCorpus:
 		self.term_field2pos= {}
 		self.annotations_field2pos= {}
 		self.reverse_annotations_field2pos= {}
+
+	def __init__(self, go=None):
+		self.go = go
+		self.reset()
 
 	def __deepcopy__(self, memo):
 		a = AnnotationCorpus(self.go)
@@ -116,12 +104,43 @@ class AnnotationCorpus:
 		a.annotations_field2pos= copy.deepcopy(self.annotations_field2pos, memo)
 		a.reverse_annotations_field2pos= copy.deepcopy(self.reverse_annotations_field2pos, memo)
 		return a
+		
+#-----------------------------------------------------------------------------
+# Load the annotation corpus from a file.
+# - params is supposed to be a dict. Each key specifies a type of parameter (the associated value)
+#   - currently supported parameters:
+#     - FILTER_PARAM: parameters regarding the filtering of annotation corpus. See set_filters function for more details
+#     - RESET_PARAM: if set to False, do not clean current annotations, but integrate the new data.
+#-----------------------------------------------------------------------------
+	
+	def load(self, fname, ftype, params=None):
+		self.parse(fname, ftype, params)
 
+	def parse(self, fname, ftype, params=None):
+		if params == None:
+			self.reset()
+		elif RESET_PARAM in params and params[RESET_PARAM]:
+			self.reset()
+		if not params == None and FILTER_PARAM in params:
+			self.setCommonfilters(params[FILTER_PARAM])
+		if ftype in AnnotationCorpusFormat:
+			temp = AnnotationCorpusFormat[ftype](self, params)
+			return temp.parse(fname)
+		else:
+			if INT_DEBUG:
+				print "AnnotationCorpus.py: Format not recognized"
+			raise Exception
+
+#-----------------------------------------------------------------------------
+# Consistency check and sanitizer, Align the annotation corpus to a Gene Ontology
+# i.e. removing obsolete terms, mapping alternative ids to respective primary ones, ...
+#-----------------------------------------------------------------------------
+	
 	def sanitize(self):
 		if self.go is None:
-			print("No GO specified. Consistency check not available")
-			return False
-		valid = True
+			if INT_DEBUG:
+				print("No GO specified. All the annotations will be considered valid.")
+			return True
 		for i in self.reverse_annotations.keys():
 			if not i in self.go.alt_ids:
 				#print("Term " + str(i) + " not found in GO.")
@@ -155,71 +174,43 @@ class AnnotationCorpus:
 		return True
 
 	def isConsistent(self):
-		return self.check_consistency()
+		return self.int_checkConsistency()
 
-	def check_consistency(self):
+	def int_checkConsistency(self):
 		if self.go is None:
-			print("No GO specified. Consistency check not available")
-			return False
+			if INT_DEBUG:
+				print("No GO specified. All the annotations will be considered valid.")
+			return True
 		valid = True
 		for i in self.reverse_annotations:
 			if not i in self.go.alt_ids:
-				print("Term " + str(i) + " not found in GO.")
+				if INT_DEBUG:
+					print("Term " + str(i) + " not found in GO.")
 				valid = False
 				continue
 			if not i in self.go.nodes_edges:
 				if self.go.alt_ids[i] == i:
-					print("Term " + str(i) + " is an obsolete id.")
+					if INT_DEBUG:
+						print("Term " + str(i) + " is an obsolete id.")
 					#self.obsoletes[i] = {}
 					valid = False
 				else:
-					print("Term " + str(i) + " is an alternative id.")
+					if INT_DEBUG:
+						print("Term " + str(i) + " is an alternative id.")
 					valid = False
 					continue
 		return valid
 
+#-----------------------------------------------------------------------------
+# Filtering routines. Remove annotations that do not meet the requirements specified in *_field variables
+#-----------------------------------------------------------------------------
 	def setFilter(self, field, selector):
 		self.filters[field] = selector
 
-	def set_filters(self, inf):
-		if 'taxonomy' in inf:
-			self.set_taxonomy_filter(inf['taxonomy'])
-		if 'EC' in inf:
-			self.set_EC_filter(inf['EC'])
-
-	def reset_filter(self, field):
+	def resetFilter(self, field):
 		if field in self.filters:
 			del self.filters[field]
-
-	def set_taxonomy_filter(self, tax):
-		self.filter_taxonomy = tax
-		self.setFilter('taxonomy', self.taxonomy_selector)
-
-	def reset_taxonomy_filter(self):
-		self.reset_filter('taxonomy')
-		self.filter_taxonomy = None
-
-	def set_EC_filter(self, EC, inclusive = False):
-		self.filter_EC = EC
-		self.filter_EC_inclusive = inclusive
-		self.setFilter('EC', self.EC_selector)
-		
-	def reset_EC_filter(self):
-		self.reset_filter('EC')
-		self.filter_EC = None
-
-	def taxonomy_selector(self, taxonomy):
-		if self.filter_taxonomy == taxonomy:
-			return True
-		return False
-
-	def EC_selector(self, EC):
-		if self.filter_EC == EC and self.filter_EC_inclusive:
-			return True
-		elif not self.filter_EC == EC and not self.filter_EC_inclusive:
-			return True
-		return False
-
+			
 	def constrain(self):
 		if len(self.filters)==0:
 			return
@@ -233,7 +224,6 @@ class AnnotationCorpus:
 					if cff(self.obj_set[i]):
 						temp_obj_set[i] = self.obj_set[i]
 				self.obj_set = temp_obj_set
-
 		for cf in self.filters:
 			if cf in self.term_field2pos:
 				cp = self.term_field2pos[cf]
@@ -304,16 +294,56 @@ class AnnotationCorpus:
 			self.obj_set = temp_obj_set
 			self.term_set = temp_term_set
 
-	def load(self, fname, ftype):
-		self.parse(fname, ftype)
+#-----------------------------------------------------------------------------
+# Filtering classes of common use.
+#-----------------------------------------------------------------------------
 
-	def parse(self, fname, ftype, params=None):
-		self.reset()
-		if not params == None and FILTER_PARAM in params:
-			self.set_filters(params[FILTER_PARAM])
-		if ftype in AnnotationCorpusFormat:
-			temp = AnnotationCorpusFormat[ftype](params, self)
-			return temp.parse(fname)
+	class TaxonomyFilter:
+		name = 'taxonomy'
+		def __init__(self, params):
+			self.taxonomy = params
+
+		def filter(self, taxonomy):
+			if self.taxonomy == taxonomy:
+				return True
+			return False
+
+	class ECFilter:
+		name = 'EC'
+		EC = ''
+		inclusive = False
+		def __init__(self, params):
+			if 'EC' in params:
+				self.EC = params['EC']
+			if 'inclusive' in params:
+				self.inclusive = params['inclusive']
+
+		def filter(self, EC):
+			if self.EC == EC and self.inclusive:
+				return True
+			elif not self.EC == EC and not self.inclusive:
+				return True
+			return False
+
+#-----------------------------------------------------------------------------
+# Simplified methods to set common filters
+#-----------------------------------------------------------------------------
+
+	common_filters = {
+										TaxonomyFilter.name:TaxonomyFilter,
+										ECFilter.name:ECFilter
+										}
+
+	def setCommonfilters(self, inf):
+		if type(inf) == dict:
+			for i in inf:
+				if i in self.common_filters:
+					self.setFilter(i, self.common_filters[i](inf[i]).filter)
 		else:
-			print "AnnotationCorpus.py: Format not recognized"
-			return None
+			raise Exception
+
+	def resetCommonfilter(self, i):
+		self.resetFilter(i)
+		
+	#def reset_EC_filter(self):
+		#self.resetFilter('EC')

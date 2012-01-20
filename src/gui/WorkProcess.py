@@ -91,31 +91,26 @@ class WorkProcess(multiprocessing.Process):
 
 	def control(self):
 		if self.status == STATUS_RUN:
-			#print "check in status RUN"
-			#if not self.gui2ssprocess_queue.empty(): #way 1
-				#data = self.gui2ssprocess_queue.get(False)
-			try: #way 2
-				data = self.gui2ssprocess_queue.get(False)
-				# check if data is stop or pause. In this case make actions. Otherwise don't do anything
-				if data[0] == CMD_STOP:
-					#print "Stop received"
-					self.stop()
-					return False
-				elif data[0] == CMD_PAUSE:
-					self.pause()
-					return True
-				elif data[0] == CMD_RESET:
-					self.reset()
-					return False
-				elif data[0] == CMD_STATUS:
-					self._status()
-				else:
-					pass # ignore any other command!
+			try:
+				if not self.gui2ssprocess_queue.empty():
+					data = self.gui2ssprocess_queue.get(False)
+					if data[0] == CMD_STOP:
+						self.stop()
+						return False
+					elif data[0] == CMD_PAUSE:
+						self.pause()
+						return True
+					elif data[0] == CMD_RESET:
+						self.reset()
+						return False
+					elif data[0] == CMD_STATUS:
+						self._status()
+					else:
+						pass
 			except Exception:
 				pass
 			return True
 		elif self.status == STATUS_PAUSE:
-			#print "check in status PAUSE"
 			data = self.gui2ssprocess_queue.get()
 			if data[0] == CMD_STOP:
 				self.stop()
@@ -128,15 +123,12 @@ class WorkProcess(multiprocessing.Process):
 			elif data[0] == CMD_START:
 				pass
 			else:
-				pass # ignore any other command!
+				pass
 			return True
 		elif self.status == STATUS_INIT:
-			#print "check in status INIT"
 			self.reset()
 		elif self.status == STATUS_WAIT:
-			#print "check in status WAIT"
 			data = self.gui2ssprocess_queue.get()
-			#print str(data)
 			if data[0] == CMD_STOP or data[0] == CMD_PAUSE:
 				pass
 			elif data[0] == CMD_RESET:
@@ -160,18 +152,11 @@ class WorkProcess(multiprocessing.Process):
 			else:
 				pass
 		else:
-			#print "check in other status."
-			# something went wrong. Inconsistent state. Reset!
+			print "check in other status."
 			self.reset()
 		return True
 
-	#def check_commands(self):
-		
-		
-		#return True
-
 	def reset(self):
-		#print "func reset"
 		self.ss_ok = False
 		self.ac_ok = False
 		self.go_ok = False
@@ -196,9 +181,8 @@ class WorkProcess(multiprocessing.Process):
 		self.status = STATUS_WAIT
 
 	def stop(self):
-		#print "func stop"
 		#self.results = None
-		# clear data
+
 		if self.output_to == OUTPUT_TO_FILE and not self.output_file == None:
 			self.output_file.close()
 		self.output_file = None
@@ -208,8 +192,6 @@ class WorkProcess(multiprocessing.Process):
 		self.status = STATUS_WAIT
 
 	def pause(self):
-		#print "func pause"
-		# do not clear data
 		self.ssprocess2gui_queue.put((CMD_PAUSE, True))
 		self.status = STATUS_PAUSE
 		

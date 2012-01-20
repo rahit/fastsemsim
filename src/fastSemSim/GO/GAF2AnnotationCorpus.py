@@ -19,38 +19,45 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 '''
-#@desc Class to parse Annotation Corporus files in GAF-2.0 format
+#@desc
+Class to parse Annotation Corporus files in GAF-2.0 format [i.e. Gene Ontology Annotation files]
 '''
 
 import sys
 import GeneOntology
-#from GO.AnnotationCorpus import AnnotationCorpus
+
 SIMPLIFY = 'simplify'
 
 class GAF2AnnotationCorpus():
 
-	separator = '\t'
-	comment = '!'
+#------------------------------------------------------
+# Inizialization routines
+#------------------------------------------------------
 
-	def __init__(self, parameters=None, ac = None):
+	int_separator = '\t'
+	int_comment = '!'
+
+	def __init__(self, ac, parameters=None):
 		self.ac = ac
 		if self.ac == None:
-			#ac = AnnotationCorpus()
-			print "Unexpected Error"
+			raise Exception
 		self.parameters = parameters
-		self.interpret_parameters()
+		self.int_interpretParameters()
 
-	def interpret_parameters(self):
-		self.simplify = False
+	def int_interpretParameters(self):
+		self.int_simplify = False
 		if self.parameters == None:
 			return
 		if len(self.parameters) > 0:
 			if SIMPLIFY in self.parameters:
-				self.simplify = self.parameters[SIMPLIFY]
+				self.int_simplify = self.parameters[SIMPLIFY]
 
-	def set_fields(self):
-		self.ac.reset_fields()
-		if self.simplify:
+#------------------------------------------------------
+# Parsing routine
+#------------------------------------------------------
+
+	def setFields(self):
+		if self.int_simplify:
 			return
 		self.ac.obj_fields = ['taxonomy']
 		self.ac.term_fields = []
@@ -61,12 +68,12 @@ class GAF2AnnotationCorpus():
 		self.ac.annotations_field2pos= {'EC':0}
 		self.ac.reverse_annotations_field2pos= {'EC':0}
 
-	def is_ok(self, line):
-		if 'taxonomy' in self.ac.filters and not self.ac.taxonomy_selector(int(self.temp_taxonomy)):
+	def isOk(self, line):
+		if 'taxonomy' in self.ac.filters and not self.ac.filters['taxonomy'](int(self.temp_taxonomy)):
 			return False
-		if 'EC' in self.ac.filters and not self.ac.EC_selector(self.temp_EC):
+		if 'EC' in self.ac.filters and not self.ac.filters['EC'](self.temp_EC):
 			return False
-		if self.ac.exclude_GO_root:
+		if self.ac.int_exclude_GO_root:
 			if self.temp_term == GeneOntology.BP_root or self.temp_term == GeneOntology.CC_root or self.temp_term == GeneOntology.MF_root:
 				return False
 		temp_term = int(self.temp_term[3:])
@@ -78,9 +85,9 @@ class GAF2AnnotationCorpus():
 				#print(str(self.temp_term) + " is obsolete.")
 				return False
 		return True
-				
+
 	def parse(self, fname):
-		self.set_fields()
+		self.setFields()
 		if type(fname) is str:
 			stream = open(fname,'r')
 		else:
@@ -93,9 +100,9 @@ class GAF2AnnotationCorpus():
 			line = line.rstrip('\r')
 			if lines_counter == 1:
 				pass # to implement
-			if line[0] == self.comment:
+			if line[0] == self.int_comment:
 				continue
-			line = line.split(self.separator)
+			line = line.split(self.int_separator)
 			if len(line) < 14:
 				print("GAF2AnnotationCorpus loader. Incomplete line: " + str(line))
 				continue
@@ -109,7 +116,7 @@ class GAF2AnnotationCorpus():
 			self.temp_reference = line[5]
 			self.temp_GO = line[8]
 
-			if not self.is_ok(line):
+			if not self.isOk(line):
 				continue
 
 			self.temp_term = int(self.temp_term[3:])
@@ -119,7 +126,7 @@ class GAF2AnnotationCorpus():
 
 			#### Build up genes set
 			if self.temp_obj not in self.ac.obj_set:
-				if self.simplify:
+				if self.int_simplify:
 					self.ac.obj_set[self.temp_obj] = None
 				else:
 					self.ac.obj_set[self.temp_obj] = (self.temp_taxonomy,)
@@ -130,7 +137,7 @@ class GAF2AnnotationCorpus():
 				self.ac.annotations[self.temp_obj] = {}
 			if self.temp_term not in self.ac.annotations[self.temp_obj]:
 				self.ac.annotations[self.temp_obj][self.temp_term] = []
-			if self.simplify:
+			if self.int_simplify:
 				self.ac.annotations[self.temp_obj][self.temp_term] = None
 			else:
 				self.ac.annotations[self.temp_obj][self.temp_term].append((self.temp_EC, self.temp_reference))
@@ -139,7 +146,7 @@ class GAF2AnnotationCorpus():
 				self.ac.reverse_annotations[self.temp_term] = {}
 			if self.temp_obj not in self.ac.reverse_annotations[self.temp_term]:
 				self.ac.reverse_annotations[self.temp_term][self.temp_obj] = []
-			if self.simplify:
+			if self.int_simplify:
 				self.ac.reverse_annotations[self.temp_term][self.temp_obj] = None
 			else:
 				self.ac.reverse_annotations[self.temp_term][self.temp_obj].append((self.temp_EC, self.temp_reference))

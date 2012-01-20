@@ -17,19 +17,23 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
-
+#--------------------------------------------------------------------------
 """
 @mail marco.mina.85@gmail.com
 @version 1.0
-@desc 
-Utility to load Gene Ontology DAG and manipulate it.
-It keeps into account term attributes such as "obsolete" and "alternative" ids.
+@desc GeneOntology class handles Gene Ontology
 
 Function load_GO_XML(file_stream) loads XML files. It returns a GeneOntology object.
 """
+
 import types
 from xml.sax import make_parser
 from xml.sax.handler import ContentHandler
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+# constants and macro
+# assume the GO ids are in the standard format "GO:" + 7 digit number
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 
 IS_A = 0
 PART_OF = 1
@@ -40,21 +44,27 @@ NEG_REG = 4
 BP_root = "GO:0008150"
 MF_root = "GO:0003674"
 CC_root = "GO:0005575"
-	
+
 def go_name2id(code):
 	return int(code[3:])
 
 def go_id2name(code):
 	return "GO:" + '0'*(7 - len(str(code))) + str(code)
 	
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+# GeneOntology class
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+
 class GeneOntology:
 	
 	BP_root = 8150
 	MF_root = 3674
 	CC_root = 5575
 
-# variables
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+# public functions and variables that should be used 
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+
 	nodes_edges = None
 	edges_nodes = None
 	parents = None
@@ -62,7 +72,6 @@ class GeneOntology:
 	alt_ids = None
 	obsolete_ids = None
 
-# functions available to the external world
 	def name2id(self, codes, alt_check = True):
 		nid = None
 		if type(codes) is str:
@@ -101,8 +110,9 @@ class GeneOntology:
 	def edge_num(self):
 		return len(self.edges_nodes)
 
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
-	# internal functions
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+# internal functions
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 
 	def __init__(self, terms, edges, alt_ids):
 		self.nodes_edges = {}
@@ -158,18 +168,23 @@ class GeneOntology:
 		self.edge_types[e] = edge_type
 		return e
 
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+# load_GO_XML: function to load an obo-xml file
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 
 def load_GO_XML(file_stream):
 	parser = make_parser()
-	handler = GOHandler()
+	handler = OboXmlParser()
 	parser.setContentHandler(handler)
 	parser.parse(file_stream)
 	return GeneOntology(handler.terms, handler.edges, handler.alt_ids)
 
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+# OboXmlParser: Class to parse GO obo-xml files
+# Given an obo-xml file builds a GeneOntology object parsing it
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 
-class GOHandler(ContentHandler):
+class OboXmlParser(ContentHandler):
 	ignore_part_of = False
 	ignore_regulates = False
 	

@@ -46,4 +46,4 @@ if __name__ == "__main__":
 	print "Annotated proteins: " + str(len(gp.annotations))
 	print "Annotated terms: " + str(len(gp.reverse_annotations))
 
-	print "Annotation corpus consistent with current GO: " + str(gp.check_consistency())
+	print "Annotation corpus consistent with current GO: " + str(gp.isConsistent())

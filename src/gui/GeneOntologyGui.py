@@ -26,15 +26,13 @@ import os
 #class AnnotationCorpusGui(wx.Dialog):
 	#filetype = None
 	#filename = None
-	
-
 		
 class GeneOntologyGui(wx.Dialog):
 	filename  = None
 	
 	def __init__(self, parent):
 		self.parent = parent
-		super(GeneOntologyGui, self).__init__(self.parent, title="Load Gene Ontology", size=(500,150))
+		super(GeneOntologyGui, self).__init__(self.parent, title="Load Gene Ontology",style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
 		self.InitUI()
 	
 	def InitUI(self):
@@ -42,6 +40,7 @@ class GeneOntologyGui(wx.Dialog):
 
 		self.panel = wx.Panel(self)
 		self.mainbox = wx.BoxSizer(wx.HORIZONTAL)
+		self.panel.SetSizer(self.mainbox)
 
 # COMMAND BOX
 		self.commandbox = wx.BoxSizer(wx.VERTICAL)
@@ -52,6 +51,13 @@ class GeneOntologyGui(wx.Dialog):
 		self.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.button_selectfile.GetId())
 		self.Bind(wx.EVT_BUTTON, self.OnReset, id=self.button_reset.GetId())
 
+		#self.commandboxs = wx.StdDialogButtonSizer(wx.VERTICAL)
+		#self.commandboxs.Add(self.button_selectfile)
+		#self.commandboxs.Add(self.button_reset)
+		#self.commandboxs.Add(self.button_done)
+		#self.commandboxs.Realize()
+		#self.commandbox.Add(self.commandboxs)
+   
 		self.commandbox.Add(self.button_selectfile, flag=wx.LEFT | wx.RIGHT, border=10)
 		self.commandbox.Add(self.button_reset, flag=wx.LEFT|wx.RIGHT, border=10)
 		self.commandbox.Add(self.button_done, flag=wx.LEFT|wx.RIGHT, border=10)
@@ -59,9 +65,9 @@ class GeneOntologyGui(wx.Dialog):
 # STATISTICS
 		self.gostatsboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Statistics')
 		self.gostatsbox = wx.StaticBoxSizer(self.gostatsboxline, wx.HORIZONTAL)
-		self.label_statuslabel = wx.StaticText(self.panel, label = "File loaded")
-		self.label_status = wx.StaticText(self.panel, label = "", size=(250,30))
-		self.label_termslabel = wx.StaticText(self.panel, label = "GO Terms")
+		self.label_statuslabel = wx.StaticText(self.panel, label = "File loaded:")
+		self.label_status = wx.StaticText(self.panel, label = "")
+		self.label_termslabel = wx.StaticText(self.panel, label = "GO Terms:")
 		self.label_terms = wx.StaticText(self.panel, label = "")
 		self.statusgridbox= wx.FlexGridSizer(rows = 4, cols = 3, vgap = 10, hgap = 10)
 		self.statusgridbox.AddMany([wx.Size(5,2), wx.Size(5,2), wx.Size(15,2), self.label_statuslabel, self.label_status,wx.Size(5,2), self.label_termslabel, self.label_terms, wx.Size(5,2),wx.Size(5,2),wx.Size(5,2)])
@@ -70,13 +76,28 @@ class GeneOntologyGui(wx.Dialog):
 		self.mainbox.Add(self.gostatsbox, flag=wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 		self.mainbox.Add(self.commandbox, flag=wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 		
-		self.panel.SetSizerAndFit(self.mainbox)
+		#w,h =  self.text8.GetTextExtent(self.text8.GetValue())
+		#self.text8.SetSize(wx.Size(w+10, -1)) 
+		#w,h = self.text8.GetSizeTuple()
+		#self.mainbox.SetItemMinSize(self.text8, w,h)
+		#self.mainbox.Layout()
+
 		self.InitMainUI()
 		self.OnReset(None)
 		return True
 
 #------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------------------
+	def OnAnyUpdate(self):
+		self.statusgridbox.Fit(self)
+		self.gostatsbox.Fit(self)
+		self.commandbox.Fit(self)
+		self.mainbox.Fit(self)
+		w,h = self.commandbox.GetSizeTuple()
+		self.mainbox.SetItemMinSize(self.commandbox, w,h)
+		#self.GetBestSize()
+		self.mainbox.Layout()
+		
 	def InitMainUI(self):
 		#### Populate GO section in main window
 		#self.parent.go_status_pic = wx.StaticBitmap(self.parent.panel)
@@ -113,17 +134,20 @@ class GeneOntologyGui(wx.Dialog):
 			self.parent.SetGoOk(True)
 			self.parent.update_ac = True
 		else:
-			self.label_status.SetLabel('')
+			self.label_status.SetLabel(' - ')
 			self.label_terms.SetLabel('')
 			self.parent.SetGoOk(False)
+		self.OnAnyUpdate()
 
 	def OnReset(self, event):
 		self.filename = None
 		self.go_status = False
-		self.label_status.SetLabel('')
+		self.label_status.SetLabel(' - ')
 		self.label_terms.SetLabel('')
 		print "Fix Me. Should Reset go in main process!!"
+		self.OnAnyUpdate()
 		self.OnLoadDone()
+
 
 	def batch_save(self):
 		save = {}
@@ -141,7 +165,7 @@ class LoadGOGui(wx.Dialog):
 
 	def __init__(self, parent):
 		self.parent = parent
-		super(LoadGOGui, self).__init__(self.parent, title="Loading Gene Ontology", size=(300,250))
+		super(LoadGOGui, self).__init__(self.parent, title="Loading Gene Ontology",style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
 		self.InitUI()
 
 	def InitUI(self):
@@ -173,7 +197,18 @@ class LoadGOGui(wx.Dialog):
 		self.mainbox.Add(self.commandbox, flag = wx.ALIGN_CENTER)
 		self.panel.SetSizerAndFit(self.mainbox)
 		self.OnStart()
+		self.OnAnyUpdate()
 
+	def OnAnyUpdate(self):
+		#self.load.Fit(self)
+		#self.gostatsbox.Fit(self)
+		#self.commandbox.Fit(self)
+		self.mainbox.Fit(self)
+		#w,h = self.commandbox.GetSizeTuple()
+		#self.mainbox.SetItemMinSize(self.commandbox, w,h)
+		#self.GetBestSize()
+		self.mainbox.Layout()
+		
 	def OnOk(self, event):
 		self.Close()
 	
@@ -213,3 +248,4 @@ class LoadGOGui(wx.Dialog):
 					print "Status"
 					gaugerange = self.gauge_loadprogress.GetRange()
 					self.gauge_loadprogress.SetValue((float(data[2]))*gaugerange)
+		self.OnAnyUpdate()
