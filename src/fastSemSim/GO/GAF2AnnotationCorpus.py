@@ -68,11 +68,10 @@ class GAF2AnnotationCorpus():
 		self.ac.annotations_field2pos= {'EC':0}
 		self.ac.reverse_annotations_field2pos= {'EC':0}
 
-	def isOk(self, line):
-		if 'taxonomy' in self.ac.filters and not self.ac.filters['taxonomy'](int(self.temp_taxonomy)):
-			return False
-		if 'EC' in self.ac.filters and not self.ac.filters['EC'](self.temp_EC):
-			return False
+	def isOk(self):
+		if not self.ac.isOk('taxonomy', self.temp_taxonomy): return False
+		if not self.ac.isOk('EC', self.temp_EC): return False
+
 		if self.ac.int_exclude_GO_root:
 			if self.temp_term == GeneOntology.BP_root or self.temp_term == GeneOntology.CC_root or self.temp_term == GeneOntology.MF_root:
 				return False
@@ -93,7 +92,7 @@ class GAF2AnnotationCorpus():
 		else:
 			stream = fname
 		lines_counter = 0
-
+		#ignored = 0
 		for line in stream:
 			lines_counter += 1
 			line = line.rstrip('\n')
@@ -116,7 +115,8 @@ class GAF2AnnotationCorpus():
 			self.temp_reference = line[5]
 			self.temp_GO = line[8]
 
-			if not self.isOk(line):
+			if not self.isOk():
+				#ignored+=1
 				continue
 
 			self.temp_term = int(self.temp_term[3:])

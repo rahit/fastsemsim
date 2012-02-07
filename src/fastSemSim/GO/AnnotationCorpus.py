@@ -82,6 +82,7 @@ class AnnotationCorpus:
 
 	def __init__(self, go=None):
 		self.go = go
+		self.initCommonFilter()
 		self.reset()
 
 	def __deepcopy__(self, memo):
@@ -210,6 +211,12 @@ class AnnotationCorpus:
 	def resetFilter(self, field):
 		if field in self.filters:
 			del self.filters[field]
+
+	def isOk(self, field, value):
+		if field not in self.filters:
+			return True
+		else:
+			return self.filters[field](value)
 			
 	def constrain(self):
 		if len(self.filters)==0:
@@ -304,6 +311,8 @@ class AnnotationCorpus:
 			self.taxonomy = params
 
 		def filter(self, taxonomy):
+			#print self.taxonomy
+			#print taxonomy
 			if self.taxonomy == taxonomy:
 				return True
 			return False
@@ -325,20 +334,55 @@ class AnnotationCorpus:
 				return True
 			return False
 
+	class GOFilter:
+		name = 'GO'
+		GO = None
+		inclusive = True
+		int_go = None
+		def __init__(self, params=None):
+			self.set(params)
+
+		def set(self, params):
+			if params == None:
+				return True
+			if 'int_current_go' in params:
+				self.int_go = params['int_current_go']
+			if 'GO' in params:
+				self.GO = params['GO']
+			if 'inclusive' in params:
+				self.inclusive = params['inclusive']
+			return True
+
+		def filter(self, GO):
+			if self.int_go == None:
+				raise Exception
+			if self.GO == None and not self.inclusive:
+				return True
+			elif self.GO == None and self.inclusive:
+				return False
+			print "Fix filter in GOFilter class."
+			return True
+
 #-----------------------------------------------------------------------------
 # Simplified methods to set common filters
 #-----------------------------------------------------------------------------
-
-	common_filters = {
-										TaxonomyFilter.name:TaxonomyFilter,
-										ECFilter.name:ECFilter
-										}
+	def initCommonFilter(self):
+		self.common_filters = {
+											self.TaxonomyFilter.name:(self.TaxonomyFilter,),
+											self.ECFilter.name:(self.ECFilter,),
+											self.GOFilter.name:(self.GOFilter, {'int_current_go':self.go})
+											}
 
 	def setCommonfilters(self, inf):
 		if type(inf) == dict:
 			for i in inf:
 				if i in self.common_filters:
-					self.setFilter(i, self.common_filters[i](inf[i]).filter)
+					if len(self.common_filters[i]) > 1:
+						new_filter = self.common_filters[i][0](self.common_filters[i][1])
+						new_filter.set(inf[i])
+					else:
+						new_filter = self.common_filters[i][0](inf[i])
+					self.setFilter(i, new_filter.filter)
 		else:
 			raise Exception
 

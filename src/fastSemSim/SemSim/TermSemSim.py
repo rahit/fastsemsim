@@ -20,6 +20,7 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 This class provides the prototype for a generic Term Semantic Similarity measure (TSS)
+There are two types of TSS: those who can evaluate the semantic similarity between two sets of terms (groupwise - G_TSS), and those which can only evaluate the similarity between pairs of GO terms (pairwise - P_TSS)
 
 """
 
@@ -40,7 +41,7 @@ class TermSemSim(object):
 	IC_based = False
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
-# private functions
+# internal and utility functions
 
 	def __init__(self, ac, go, util = None):
 		self.go = go
@@ -51,14 +52,16 @@ class TermSemSim(object):
 		if self.IC_based and self.util.IC == None:
 			self.util.det_IC_table()
 
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 	def int_validate_single_term(self, term):
+	#verify whether a single GO terms is valid. It means it has not to be obsolete!
+	#If the SS measure is based on IC it should also possess an IC
+
 		if not type(term) is int:
 			#print "Invalid term format: " + str(type(term))
 			return False
 		if term not in self.go.nodes_edges:
-			#print(str(term) + " is not a valid term.")
 			return False
-		#if (not ignore_IC) and self.IC_based:
 		if self.IC_based:
 			if not term in self.util.IC:
 				print("Term " + str(term) + " does not have an IC.")
@@ -68,7 +71,12 @@ class TermSemSim(object):
 				return False
 		return True
 
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 	def int_format_data(self, term1):
+	# convert query data in the proper format
+	# verify query data are consistent with current GO
+	# verify query data come from the same GO !!! to Overload in cross-ontological ss measures
+
 		id1 = self.util.go.name2id(term1)
 		if self.SS_type == self.P_TSS:
 			if self.int_validate_single_term(id1):
@@ -98,6 +106,10 @@ class TermSemSim(object):
 		return None
 
 	def SemSim(self, term1, term2):
+	# coordinate SS calculation
+	# call marshalling procedures and check procedures
+	# verify query data come from the same GO !!! to Overload in cross-ontological ss measures	# convert query data in the proper format
+
 		if self.format_and_check_data:
 			if term1 is None or term2 is None:
 				return None
