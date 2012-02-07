@@ -37,6 +37,7 @@ if __name__ == "__main__":
 	if len(sys.argv) < 3:
 		go_file = "GO_2011-09-16.obo-xml"
 		ac_file = "gene_association.goa_fly"
+		#ac_file = "plain_ac_example.txt"
 	else:
 		go_file = sys.argv[1]
 		ac_file = sys.argv[2]
@@ -46,8 +47,8 @@ if __name__ == "__main__":
 	ontology = "BP"
 	obj1 = "Q8IPD2"
 	obj2 = "Q8IQQ0"
-	list_file = "test_fly_list.txt"
-	pairs_file = "test_fly_pairs.txt"
+	list_file = "fly_list_example.txt"
+	pairs_file = "fly_pairs_example.txt"
 
 
 
