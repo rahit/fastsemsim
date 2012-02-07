@@ -88,13 +88,13 @@ class PlainAnnotationCorpus():
 				#print(str(self.temp_term) + " not found in GO.")
 				return False
 			if not temp_term in self.ac.go.nodes_edges:
-				print(str(self.temp_term) + " is obsolete.")
-				self.obso[self.temp_term] = None
+				#print(str(self.temp_term) + " is obsolete.")
+				#self.obso[self.temp_term] = None
 				return False
 		return True
 
 	def parse(self, fname):
-		self.obso = {}
+		#self.obso = {}
 		self.setFields()
 		if type(fname) is str:
 			stream = open(fname, 'r')
@@ -107,7 +107,7 @@ class PlainAnnotationCorpus():
 		#else:
 		#self.SHOW_PROCESS = False;
 		lines_counter = 0
-		ignored = 0
+		#ignored = 0
 		for line in stream:
 			line = line.rstrip('\n')
 			line = line.rstrip('\r')
@@ -140,7 +140,7 @@ class PlainAnnotationCorpus():
 				self.temp_term = term
 
 				if not self.isOk():
-					ignored+=1
+					#ignored+=1
 					continue
 
 				term = int(term[3:])
@@ -167,8 +167,8 @@ class PlainAnnotationCorpus():
 			lines_counter += 1
 			#if self.ac.SHOW_PROCESS and (lines_counter%(filenum/20)==0):
 				#print("Lines processed: " + str(lines_counter) + " on " + str(filenum) + " (" + str(int(100*float(lines_counter)/float(filenum))) + "%)")
-		print "Ignored: " + str(ignored)
-		print "Obso: " + str(len(self.obso))
+		#print "Ignored: " + str(ignored)
+		#print "Obso: " + str(len(self.obso))
 		if type(fname) is str:
 			stream.close()
 		return True
