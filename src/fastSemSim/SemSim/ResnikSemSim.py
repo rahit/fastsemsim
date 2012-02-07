@@ -25,7 +25,7 @@ This class implements Resnik Term Semantic Similarity Measure
 from fastSemSim.GO import AnnotationCorpus
 from fastSemSim.GO import GeneOntology
 from SemSimUtils import *
-from TermSemSim import * 
+from TermSemSim import *
 import sys
 import os
 import math

@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with fastfastSemSim.SemSim.  If not, see <http://www.gnu.org/licenses/>.
+along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 from fastSemSim.SemSim.ResnikSemSim import *
@@ -68,3 +68,18 @@ MixingStrategies = {
 'BMA':(BMASemSim),
 'avg':(avgSemSim)
 }
+
+	#-#-#-#-#-#-#-#-#-#-#-#-#-#
+	# select Term Sem Sim     #
+	#-#-#-#-#-#-#-#-#-#-#-#-#-#
+
+	# the function selectTermSemSim helps retrieving the proper class implementing a given Term Sem Sim.
+	# It takes in input the name of the Term Sem Similarity
+	# It returns the class to be used. Just call the class constructor to instantiante an object.
+
+def selectTermSemSim(tss_name):
+	if not tss_name in SemSimMeasures:
+		raise "Semantic Similarity Measure not available."
+		return None
+	else:
+		return SemSimMeasures[tss_name][0]

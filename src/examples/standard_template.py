@@ -19,7 +19,8 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 """
-This class provides a template for using fastSemSim
+This class provides a template for using fastSemSim for evaluating protein Sem Sim.
+See TermSemSimExample.py for information regarding Term Sem Sim
 """
 
 from fastSemSim.GO import AnnotationCorpus
@@ -33,8 +34,13 @@ import math
 if __name__ == "__main__":
 
 	# example data
-	go_file = sys.argv[1]
-	ac_file = sys.argv[2]
+	if len(sys.argv) < 3:
+		go_file = "GO_2011-09-16.obo-xml"
+		ac_file = "gene_association.goa_fly"
+	else:
+		go_file = sys.argv[1]
+		ac_file = sys.argv[2]
+
 	is_plain = False
 	IEA_filtering = False
 	ontology = "BP"
