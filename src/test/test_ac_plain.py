@@ -19,9 +19,9 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 """
-This is an example program.
+This is a test routine
 It loads a Gene Ontology, and then loads an annotation corpus (in GOA GAF-2 format) filtering IEA annotations.
-It provides some hints on how using the filtering features implemented in FastSemSim.
+Data statistics are expected to comply with those manually evaluated
 """
 
 from fastSemSim.GO import AnnotationCorpus
@@ -29,20 +29,46 @@ from fastSemSim.GO import GeneOntology
 import sys
 
 if __name__ == "__main__":
-	#### load ontology
-	tree = GeneOntology.load_GO_XML(open('../../examples/GO_2011-09-16.obo-xml'))
-	print "Ontology infos: file name: " + str('../../examples/GO_2011-09-16.obo-xml') + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
 
-	#### load annotations
+	ontology = 'GO_2011-09-16.obo-xml'
+	ac_file = 'plain_ac.txt'
+
+	#### load ontology
+	tree = GeneOntology.load_GO_XML(open(ontology))
+	print "Ontology infos: file name: " + str(ontology) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
+
+	#### load annotations - filtering
 	gp = AnnotationCorpus.AnnotationCorpus(tree)
-	
+
 	params = {}
-	params['multiple'] = False # Set to troue if there are many associations per line (the object in the first field is associated to all the objects in the other fields within the same line)
+	params['multiple'] = False # Set to True if there are many associations per line (the object in the first field is associated to all the objects in the other fields within the same line)
 	params['term first'] = True # set to True if the first field of each row is a GO term. Set to False if the first field represents a protein/gene
 	params['separator'] = '\t' # select the separtor used to divide fields
-	gp.parse('../../examples/test_plain_ac.txt','plain', params)
+	params['filter'] = {}
+	params['simplify'] = True
+	gp.parse(ac_file,'plain', params)
 	
 	print "Annotated proteins: " + str(len(gp.annotations))
 	print "Annotated terms: " + str(len(gp.reverse_annotations))
-
 	print "Annotation corpus consistent with current GO: " + str(gp.isConsistent())
+	gp.sanitize()
+
+	current_id = len(gp.annotations)
+	current_term = len(gp.reverse_annotations)
+
+	#### checking results
+	total_id = 18769
+	total_term = 3259
+	
+	error = False
+	if not total_id == current_id:
+		print "Count check error! Objects number should be " + str(total_id) + " instead of " + str(current_id)
+		error = True
+	if not total_term == current_term:
+		print "Count check error! Terms number should be " + str(total_term) + " instead of " + str(current_term)
+		error = True
+	
+	if error:
+		print "Check failed!"
+	else:
+		print "All checks passed!"

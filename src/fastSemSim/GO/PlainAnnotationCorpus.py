@@ -78,7 +78,23 @@ class PlainAnnotationCorpus():
 		# there are no additional fields in plain annotation files,
 		pass
 
+	def isOk(self):
+		if self.ac.int_exclude_GO_root:
+			if self.temp_term == GeneOntology.BP_root or self.temp_term == GeneOntology.CC_root or self.temp_term == GeneOntology.MF_root:
+				return False
+		temp_term = int(self.temp_term[3:])
+		if not self.ac.go == None and not self.ac.go.alt_ids == None:
+			if not temp_term in self.ac.go.alt_ids:
+				#print(str(self.temp_term) + " not found in GO.")
+				return False
+			if not temp_term in self.ac.go.nodes_edges:
+				print(str(self.temp_term) + " is obsolete.")
+				self.obso[self.temp_term] = None
+				return False
+		return True
+
 	def parse(self, fname):
+		self.obso = {}
 		self.setFields()
 		if type(fname) is str:
 			stream = open(fname, 'r')
@@ -91,6 +107,7 @@ class PlainAnnotationCorpus():
 		#else:
 		#self.SHOW_PROCESS = False;
 		lines_counter = 0
+		ignored = 0
 		for line in stream:
 			line = line.rstrip('\n')
 			line = line.rstrip('\r')
@@ -120,25 +137,18 @@ class PlainAnnotationCorpus():
 			for i in temp_to_add:
 				obj_id = i[0]
 				term = i[1]
-				if self.ac.int_exclude_GO_root:
-					if str(term) == GeneOntology.BP_root:
-						continue
-					if str(term) == GeneOntology.CC_root:
-						continue
-					if str(term) == GeneOntology.MF_root:
-						continue
+				self.temp_term = term
+
+				if not self.isOk():
+					ignored+=1
+					continue
+
 				term = int(term[3:])
-				if not self.ac.go == None and not self.ac.go.alt_ids == None:
-					if not term in self.ac.go.alt_ids:
-						#print(str(term) + " not in GO.")
-						continue
-					if not term in self.ac.go.nodes_edges:
-						#print(str(term) + " obsolete.")
-						continue
-					if not term == self.ac.go.alt_ids[term]:
-						#print("Remapping " + str(term) + " to " + str(ac.go.alt_ids[term])
-						term = self.ac.go.alt_ids[term]
-							
+				if not self.ac.go == None and not term == self.ac.go.alt_ids[term]:
+				#print("Remapping " + str(term) + " to " + str(ac.go.alt_ids[term])
+					term = ac.go.alt_ids[term]
+
+
 				#### Build up genes set
 				if obj_id not in self.ac.obj_set:
 					self.ac.obj_set[obj_id] = {}
@@ -157,6 +167,8 @@ class PlainAnnotationCorpus():
 			lines_counter += 1
 			#if self.ac.SHOW_PROCESS and (lines_counter%(filenum/20)==0):
 				#print("Lines processed: " + str(lines_counter) + " on " + str(filenum) + " (" + str(int(100*float(lines_counter)/float(filenum))) + "%)")
+		print "Ignored: " + str(ignored)
+		print "Obso: " + str(len(self.obso))
 		if type(fname) is str:
 			stream.close()
 		return True
