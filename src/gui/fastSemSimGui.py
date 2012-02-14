@@ -562,13 +562,9 @@ class fastSemSimGui(wx.Frame):
 
 #################################################################################################################################
 def go():
+	multiprocessing.freeze_support()
 	app = wx.App()
 	window = fastSemSimGui(None)
 	window.Centre()
 	window.Show()  
 	app.MainLoop()
-
-
-if __name__ == "__main__":
-	multiprocessing.freeze_support()
-	go()

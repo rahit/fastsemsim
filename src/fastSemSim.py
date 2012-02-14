@@ -18,27 +18,10 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-"""
-This class implements Resnik Term Semantic Similarity Measure
-"""
-
-from fastSemSim.GO import AnnotationCorpus
-from fastSemSim.GO import GeneOntology
-from SemSimUtils import *
-from TermSemSim import *
 import sys
-import os
-import math
+from gui import fastSemSimGui
+import multiprocessing
 
-class ResnikSemSim(TermSemSim) :
-	SS_type = TermSemSim.P_TSS
-	IC_based = True
-
-	def __init__(self, go, ac, util = None):
-		super(ResnikSemSim, self).__init__(go, ac, util)
-		#self.SS_type = TermSemSim.P_TSS
-		#self.IC_based = True
-
-	def int_SemSim(self, term1, term2):
-		termid = self.util.det_MICA(term1, term2)
-		return self.util.IC[termid]
+if __name__ == "__main__":
+	multiprocessing.freeze_support()
+	fastSemSimGui.go()
