@@ -7,8 +7,9 @@ PYTHON_INTERPRETER=python
 
 if [ ${LOCAL} = 1 ]; then
 	echo "Running the local version"
-	(export PYTHONPATH="."; ${PYTHON_INTERPRETER} fastSemSimGui/startGui.py)
+	(export PYTHONPATH="."; ${PYTHON_INTERPRETER} startGui.py)
 else
 	echo "Running the installed version"
-	(cd examples && ${PYTHON_INTERPRETER} LoadGUI.py)
+	echo "Not implemented"
+# 	(cd examples && ${PYTHON_INTERPRETER} LoadGUI.py)
 fi

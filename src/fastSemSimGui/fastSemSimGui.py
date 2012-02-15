@@ -116,6 +116,7 @@ class fastSemSimGui(wx.Frame):
 		self.process_busy_event = multiprocessing.Event()
 		
 		self.programdirectory = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
+		#self.programdirectory = 'images' # use this with py2exe to build a working binary
 		self.Ok_pic = self.programdirectory + '/V_30.png'
 		self.Warning_pic = self.programdirectory + '/W_30.png'
 		self.Advanced_pic = self.programdirectory + '/advanced.png'

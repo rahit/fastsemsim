@@ -19,12 +19,17 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 from distutils.core import setup
-
 import py2exe
+
+Mydata_files = [('images', ['fastSemSimGui/V_30.png', 'fastSemSimGui/W_30.png', 'fastSemSimGui/advanced.png'])]
+
 setup(
+    data_files = Mydata_files,
     options = {
         "py2exe": {
-            "dll_excludes" : ["MSVCP90.dll"]
+            "dll_excludes" : ["MSVCP90.dll"],
+            "unbuffered": True,
+            "optimize": 2
         }
     },
-    windows =['gui\\fastSemSimGui.py'])
+    windows =['startGui.py'])
