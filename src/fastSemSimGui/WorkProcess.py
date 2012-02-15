@@ -367,16 +367,23 @@ class WorkProcess(multiprocessing.Process):
 		self.ss_update = True
 		self.ac_update = True
 		self.query_update = True
-		if len(data[0]) == 0:
-			return
-		self.go_filename = data[0]
-		self.go = GeneOntology.load_GO_XML(open(self.go_filename,'r'))
+		if data[0] == None or len(data[0]) == 0:
+			self.go = None
+		else:
+			self.go_filename = data[0]
+			try:
+				self.go = GeneOntology.load_GO_XML(open(self.go_filename,'r'))
+			except Exception:
+				self.go = None
+
 		if not self.go == None:
 			self.ok_go = True
 			self.go_update = False
 			self.ssprocess2gui_queue.put((CMD_LOAD_GO, LOAD_GO_END, True, self.go.node_num(), self.go.edge_num()))
 		else:
+			self.go_filename = None
 			self.ssprocess2gui_queue.put((CMD_LOAD_GO, LOAD_GO_END, False))
+
 		self.status = STATUS_WAIT
 #
 
@@ -684,6 +691,9 @@ class WorkProcess(multiprocessing.Process):
 	# _stop function    #
 	#-#-#-#-#-#-#-#-#-#-#
 	
+	# go, ac, query, output parameters and ss should be mantained as valid
+	# output data should be flushed, as well as temporary variables.
+	# output_update should be set to true to reinitialize output structures
 	def _stop(self):
 		if self.output_to == OUTPUT_TO_FILE and not self.output_file == None:
 			self.output_file.close()

@@ -122,17 +122,17 @@ class AnnotationCorpusGui(wx.Dialog):
 
 		#self.mainbox.Add(self.statusbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 		
-		self.panel.SetSizerAndFit(self.mainbox)
+		self.panel.SetSizer(self.mainbox)
 		self.InitMainUI()
 		self.OnReset(None)
 		self.OnLoadDone()
-		#self.OnAnyUpdate()
 		return True
 
 	def OnAnyUpdate(self):
-		#self.statusgridbox.Fit(self)
-		#self.gostatsbox.Fit(self)
-		#self.commandbox.Fit(self)
+		# set of calls to resize the gui according to the content. Pretty useful.
+		self.statusgridbox.Fit(self)
+		self.acstatsbox.Fit(self)
+		self.commandbox.Fit(self)
 		self.mainbox.Fit(self)
 		#w,h = self.commandbox.GetSizeTuple()
 		#self.mainbox.SetItemMinSize(self.commandbox, w,h)
@@ -162,9 +162,18 @@ class AnnotationCorpusGui(wx.Dialog):
 		self.button_load.Disable()
 		self.button_filetypeparams.Disable()
 		self.filetypesel = None
+		
+		self.parent.lock()
+		self.parent.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_AC, None))
+		while True:
+			data = self.parent.ssprocess2gui_queue.get()
+			if data[0] == WorkProcess.CMD_LOAD_AC:
+				if data[1] == WorkProcess.LOAD_AC_END:
+					self.parent.unlock()
+					break
+
 		self.OnLoadDone()
-		self.OnAnyUpdate()
-		print "Fix Me. Should Reset ac in main process!!"
+		#print "Fix Me. Should Reset ac in main process!!"
 
 	def OnAdvanced(self, event):
 		self.advancedGui = AdvancedGui(self)
@@ -370,8 +379,25 @@ class AdvancedGui(wx.Dialog):
 		self.commandbox.Add(self.button_cancel, flag=wx.LEFT|wx.RIGHT|wx.TOP)
 		self.mainbox.Add(self.commandbox, flag= wx.EXPAND |wx.LEFT|wx.RIGHT|wx.TOP)
 
-		self.panel.SetSizerAndFit(self.mainbox)
+		self.panel.SetSizer(self.mainbox)
 		self.OnRestore()
+		self.OnAnyUpdate()
+
+	def OnAnyUpdate(self):
+		if self.parent.filetypesel == PLAIN_FILE_TYPE:
+			self.fileformatbox.Fit(self)
+			self.gridbox.Fit(self)
+			self.separatorbox.Fit(self)
+		# set of calls to resize the gui according to the content. Pretty useful.
+		elif self.parent.filetypesel == GAF2_FILE_TYPE:
+			self.taxbox.Fit(self)
+			self.filterbox.Fit(self)
+		self.commandbox.Fit(self)
+		self.mainbox.Fit(self)
+		#w,h = self.commandbox.GetSizeTuple()
+		#self.mainbox.SetItemMinSize(self.commandbox, w,h)
+		#self.GetBestSize()
+		self.mainbox.Layout()
 
 	def OnManyperline(self, event):
 		pass
@@ -461,39 +487,45 @@ class LoadACGui(wx.Dialog):
 	def InitUI(self):
 		self.panel = wx.Panel(self)
 		self.mainbox = wx.BoxSizer(wx.VERTICAL)
-		self.loadbarboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Progress Bar')
-		self.loadbarbox = wx.StaticBoxSizer(self.loadbarboxline, wx.HORIZONTAL)
-		self.gauge_loadprogress = wx.Gauge(self.panel, -1, 50, size=(250, 25))
-		self.loadbarbox.Add(self.gauge_loadprogress, flag=wx.EXPAND | wx.ALIGN_CENTER | wx.TOP, border = 5)
+		#self.loadbarboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Progress Bar')
+		#self.loadbarbox = wx.StaticBoxSizer(self.loadbarboxline, wx.HORIZONTAL)
+		#self.gauge_loadprogress = wx.Gauge(self.panel, -1, 50, size=(250, 25))
+		#self.loadbarbox.Add(self.gauge_loadprogress, flag=wx.EXPAND | wx.ALIGN_CENTER | wx.TOP, border = 5)
 		
 		self.statsbox = wx.BoxSizer(wx.HORIZONTAL)
-		self.label_status = wx.StaticText(self.panel, wx.ID_ANY, 'Loading Annotation Corpus. Please wait...')
+		self.label_status = wx.StaticText(self.panel, wx.ID_ANY, 'Loading the Annotation Corpus from ' + self.parent.filename + '. Please wait...')
 		self.statsbox.Add(self.label_status, flag = wx.ALIGN_CENTER )
 		
-		self.commandbox = wx.BoxSizer(wx.HORIZONTAL)
-		self.button_abort = wx.Button(self.panel, wx.ID_ANY, 'Abort')
-		self.button_ok = wx.Button(self.panel, wx.ID_ANY, 'Ok')
-		self.button_ok.Disable()
-		self.button_abort.Disable()
-		self.commandbox.Add(self.button_abort, flag = wx.ALIGN_CENTER )
-		self.commandbox.Add(self.button_ok, flag = wx.ALIGN_CENTER )
-		self.Bind(wx.EVT_BUTTON, self.OnAbort, id=self.button_abort.GetId())
-		self.Bind(wx.EVT_BUTTON, self.OnOk, id=self.button_ok.GetId())
+		#self.commandbox = wx.BoxSizer(wx.HORIZONTAL)
+		#self.button_abort = wx.Button(self.panel, wx.ID_ANY, 'Abort')
+		#self.button_ok = wx.Button(self.panel, wx.ID_ANY, 'Ok')
+		#self.button_ok.Disable()
+		#self.button_abort.Disable()
+		#self.commandbox.Add(self.button_abort, flag = wx.ALIGN_CENTER )
+		#self.commandbox.Add(self.button_ok, flag = wx.ALIGN_CENTER )
+		#self.Bind(wx.EVT_BUTTON, self.OnAbort, id=self.button_abort.GetId())
+		#self.Bind(wx.EVT_BUTTON, self.OnOk, id=self.button_ok.GetId())
 		
-		
-		self.mainbox.Add(self.loadbarbox, flag = wx.ALIGN_CENTER)
+		#self.mainbox.Add(self.loadbarbox, flag = wx.ALIGN_CENTER)
 		self.mainbox.Add(wx.Size(5,10), flag = wx.ALIGN_CENTER)
 		self.mainbox.Add(self.statsbox, flag = wx.ALIGN_CENTER)
 		self.mainbox.Add(wx.Size(5,10), flag = wx.ALIGN_CENTER)
-		self.mainbox.Add(self.commandbox, flag = wx.ALIGN_CENTER)
-		self.panel.SetSizerAndFit(self.mainbox)
+		#self.mainbox.Add(self.commandbox, flag = wx.ALIGN_CENTER)
+
+		self.panel.SetSizer(self.mainbox)
+		self.OnAnyUpdate()
 		self.OnStart()
+
+
+	def OnAnyUpdate(self):
+		self.mainbox.Fit(self)
+		self.mainbox.Layout()
 
 	def OnOk(self, event):
 		self.Close()
 	
-	def OnAbort(self, event):
-		print "OnAbort. Fix Me."
+	#def OnAbort(self, event):
+		#print "OnAbort. Fix Me."
 		#self.Close()
 
 	def OnStart(self):
@@ -522,26 +554,29 @@ class LoadACGui(wx.Dialog):
 					#print "End"
 					self.parent.parent.unlock()
 					self.timer.Stop()
-					self.button_ok.Enable()
-					self.button_abort.Disable()
+					#self.button_ok.Enable()
+					#self.button_abort.Disable()
 					if data[2]:
 						#print "Well"
-						self.label_status.SetLabel("Task correctly completed.")
+						#self.label_status.SetLabel("Task correctly completed.")
 						self.parent.ac_status = True
 						self.parent.ac_objs = data[3]
 						self.parent.ac_terms = data[4]
 						#self.parent.parent.SetAcOk(True)
 						#self.parent.parent.update_ac = False
-						self.gauge_loadprogress.SetValue(self.gauge_loadprogress.GetRange())
+						#self.gauge_loadprogress.SetValue(self.gauge_loadprogress.GetRange())
 					else:
-						self.label_status.SetLabel("Error. Please check parse parameters.")
+						#self.label_status.SetLabel("Error. Please check parse parameters.")
+						msg_box = wx.MessageDialog(self, "Error while parsing the annotation corpus. Plase check input file and parameters.", "Error", wx.OK | wx.CENTRE | wx.ICON_EXCLAMATION)
+						msg_box.ShowModal()
 						#self.parent.parent.SetAcOk(False)
 						#self.parent.parent.update_ac = False
 						self.parent.ac_status = False
 						self.parent.ac_objs = None
 						self.parent.ac_terms = None
-						self.gauge_loadprogress.SetValue(0)
-				elif data[1] == WorkProcess.LOAD_AC_STATUS:
-					print "Status"
-					gaugerange = self.gauge_loadprogress.GetRange()
-					self.gauge_loadprogress.SetValue((float(data[2]))*gaugerange)
+						#self.gauge_loadprogress.SetValue(0)
+					self.OnOk(None)
+				#elif data[1] == WorkProcess.LOAD_AC_STATUS:
+					#print "Status"
+					#gaugerange = self.gauge_loadprogress.GetRange()
+					#self.gauge_loadprogress.SetValue((float(data[2]))*gaugerange)

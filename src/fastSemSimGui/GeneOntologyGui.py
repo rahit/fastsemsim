@@ -23,10 +23,6 @@ from fastSemSim.GO import GeneOntology
 import WorkProcess
 import os
 
-#class AnnotationCorpusGui(wx.Dialog):
-	#filetype = None
-	#filename = None
-		
 class GeneOntologyGui(wx.Dialog):
 	filename  = None
 	
@@ -89,6 +85,7 @@ class GeneOntologyGui(wx.Dialog):
 #------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------------------
 	def OnAnyUpdate(self):
+		# set of calls to resize the gui according to the content. Pretty useful.
 		self.statusgridbox.Fit(self)
 		self.gostatsbox.Fit(self)
 		self.commandbox.Fit(self)
@@ -132,7 +129,7 @@ class GeneOntologyGui(wx.Dialog):
 			self.label_status.SetLabel(os.path.basename(self.filename))
 			self.label_terms.SetLabel(str(self.go_terms))
 			self.parent.SetGoOk(True)
-			self.parent.update_ac = True
+			#self.parent.update_ac = True
 		else:
 			self.label_status.SetLabel(' - ')
 			self.label_terms.SetLabel('')
@@ -144,7 +141,16 @@ class GeneOntologyGui(wx.Dialog):
 		self.go_status = False
 		self.label_status.SetLabel(' - ')
 		self.label_terms.SetLabel('')
-		print "Fix Me. Should Reset go in main process!!"
+		#print "Fix Me. Should Reset go in main process!!"
+
+		self.parent.lock()
+		self.parent.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_GO, None))
+		while True:
+			data = self.parent.ssprocess2gui_queue.get()
+			if data[0] == WorkProcess.CMD_LOAD_GO:
+				if data[1] == WorkProcess.LOAD_GO_END:
+					self.parent.unlock()
+					break
 		self.OnAnyUpdate()
 		self.OnLoadDone()
 
@@ -171,33 +177,36 @@ class LoadGOGui(wx.Dialog):
 	def InitUI(self):
 		self.panel = wx.Panel(self)
 		self.mainbox = wx.BoxSizer(wx.VERTICAL)
-		self.loadbarboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Progress Bar')
-		self.loadbarbox = wx.StaticBoxSizer(self.loadbarboxline, wx.HORIZONTAL)
-		self.gauge_loadprogress = wx.Gauge(self.panel, -1, 50, size=(250, 25))
-		self.loadbarbox.Add(self.gauge_loadprogress, flag=wx.EXPAND | wx.ALIGN_CENTER | wx.TOP, border = 5)
+		#self.loadbarboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Progress Bar')
+		#self.loadbarbox = wx.StaticBoxSizer(self.loadbarboxline, wx.HORIZONTAL)
+		#self.gauge_loadprogress = wx.Gauge(self.panel, -1, 50, size=(250, 25))
+		#self.loadbarbox.Add(self.gauge_loadprogress, flag=wx.EXPAND | wx.ALIGN_CENTER | wx.TOP, border = 5)
 		
 		self.statsbox = wx.BoxSizer(wx.HORIZONTAL)
-		self.label_status = wx.StaticText(self.panel, wx.ID_ANY, 'Loading Gene Ontology. Please wait...')
+		self.label_status = wx.StaticText(self.panel, wx.ID_ANY, 'Loading the Gene Ontology from ' + self.parent.filename + '. Please wait...')
 		self.statsbox.Add(self.label_status, flag = wx.ALIGN_CENTER)
 		
-		self.commandbox = wx.BoxSizer(wx.HORIZONTAL)
-		self.button_abort = wx.Button(self.panel, wx.ID_ANY, 'Abort')
-		self.button_ok = wx.Button(self.panel, wx.ID_ANY, 'Ok')
-		self.button_ok.Disable()
-		self.button_abort.Disable()
-		self.commandbox.Add(self.button_abort, flag = wx.ALIGN_CENTER )
-		self.commandbox.Add(self.button_ok, flag = wx.ALIGN_CENTER )
-		self.Bind(wx.EVT_BUTTON, self.OnAbort, id=self.button_abort.GetId())
-		self.Bind(wx.EVT_BUTTON, self.OnOk, id=self.button_ok.GetId())
+		#self.commandbox = wx.BoxSizer(wx.HORIZONTAL)
+		#self.button_abort = wx.Button(self.panel, wx.ID_ANY, 'Abort')
+		#self.button_ok = wx.Button(self.panel, wx.ID_ANY, 'Ok')
+		#self.button_ok.Disable()
+		#self.button_abort.Disable()
+		#self.commandbox.Add(self.button_abort, flag = wx.ALIGN_CENTER )
+		#self.commandbox.Add(self.button_ok, flag = wx.ALIGN_CENTER )
+		#self.Bind(wx.EVT_BUTTON, self.OnAbort, id=self.button_abort.GetId())
+		#self.Bind(wx.EVT_BUTTON, self.OnOk, id=self.button_ok.GetId())
 
-		self.mainbox.Add(self.loadbarbox, flag = wx.ALIGN_CENTER)
+		#self.mainbox.Add(self.loadbarbox, flag = wx.ALIGN_CENTER)
 		self.mainbox.Add(wx.Size(5,10), flag = wx.ALIGN_CENTER)
 		self.mainbox.Add(self.statsbox, flag = wx.ALIGN_CENTER)
 		self.mainbox.Add(wx.Size(5,10), flag = wx.ALIGN_CENTER)
-		self.mainbox.Add(self.commandbox, flag = wx.ALIGN_CENTER)
-		self.panel.SetSizerAndFit(self.mainbox)
-		self.OnStart()
+		#self.mainbox.Add(self.commandbox, flag = wx.ALIGN_CENTER)
+		#self.panel.SetSizerAndFit(self.mainbox)
+		self.panel.SetSizer(self.mainbox)
+		
 		self.OnAnyUpdate()
+		self.OnStart()
+
 
 	def OnAnyUpdate(self):
 		#self.load.Fit(self)
@@ -217,6 +226,7 @@ class LoadGOGui(wx.Dialog):
 		#self.Close()
 
 	def OnStart(self):
+		# should start the parsing of the GO, and then should check the loading process
 		self.parent.parent.lock()
 		self.parent.parent.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_GO, self.parent.filename))
 		self.TIMER_ID = 1000
@@ -232,20 +242,25 @@ class LoadGOGui(wx.Dialog):
 				if data[1] == WorkProcess.LOAD_GO_END:
 					self.parent.parent.unlock()
 					self.timer.Stop()
-					self.button_ok.Enable()
-					self.button_abort.Disable()
+					#self.button_ok.Enable()
+					#self.button_abort.Disable()
 					if data[2]:
-						self.label_status.SetLabel("Task correctly completed.")
+						#self.label_status.SetLabel("Task correctly completed.")
 						self.parent.go_status = True
 						self.parent.go_terms = data[3]
-						self.gauge_loadprogress.SetValue(self.gauge_loadprogress.GetRange())
+						#self.gauge_loadprogress.SetValue(self.gauge_loadprogress.GetRange())
 					else:
-						self.label_status.SetLabel("Error. Please check parse parameters.")
+						msg_box = wx.MessageDialog(self, "Error while parsing the Gene Ontology. Plase check input file and parameters.", "Error", wx.OK | wx.CENTRE | wx.ICON_EXCLAMATION)
+						msg_box.ShowModal()
+	
+						#self.label_status.SetLabel("")
 						self.parent.go_status = False
 						self.parent.go_terms = None
-						self.gauge_loadprogress.SetValue(0)
-				elif data[1] == WorkProcess.LOAD_GO_STATUS:
-					print "Status"
-					gaugerange = self.gauge_loadprogress.GetRange()
-					self.gauge_loadprogress.SetValue((float(data[2]))*gaugerange)
-		self.OnAnyUpdate()
+						#self.gauge_loadprogress.SetValue(0)
+					self.OnOk(None)
+				#elif data[1] == WorkProcess.LOAD_GO_STATUS:
+					#pass
+					#print "Status"
+					#gaugerange = self.gauge_loadprogress.GetRange()
+					#self.gauge_loadprogress.SetValue((float(data[2]))*gaugerange)
+		#self.OnAnyUpdate()
