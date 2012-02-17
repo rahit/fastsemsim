@@ -20,6 +20,7 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import wx
+import wx.grid
 import WorkProcess
 
 class QueryGui(wx.Dialog):
@@ -107,28 +108,44 @@ class QueryGui(wx.Dialog):
 		
 		#Input type
 		self.msbox = wx.BoxSizer(wx.HORIZONTAL)
-		self.inputstylenames = ["list","pairs"]
+		self.inputstylenames = ["List","Pairs"]
 		self.inputstyle = wx.ComboBox(self.parent.panel, wx.ID_ANY, choices=self.inputstylenames, style=wx.CB_READONLY, size=(150,25))
+		self.inputstyle.SetValue("Pairs")
+		self.parent.query_type = None
+		self.parent.Bind(wx.EVT_COMBOBOX, self.OnSelectInputStyle, id=self.inputstyle.GetId())
 		self.inputstyle_label = wx.StaticText(self.parent.panel, label='Input format')
-		self.msbox.Add(self.inputstyle_label, flag=wx.UP|wx.LEFT|wx.RIGHT, border=5)
-		self.msbox.Add(self.inputstyle, flag=wx.LEFT, border=10)
+		self.msbox.Add(self.inputstyle_label, flag=wx.LEFT|wx.RIGHT, border=5)
+		self.msbox.Add(self.inputstyle, flag=wx.LEFT|wx.RIGHT, border=5)
 
 		#Input field
 		#self.listsrcboxline = wx.StaticBox(self.parent.panel, wx.ID_ANY, 'Query')
 		#self.listsrcbox = wx.StaticBoxSizer(self.listsrcboxline, wx.VERTICAL)
 		self.listsrcbox = wx.BoxSizer(wx.VERTICAL)
-		self.text_query = wx.TextCtrl(self.parent.panel, size=(250,150), style = wx.TE_MULTILINE)
-		#self.parent.Bind(wx.wx.EVT_COMMAND_TEXT_UPDATED, self.OnTextChange(), self.text_query.GetId())
+		#self.text_query = wx.TextCtrl(self.parent.panel, size=(250,150), style = wx.TE_MULTILINE)
 		
-		self.listsrcbox.Add(self.msbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+		self.text_query = wx.grid.Grid(self.parent.panel, wx.ID_ANY, wx.Point(0,0), wx.Size(320,150))
+		self.text_query.CreateGrid(0,0)
+		self.OnSelectInputStyle(None)
+		#self.text_query.SetColLabelValue(0, "Protein 1")
+		#self.text_query.SetColLabelValue(1, "Protein 2")
+		#self.text_query.SetRowLabelSize(0)
+		#self.text_query.AutoSizeColumns(True)
+		#self.text_query.SetDefaultColSize(150, True)
+		#self.parent.Bind(wx.wx.EVT_COMMAND_TEXT_UPDATED, self.OnTextChange(), self.text_query.GetId())
+		#self.parent.Bind(wx.grid.EVT_GRID_SELECT_CELL, self.OnSelectCell, id=self.text_query.GetId())
+		self.parent.Bind(wx.grid.EVT_GRID_CELL_CHANGE, self.OnSelectCell, id=self.text_query.GetId())
+		
+		self.listsrcbox.Add(self.msbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM, border=10)
+		self.listsrcbox.Add(wx.Size(5,2))
 		self.listsrcbox.Add(self.text_query)
 
 		# Buttons
 		self.inputcommands = wx.BoxSizer(wx.VERTICAL)
 		self.clear = wx.Button(self.parent.panel, wx.ID_ANY, 'Clear')
 		self.filechooser = wx.Button(self.parent.panel, wx.ID_ANY, 'Load from file...')
-		self.check_fromac = wx.CheckBox(self.parent.panel, wx.ID_ANY, 'From Annotation Corpus', (10,10))
-		self.inputcommands.Add(self.check_fromac)
+		#self.check_fromac = wx.CheckBox(self.parent.panel, wx.ID_ANY, 'From Annotation Corpus', (10,10))
+		self.fromac = wx.Button(self.parent.panel, wx.ID_ANY, 'Load from AC')
+		self.inputcommands.Add(self.fromac)
 		self.inputcommands.Add(self.filechooser)
 		self.inputcommands.Add(self.clear)
 		
@@ -148,6 +165,67 @@ class QueryGui(wx.Dialog):
 		
 		#self.parent.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, WorkProcess.QUERYFROMGUI))
 #
+
+	def OnSelectInputStyle(self, event):
+		if self.parent.query_type == self.inputstylenames[self.inputstyle.GetSelection()]:
+			pass
+		else:
+			self.parent.query_type = self.inputstylenames[self.inputstyle.GetSelection()]
+			if self.parent.query_type == 'List':
+				self.SetList()
+			elif self.parent.query_type == 'Pairs':
+				self.SetPairs()
+
+		#self.button_filetypeparams.Enable()
+		#self.OnCanStart()
+#
+
+	def SetList(self):
+		self.text_query.DeleteCols(0,self.text_query.GetNumberCols())
+		self.text_query.DeleteRows(0,self.text_query.GetNumberRows())
+		self.text_query.AppendCols(1)
+		self.text_query.AppendRows(5)
+		self.text_query.SetColLabelValue(0, "Protein/Gene")
+		self.text_query.SetRowLabelSize(0)
+		self.text_query.AutoSizeColumns(True)
+		self.text_query.SetDefaultColSize(150, True)
+
+	def SetPairs(self):
+		self.text_query.DeleteCols(0,self.text_query.GetNumberCols())
+		self.text_query.DeleteRows(0,self.text_query.GetNumberRows())
+		self.text_query.AppendCols(2)
+		self.text_query.AppendRows(5)
+		self.text_query.SetColLabelValue(0, "Protein/Gene 1")
+		self.text_query.SetColLabelValue(1, "Protein/Gene 2")
+		self.text_query.SetRowLabelSize(0)
+		self.text_query.AutoSizeColumns(True)
+		self.text_query.SetDefaultColSize(150, True)
+#
+
+
+
+	def OnSelectCell(self, event):  
+		row = event.GetRow()
+		lastRow = self.text_query.GetNumberRows() - 1
+		if( row == lastRow ):  
+			self.text_query.AppendRows( 1 )
+		#event.Skip()
+#
+ 
+
+	#def OnTypeSelect(self, event):
+		#if self.radio_pairs.GetValue():
+			#self.parent.query_type = WorkProcess.QUERY_PAIRS
+			#if self.parent.query_from == WorkProcess.QUERY_FROM_AC:
+				#self.check_fromac.SetValue(False)
+				#self.OnFromAC(None)
+			#else:
+				#pass
+			#self.check_fromac.SetValue(False)
+		#elif self.radio_list.GetValue():
+			#self.parent.query_type = WorkProcess.QUERY_PAIRS
+		#self.CheckIfOk()
+
 
 	def OnQuit(self, event):
 		self.Hide()
