@@ -69,8 +69,8 @@ class GeneOntologyGui(wx.Dialog):
 		self.statusgridbox.AddMany([wx.Size(5,2), wx.Size(5,2), wx.Size(15,2), self.label_statuslabel, self.label_status,wx.Size(5,2), self.label_termslabel, self.label_terms, wx.Size(5,2),wx.Size(5,2),wx.Size(5,2)])
 		self.gostatsbox.Add(self.statusgridbox)
 
-		self.mainbox.Add(self.gostatsbox, flag=wx.LEFT|wx.RIGHT|wx.TOP, border=10)
-		self.mainbox.Add(self.commandbox, flag=wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+		self.mainbox.Add(self.gostatsbox, flag=wx.LEFT|wx.RIGHT|wx.TOP|wx.BOTTOM, border=5)
+		self.mainbox.Add(self.commandbox, flag=wx.RIGHT|wx.TOP|wx.BOTTOM|wx.ALIGN_CENTER_HORIZONTAL, border=5)
 		
 		#w,h =  self.text8.GetTextExtent(self.text8.GetValue())
 		#self.text8.SetSize(wx.Size(w+10, -1)) 

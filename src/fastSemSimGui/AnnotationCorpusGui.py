@@ -31,6 +31,15 @@ PLAIN_FILE_TYPE = 'Plain'
 PLAIN_FILE_TYPE_REF = 'plain'
 AC_FILE_TYPES = [ GAF2_FILE_TYPE, PLAIN_FILE_TYPE]
 
+
+
+
+	#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+	# class AnnotationCorpusGui #
+	#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+
+	# This class is resonsible for the interface regarding the handling of the annotation corpus
+
 class AnnotationCorpusGui(wx.Dialog):
 	filetype = None
 	filename = None
@@ -48,7 +57,7 @@ class AnnotationCorpusGui(wx.Dialog):
 		self.mainbox = wx.BoxSizer(wx.VERTICAL)
 		self.fileboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Input file')
 		self.filebox = wx.StaticBoxSizer(self.fileboxline, wx.VERTICAL)
-		self.filegridbox= wx.FlexGridSizer(rows = 3, cols = 3, vgap = 10, hgap = 10)
+		self.filegridbox= wx.FlexGridSizer(rows = 3, cols = 3, vgap = 5, hgap = 5)
 		self.filebox.Add(self.filegridbox,wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=15)
 		#self.filenamebox = wx.BoxSizer(wx.HORIZONTAL)
 		#self.filetypebox= wx.BoxSizer(wx.HORIZONTAL)
@@ -58,22 +67,23 @@ class AnnotationCorpusGui(wx.Dialog):
 		self.acstatsbox = wx.StaticBoxSizer(self.acstatsboxline, wx.HORIZONTAL)
 		self.commandbox = wx.BoxSizer(wx.HORIZONTAL)
 		
-		self.mainbox.Add(self.filebox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
+		self.mainbox.Add(self.filebox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=5)
 		#self.filebox.Add(self.filenamebox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 		#self.filebox.Add(self.filetypebox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
 		#self.mainbox.Add(self.acbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
-		self.mainbox.Add(self.acstatsbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
-		self.mainbox.Add(self.commandbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
-		
+		self.mainbox.Add(self.acstatsbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=5)
+		self.mainbox.Add(self.commandbox, flag=wx.ALIGN_CENTER|wx.LEFT|wx.RIGHT|wx.TOP|wx.BOTTOM, border=5)
+
+
 #FILE CHOOSER
 		self.label_filenamelabel = wx.StaticText(self.panel, label='File name')
-		self.label_filename = wx.StaticText(self.panel, label='', size=(250,20), style = wx.ST_NO_AUTORESIZE) #style= wx.ST_ELLIPSIZE_MIDDLE | 
+		self.label_filename = wx.StaticText(self.panel, label='', style = wx.ST_NO_AUTORESIZE) #style= wx.ST_ELLIPSIZE_MIDDLE | 
 		self.button_selectfile = wx.Button(self.panel, wx.ID_ANY, 'Select...')
 		self.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.button_selectfile.GetId())
 
 #FILE TYPE CHOOSER
-		self.box_filetype = wx.ComboBox(self.panel, wx.ID_ANY, choices=AC_FILE_TYPES, style=wx.CB_READONLY) #size=(100,30)
-		self.label_filetypelabel = wx.StaticText(self.panel, label='File type')
+		self.box_filetype = wx.ComboBox(self.panel, wx.ID_ANY, choices=AC_FILE_TYPES, style=wx.CB_READONLY, size=(-1,-1)) #size=(100,30)
+		self.label_filetypelabel = wx.StaticText(self.panel, label='File format')
 		self.Bind(wx.EVT_COMBOBOX, self.OnSelectType, id=self.box_filetype.GetId())
 		self.button_filetypeparams = wx.Button(self.panel, wx.ID_ANY, 'Advanced...')
 		self.Bind(wx.EVT_BUTTON, self.OnAdvanced, id=self.button_filetypeparams.GetId())
@@ -107,7 +117,18 @@ class AnnotationCorpusGui(wx.Dialog):
 		#self.filetypebox.Add(self.box_filetype, flag=wx.UP|wx.DOWN|wx.LEFT|wx.RIGHT, border=5)
 		#self.filetypebox.Add(self.button_filetypeparams, flag=wx.UP|wx.DOWN|wx.LEFT|wx.RIGHT, border=5)
 
-		self.filegridbox.AddMany([wx.Size(5,2), wx.Size(5,2), wx.Size(5,2), (self.label_filenamelabel), (self.label_filename), (self.button_selectfile), (self.label_filetypelabel), (self.box_filetype), (self.button_filetypeparams)])
+		#self.filegridbox.AddMany([wx.Size(5,2), wx.Size(5,2), wx.Size(5,2), (self.label_filenamelabel), (self.label_filename), (self.button_selectfile), (self.label_filetypelabel), (self.box_filetype), (self.button_filetypeparams)])
+		
+		self.filegridbox.Add(wx.Size(5,2))
+		self.filegridbox.Add(wx.Size(5,2))
+		self.filegridbox.Add(wx.Size(5,2))
+		self.filegridbox.Add(self.label_filenamelabel)
+		self.filegridbox.Add(self.label_filename)
+		self.filegridbox.Add(self.button_selectfile,flag=wx.ALIGN_CENTER_VERTICAL)
+		self.filegridbox.Add(self.label_filetypelabel)
+		self.filegridbox.Add(self.box_filetype, flag=wx.ALIGN_CENTER)
+		self.filegridbox.Add(self.button_filetypeparams,flag=wx.ALIGN_CENTER_VERTICAL)
+		
 		
 		self.commandbox.Add(self.button_load, flag=wx.LEFT|wx.RIGHT, border=10)
 		self.commandbox.Add(self.button_reset, flag=wx.LEFT|wx.RIGHT, border=10)
@@ -156,7 +177,7 @@ class AnnotationCorpusGui(wx.Dialog):
 		self.filename = None
 		self.filetype = None
 		self.ac_status = False
-		self.label_filename.SetLabel("None specified.")
+		self.label_filename.SetLabel("-")
 		self.box_filetype.SetValue('')
 		self.params = None
 		self.button_load.Disable()
@@ -254,24 +275,40 @@ class AnnotationCorpusGui(wx.Dialog):
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 
+
+
+	#-#-#-#-#-#-#-#-#-#-#
+	# class AdvancedGui #
+	#-#-#-#-#-#-#-#-#-#-#
+
+	# This class is resonsible for handling the advanced parsing parameters
+
 class AdvancedGui(wx.Dialog):
 
 	def __init__(self, parent):
 		self.parent = parent
-		super(AdvancedGui, self).__init__(self.parent, title="Advanced settings", size=(800,600))
+		super(AdvancedGui, self).__init__(self.parent, title="Advanced settings", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
 		self.InitUI()
 	
 	def InitUI(self):
 		self.panel = wx.Panel(self)
 		self.mainbox = wx.BoxSizer(wx.HORIZONTAL)
 
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+# plain file parsing options  #
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+
 		if self.parent.filetypesel == PLAIN_FILE_TYPE:
+			
+# parameters section main structure
 			self.fileformatboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Parse parameters')
 			self.fileformatbox = wx.StaticBoxSizer(self.fileformatboxline, wx.VERTICAL)
-			self.gridbox= wx.FlexGridSizer(rows = 4, cols = 3, vgap = 15, hgap = 20)
+			self.gridbox= wx.FlexGridSizer(rows = 4, cols = 3, vgap = 10, hgap = 10)
 			self.mainbox.Add(self.fileformatbox, flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, border=10)
 			self.fileformatbox.Add(self.gridbox, flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, border=10)
 
+# separator
 			self.label_separatorlabel = wx.StaticText(self.panel, wx.ID_ANY, 'Separator')
 			self.separatorbox = wx.BoxSizer(wx.VERTICAL)
 			self.separatoroptions = ['[tab] (\\t)','[space]','']
@@ -293,13 +330,15 @@ class AdvancedGui(wx.Dialog):
 			self.customseparatorbox.Add(self.radius_separator_3)
 			self.customseparatorbox.Add(self.text_separator)
 			self.label_separatorexplanation = wx.StaticText(self.panel, wx.ID_ANY, 'You should select the character used to separate fields within the single rows.', size=(250,60))
-			
+
+# row format
 			self.label_rowtypelabel = wx.StaticText(self.panel, wx.ID_ANY, 'Row format')
 			self.check_manyperline = wx.CheckBox(self.panel, wx.ID_ANY, 'Many associations per line')
 			self.Bind(wx.EVT_CHECKBOX, self.OnManyperline, id=self.check_manyperline.GetId())
 			self.check_manyperline.SetValue(False)
 			self.label_rowtypeexplanation = wx.StaticText(self.panel, wx.ID_ANY, 'Check this option if each row contains more than one association between protein/genes and GO Terms.', size=(250,60))
 
+# data order
 			self.label_rowformatlabel = wx.StaticText(self.panel, wx.ID_ANY, 'Data order')
 			#self.rowformatboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Row format')
 			#self.rowformatbox = wx.StaticBoxSizer(self.rowformatboxline, wx.VERTICAL)
@@ -311,45 +350,49 @@ class AdvancedGui(wx.Dialog):
 			self.rowformatbox.Add(self.radius_rowformat_2)
 			self.label_rowformatexplanation = wx.StaticText(self.panel, wx.ID_ANY, 'Select whether the first field of each row is a protein\gene or a GO Term.', size=(250,60))
 			
-			self.gridbox.AddMany([wx.Size(5,10), wx.Size(5,10), wx.Size(5,10), (self.label_separatorlabel), (self.separatorbox), (self.label_separatorexplanation), (self.label_rowtypelabel), (self.check_manyperline), (self.label_rowtypeexplanation), self.label_rowformatlabel, self.rowformatbox, self.label_rowformatexplanation])
+			#self.gridbox.AddMany([wx.Size(5,10), wx.Size(5,10), wx.Size(5,10), (self.label_separatorlabel), (self.separatorbox), (self.label_separatorexplanation), (self.label_rowtypelabel), (self.check_manyperline), (self.label_rowtypeexplanation), self.label_rowformatlabel, self.rowformatbox, self.label_rowformatexplanation])
+
+# merging all together
+			self.gridbox.Add(wx.Size(5,10))
+			self.gridbox.Add(wx.Size(5,10))
+			self.gridbox.Add(wx.Size(5,10))
+			self.gridbox.Add(self.label_separatorlabel)
+			self.gridbox.Add(self.separatorbox)
+			self.gridbox.Add(self.label_separatorexplanation)
+			self.gridbox.Add(self.label_rowtypelabel)
+			self.gridbox.Add(self.check_manyperline)
+			self.gridbox.Add(self.label_rowtypeexplanation)
+			self.gridbox.Add(self.label_rowformatlabel)
+			self.gridbox.Add(self.rowformatbox)
+			self.gridbox.Add(self.label_rowformatexplanation)
+
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+# GAF-2 file parsing options  #
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 		elif self.parent.filetypesel == GAF2_FILE_TYPE:
-			#self.fileformatboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Annotation Corpus file')
-			#self.filebox = wx.StaticBoxSizer(self.fileboxline, wx.VERTICAL)
-			#self.filebox.Add(self.filegridbox,wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=15)
-			##self.filenamebox = wx.BoxSizer(wx.HORIZONTAL)
-			##self.filetypebox= wx.BoxSizer(wx.HORIZONTAL)
-			##self.acboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Annotation Corpus')
-			##self.acbox = wx.StaticBoxSizer(self.acboxline, wx.HORIZONTAL)
-			#self.acstatsboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Annotation Corpus statistics')
-			#self.acstatsbox = wx.StaticBoxSizer(self.acstatsboxline, wx.HORIZONTAL)
-			#self.commandbox = wx.BoxSizer(wx.HORIZONTAL)
-
-			#self.simplifyboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Simplification')
-			#self.simplifybox = wx.StaticBoxSizer(self.simplifyboxline, wx.HORIZONTAL)
-
-			#self.label_simplifylabel = wx.StaticText(self.panel, wx.ID_ANY, 'Simplify')
+# simplify option 
 			self.check_simplify = wx.CheckBox(self.panel, wx.ID_ANY, 'Simplify annotation corpus')
 			#self.Bind(wx.EVT_CHECKBOX, self.OnSimplify, id=self.check_simplify.GetId())
 			self.check_simplify.SetValue(False)
-			self.label_simplifyexplanation = wx.StaticText(self.panel, wx.ID_ANY, 'Check this option if want to remove EC and other information relative to annotations after data have been parsed. This might be a good idea if the annotation corpus is HUGE. It does not affect computation results.', size=(250,60))
-			#self.simplifybox.Add(self.label_simplifylabel)
-			#self.simplifybox.Add(wx.Size(10,2))
-			#self.simplifybox.Add(self.check_simplify)
-			#self.simplifybox.Add(wx.Size(10,2))
-			#self.simplifybox.Add(self.label_simplifyexplanation)
+			self.label_simplifyexplanation = wx.StaticText(self.panel, wx.ID_ANY, 'Check this option if want to remove EC and other information relative to annotations after data have been parsed. This might be a good idea if the annotation corpus is HUGE. It does not affect computation results.', size=(250,-1))
 
 			self.filterboxline = wx.StaticBox(self.panel, wx.ID_ANY, 'Filters')
 			self.filterbox = wx.StaticBoxSizer(self.filterboxline, wx.VERTICAL)
 
 			self.gridbox= wx.FlexGridSizer(rows = 3, cols = 3, vgap = 15, hgap = 20)
+			#self.mainbox.Add(wx.Size(5,20))
+			self.mainbox.Add(self.filterbox, flag=wx.EXPAND)
 			self.filterbox.Add(self.gridbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
-			
+
+# Ignore IEA
 			self.check_filterEC = wx.CheckBox(self.panel, wx.ID_ANY, 'Ignore IEA')
 			#self.Bind(wx.EVT_CHECKBOX, self.OnSimplify, id=self.check_simplify.GetId())
 			self.check_filterEC.SetValue(False)
-			self.label_filterECexplanation = wx.StaticText(self.panel, wx.ID_ANY, 'Check this option if you want to ignore IEA (Inferred Electronically Annotations).', size=(250,60))
-			
+			self.label_filterECexplanation = wx.StaticText(self.panel, wx.ID_ANY, 'Check this option if you want to ignore IEA (Inferred Electronically Annotations).', size=(250,-1))
+
+# Restrict Taxonomy
 			self.check_filtertax = wx.CheckBox(self.panel, wx.ID_ANY, 'Restrict to Taxonomy')
 			self.Bind(wx.EVT_CHECKBOX, self.OnFilterTax, id=self.check_filtertax.GetId())
 			self.label_taxlabel = wx.StaticText(self.panel, wx.ID_ANY, 'Taxonomy Id:')
@@ -358,16 +401,34 @@ class AdvancedGui(wx.Dialog):
 			self.taxbox.Add(self.label_taxlabel)
 			self.taxbox.Add(self.text_filtertax)
 			self.check_filtertax.SetValue(False)
-			self.label_filtertaxexplanation = wx.StaticText(self.panel, wx.ID_ANY, 'Check this option to discard all the proteins/genes not belonging to the taxonomy that you have to specify in the text field.', size=(250,60))
+			self.label_filtertaxexplanation = wx.StaticText(self.panel, wx.ID_ANY, 'Check this option to discard all the proteins/genes not belonging to the taxonomy that you have to specify in the text field.', size=(250,-1))
 
-			self.gridbox.AddMany([wx.Size(5,10), wx.Size(5,10), wx.Size(5,10), self.check_simplify, wx.Size(5,10), self.label_simplifyexplanation, (self.check_filterEC), wx.Size(5,10), (self.label_filterECexplanation), (self.check_filtertax), (self.taxbox), (self.label_filtertaxexplanation)])
+#Merge all together
+			#self.gridbox.AddMany([wx.Size(5,10), wx.Size(5,10), wx.Size(5,10), self.check_simplify, wx.Size(5,10), self.label_simplifyexplanation, (self.check_filterEC), wx.Size(5,10), (self.label_filterECexplanation), (self.check_filtertax), (self.taxbox), (self.label_filtertaxexplanation)])
 			
-			#self.mainbox.Add(wx.Size(5,20))
-			#self.mainbox.Add(self.simplifybox, flag = wx.LEFT , border=10)
-			self.mainbox.Add(wx.Size(5,20))
-			self.mainbox.Add(self.filterbox)
+			
+			self.gridbox.Add(wx.Size(5,10),)
+			self.gridbox.Add(wx.Size(5,10),)
+			self.gridbox.Add(wx.Size(5,10),)
+			self.gridbox.Add(self.check_simplify,flag=wx.EXPAND)
+			self.gridbox.Add(wx.Size(5,10))
+			self.gridbox.Add(self.label_simplifyexplanation,flag=wx.EXPAND)
+			self.gridbox.Add(self.check_filterEC,flag=wx.EXPAND)
+			self.gridbox.Add(wx.Size(5,10))
+			self.gridbox.Add(self.label_filterECexplanation,flag=wx.EXPAND)
+			self.gridbox.Add(self.check_filtertax,flag=wx.EXPAND)
+			self.gridbox.Add(self.taxbox,flag=wx.EXPAND)
+			self.gridbox.Add(self.label_filtertaxexplanation,flag=wx.EXPAND)
+
+# Merge grid into mainbox
 			self.OnFilterTax(None)
 
+
+	#-#-#-#-#-#-#-#-#-#
+	# Common section  #
+	#-#-#-#-#-#-#-#-#-#
+
+# add buttons
 		self.commandbox= wx.BoxSizer(wx.VERTICAL)
 		self.button_save = wx.Button(self.panel, wx.ID_ANY, 'Save')
 		self.button_cancel = wx.Button(self.panel, wx.ID_ANY, 'Cancel')
@@ -375,29 +436,34 @@ class AdvancedGui(wx.Dialog):
 		self.Bind(wx.EVT_BUTTON, self.OnCancel, id=self.button_cancel.GetId())
 		
 		self.commandbox.Add(wx.Size(5,20))
-		self.commandbox.Add(self.button_save, flag=wx.LEFT|wx.RIGHT|wx.TOP)
-		self.commandbox.Add(self.button_cancel, flag=wx.LEFT|wx.RIGHT|wx.TOP)
-		self.mainbox.Add(self.commandbox, flag= wx.EXPAND |wx.LEFT|wx.RIGHT|wx.TOP)
+		self.commandbox.Add(self.button_save, flag = wx.TOP,border=5)
+		self.commandbox.Add(self.button_cancel, flag = wx.TOP,border=5)
+		self.mainbox.Add(self.commandbox, flag = wx.RIGHT|wx.TOP,border=5)
 
+# finalize
 		self.panel.SetSizer(self.mainbox)
 		self.OnRestore()
 		self.OnAnyUpdate()
 
+
+	#-#-#-#-#-#-#-#-#-#-#
+	# Resizing utility  #
+	#-#-#-#-#-#-#-#-#-#-#
+
 	def OnAnyUpdate(self):
-		if self.parent.filetypesel == PLAIN_FILE_TYPE:
-			self.fileformatbox.Fit(self)
-			self.gridbox.Fit(self)
-			self.separatorbox.Fit(self)
-		# set of calls to resize the gui according to the content. Pretty useful.
-		elif self.parent.filetypesel == GAF2_FILE_TYPE:
-			self.taxbox.Fit(self)
-			self.filterbox.Fit(self)
-		self.commandbox.Fit(self)
+		#if self.parent.filetypesel == PLAIN_FILE_TYPE:
+			#self.fileformatbox.Fit(self)
+			#self.gridbox.Fit(self)
+		#elif self.parent.filetypesel == GAF2_FILE_TYPE:
+			#w,h = self.mainbox.GetSizeTuple()
+			#self.mainbox.SetItemMinSize(self.gridbox, w,h)
+			#self.filterbox.Fit(self)
+			#self.gridbox.Fit(self)
+		#self.commandbox.Fit(self)
 		self.mainbox.Fit(self)
-		#w,h = self.commandbox.GetSizeTuple()
-		#self.mainbox.SetItemMinSize(self.commandbox, w,h)
-		#self.GetBestSize()
+		self.GetBestSize()
 		self.mainbox.Layout()
+
 
 	def OnManyperline(self, event):
 		pass
