@@ -1,9 +1,0 @@
-include MANIFEST.in
-include INSTALL
-include README
-include LICENSE
-include CHANGELOG
-include version
-
-recursive-include fastSemSim *.py *.png
-recursive-include gui *.py *.png
