@@ -6,4 +6,4 @@ include CHANGELOG
 include version
 
 recursive-include fastSemSim *.py *.png
-recursive-include gui *.py *.png
+recursive-include fastSemSimGui *.py *.png
