@@ -84,7 +84,6 @@ if __name__ == "__main__":
 	# Just use the class returned by TermSemSim.selectTermSemSim
 	
 	TSS = TermSemSimClass(ac, go)
-
 	#### Third step: set further parameters
 	# since additional parameters are measure-dependent you must check each single measure to learn which parameters are available
 	# The only general parameter is whether or not to perform a sanity check on input data
@@ -115,4 +114,29 @@ if __name__ == "__main__":
 			print "-> " + str(go.id2name(test_set[i])) + " - " + str(go.id2name(test_set[j])) + ": " + str(mat)
 			if done >= limit:
 				break
+	print ""
+#
+
+
+
+	print "Term Semantic similarity example (Resnik) passing GO Terms directly in integer format (not using id2name utility)"
+	#### Fifth step: determine Term semantic similarity between custom terms.
+	# The code is the same as in step four. Here go.id2name is not used. This is to demonstrate how GO Temrs can be passed directly as numbers, as well as in the usual "GO:1234567" format.
+
+	custom_list= [7052, 22, 42254, 6412, 16070, 7067, 82, 7095, 71841, 71842]
+	done = 0
+	for i in range(len(custom_list)):
+		for j in range(i, len(custom_list)):
+			done += 1
+			mat = TSS.SemSim(custom_list[i], custom_list[j])
+			#print "-> " + str(go.id2name(custom_list[i])) + " - " + str(go.id2name(custom_list[j])) + ": " + str(mat)
+			print "-> " + str(custom_list[i]) + \
+						" [" + str(TSS.util.IC[custom_list[i]]) + \
+						"] - " + str(custom_list[j]) + \
+						" [" + str(TSS.util.IC[custom_list[j]]) + "] : " + \
+						str(mat)  # \
+
+						#+ " - " + str(TSS.util.det_MICA(custom_list[i], custom_list[j])) + \
+						#" - " + str(TSS.util.ancestors[custom_list[i]]) + \
+						#" - " + str(TSS.util.ancestors[custom_list[j]])
 	print ""

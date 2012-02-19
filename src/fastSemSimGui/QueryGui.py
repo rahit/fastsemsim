@@ -27,9 +27,11 @@ class QueryGui(wx.Dialog):
 	def __init__(self, parent):
 		self.parent = parent
 		super(QueryGui, self).__init__(self.parent, title="Load Query From File", size=(300,250))
-		self.Bind(wx.EVT_CLOSE, self.OnQuit, id=self.GetId())
-		self.InitUI()
+		#self.Bind(wx.EVT_CLOSE, self.OnQuit, id=self.GetId())
+		#self.InitUI()
 		self.InitMainUI()
+		self.parent.query_box.Add(self.main_box)
+		self.OnReset()
 #
 
 
@@ -45,7 +47,6 @@ class QueryGui(wx.Dialog):
 		
 		self.panel = wx.Panel(self)
 		self.mainbox = wx.BoxSizer(wx.VERTICAL)
-
 		##Pairs section
 		#self.mainsubbox = wx.BoxSizer(wx.HORIZONTAL)
 		
@@ -102,30 +103,37 @@ class QueryGui(wx.Dialog):
  
  # This function creates the layout for the Query component in the main window
 	def InitMainUI(self):
+	#-------------------------
+	#define atomic components
+	
+		#-------------------------
+		# select input style
+		self.input_format_names = ["List","Pairs"]
+		self.input_format = wx.ComboBox(self.parent.panel, wx.ID_ANY, choices=self.input_format_names, style=wx.CB_READONLY, size=(150,25))
+		self.parent.Bind(wx.EVT_COMBOBOX, self.OnSelectInputFormat, id=self.input_format.GetId())
+		#self.parent.Bind(wx.EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_pairs.GetId())
+		#self.parent.Bind(wx.EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_list.GetId())
+		# modify query_type to query_format
+		# modify OnSelectInputStyle to OnSelectInputFormat
 
-		self.parent.SetQueryOk(False)
-		self.mainsubbox = wx.BoxSizer(wx.HORIZONTAL)
+		#-------------------------
+		# input style label
+		self.input_format_label = wx.StaticText(self.parent.panel, label='Input format')
 		
-		#Input type
-		self.msbox = wx.BoxSizer(wx.HORIZONTAL)
-		self.inputstylenames = ["List","Pairs"]
-		self.inputstyle = wx.ComboBox(self.parent.panel, wx.ID_ANY, choices=self.inputstylenames, style=wx.CB_READONLY, size=(150,25))
-		self.inputstyle.SetValue("Pairs")
-		self.parent.query_type = None
-		self.parent.Bind(wx.EVT_COMBOBOX, self.OnSelectInputStyle, id=self.inputstyle.GetId())
-		self.inputstyle_label = wx.StaticText(self.parent.panel, label='Input format')
-		self.msbox.Add(self.inputstyle_label, flag=wx.LEFT|wx.RIGHT, border=5)
-		self.msbox.Add(self.inputstyle, flag=wx.LEFT|wx.RIGHT, border=5)
-
+		#-------------------------
+		# help label
+		self.help_label = wx.StaticText(self.parent.panel, label='Type a query in the field, load it from a file, or use all the annotation corpus. If a list is provided, pairwise semantic similarity between all the entries of the list will be computed.', size=(200,105), style = wx.TE_MULTILINE)
+		
+		#-------------------------
 		#Input field
-		#self.listsrcboxline = wx.StaticBox(self.parent.panel, wx.ID_ANY, 'Query')
-		#self.listsrcbox = wx.StaticBoxSizer(self.listsrcboxline, wx.VERTICAL)
-		self.listsrcbox = wx.BoxSizer(wx.VERTICAL)
-		#self.text_query = wx.TextCtrl(self.parent.panel, size=(250,150), style = wx.TE_MULTILINE)
+		self.text_query = wx.TextCtrl(self.parent.panel, size=(250,190), style = wx.TE_MULTILINE)
+		self.parent.Bind(wx.EVT_TEXT, self.OnFieldChange, id=self.text_query.GetId())
 		
-		self.text_query = wx.grid.Grid(self.parent.panel, wx.ID_ANY, wx.Point(0,0), wx.Size(320,150))
-		self.text_query.CreateGrid(0,0)
-		self.OnSelectInputStyle(None)
+		#-------------------------
+		# Next version input field
+		#self.text_query = wx.grid.Grid(self.parent.panel, wx.ID_ANY, wx.Point(0,0), wx.Size(320,150))
+		#self.text_query.CreateGrid(0,0)
+		#self.OnSelectInputStyle(None)
 		#self.text_query.SetColLabelValue(0, "Protein 1")
 		#self.text_query.SetColLabelValue(1, "Protein 2")
 		#self.text_query.SetRowLabelSize(0)
@@ -133,226 +141,238 @@ class QueryGui(wx.Dialog):
 		#self.text_query.SetDefaultColSize(150, True)
 		#self.parent.Bind(wx.wx.EVT_COMMAND_TEXT_UPDATED, self.OnTextChange(), self.text_query.GetId())
 		#self.parent.Bind(wx.grid.EVT_GRID_SELECT_CELL, self.OnSelectCell, id=self.text_query.GetId())
-		self.parent.Bind(wx.grid.EVT_GRID_CELL_CHANGE, self.OnSelectCell, id=self.text_query.GetId())
-		
-		self.listsrcbox.Add(self.msbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM, border=10)
-		self.listsrcbox.Add(wx.Size(5,2))
-		self.listsrcbox.Add(self.text_query)
+		#self.parent.Bind(wx.grid.EVT_GRID_CELL_CHANGE, self.OnSelectCell, id=self.text_query.GetId())
 
+		#-------------------------
 		# Buttons
-		self.inputcommands = wx.BoxSizer(wx.VERTICAL)
-		self.clear = wx.Button(self.parent.panel, wx.ID_ANY, 'Clear')
-		self.filechooser = wx.Button(self.parent.panel, wx.ID_ANY, 'Load from file...')
-		#self.check_fromac = wx.CheckBox(self.parent.panel, wx.ID_ANY, 'From Annotation Corpus', (10,10))
-		self.fromac = wx.Button(self.parent.panel, wx.ID_ANY, 'Load from AC')
-		self.inputcommands.Add(self.fromac)
-		self.inputcommands.Add(self.filechooser)
-		self.inputcommands.Add(self.clear)
-		
-		# Glue
-		self.mainsubbox.Add(self.listsrcbox, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
-		self.mainsubbox.Add(self.inputcommands, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
-		self.parent.query_box.Add(self.mainsubbox)
-		
-#------------------------------------------------------------------------------------------------------------------
+		self.clear = wx.Button(self.parent.panel, wx.ID_ANY, 'Reset')
+		self.load_file = wx.Button(self.parent.panel, wx.ID_ANY, 'Load File...')
+		self.check_from_ac = wx.CheckBox(self.parent.panel, wx.ID_ANY, 'Use Annotation Corpus', (10,-1))
+		#self.fromac = wx.Button(self.parent.panel, wx.ID_ANY, 'Load from AC')
+		self.parent.Bind(wx.EVT_CHECKBOX, self.OnFromAC, id=self.check_from_ac.GetId())
+		self.parent.Bind(wx.EVT_BUTTON, self.OnClear, id=self.clear.GetId())
+		self.parent.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.load_file.GetId())
 
-		#self.parent.Bind(wx.EVT_CHECKBOX, self.OnFromAC, id=self.check_fromac.GetId())
-		#self.parent.Bind(wx.EVT_BUTTON, self.OnClear, id=self.clear.GetId())
-		#self.parent.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.filechooser.GetId())
-		#self.parent.Bind(wx.EVT_TEXT, self.OnFieldChange, id=self.text_query.GetId())
-		#self.parent.Bind(wx.EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_pairs.GetId())
-		#self.parent.Bind(wx.EVT_RADIOBUTTON, self.OnTypeSelect, id=self.radio_list.GetId())
-		
+
+	#-------------------------
+	# Putting all together
+		self.main_box = wx.BoxSizer(wx.HORIZONTAL)
+		self.query_box = wx.BoxSizer(wx.HORIZONTAL)
+		self.control_box = wx.BoxSizer(wx.VERTICAL)
+		self.query_type_box = wx.BoxSizer(wx.HORIZONTAL)
+		self.second_box = wx.BoxSizer(wx.VERTICAL)
+		#self.third_box = wx.BoxSizer(wx.VERTICAL)
+		self.fourth_box = wx.BoxSizer(wx.HORIZONTAL)
+		self.first_box = wx.BoxSizer(wx.HORIZONTAL)
+		self.third_boxline = wx.StaticBox(self.parent.panel, wx.ID_ANY, 'Hint')
+		self.third_box = wx.StaticBoxSizer(self.third_boxline, wx.VERTICAL)
+
+		self.query_box.Add(self.text_query, flag=wx.LEFT|wx.RIGHT, border=5)
+		self.query_type_box.Add(self.input_format_label, flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT|wx.RIGHT, border=5)
+		self.query_type_box.Add(self.input_format, flag=wx.LEFT|wx.RIGHT, border=5)
+		self.first_box.Add(self.check_from_ac, flag=wx.LEFT|wx.RIGHT|wx.BOTTOM, border=5)
+		self.second_box.Add(self.load_file, flag=wx.LEFT|wx.RIGHT|wx.BOTTOM, border=5)
+		self.second_box.Add(self.clear, flag=wx.LEFT|wx.RIGHT|wx.BOTTOM, border=5)
+		self.third_box.Add(self.help_label, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.TOP, border=5)
+		self.fourth_box.Add(self.second_box, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM, border=5)
+		self.fourth_box.Add(self.third_box, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM, border=0)
+		self.control_box.Add(self.query_type_box, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM, border=5)
+		self.control_box.Add(self.first_box, flag=wx.EXPAND|wx.LEFT|wx.RIGHT, border=5)
+		self.control_box.Add(self.fourth_box, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM, border=0)
+
+
+		self.main_box.Add(self.query_box, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=5)
+		self.main_box.Add(self.control_box, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=5)
+
 		#self.parent.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, WorkProcess.QUERYFROMGUI))
+#------------------------------------------------------------------------------------------------------------------
 #
 
-	def OnSelectInputStyle(self, event):
-		if self.parent.query_type == self.inputstylenames[self.inputstyle.GetSelection()]:
-			pass
-		else:
-			self.parent.query_type = self.inputstylenames[self.inputstyle.GetSelection()]
-			if self.parent.query_type == 'List':
-				self.SetList()
-			elif self.parent.query_type == 'Pairs':
-				self.SetPairs()
+	#def OnSelectInputStyle(self, event):
+		#if self.parent.query_type == self.inputstylenames[self.inputstyle.GetSelection()]:
+			#pass
+		#else:
+			#self.parent.query_type = self.inputstylenames[self.inputstyle.GetSelection()]
+			#if self.parent.query_type == 'List':
+				#self.SetList()
+			#elif self.parent.query_type == 'Pairs':
+				#self.SetPairs()
 
 		#self.button_filetypeparams.Enable()
 		#self.OnCanStart()
 #
 
-	def SetList(self):
-		self.text_query.DeleteCols(0,self.text_query.GetNumberCols())
-		self.text_query.DeleteRows(0,self.text_query.GetNumberRows())
-		self.text_query.AppendCols(1)
-		self.text_query.AppendRows(5)
-		self.text_query.SetColLabelValue(0, "Protein/Gene")
-		self.text_query.SetRowLabelSize(0)
-		self.text_query.AutoSizeColumns(True)
-		self.text_query.SetDefaultColSize(150, True)
+	#def SetList(self):
+		#self.text_query.DeleteCols(0,self.text_query.GetNumberCols())
+		#self.text_query.DeleteRows(0,self.text_query.GetNumberRows())
+		#self.text_query.AppendCols(1)
+		#self.text_query.AppendRows(5)
+		#self.text_query.SetColLabelValue(0, "Protein/Gene")
+		#self.text_query.SetRowLabelSize(0)
+		#self.text_query.AutoSizeColumns(True)
+		#self.text_query.SetDefaultColSize(150, True)
 
-	def SetPairs(self):
-		self.text_query.DeleteCols(0,self.text_query.GetNumberCols())
-		self.text_query.DeleteRows(0,self.text_query.GetNumberRows())
-		self.text_query.AppendCols(2)
-		self.text_query.AppendRows(5)
-		self.text_query.SetColLabelValue(0, "Protein/Gene 1")
-		self.text_query.SetColLabelValue(1, "Protein/Gene 2")
-		self.text_query.SetRowLabelSize(0)
-		self.text_query.AutoSizeColumns(True)
-		self.text_query.SetDefaultColSize(150, True)
-#
+	#def SetPairs(self):
+		#self.text_query.DeleteCols(0,self.text_query.GetNumberCols())
+		#self.text_query.DeleteRows(0,self.text_query.GetNumberRows())
+		#self.text_query.AppendCols(2)
+		#self.text_query.AppendRows(5)
+		#self.text_query.SetColLabelValue(0, "Protein/Gene 1")
+		#self.text_query.SetColLabelValue(1, "Protein/Gene 2")
+		#self.text_query.SetRowLabelSize(0)
+		#self.text_query.AutoSizeColumns(True)
+		#self.text_query.SetDefaultColSize(150, True)
+##
 
 
 
-	def OnSelectCell(self, event):  
-		row = event.GetRow()
-		lastRow = self.text_query.GetNumberRows() - 1
-		if( row == lastRow ):  
-			self.text_query.AppendRows( 1 )
-		#event.Skip()
-#
+	#def OnSelectCell(self, event):  
+		#row = event.GetRow()
+		#lastRow = self.text_query.GetNumberRows() - 1
+		#if( row == lastRow ):  
+			#self.text_query.AppendRows( 1 )
+		##event.Skip()
+##
  
+	def OnSelectInputFormat(self, event):
+		if self.input_format.GetValue() == self.input_format_names[1]:
+			self.parent.query_type = WorkProcess.QUERY_PAIRS
+			if self.parent.query_from == WorkProcess.QUERY_FROM_AC:
+				self.check_from_ac.SetValue(False)
+				self.OnFromAC(None)
+		else:
+			self.parent.query_type = WorkProcess.QUERY_LIST
+		self.CheckIfOk()
+#
 
-	#def OnTypeSelect(self, event):
-		#if self.radio_pairs.GetValue():
-			#self.parent.query_type = WorkProcess.QUERY_PAIRS
-			#if self.parent.query_from == WorkProcess.QUERY_FROM_AC:
-				#self.check_fromac.SetValue(False)
-				#self.OnFromAC(None)
-			#else:
-				#pass
-			#self.check_fromac.SetValue(False)
-		#elif self.radio_list.GetValue():
-			#self.parent.query_type = WorkProcess.QUERY_PAIRS
-		#self.CheckIfOk()
+	#def OnQuit(self, event):
+		#self.Hide()
 
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 
-	def OnQuit(self, event):
-		self.Hide()
-
-	#def OnReset(self):
-		#self.parent.query_from = WorkProcess.QUERY_FROM_GUI
-		#self.parent.query_type = WorkProcess.QUERY_LIST
-		#self.parent.query_file = None
-		#self.parent.query = None
-		#self.check_fromac.SetValue(False)
+	def OnReset(self):
+		self.parent.query_from = WorkProcess.QUERY_FROM_GUI
+		self.parent.query_type = WorkProcess.QUERY_LIST
+		#self.parent.query_format = None
+		self.input_format.SetValue(self.input_format_names[0])
+		self.parent.query_file = None
+		self.parent.query = None
+		self.check_from_ac.SetValue(False)
 		#self.radio_list.SetValue(True)
-		#self.text_query.Enable()
-		#self.text_query.SetValue("")
-		#self.CheckIfOk()
+		self.text_query.Enable()
+		self.text_query.SetValue("")
+		self.CheckIfOk()
+#
 
-	#def OnClear(self, event):
-		#self.OnReset()
-		
-	#def OnFieldChange(self, event):
+	def OnClear(self, event):
+		self.OnReset()
+#
+
+	def CheckIfOk(self):
+		good = True
+		if self.parent.query_from == WorkProcess.QUERY_FROM_AC:
+			self.parent.SetQueryOk(True)
+		elif self.parent.query_from == WorkProcess.QUERY_FROM_GUI:
+			if str(self.text_query.GetValue()) == "":
+				self.parent.SetQueryOk(False)
+				good = False
+			else:
+				self.parent.SetQueryOk(True)
+		elif self.parent.query_from == WorkProcess.QUERY_FROM_FILE:
+			if self.parent.query_file is None:
+				self.parent.SetQueryOk(False)
+				good = False
+			else:
+				 self.parent.SetQueryOk(True)
+		else:
+			self.parent.SetQueryOk(False)
+			good = False
+		if good:
+			self.parent.lock()
+			self.parent.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, self.parent.query_from, self.parent.query_type, self.parent.query_file))
+			self.parent.unlock()
+#
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+
+	def OnFieldChange(self, event):
 		#if str(self.text_query.GetValue()) == "":
 			#pass
-		#self.CheckIfOk()
+		self.CheckIfOk()
 
-	#def OnFileBrowse(self, event):
-		#dialog = wx.FileDialog(None, style = wx.OPEN)
-		#if dialog.ShowModal() == wx.ID_OK:
-			#self.parent.query_file = dialog.GetPath()
-			#self.OnFromFile(None)
+	def OnFileBrowse(self, event):
+		dialog = wx.FileDialog(None, style = wx.OPEN)
+		if dialog.ShowModal() == wx.ID_OK:
+			self.parent.query_file = dialog.GetPath()
+			self.OnFromFile(None)
 
-	#def OnFromFile(self, event):
-		#self.text_query.Disable()
-		#self.text_query.SetValue("The query will be loaded from " + str(self.parent.query_file))
-		#self.parent.query_from = WorkProcess.QUERY_FROM_FILE
-		#self.check_fromac.SetValue(False)
-		#self.CheckIfOk()
+	def OnFromFile(self, event):
+		self.text_query.Disable()
+		self.text_query.SetValue("The query will be loaded from " + str(self.parent.query_file))
+		self.parent.query_from = WorkProcess.QUERY_FROM_FILE
+		self.check_from_ac.SetValue(False)
+		self.CheckIfOk()
 		
-	#def OnFromAC(self, event):
-		#if self.check_fromac.GetValue():
-			#self.parent.query_from = WorkProcess.QUERY_FROM_AC
+	def OnFromAC(self, event):
+		if self.check_from_ac.GetValue():
+			self.parent.query_from = WorkProcess.QUERY_FROM_AC
 			#self.radio_list.SetValue(True)
-			#self.text_query.Disable()
-			#self.text_query.SetValue("The query will be loaded from the Annotation Corpus.")
-			#self.parent.query_file = None
-			#self.CheckIfOk()
-		#else:
-			#self.text_query.Enable()
-			#self.text_query.SetValue("")
-			#self.parent.query_from = WorkProcess.QUERY_FROM_GUI
-		#self.CheckIfOk()
+			self.parent.query_type = WorkProcess.QUERY_LIST
+			self.input_format.SetValue(self.input_format_names[0])
+			self.text_query.Disable()
+			self.text_query.SetValue("The query will be loaded from the Annotation Corpus.")
+			self.parent.query_file = None
+		else:
+			self.text_query.Enable()
+			self.text_query.SetValue("")
+			self.parent.query_from = WorkProcess.QUERY_FROM_GUI
+		self.CheckIfOk()
 
-	#def OnTypeSelect(self, event):
-		#if self.radio_pairs.GetValue():
-			#self.parent.query_type = WorkProcess.QUERY_PAIRS
-			#if self.parent.query_from == WorkProcess.QUERY_FROM_AC:
-				#self.check_fromac.SetValue(False)
-				#self.OnFromAC(None)
-			#else:
-				#pass
-			#self.check_fromac.SetValue(False)
-		#elif self.radio_list.GetValue():
-			#self.parent.query_type = WorkProcess.QUERY_PAIRS
-		#self.CheckIfOk()
+
 
 	#def OnTextChange(self, event):
 		#self.CheckIfOk()
 	
-	#def CheckIfOk(self):
-		#good = True
-		#if self.parent.query_from == WorkProcess.QUERY_FROM_AC:
-			#self.parent.SetQueryOk(True)
-		#elif self.parent.query_from == WorkProcess.QUERY_FROM_GUI:
-			#if str(self.text_query.GetValue()) == "":
-				#self.parent.SetQueryOk(False)
-				#good = False
-			#else:
-				#self.parent.SetQueryOk(True)
-		#elif self.parent.query_from == WorkProcess.QUERY_FROM_FILE:
-			#if self.parent.query_file is None:
-				#self.parent.SetQueryOk(False)
-				#good = False
-			#else:
-				 #self.parent.SetQueryOk(True)
-		#else:
-			#self.parent.SetQueryOk(False)
-			#good = False
-		#if good:
-			#self.parent.lock()
-			#self.parent.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_QUERY, self.parent.query_from, self.parent.query_type, self.parent.query_file))
-			#self.parent.unlock()
+
  
- ##--------------------------------------------------------------
-## Utilities to set front-end values
-	#def set_query_format(self, qform):
-		#if qform == 0: #pairs
-			#self.radio_pairs.SetValue(True)
-			#self.radio_list.SetValue(False)
-		#elif qform == 1:
-			#self.radio_pairs.SetValue(False)
-			#self.radio_list.SetValue(True)
-		#self.OnTypeSelect(None)
+ #--------------------------------------------------------------
+# Utilities to set front-end values
+	def set_query_format(self, qform):
+		if qform == 0: #pairs
+			self.radio_pairs.SetValue(True)
+			self.radio_list.SetValue(False)
+		elif qform == 1:
+			self.radio_pairs.SetValue(False)
+			self.radio_list.SetValue(True)
+		self.OnTypeSelect(None)
 
-	#def set_query_from(self, qfrom):
-		#if qfrom == 2: # from ac
-			#self.check_fromac.Enable()
-			#self.check_fromac.SetValue(True)
-			#self.OnFromAC(None)
-		#elif qfrom == 0: # from field
-			#self.check_fromac.Enable()
-			#self.check_fromac.SetValue(False)
-		#elif qfrom == 1: # from file
-			#self.check_fromac.Enable()
-			#self.check_fromac.SetValue(False)
-			#self.OnFromFile(None)
+	def set_query_from(self, qfrom):
+		if qfrom == 2: # from ac
+			self.check_fromac.Enable()
+			self.check_fromac.SetValue(True)
+			self.OnFromAC(None)
+		elif qfrom == 0: # from field
+			self.check_fromac.Enable()
+			self.check_fromac.SetValue(False)
+		elif qfrom == 1: # from file
+			self.check_fromac.Enable()
+			self.check_fromac.SetValue(False)
+			self.OnFromFile(None)
+#
+#
 
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+
+
+
+
+
+
+
+
+
+
+
+
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-

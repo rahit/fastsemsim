@@ -47,8 +47,8 @@ if __name__ == "__main__":
 	ontology = "BP"
 	obj1 = "Q8IPD2"
 	obj2 = "Q8IQQ0"
-	list_file = "fly_list_example.txt"
-	pairs_file = "fly_pairs_example.txt"
+	list_file = "fly_list_query.txt"
+	pairs_file = "fly_pairs_query.txt"
 
 
 

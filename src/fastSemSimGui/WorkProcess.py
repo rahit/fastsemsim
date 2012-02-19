@@ -733,6 +733,7 @@ class WorkProcess(multiprocessing.Process):
 	#-#-#-#-#-#-#-#-#-#-#-#
 
 	def _calculate(self):
+		print "Calculate"
 		#print(self.obj1_pos)
 		#print(self.obj2_pos)
 		#print(self.obj_pos)
@@ -777,7 +778,7 @@ class WorkProcess(multiprocessing.Process):
 	#-#-#-#-#-#-#-#-#-#-#-#
 	
 	def _dispatch_output(self):
-
+		print "Dispatch"
 		# add here switch to ignore None if required
 		if type(self._temp_ss) is float:
 			self._temp_ss = str('%.4f' %self._temp_ss)

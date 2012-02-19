@@ -287,7 +287,7 @@ class AdvancedGui(wx.Dialog):
 
 	def __init__(self, parent):
 		self.parent = parent
-		super(AdvancedGui, self).__init__(self.parent, title="Advanced settings", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
+		super(AdvancedGui, self).__init__(self.parent, title="Advanced settings", size=(300,300), style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
 		self.InitUI()
 	
 	def InitUI(self):
@@ -356,15 +356,15 @@ class AdvancedGui(wx.Dialog):
 			self.gridbox.Add(wx.Size(5,10))
 			self.gridbox.Add(wx.Size(5,10))
 			self.gridbox.Add(wx.Size(5,10))
-			self.gridbox.Add(self.label_separatorlabel)
-			self.gridbox.Add(self.separatorbox)
-			self.gridbox.Add(self.label_separatorexplanation)
-			self.gridbox.Add(self.label_rowtypelabel)
-			self.gridbox.Add(self.check_manyperline)
-			self.gridbox.Add(self.label_rowtypeexplanation)
-			self.gridbox.Add(self.label_rowformatlabel)
-			self.gridbox.Add(self.rowformatbox)
-			self.gridbox.Add(self.label_rowformatexplanation)
+			self.gridbox.Add(self.label_separatorlabel, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER)
+			self.gridbox.Add(self.separatorbox, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER)
+			self.gridbox.Add(self.label_separatorexplanation, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER)
+			self.gridbox.Add(self.label_rowtypelabel, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER)
+			self.gridbox.Add(self.check_manyperline, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER)
+			self.gridbox.Add(self.label_rowtypeexplanation, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER)
+			self.gridbox.Add(self.label_rowformatlabel, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER)
+			self.gridbox.Add(self.rowformatbox, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER)
+			self.gridbox.Add(self.label_rowformatexplanation, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER)
 
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
@@ -410,15 +410,15 @@ class AdvancedGui(wx.Dialog):
 			self.gridbox.Add(wx.Size(5,10),)
 			self.gridbox.Add(wx.Size(5,10),)
 			self.gridbox.Add(wx.Size(5,10),)
-			self.gridbox.Add(self.check_simplify,flag=wx.EXPAND)
+			self.gridbox.Add(self.check_simplify, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER)
 			self.gridbox.Add(wx.Size(5,10))
-			self.gridbox.Add(self.label_simplifyexplanation,flag=wx.EXPAND)
-			self.gridbox.Add(self.check_filterEC,flag=wx.EXPAND)
+			self.gridbox.Add(self.label_simplifyexplanation, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER)
+			self.gridbox.Add(self.check_filterEC, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER)
 			self.gridbox.Add(wx.Size(5,10))
-			self.gridbox.Add(self.label_filterECexplanation,flag=wx.EXPAND)
-			self.gridbox.Add(self.check_filtertax,flag=wx.EXPAND)
-			self.gridbox.Add(self.taxbox,flag=wx.EXPAND)
-			self.gridbox.Add(self.label_filtertaxexplanation,flag=wx.EXPAND)
+			self.gridbox.Add(self.label_filterECexplanation, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER)
+			self.gridbox.Add(self.check_filtertax, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER)
+			self.gridbox.Add(self.taxbox, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER)
+			self.gridbox.Add(self.label_filtertaxexplanation, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER)
 
 # Merge grid into mainbox
 			self.OnFilterTax(None)
@@ -455,13 +455,14 @@ class AdvancedGui(wx.Dialog):
 			#self.fileformatbox.Fit(self)
 			#self.gridbox.Fit(self)
 		#elif self.parent.filetypesel == GAF2_FILE_TYPE:
-			#w,h = self.mainbox.GetSizeTuple()
+			#w,h = self.gridbox.GetSizeTuple()
 			#self.mainbox.SetItemMinSize(self.gridbox, w,h)
 			#self.filterbox.Fit(self)
 			#self.gridbox.Fit(self)
 		#self.commandbox.Fit(self)
+		print self.SetMinSize((200,350))
 		self.mainbox.Fit(self)
-		self.GetBestSize()
+		#print self.GetBestSize()
 		self.mainbox.Layout()
 
 
@@ -520,7 +521,7 @@ class AdvancedGui(wx.Dialog):
 			self.parent.params[GAF2AnnotationCorpus.SIMPLIFY] = self.check_simplify.GetValue()
 			self.parent.params[AnnotationCorpus.FILTER_PARAM] = {}
 			if self.check_filterEC.GetValue():
-				self.parent.params[AnnotationCorpus.FILTER_PARAM]['EC'] = 'IEA'
+				self.parent.params[AnnotationCorpus.FILTER_PARAM]['EC'] = {'EC':'IEA'}
 			if self.check_filtertax.GetValue() and len(self.text_filtertax.GetValue())>0:
 				try:
 					self.parent.params[AnnotationCorpus.FILTER_PARAM]['taxonomy'] = int(self.text_filtertax.GetValue())
