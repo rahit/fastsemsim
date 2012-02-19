@@ -104,7 +104,6 @@ class AnnotationCorpusGui(wx.Dialog):
 		self.button_load = wx.Button(self.panel, wx.ID_ANY, 'Load')
 		self.Bind(wx.EVT_BUTTON, self.OnLoad, id=self.button_load.GetId())
 		#self.button_load.Disable()
-		self.Bind(wx.EVT_BUTTON, self.OnLoad, id=self.button_load.GetId())
 		self.button_reset = wx.Button(self.panel, wx.ID_ANY, 'Reset')
 		self.Bind(wx.EVT_BUTTON, self.OnReset, id=self.button_reset.GetId())
 		self.button_done = wx.Button(self.panel, wx.ID_ANY, 'Close')
@@ -166,6 +165,7 @@ class AnnotationCorpusGui(wx.Dialog):
 			self.filename = dialog.GetPath()
 			self.label_filename.SetLabel(os.path.basename(self.filename))
 			self.OnCanStart()
+			self.OnAnyUpdate()
 
 	def OnDone(self, event):
 		self.Hide()
@@ -348,7 +348,10 @@ class AdvancedGui(wx.Dialog):
 			self.radius_rowformat_2 = wx.RadioButton(self.panel, wx.ID_ANY, self.rowformatoptions[1], (10, 10))
 			self.rowformatbox.Add(self.radius_rowformat_1)
 			self.rowformatbox.Add(self.radius_rowformat_2)
+			self.Bind(wx.EVT_RADIOBUTTON, self.OnSelectOrder, id=self.radius_rowformat_1.GetId())
+			self.Bind(wx.EVT_RADIOBUTTON, self.OnSelectOrder, id=self.radius_rowformat_2.GetId())
 			self.label_rowformatexplanation = wx.StaticText(self.panel, wx.ID_ANY, 'Select whether the first field of each row is a protein\gene or a GO Term.', size=(250,60))
+			
 			
 			#self.gridbox.AddMany([wx.Size(5,10), wx.Size(5,10), wx.Size(5,10), (self.label_separatorlabel), (self.separatorbox), (self.label_separatorexplanation), (self.label_rowtypelabel), (self.check_manyperline), (self.label_rowtypeexplanation), self.label_rowformatlabel, self.rowformatbox, self.label_rowformatexplanation])
 
@@ -460,7 +463,7 @@ class AdvancedGui(wx.Dialog):
 			#self.filterbox.Fit(self)
 			#self.gridbox.Fit(self)
 		#self.commandbox.Fit(self)
-		print self.SetMinSize((200,350))
+		self.SetMinSize((200,350))
 		self.mainbox.Fit(self)
 		#print self.GetBestSize()
 		self.mainbox.Layout()
@@ -487,8 +490,8 @@ class AdvancedGui(wx.Dialog):
 					self.radius_separator_3.SetValue(True)
 					self.text_separator.SetValue(self.parent.params[PlainAnnotationCorpus.SEPARATOR])
 				self.check_manyperline.SetValue(self.parent.params[PlainAnnotationCorpus.MANYASSPERROW])
-				self.radius_rowformat_1.SetValue(self.parent.params[PlainAnnotationCorpus.TERMFIRST])
-				self.radius_rowformat_2.SetValue(not self.parent.params[PlainAnnotationCorpus.TERMFIRST])
+				self.radius_rowformat_1.SetValue(not self.parent.params[PlainAnnotationCorpus.TERMFIRST])
+				self.radius_rowformat_2.SetValue(self.parent.params[PlainAnnotationCorpus.TERMFIRST])
 				self.OnSelectSeparator(None)
 			elif self.parent.filetypesel == GAF2_FILE_TYPE:
 				if GAF2AnnotationCorpus.SIMPLIFY in self.parent.params:
@@ -536,11 +539,17 @@ class AdvancedGui(wx.Dialog):
 		self.Close()
 
 	def OnSelectSeparator(self, event):
-			if self.radius_separator_1.GetValue() or self.radius_separator_2.GetValue():
-				self.text_separator.Disable()
-			else:
-				self.text_separator.Enable()
-				self.text_separator.SetFocus()
+		if self.radius_separator_1.GetValue() or self.radius_separator_2.GetValue():
+			self.text_separator.Disable()
+		else:
+			self.text_separator.Enable()
+			self.text_separator.SetFocus()
+
+	def OnSelectOrder(self, event):
+		if self.radius_rowformat_1.GetValue():
+			pass
+		else:
+			pass
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 

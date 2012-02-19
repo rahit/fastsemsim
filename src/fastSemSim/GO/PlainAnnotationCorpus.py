@@ -117,7 +117,7 @@ class PlainAnnotationCorpus():
 			if len(line) == 0:
 				continue
 			if len(line) < 2:
-				print("Strange line: " + str(line))
+				#print("Strange line: " + str(line))
 				continue
 			temp_to_add = []
 			if self.int_one_association_per_row:

@@ -161,7 +161,7 @@ class WorkProcess(multiprocessing.Process):
 		# in RUN status only STOP, PAUSE, RESET or STATUS commands are accepted. The other are ignored.
 		# If no messages have been received the computation continues
 		if self.status == STATUS_RUN:
-			print "STATUS: Run"
+			#print "STATUS: Run"
 			try:
 				if not self.gui2ssprocess_queue.empty():
 					data = self.gui2ssprocess_queue.get(False)
@@ -192,7 +192,7 @@ class WorkProcess(multiprocessing.Process):
 		# get is casted in blocking mode since no computation has to be performed
 		# If no messages have been received the computation continues
 		elif self.status == STATUS_PAUSE:
-			print "STATUS: Pause"
+			#print "STATUS: Pause"
 			data = self.gui2ssprocess_queue.get()
 			if data[0] == CMD_DESTROY:
 				return False
@@ -219,7 +219,7 @@ class WorkProcess(multiprocessing.Process):
 		# in WAIT status WorkProcess handles LOAD_* messages
 		# Get is casted in blocking mode since no computation is performed meanwhile
 		elif self.status == STATUS_WAIT:
-			print "STATUS: Wait"
+			#print "STATUS: Wait"
 			data = self.gui2ssprocess_queue.get()
 			if data[0] == CMD_DESTROY:
 				return False
@@ -733,7 +733,6 @@ class WorkProcess(multiprocessing.Process):
 	#-#-#-#-#-#-#-#-#-#-#-#
 
 	def _calculate(self):
-		print "Calculate"
 		#print(self.obj1_pos)
 		#print(self.obj2_pos)
 		#print(self.obj_pos)
@@ -778,7 +777,6 @@ class WorkProcess(multiprocessing.Process):
 	#-#-#-#-#-#-#-#-#-#-#-#
 	
 	def _dispatch_output(self):
-		print "Dispatch"
 		# add here switch to ignore None if required
 		if type(self._temp_ss) is float:
 			self._temp_ss = str('%.4f' %self._temp_ss)
