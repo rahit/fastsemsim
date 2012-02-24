@@ -190,18 +190,15 @@ def parse(file_stream):
 
 
 def load(file_stream):
-	if type(file_stream) == file or type(file_stream) == gzip.GzipFile:
-		file_stream_handle = file_stream
-	
-	elif type(file_stream) == str:
+	#print type(file_stream)
+	if type(file_stream) == str:
 		fn,fe = os.path.splitext(file_stream)
 		if fe == '.gz':
 			file_stream_handle = gzip.open(file_stream, 'rb')
 		else:
 			file_stream_handle = open(file_stream, 'r')
-	
 	else:
-	 raise Exception
+		file_stream_handle = file_stream
 	
 	parser = make_parser()
 	handler = OboXmlParser()
