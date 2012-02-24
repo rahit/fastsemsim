@@ -34,19 +34,38 @@ import os
 import math
 import copy
 
-class fastResnikSemSim():
+class fastResnikSemSim(ObjSemSim.ObjSemSim):
 	IC_based = True
 
-	def __init__(self, ac, go, util = None):
+	def __init__(self, ac, go, TSS = 'Resnik', MSS = 'max', util = None):
 		self.go = go
 		self.ac = ac
 		self.util = util
-		self.TSS = "Resnik"
-		self.mixSS = "max"
+		
+		self.TSS = TSS
+		self.mixSS = MSS
+		
+		#### To be fixed when more enhaced versions will be available
+		#if self.TSS is None:
+			#self.TSS = TermSemSim(self.ac, self.go, self.util)
+		#elif type(self.TSS) is str:
+			#self.TSS = self.pick_TSS()
+		#else:
+			#pass
+		#if self.mixSS is None:
+			#self.mixSS = MixSemSim(self.ac, self.go)
+		#elif type(self.mixSS) is str:
+			#self.mixSS = self.pick_mixSS()
+		#else:
+			#pass
+
 		if self.util == None:
 			self.util = SemSimUtils.SemSimUtils(self.ac, self.go)
 			self.util.det_IC_table()
-	  
+#
+
+
+
 	def get_direct_annotations(self, obj, onto):
 		if not obj in self.ac.annotations:
 			print(str(obj) + " not found in Annotation Corpus!")
@@ -70,7 +89,13 @@ class fastResnikSemSim():
 	def int_format_data(self, obj, onto):
 		terms = self.get_direct_annotations(obj, onto)
 		return self.extend_direct_annotations(terms)
-		
+#
+
+
+
+
+
+
 	def int_SemSim(self, onto):
 		self.scores = {}
 		self.matrice = []
@@ -85,12 +110,14 @@ class fastResnikSemSim():
 		self.sortedTermsDict = {}
 		for i in range(0,len(self.sortedTerms)):
 			 self.sortedTermsDict[self.sortedTerms[i]] = i
-		print(str(self.sortedTerms))
+		#print(str(self.sortedTerms))
 		conta = 0
 		# populate table... each row is a proteins
 		pos = 0
+		
+		print("Preprocessing annotation corpora...")
 		for i in self.ac.annotations:
-			print "processing " + str(conta) + " on " + str(len(self.ac.annotations))
+			#print "processing " + str(conta) + " on " + str(len(self.ac.annotations))
 			conta += 1
 			temp_row = len(self.sortedTerms)*[0]
 			temp_annot = self.int_format_data(i, onto)
@@ -103,12 +130,21 @@ class fastResnikSemSim():
 				temp_row[self.sortedTermsDict[j]] = 1
 			#print temp_row
 			self.matrice.append(temp_row)
-			print i
+			#print i
 			self.matrice_names.append(i) #[i] = pos 
 			pos += 1
 		#main loop
+		
+		print("Evaluating semantic similarities between " + str(len(self.ac.annotations)))
+		total = len(self.matrice)
+		done = 0
+		#if verbose:
+		prev_text = ""
+		sys.stdout.write("Done: ")
+		sys.stdout.flush()
+		
 		for i in range(0,len(self.matrice)):
-			print("Processing " + str(i) + " on " + str(len(self.matrice)) + ": " + str(self.matrice_names[i]))
+			#print("Processing " + str(i) + " on " + str(len(self.matrice)) + ": " + str(self.matrice_names[i]))
 			temp_scores = {}
 			temp_missing = [x for x in range(i+1, len(self.matrice))]
 			#print(str(len(temp_missing)))
@@ -134,8 +170,15 @@ class fastResnikSemSim():
 				#print temp_missing[j]
 				temp_scores[self.matrice_names[j]] = 0
 			#print temp_scores
-			print("Size of last added vector: " + str(len(temp_scores)))
-			print("-------------------")
+			#print("Size of last added vector: " + str(len(temp_scores)))
+			#print("-------------------")
+			#if verbose:
+			done += 1
+			sys.stdout.write("\b"*len(prev_text))
+			prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
+			sys.stdout.write(prev_text)
+			sys.stdout.flush()
+					
 			if self.stream1 is None:
 				if self.matrice_names[i] in self.scores:
 					print "Errore"
@@ -169,75 +212,36 @@ class fastResnikSemSim():
 		##print(t1
 		##print(t2
 		return self.int_SemSim(onto)
+#
 
+#if __name__ == "__main__":
+	##### load ontology
+	#tree = GeneOntology.parse(sys.argv[1])
+	#print "Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
 
-if __name__ == "__main__":
-	#### load ontology
-	tree = GeneOntology.load_GO_XML(open(sys.argv[1]))
-	print "Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
+	#gp = AnnotationCorpus.AnnotationCorpus(tree)
+	#gp.parse(sys.argv[2],'gaf-2.0')
 
-	gp = AnnotationCorpus.AnnotationCorpus(tree)
-	gp.parse(sys.argv[2],'gaf-2.0')
+	#print("Annotated proteins: " + str(len(gp.annotations)))
+	#print("Annotated terms: " + str(len(gp.reverse_annotations)))
+	#print("Check annotation corpus consistency... " + str(gp.check_consistency()))
 
-	print("Annotated proteins: " + str(len(gp.annotations)))
-	print("Annotated terms: " + str(len(gp.reverse_annotations)))
-	print("Check annotation corpus consistency... " + str(gp.check_consistency()))
-
-	#### create SemSimUtils class
-	ssu = SemSimUtils.SemSimUtils(gp, tree)
-	ssu.det_offspring_table()
-	ssu.det_ancestors_table()
-	ssu.det_freq_table()
-	ssu.det_GO_division()
-	ssu.det_ICs_table()
-	print "------------ IC list -----------"
-	for i in ssu.IC:
-		print str(i) + "\t" + str(ssu.IC[i])
-	print "------------ end IC list -----------"
-	SS = fastResnikSemSim(gp, tree, ssu)
+	##### create SemSimUtils class
+	#ssu = SemSimUtils.SemSimUtils(gp, tree)
+	#ssu.det_offspring_table()
+	#ssu.det_ancestors_table()
+	#ssu.det_freq_table()
+	#ssu.det_GO_division()
+	#ssu.det_ICs_table()
+	#print "------------ IC list -----------"
+	#for i in ssu.IC:
+		#print str(i) + "\t" + str(ssu.IC[i])
+	#print "------------ end IC list -----------"
+	#SS = fastResnikSemSim(gp, tree, ssu)
 	
-	ontology = str(sys.argv[4]) # "MF" or "BP" or "CC"
-	print ontology
-	outfile1 = open(sys.argv[3], 'w')
-	SS.SemSim(ontology, outfile1)
-	outfile1.close()
-	sys.exit(0)
-	#A = int(sys.argv[6])
-	#B = int(sys.argv[7])
-
-	#inf = open(sys.argv[3],'r')
-	#human_pairs = []
-	#for line in inf:
-		#line = line.rstrip('\n')
-		#line = line.rstrip('\r')
-		##line = line.rsplit('\t')
-		##human_pairs.append((line[0], line[1]))
-		##line = line.rsplit('\t')
-		#human_pairs.append(line)
-		##print "\"" + line[0] + "\"" + line[1] + "\""
-	#test_set = human_pairs
-	#inf.close()
-	
-	#outfile = open(sys.argv[3], 'w')
-	#outfile1 = open(sys.argv[4], 'w')
-	#complexes = gp.annotations
-	#test_set = complexes.items()
-	#conta = 0
-	#A = 0
-	#B = len(test_set) - 1
-	#for i in range(A,B+1):
-		#outfile1.write(str(test_set[i]))
-		##ssscores[test_set[i]] = {}
-		#if i%(len(test_set)/100)==0:
-			#print "Done " + str(i) + " on " + str(len(test_set))
-		#firsttime = True
-		#for j in range(i+1,len(test_set)):
-			#if firsttime:
-				 #outfile1.write(" " + str(test_set[j]) + "\n")
-				 #firsttime = False
-			#if j%(len(test_set)/1000)==0:
-				#print "Done " + str(j) + " on " + str(len(test_set))
-			#test = SS.SemSim(test_set[i],test_set[j],ontology)
-			#outfile.write(str(test) + "\n")
-	#outfile.close()
+	#ontology = str(sys.argv[4]) # "MF" or "BP" or "CC"
+	#print ontology
+	#outfile1 = open(sys.argv[3], 'w')
+	#SS.SemSim(ontology, outfile1)
 	#outfile1.close()
+	#sys.exit(0)

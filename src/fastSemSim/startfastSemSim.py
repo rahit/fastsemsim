@@ -22,6 +22,7 @@ from fastSemSim.GO import AnnotationCorpus
 from fastSemSim.GO import GeneOntology
 from fastSemSim.SemSim import ObjSemSim
 from fastSemSim.SemSim import TermSemSim
+from fastSemSim.fastResnik import fastResnikSemSim
 import sys
 import os
 import math
@@ -276,6 +277,34 @@ def load_query_from_ac(ac):
 
 
 
+####----####----####----####----####----####----####----####----####----####----####----####----####----####----####----####----
+	
+	#-#-#-#-#-#-#-#-#-#-#
+	# Enhaced version   #
+	#-#-#-#-#-#-#-#-#-#-#
+
+def init_enhaced_ss(go, ac, termss='Resnik', mixp="BMA", params = None):
+
+	print "Initializing Semantic Similarity class..."
+	SS = fastResnikSemSim.fastResnikSemSim(ac, go, termss, mixp, params)
+	print "-> Semantic Similarity class ready"
+	return SS
+#
+
+
+
+def ss_pairwise_enhaced(SS, pairs = None, ontology = 'BP', out = None):
+	#print "Evluating pairwise semantic similarity between " + str(len(pairs)) + " entities (" + str(len(pairs)*(len(pairs)-1)/2) + " pairs)"
+	out_h = out
+	if out==None:
+		out_h = sys.stdout
+	SS.SemSim(ontology, out)
+#
+
+
+
+####----####----####----####----####----####----####----####----####----####----####----####----####----####----####----####----
+
 
 
 def print_usage():
@@ -307,12 +336,13 @@ def print_usage():
 	print "--entryfirst:\t If specified, plain annotation corpus files will be parsed assuming that the first column of each row contains the entry, and the second the GO Term. Used only with plain files. [this is the standard behavior]"
 	print "--multiple:\t If specified, each line in plain annotation corpus files can contain more than one GO Term or Entries." 
 	print "--acsep:\t Separator used for the plain annotation corpus files. Use s for space, and t for tab. [Default: tab]"
+	print "--enhaced:\t Use the fast implementation of the semantic similarity measure. Currently only Resnik max is supported. Currently it forces -l and -u. Overrides -p and -q. This limitation will be removed in the future."
 	print ""
 #
 
 
 def start():
-	global go_file, ac_file, ac_type, ontology, query_file, query_type, query_from_ac, out_file, semsim_name, mix_name, query_separator, verbose, tax_include, use_IEA, GOTerm_first, multiple, ac_separator, go, ac, query, SS
+	global go_file, ac_file, ac_type, ontology, query_file, query_type, query_from_ac, out_file, semsim_name, mix_name, query_separator, verbose, tax_include, use_IEA, GOTerm_first, multiple, ac_separator, go, ac, query, SS, use_enhaced
 	
 	print("-----------------------------------------------")
 	print("FastSemSim 0.5 - Copyright 2011-2012 Marco Mina")
@@ -338,6 +368,7 @@ def start():
 	GOTerm_first = False
 	multiple = False
 	ac_separator = None
+	use_enhaced = False
 	
 	if len(sys.argv) < 2:
 		print_usage()
@@ -414,6 +445,9 @@ def start():
 		elif sys.argv[i] == '--multiple':
 			multiple = True
 			continue
+		elif sys.argv[i] == '--enhaced':
+			use_enhaced = True
+			continue
 		elif sys.argv[i] == '--acsep':
 			if sys.argv[i+1] == 't':
 				ac_separator = "\t"
@@ -431,12 +465,17 @@ def start():
 	if ac_file == None:
 		print "Please specify an annotation corpus"
 		sys.exit()
+	if use_enhaced:
+		query_from_ac = True
+		semsim_name = 'Resnik'
+		mix_name = 'max'
 	if not query_from_ac:
 		if query_file == None:
 			print "Please specify a query file or use -u"
 			sys.exit()
 	else:
 		query_type = 'list'
+
 
 	print("Gene Ontology file \t\t" + str(go_file))
 	print("Annotation Corpus file \t\t" + str(ac_file))
@@ -462,11 +501,17 @@ def start():
 		print("Output \t\t\t\tto console")
 	print("SS measure \t\t\t" + str(semsim_name) + " " + str(mix_name))
 	print("GO category \t\t\t" + ontology)
+	print("Using enhaced version\t\t" + str(use_enhaced))
 	print("-----------------------------------------------")
 
 	go = load_go(go_file)
 	ac = load_ac(ac_file, ac_type)
-	SS = init_ss(go, ac, semsim_name, mix_name)
+	
+	if not use_enhaced:
+		SS = init_ss(go, ac, semsim_name, mix_name)
+	else:
+		SS = init_enhaced_ss(go, ac, semsim_name, mix_name)
+		
 	if query_from_ac:
 		query = load_query_from_ac(ac)
 	else:
@@ -474,7 +519,10 @@ def start():
 	h = None
 	if not out_file == None:
 		h = open(out_file, 'w')
-	if query_type == 'pairs':
+		
+	if use_enhaced:
+		ss_pairwise_enhaced(SS, query, ontology, h)
+	elif query_type == 'pairs':
 		ss_pairs(SS, query, ontology, h)
 	else:
 		ss_pairwise(SS, query, ontology, h)
