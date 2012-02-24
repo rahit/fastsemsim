@@ -18,11 +18,6 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-"""
-This class provides a template for using fastSemSim for evaluating protein Sem Sim.
-See TermSemSimExample.py for information regarding Term Sem Sim
-"""
-
 from fastSemSim.GO import AnnotationCorpus
 from fastSemSim.GO import GeneOntology
 from fastSemSim.SemSim import ObjSemSim

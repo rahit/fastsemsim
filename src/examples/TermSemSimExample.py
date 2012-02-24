@@ -33,7 +33,7 @@ if __name__ == "__main__":
 	
 	# example data
 	if len(sys.argv) < 3:
-		go_file = "GO_2011-09-16.obo-xml"
+		go_file = "GO_2011-09-16.obo-xml.gz"
 		ac_file = "gene_association.goa_fly"
 	else:
 		go_file = sys.argv[1]
@@ -45,7 +45,7 @@ if __name__ == "__main__":
 	#-#-#-#-#-#-#-#-#-#-#-#
 
 	print "Loading Gene Ontology from " + str(go_file) + "..."
-	go = GeneOntology.load_GO_XML(open(go_file))
+	go = GeneOntology.load_GO_XML(go_file)
 	print "-> Ontology correctly loaded: " + str(go.node_num()) + " nodes and " +  str(go.edge_num()) + " edges."
 	print ""
 

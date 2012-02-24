@@ -26,8 +26,10 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 Function load_GO_XML(file_stream) loads XML files. It returns a GeneOntology object.
 """
 import types
+import os
 from xml.sax import make_parser
 from xml.sax.handler import ContentHandler
+import gzip
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 # constants and macro
@@ -166,17 +168,57 @@ class GeneOntology:
 			self.nodes_edges[go2].append(e)
 		self.edge_types[e] = edge_type
 		return e
+#
+
+
+
+
+
+
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 # load_GO_XML: function to load an obo-xml file
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+def load_GO_XML(file_stream): # kept for backward compatibility. Should use load or parse instead
+	return load(file_stream)
+#
 
-def load_GO_XML(file_stream):
+
+def parse(file_stream):
+	return load(file_stream)
+#
+
+
+def load(file_stream):
+	if type(file_stream) == file or type(file_stream) == gzip.GzipFile:
+		file_stream_handle = file_stream
+	
+	elif type(file_stream) == str:
+		fn,fe = os.path.splitext(file_stream)
+		if fe == '.gz':
+			file_stream_handle = gzip.open(file_stream, 'rb')
+		else:
+			file_stream_handle = open(file_stream, 'r')
+	
+	else:
+	 raise Exception
+	
 	parser = make_parser()
 	handler = OboXmlParser()
 	parser.setContentHandler(handler)
-	parser.parse(file_stream)
+	parser.parse(file_stream_handle)
+	
+	if type(file_stream) == str:
+		file_stream_handle.close()
+
 	return GeneOntology(handler.terms, handler.edges, handler.alt_ids)
+#
+
+
+
+
+
+
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 # OboXmlParser: Class to parse GO obo-xml files

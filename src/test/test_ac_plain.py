@@ -30,11 +30,11 @@ import sys
 
 if __name__ == "__main__":
 
-	ontology = 'GO_2011-09-16.obo-xml'
+	ontology = 'GO_2011-09-16.obo-xml.gz'
 	ac_file = 'plain_ac.txt'
 
 	#### load ontology
-	tree = GeneOntology.load_GO_XML(open(ontology))
+	tree = GeneOntology.load_GO_XML(ontology)
 	print "Ontology infos: file name: " + str(ontology) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
 
 	#### load annotations - filtering

@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
 	# example data
 	if len(sys.argv) < 3:
-		go_file = "GO_2011-09-16.obo-xml"
+		go_file = "GO_2011-09-16.obo-xml.gz"
 		ac_file = "gene_association.goa_fly"
 		#ac_file = "plain_ac_example.txt"
 	else:
@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
 	# currently supported format is obo-xml. To load the GO from "go_file" simply use
 	print "Loading Gene Ontology from " + str(go_file) + "..."
-	go = GeneOntology.load_GO_XML(open(go_file))
+	go = GeneOntology.load_GO_XML(go_file)
 	# get the number of nodes and edges in the GO
 	print "-> Ontology correctly loaded: " + str(go.node_num()) + " nodes and " +  str(go.edge_num()) + " edges."
 	print ""
