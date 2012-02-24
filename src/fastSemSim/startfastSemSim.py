@@ -30,7 +30,7 @@ from fastSemSim.SemSim import TermSemSim
 import sys
 import os
 import math
-
+import gzip
 
 
 
@@ -41,7 +41,13 @@ import math
 
 def load_go(go_file):
 	print "Loading Gene Ontology from " + str(go_file) + "..."
-	go = GeneOntology.load_GO_XML(open(go_file))
+	fn,fe = os.path.splitext(go_file)
+	if fe == '.gz':
+		go_handle = gzip.open(go_file, 'rb')
+	else:
+		go_handle = open(go_file, 'r')
+	go = GeneOntology.load_GO_XML(go_handle)
+	go_handle.close()
 	print "-> Ontology correctly loaded: " + str(go.node_num()) + " nodes and " +  str(go.edge_num()) + " edges."
 	return go
 #
@@ -176,7 +182,7 @@ def ss_pairs(SS, pairs, ontology, out):
 		if out == None:
 			print pairs[i][0] + "\t" + pairs[i][1] + "\t" + str(temp)
 		else:
-			h.write(pairs[i][0] + "\t" + pairs[i][1] + "\t" + str(temp) + "\n")
+			out.write(pairs[i][0] + "\t" + pairs[i][1] + "\t" + str(temp) + "\n")
 			if verbose:
 				sys.stdout.write("\b"*len(prev_text))
 				prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
@@ -214,7 +220,7 @@ def ss_pairwise(SS, pairs, ontology, out):
 			if out == None:
 				print pairs[i] + "\t" + pairs[j] + "\t" + str(temp)
 			else:
-				h.write(pairs[i] + "\t" + pairs[j] + "\t" + str(temp) + "\n")
+				out.write(pairs[i] + "\t" + pairs[j] + "\t" + str(temp) + "\n")
 				if verbose:
 					sys.stdout.write("\b"*len(prev_text))
 					prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
@@ -279,13 +285,13 @@ def load_query_from_ac(ac):
 
 def print_usage():
 	print ""
-	print "Usage:\t python FastSemSim.py [-g|--go go_file] -a|--ac ac_file [-t|--actype ac_type] [-q|--query query] [-u] [-s|--semsim sem_sim] [-m|--mix mixing_strategy] [-o|--output output_file] [-p|--pairs]"
+	print "Usage:\t python FastSemSim.py [-g|--go go_file] -a|--ac ac_file [-c|--category MF|BP|CC ] [-t|--actype ac_type] [-q|--query query_file] [-u] [-s|--semsim sem_sim] [-m|--mix mixing_strategy] [-o|--output output_file] [-p|--pairs] [-l|--list] [-v] [-h]"
 	print ""
 	print ""
 	print "Parameters:"
 	print "-a,--ac:\t The Annotation Corpus to use. Can be either in GAF-2 or plain format. See documentation online for information."
 	print "-c, --category:\t The Gene Ontology category to use. Can be \"MF\",\"BP\" or \"CC\". [Default: BP]"
-	print "-g,--go:\t The Gene Ontology to use. Must be in obo-xml format. If not provided, the GO version included in FastSemSim will be used."
+	print "-g,--go:\t The Gene Ontology to use. Must be in obo-xml format. Can use and automatically detects the gzipped version of the GO. If not provided, the GO version included in FastSemSim will be used."
 	print "-h, --help:\t Print this help page."
 	print "-l, --list:\t Consider the query as a list of entries. Evaluates the pairwise semantic similarity."
 	print "-m, --mixing_strategy:\t The mixing strategy to be used (if the SS measure requires it). [Default: BMA]"
@@ -298,24 +304,29 @@ def print_usage():
 	print "-v, --verbose:\t Print additional statistics and progress details."
 	print ""
 	print "Advanced Parameters:"
-	print "--sep, --separator:\t Separator used in the query file (only for pairs) [Default: tab]"
+	print "--sep, --separator:\t Separator used in the query file (only for pairs). Use s for space, and t for tab. [Default: tab]"
 	print "--tax:\t Filter the Annotation Corpus. Removes protein/genes according to the taxonomy. Used only with gaf2 files"
 	print "--IEA:\t If specified, IEA annotations will be considered. Used only with gaf2 files. [that is the standard behavior]"
 	print "--noIEA:\t If specified, IEA annotations will be ignored. Used only with gaf2 files."
 	print "--GOTermfirst:\t If specified, plain annotation corpus files will be parsed assuming that the first column of each row contains the GO Term, and the second one contains the Entry. Used only with plain files."
 	print "--entryfirst:\t If specified, plain annotation corpus files will be parsed assuming that the first column of each row contains the entry, and the second the GO Term. Used only with plain files. [this is the standard behavior]"
 	print "--multiple:\t If specified, each line in plain annotation corpus files can contain more than one GO Term or Entries." 
-	print "--acsep:\t Separator used for the plain annotation corpus files [Default: tab]"
+	print "--acsep:\t Separator used for the plain annotation corpus files. Use s for space, and t for tab. [Default: tab]"
 	print ""
 #
 
 
-
-if __name__ == "__main__":
+def start():
+	global go_file, ac_file, ac_type, ontology, query_file, query_type, query_from_ac, out_file, semsim_name, mix_name, query_separator, verbose, tax_include, use_IEA, GOTerm_first, multiple, ac_separator, go, ac, query, SS
+	
 	print("-----------------------------------------------")
 	print("FastSemSim 0.5 - Copyright 2011-2012 Marco Mina")
 	print("-----------------------------------------------")
-	go_file = "GO_2011-09-16.obo-xml"
+
+	program_dir = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
+	#program_dir = '.' # use this with py2exe to build a working binary
+	
+	go_file = program_dir + "/data/GO_2012-02-24.obo-xml.gz"
 	ac_file = None
 	ac_type = 'gaf2'
 	ontology = "BP"
@@ -385,7 +396,12 @@ if __name__ == "__main__":
 			verbose = True
 			continue
 		elif sys.argv[i] == '--sep' or sys.argv[i] == '--separator':
-			query_separator = sys.argv[i+1]
+			if sys.argv[i+1] == 't':
+				query_separator = "\t"
+			elif sys.argv[i+1] == 's':
+				query_separator = " "
+			else:
+				query_separator = sys.argv[i+1]
 		elif sys.argv[i] == '--tax':
 			tax_include = sys.argv[i+1]
 		elif sys.argv[i] == '--IEA':
@@ -404,7 +420,12 @@ if __name__ == "__main__":
 			multiple = True
 			continue
 		elif sys.argv[i] == '--acsep':
-			ac_separator = sys.argv[i+1]
+			if sys.argv[i+1] == 't':
+				ac_separator = "\t"
+			elif sys.argv[i+1] == 's':
+				ac_separator = " "
+			else:
+				ac_separator = sys.argv[i+1]
 		else:
 			print "Unknown parameter " + sys.argv[i]
 			print ""
@@ -443,7 +464,7 @@ if __name__ == "__main__":
 	if not out_file == None:
 		print("Output file \t\t\t" + str(out_file))
 	else:
-		print("Output \t\t\tto console")
+		print("Output \t\t\t\tto console")
 	print("SS measure \t\t\t" + str(semsim_name) + " " + str(mix_name))
 	print("GO category \t\t\t" + ontology)
 	print("-----------------------------------------------")
@@ -465,4 +486,8 @@ if __name__ == "__main__":
 	if not h == None:
 		h.close()
 	sys.exit()
+#
+
+if __name__ == "__main__":
+	start()
 #

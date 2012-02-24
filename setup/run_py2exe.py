@@ -21,7 +21,9 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 from distutils.core import setup
 import py2exe
 
-Mydata_files = [('images', ['fastSemSimGui/V_30.png', 'fastSemSimGui/W_30.png', 'fastSemSimGui/advanced.png'])]
+Mydata_files = [('images', ['fastSemSimGui/V_30.png', 'fastSemSimGui/W_30.png', 'fastSemSimGui/advanced.png']),
+								('data', ['fastSemSim/data/GO_2012-02-24.obo-xml',])]
+
 
 setup(
     data_files = Mydata_files,
@@ -32,4 +34,6 @@ setup(
             "optimize": 2
         }
     },
-    windows =['startGui.py'])
+    windows =['startGui.py'],
+    console =['startfastSemSim.py']
+    )

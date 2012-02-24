@@ -30,6 +30,7 @@ from fastSemSim.SemSim import ObjSemSim
 from fastSemSim.SemSim import SemSimUtils
 from fastSemSim.GO import GeneOntology
 from fastSemSim.GO import AnnotationCorpus
+import gzip
 
 # WorkProcess is designed as a state machine. Here are the possible status
 STATUS_BASE = 0
@@ -372,7 +373,13 @@ class WorkProcess(multiprocessing.Process):
 		else:
 			self.go_filename = data[0]
 			try:
-				self.go = GeneOntology.load_GO_XML(open(self.go_filename,'r'))
+				fn,fe = os.path.splitext(self.go_filename)
+				if fe == '.gz':
+					go_handle = gzip.open(self.go_filename, 'rb')
+				else:
+					go_handle = open(self.go_filename,'r')
+				self.go = GeneOntology.load_GO_XML(go_handle)
+				go_handle.close()
 			except Exception:
 				self.go = None
 

@@ -19,9 +19,9 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 import sys
-from fastSemSimGui import fastSemSimGui
+from fastSemSimGui import startGui
 import multiprocessing
 
 if __name__ == "__main__":
 	multiprocessing.freeze_support()
-	fastSemSimGui.go()
+	startGui.go()

@@ -18,15 +18,13 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import sys
-import fastSemSimGui
-import multiprocessing
+"""
+This class provides a template for using fastSemSim for evaluating protein Sem Sim.
+See TermSemSimExample.py for information regarding Term Sem Sim
+"""
 
-def go():
-	multiprocessing.freeze_support()
-	fastSemSimGui.go()
-#
+from fastSemSim import startfastSemSim
 
 if __name__ == "__main__":
-	#multiprocessing.freeze_support()
-	go()
+	startfastSemSim.start()
+#

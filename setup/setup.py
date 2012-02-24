@@ -59,8 +59,7 @@ setup(
     ],
 
     package_dir={'fastSemSim':'fastSemSim', 'fastSemSimGui':'fastSemSimGui'},
-    package_data={'fastSemSimGui':['*.png']},
-    packages=['fastSemSim', 'fastSemSim.GO', 'fastSemSim.SemSim', 'fastSemSimGui', 'fastSemSim.fastResnik'],
-    #package_data={'dir': ['data.?']},
+    package_data={'fastSemSimGui':['*.png'], 'fastSemSim.data':['*']},
+    packages=['fastSemSim', 'fastSemSim.data', 'fastSemSim.GO', 'fastSemSim.SemSim', 'fastSemSimGui', 'fastSemSim.fastResnik'],
     #requires=['wx (>=2.8)']
 )

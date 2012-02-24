@@ -25,7 +25,6 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 
 Function load_GO_XML(file_stream) loads XML files. It returns a GeneOntology object.
 """
-
 import types
 from xml.sax import make_parser
 from xml.sax.handler import ContentHandler

@@ -5,11 +5,11 @@ LOCAL=1
 
 PYTHON_INTERPRETER=python
 
-if [ ${LOCAL} = 1 ]; then
+if [ -f startfastSemSim.py ]; then
+# if [ ${LOCAL} = 1 ]; then
 	echo "Running the local version"
-	(export PYTHONPATH="."; ${PYTHON_INTERPRETER} startGui.py)
+	(export PYTHONPATH="."; ${PYTHON_INTERPRETER} startfastSemSim.py "$@")
 else
-	echo "Running the installed version"
-	echo "Not implemented"
-# 	(cd examples && ${PYTHON_INTERPRETER} LoadGUI.py)
+# 	echo "Running the installed version"
+	${PYTHON_INTERPRETER} -c "from fastSemSim import startfastSemSim; startfastSemSim.start()" "$@"
 fi
