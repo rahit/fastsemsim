@@ -22,7 +22,7 @@ from distutils.core import setup
 import py2exe
 
 Mydata_files = [('images', ['fastSemSimGui/V_30.png', 'fastSemSimGui/W_30.png', 'fastSemSimGui/advanced.png']),
-								('data', ['fastSemSim/data/GO_2012-02-24.obo-xml.gz',])]
+								('data', ['fastSemSim/data/GO_2012-02-24.obo-xml',])]
 
 
 setup(
