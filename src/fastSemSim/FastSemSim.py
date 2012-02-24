@@ -43,7 +43,6 @@ def load_go(go_file):
 	print "Loading Gene Ontology from " + str(go_file) + "..."
 	go = GeneOntology.load_GO_XML(open(go_file))
 	print "-> Ontology correctly loaded: " + str(go.node_num()) + " nodes and " +  str(go.edge_num()) + " edges."
-	print ""
 	return go
 #
 
@@ -70,20 +69,28 @@ def load_ac(ac_file, ac_type):
 	#### For gaf-2 / GOA files:
 	if not is_plain:
 		params = {}
+	
 		params['filter'] = {} # filter section is useful to remove undesired annotations
-		if IEA_filtering:
+		if not use_IEA:
 			params['filter']['EC'] = {} # EC filtering: select annotations depending on their EC
 			params['filter']['EC']['EC'] = 'IEA' # select which EC accept or reject
-
-		params['filter']['taxonomy'] = '7227' # set properly this field to load only annotations involving proteins/genes of a specific species
+		
+		if not tax_include == None:
+			params['filter']['taxonomy'] = tax_include # set properly this field to load only annotations involving proteins/genes of a specific species
+		
 		params['simplify'] = True # after parsing and filtering, removes additional information such as taxonomy or EC. Useful if you have a huge amount of annotations and not enough memory
 	
 	#### For plain files:
 	if is_plain:
 		params = {}
-		params['multiple'] = False # Set to True if there are many associations per line (the object in the first field is associated to all the objects in the other fields within the same line)
-		params['term first'] = True # set to True if the first field of each row is a GO term. Set to False if the first field represents a protein/gene
-		params['separator'] = '\t' # select the separtor used to divide fields
+
+		if multiple:
+			params['multiple'] = True # Set to True if there are many associations per line (the object in the first field is associated to all the objects in the other fields within the same line)
+		if GOTerm_first:
+			params['term first'] = True # set to True if the first field of each row is a GO term. Set to False if the first field represents a protein/gene
+		
+		if not ac_separator == None:
+			params['separator'] = ac_separator # select the separtor used to divide fields
 	
 	#-#-#-#-#-#-#-#-#-#-#-#-#-#
 	# Third Step: parsing
@@ -94,37 +101,21 @@ def load_ac(ac_file, ac_type):
 	else:
 		print "Loading annotation corpus from gaf-2 file " + str(ac_file) + "..."
 		ac.parse(ac_file,'GOA', params) # to parse gaf-2 / GOA files
-	
+
 	#-#-#-#-#-#-#-#-#-#-#-#-#-#
 	#### additional useful annotation corpus routines
 	ac.isConsistent() # check whether the annotations are consistent with the current gene ontology. Useful to check if everything is fine
 	ac.sanitize() # removes annotations not consistent with the current gene ontology. USeful if you loaded an annotation corpus BEFORE loading a gene ontology
-	print ""
-
+	print "-> Annotation Corpus correctly loaded: " + str(len(ac.obj_set)) + " objects and " +  str(len(ac.term_set)) + " GO Terms."
 	return ac
 #
 
-
-
-
-
-
-def print_stats(go, ac):
-	#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
-	# Accessing annotation corpus data  #
-	#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
-	
 	# these 4 variables contain all the useful data:
-	ac.annotations # set of annotations -> it's a dictionary with genes/proteins as keys. The value for each key is a dictionary with GO Terms annotated for that protein as keys
-	ac.reverse_annotations # set of annotations -> it's  adictionary with terms as keys. The value for each key is a dictionary with genes/proteins annotated for that GO Term as keys
-	ac.obj_set # set of proteins/genes involved in annotations
-	ac.term_set # set of GO Terms involved in annotations
-	
-	#Examples:
-	print "-> Annotation Corpus correctly loaded. Annotated terms: " + str(len(ac.reverse_annotations)) + ". Annotated proteins: " + str(len(ac.annotations)) 
-	print ""
+	#ac.annotations # set of annotations -> it's a dictionary with genes/proteins as keys. The value for each key is a dictionary with GO Terms annotated for that protein as keys
+	#ac.reverse_annotations # set of annotations -> it's  adictionary with terms as keys. The value for each key is a dictionary with genes/proteins annotated for that GO Term as keys
+	#ac.obj_set # set of proteins/genes involved in annotations
+	#ac.term_set # set of GO Terms involved in annotations
 #
-
 
 
 
@@ -145,7 +136,9 @@ def init_ss(go, ac, termss='Resnik', mixp="BMA", params = None):
 	#### First step: create a SemSim object
 	# You must create an ObjSemSim object providing the following parameters:
 	# 1) annotation corpus, 2) gene ontology, 3) pairwise or goupwise term semantic similarity name, 4)mixing strategy (only for pairwise term semantic similarity measures), 5 (optional) additional parameters
+	print "Initializing Semantic Similarity class..."
 	SS = ObjSemSim.ObjSemSim(ac, go, termss, mixp, params)
+	print "-> Semantic Similarity class ready"
 	return SS
 #
 
@@ -168,15 +161,27 @@ def init_ss(go, ac, termss='Resnik', mixp="BMA", params = None):
 	#-#-#-#-#-#-#-#-#
 
 def ss_pairs(SS, pairs, ontology, out):
-
+	print "Evluating semantic similarity between " + str(len(pairs)) + " pairs."
 	scores = []
+	done = 0
+	total = len(pairs)
+	if verbose:
+		prev_text = ""
+		sys.stdout.write("Done: ")
+		sys.stdout.flush()
 	for i in range(0,len(pairs)):
 		temp = SS.SemSim(pairs[i][0],pairs[i][1],ontology)
 		#scores.append((pairs[i][0],pairs[i][1],temp))
+		done+=1
 		if out == None:
 			print pairs[i][0] + "\t" + pairs[i][1] + "\t" + str(temp)
 		else:
 			h.write(pairs[i][0] + "\t" + pairs[i][1] + "\t" + str(temp) + "\n")
+			if verbose:
+				sys.stdout.write("\b"*len(prev_text))
+				prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
+				sys.stdout.write(prev_text)
+				sys.stdout.flush()
 	#return scores
 #
 
@@ -191,16 +196,30 @@ def ss_pairs(SS, pairs, ontology, out):
 	#-#-#-#-#-#-#-#-#-#-#
 
 def ss_pairwise(SS, pairs, ontology, out):
+	print "Evluating pairwise semantic similarity between " + str(len(pairs)) + " entities (" + str(len(pairs)*(len(pairs)-1)/2) + " pairs)"
 	scores = {}
+	done = 0
+	total = len(pairs)*(len(pairs)-1)/2
+
+	if verbose:
+		prev_text = ""
+		sys.stdout.write("Done: ")
+		sys.stdout.flush()
 	for i in range(0,len(pairs)):
 		scores[pairs[i]] = {}
 		for j in range(i+1,len(pairs)):
 			temp = SS.SemSim(pairs[i],pairs[j],ontology)
 			#scores[pairs[i]][pairs[j]] = temp
+			done+=1
 			if out == None:
 				print pairs[i] + "\t" + pairs[j] + "\t" + str(temp)
 			else:
 				h.write(pairs[i] + "\t" + pairs[j] + "\t" + str(temp) + "\n")
+				if verbose:
+					sys.stdout.write("\b"*len(prev_text))
+					prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
+					sys.stdout.write(prev_text)
+					sys.stdout.flush()
 	#return scores
 #
 
@@ -216,6 +235,7 @@ def ss_pairwise(SS, pairs, ontology, out):
 	#-#-#-#-#-#-#-#-#-#-#-#-#
 
 def load_query_from_file(list_file, f_type='list', separator = '\t'):
+	print "Loading query from file " + str(list_file) + " [type: " + str(f_type) + "] ..."
 	
 	list_type = {'list':None, 'pairwise':None}
 	pair_type = {'pair':None, 'pairs':None}
@@ -234,6 +254,7 @@ def load_query_from_file(list_file, f_type='list', separator = '\t'):
 			query.append(line)
 	
 	h.close()
+	print "-> Query loaded from file: " + str(len(query)) + " entries."
 	return query
 #
 
@@ -248,6 +269,7 @@ def load_query_from_file(list_file, f_type='list', separator = '\t'):
 
 def load_query_from_ac(ac):
 	query = ac.obj_set.keys()
+	print "-> Query loaded from Annotation Corpus: " + str(len(query)) + " entries."
 	return query
 #
 
@@ -256,36 +278,46 @@ def load_query_from_ac(ac):
 
 
 def print_usage():
-	print "FastSemSim - Semantic Similarity."
 	print ""
-	print "Simple usage: python FastSemSim.py -g|--go go_file -a|--ac ac_file -t|--actype ac_type -q|--query query -u yes|no -s|--semsim term_sem_sim -m|--mix mixing_strategy -o|--output output_file -p|--pairs yes|no"
+	print "Usage:\t python FastSemSim.py [-g|--go go_file] -a|--ac ac_file [-t|--actype ac_type] [-q|--query query] [-u] [-s|--semsim sem_sim] [-m|--mix mixing_strategy] [-o|--output output_file] [-p|--pairs]"
 	print ""
 	print ""
 	print "Parameters:"
-	print "-g,--go:\tGene Ontology file to use: must be in obo-xml format. If no GO is provided, the GO version included in FastSemSim will be used."
-	print "-a,--ac:\tAnnotation Corpus. Can be either in GAF-2 or plain format. See documentation online for information."
-	print "-t,--actype:\tDescribes the format of the annotation corpus. Can be plain or gaf2. If not provided, .txt files will be considered as plain files, and .gaf or .goa files will be considered GAF-2 files."
-	print "-q, --query:\t File with input query"
-	print "-u:\t Use all the proteins in the annotation corpus as input query"
-	print "-s, --semsim:\t The semantic similarity measure to use. Default: Resnik"
-	print "-p, --pairs:\t Whether the query files contains pairs. Can be yes or no. If not specified, default is no."
-	print "-m, --mixing_strategy:\t The mixing strategy to be used (with the SS measures that require it). Default: BMA"
-	print "-o, --output:\t Output file where results should be written. If not specified, results will be printed on the console."
-	print "-c, --category:\t Gene Ontology category to use. Can be MF, BP or CC."
-	print "--sep:\t Separator used in query file (only for pairs)"
-	print "-v, --verbose:\t Prints additional statistics and progress details."
-	print "-h, --help:\t Prints usage info."
-	
+	print "-a,--ac:\t The Annotation Corpus to use. Can be either in GAF-2 or plain format. See documentation online for information."
+	print "-c, --category:\t The Gene Ontology category to use. Can be \"MF\",\"BP\" or \"CC\". [Default: BP]"
+	print "-g,--go:\t The Gene Ontology to use. Must be in obo-xml format. If not provided, the GO version included in FastSemSim will be used."
+	print "-h, --help:\t Print this help page."
+	print "-l, --list:\t Consider the query as a list of entries. Evaluates the pairwise semantic similarity."
+	print "-m, --mixing_strategy:\t The mixing strategy to be used (if the SS measure requires it). [Default: BMA]"
+	print "-o, --output:\t Output file. If not specified, results will be printed on the console."
+	print "-p, --pairs:\t Consider the query as a set of pairs. If not specified, list will be assumed."
+	print "-q, --query:\t Specifies the file with the query. If not specified, the behavior will be the same as if -u is specified."
+	print "-s, --semsim:\t The semantic similarity measure to use. [Default: Resnik]"
+	print "-t,--actype:\t Describes the format of the annotation corpus. Can be \"plain\" or \"gaf2\". [default: gaf2]"
+	print "-u:\t\t Use all the entries in the annotation corpus as the query. This overrides -l and -p options."
+	print "-v, --verbose:\t Print additional statistics and progress details."
+	print ""
+	print "Advanced Parameters:"
+	print "--sep, --separator:\t Separator used in the query file (only for pairs) [Default: tab]"
+	print "--tax:\t Filter the Annotation Corpus. Removes protein/genes according to the taxonomy. Used only with gaf2 files"
+	print "--IEA:\t If specified, IEA annotations will be considered. Used only with gaf2 files. [that is the standard behavior]"
+	print "--noIEA:\t If specified, IEA annotations will be ignored. Used only with gaf2 files."
+	print "--GOTermfirst:\t If specified, plain annotation corpus files will be parsed assuming that the first column of each row contains the GO Term, and the second one contains the Entry. Used only with plain files."
+	print "--entryfirst:\t If specified, plain annotation corpus files will be parsed assuming that the first column of each row contains the entry, and the second the GO Term. Used only with plain files. [this is the standard behavior]"
+	print "--multiple:\t If specified, each line in plain annotation corpus files can contain more than one GO Term or Entries." 
+	print "--acsep:\t Separator used for the plain annotation corpus files [Default: tab]"
+	print ""
 #
 
 
 
 if __name__ == "__main__":
-
+	print("-----------------------------------------------")
+	print("FastSemSim 0.5 - Copyright 2011-2012 Marco Mina")
+	print("-----------------------------------------------")
 	go_file = "GO_2011-09-16.obo-xml"
 	ac_file = None
 	ac_type = 'gaf2'
-	IEA_filtering = False
 	ontology = "BP"
 	query_file = None
 	query_type = 'list'
@@ -295,8 +327,13 @@ if __name__ == "__main__":
 	mix_name = 'BMA'
 	query_separator = '\t'
 	verbose = False
-
-	if len(sys.argv) < 2 or sys.argv[1] == '--help' or sys.argv[1] == '-h':
+	tax_include = None
+	use_IEA = True
+	GOTerm_first = False
+	multiple = False
+	ac_separator = None
+	
+	if len(sys.argv) < 2:
 		print_usage()
 		sys.exit()
 
@@ -307,38 +344,9 @@ if __name__ == "__main__":
 			#print "ignore"
 			skip = False
 			continue
-		elif sys.argv[i] == '-g' or sys.argv[i] == '--go':
-			go_file = sys.argv[i+1]
-		elif sys.argv[i] == '-a' or sys.argv[i] == '--ac':
-			ac_file = sys.argv[i+1]
-		elif sys.argv[i] == '-t' or sys.argv[i] == '--actype':
-			ac_type = sys.argv[i+1]
-		elif sys.argv[i] == '-q' or sys.argv[i] == '--query':
-			query_file = sys.argv[i+1]
-			query_from_ac = False
-		elif sys.argv[i] == '-sep' or sys.argv[i] == '--separator':
-			query_separator = sys.argv[i+1]
-		elif sys.argv[i] == '-u':
-			if sys.argv[i+1]=='y' or sys.argv[i+1]=='yes':
-				query_from_ac = True
-			else:
-				query_from_ac = False
-		elif sys.argv[i] == '-p' or sys.argv[i] == '--pairs':
-			if sys.argv[i+1]=='y' or sys.argv[i+1]=='yes':
-				query_type = 'pairs'
-			else:
-				query_type = 'list'
-		elif sys.argv[i] == '-s' or sys.argv[i] == '--semsim':
-			semsim_name = sys.argv[i+1]
-		elif sys.argv[i] == '-m' or sys.argv[i] == '--mix':
-			mix_name = sys.argv[i+1]
-		elif sys.argv[i] == '-o' or sys.argv[i] == '--output':
-			out_file = sys.argv[i+1]
-		elif sys.argv[i] == '-v' or sys.argv[i] == '--verbose':
-			if sys.argv[i+1]=='y' or sys.argv[i+1]=='yes':
-				verbose = True
-			else:
-				verbose = False
+		elif sys.argv[i] == '--help' or sys.argv[i] == '-h':
+			print_usage()
+			sys.exit()
 		elif sys.argv[i] == '-c' or sys.argv[i] == '--category':
 			if sys.argv[i+1].lower() == 'bp':
 				ontology = 'BP'
@@ -349,7 +357,57 @@ if __name__ == "__main__":
 			else:
 				print "Category not recognized."
 				sys.exit()
+		elif sys.argv[i] == '-g' or sys.argv[i] == '--go':
+			go_file = sys.argv[i+1]
+		elif sys.argv[i] == '-a' or sys.argv[i] == '--ac':
+			ac_file = sys.argv[i+1]
+		elif sys.argv[i] == '-t' or sys.argv[i] == '--actype':
+			ac_type = sys.argv[i+1]
+		elif sys.argv[i] == '-q' or sys.argv[i] == '--query':
+			query_file = sys.argv[i+1]
+			query_from_ac = False
+		elif sys.argv[i] == '-u':
+			query_from_ac = True
+			continue
+		elif sys.argv[i] == '-p' or sys.argv[i] == '--pairs':
+			query_type = 'pairs'
+			continue
+		elif sys.argv[i] == '-l' or sys.argv[i] == '--list':
+			query_type = 'list'
+			continue
+		elif sys.argv[i] == '-s' or sys.argv[i] == '--semsim':
+			semsim_name = sys.argv[i+1]
+		elif sys.argv[i] == '-m' or sys.argv[i] == '--mix':
+			mix_name = sys.argv[i+1]
+		elif sys.argv[i] == '-o' or sys.argv[i] == '--output':
+			out_file = sys.argv[i+1]
+		elif sys.argv[i] == '-v' or sys.argv[i] == '--verbose':
+			verbose = True
+			continue
+		elif sys.argv[i] == '--sep' or sys.argv[i] == '--separator':
+			query_separator = sys.argv[i+1]
+		elif sys.argv[i] == '--tax':
+			tax_include = sys.argv[i+1]
+		elif sys.argv[i] == '--IEA':
+			use_IEA = True
+			continue
+		elif sys.argv[i] == '--noIEA':
+			use_IEA = False
+			continue
+		elif sys.argv[i] == '--GOTermfirst':
+			GOTerm_first = True
+			continue
+		elif sys.argv[i] == '--entryfirst':
+			GOTerm_first = False
+			continue
+		elif sys.argv[i] == '--multiple':
+			multiple = True
+			continue
+		elif sys.argv[i] == '--acsep':
+			ac_separator = sys.argv[i+1]
 		else:
+			print "Unknown parameter " + sys.argv[i]
+			print ""
 			print_usage()
 			sys.exit()
 		skip = True
@@ -357,14 +415,39 @@ if __name__ == "__main__":
 	if ac_file == None:
 		print "Please specify an annotation corpus"
 		sys.exit()
-	if ac_type == None:
-		print "Please specify an annotation corpus type"
-		sys.exit()
 	if not query_from_ac:
 		if query_file == None:
-			print "Please specify a query file or use all the annotation corpus"
+			print "Please specify a query file or use -u"
 			sys.exit()
-	
+	else:
+		query_type = 'list'
+
+	print("Gene Ontology file \t\t" + str(go_file))
+	print("Annotation Corpus file \t\t" + str(ac_file))
+	print("Annotation Corpus file type \t" + str(ac_type))
+	if ac_type == 'gaf2':
+		print("AC Consider IEA\t\t\t" + str(use_IEA))
+		print("AC Filter taxonomy\t\t" + str(tax_include))
+	elif ac_type == 'plain':
+		if GOTerm_first:
+			print("AC Row format\t\t\tGO Term -> Entry")
+		else:
+			print("AC Row format\t\t\tEntry -> GO Term")
+		print("Many associations per line\t" + str(multiple))
+	if query_from_ac:
+		print("Query from \t\t\tAnnotation Corpus")
+	else:
+		print("Query from file \t\t" + str(query_file))
+		print("Query file separator \t\t\'" + str(query_separator) + "\'")
+	print("Query type \t\t\t" + str(query_type))
+	if not out_file == None:
+		print("Output file \t\t\t" + str(out_file))
+	else:
+		print("Output \t\t\tto console")
+	print("SS measure \t\t\t" + str(semsim_name) + " " + str(mix_name))
+	print("GO category \t\t\t" + ontology)
+	print("-----------------------------------------------")
+
 	go = load_go(go_file)
 	ac = load_ac(ac_file, ac_type)
 	SS = init_ss(go, ac, semsim_name, mix_name)
