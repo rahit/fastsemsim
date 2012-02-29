@@ -162,7 +162,7 @@ def init_ss(go, ac, termss='Resnik', mixp="BMA", params = None):
 	# Pairs Sem Sim #
 	#-#-#-#-#-#-#-#-#
 
-def ss_pairs(SS, pairs, ontology, out):
+def ss_pairs(SS, pairs, ontology, out, cut_thres = None):
 	print "Evluating semantic similarity between " + str(len(pairs)) + " pairs."
 	scores = []
 	done = 0
@@ -175,6 +175,9 @@ def ss_pairs(SS, pairs, ontology, out):
 		temp = SS.SemSim(pairs[i][0],pairs[i][1],ontology)
 		#scores.append((pairs[i][0],pairs[i][1],temp))
 		done+=1
+		if not cut_thres == None:
+			if temp == None or temp < cut_thres:
+				continue
 		if out == None:
 			print pairs[i][0] + "\t" + pairs[i][1] + "\t" + str(temp)
 		else:
@@ -197,7 +200,7 @@ def ss_pairs(SS, pairs, ontology, out):
 	# Pairwise Sem Sim  #
 	#-#-#-#-#-#-#-#-#-#-#
 
-def ss_pairwise(SS, pairs, ontology, out):
+def ss_pairwise(SS, pairs, ontology, out, cut_thres = None):
 	print "Evluating pairwise semantic similarity between " + str(len(pairs)) + " entities (" + str(len(pairs)*(len(pairs)-1)/2) + " pairs)"
 	scores = {}
 	done = 0
@@ -213,6 +216,9 @@ def ss_pairwise(SS, pairs, ontology, out):
 			temp = SS.SemSim(pairs[i],pairs[j],ontology)
 			#scores[pairs[i]][pairs[j]] = temp
 			done+=1
+			if not cut_thres == None:
+				if temp == None or temp < cut_thres:
+					continue
 			if out == None:
 				print pairs[i] + "\t" + pairs[j] + "\t" + str(temp)
 			else:
@@ -283,7 +289,7 @@ def load_query_from_ac(ac):
 	# Enhaced version   #
 	#-#-#-#-#-#-#-#-#-#-#
 
-def init_enhaced_ss(go, ac, termss='Resnik', mixp="BMA", params = None):
+def init_enhanced_ss(go, ac, termss='Resnik', mixp="BMA", params = None):
 
 	print "Initializing Semantic Similarity class..."
 	SS = fastResnikSemSim.fastResnikSemSim(ac, go, termss, mixp, params)
@@ -293,12 +299,12 @@ def init_enhaced_ss(go, ac, termss='Resnik', mixp="BMA", params = None):
 
 
 
-def ss_pairwise_enhaced(SS, pairs = None, ontology = 'BP', out = None):
+def ss_pairwise_enhanced(SS, pairs = None, ontology = 'BP', out = None, cut_thres = None):
 	#print "Evluating pairwise semantic similarity between " + str(len(pairs)) + " entities (" + str(len(pairs)*(len(pairs)-1)/2) + " pairs)"
 	out_h = out
 	if out==None:
 		out_h = sys.stdout
-	SS.SemSim(ontology, out)
+	SS.SemSim(ontology, out, cut_thres)
 #
 
 
@@ -336,13 +342,16 @@ def print_usage():
 	print "--entryfirst:\t If specified, plain annotation corpus files will be parsed assuming that the first column of each row contains the entry, and the second the GO Term. Used only with plain files. [this is the standard behavior]"
 	print "--multiple:\t If specified, each line in plain annotation corpus files can contain more than one GO Term or Entries." 
 	print "--acsep:\t Separator used for the plain annotation corpus files. Use s for space, and t for tab. [Default: tab]"
-	print "--enhaced:\t Use the fast implementation of the semantic similarity measure. Currently only Resnik max is supported. Currently it forces -l and -u. Overrides -p and -q. This limitation will be removed in the future."
+	print "--enhanced:\t Use the fast implementation of the semantic similarity measure. Currently only Resnik max is supported. Currently it forces -l and -u. Overrides -p and -q. This limitation will be removed in the future."
+	print "--cut:\t Do not print/save pairs whose semantic similarity is smaller than cut threshold. This drastically reduces the size of output data for whole proteome comparison. [default: --cut 0]"
 	print ""
+	print "Additional Notes:"
+	print "A \'None\' score is returned if at least one entry of a pair is not annotated with any term in the selected category. Using --cut removes such pairs."
 #
 
 
 def start():
-	global go_file, ac_file, ac_type, ontology, query_file, query_type, query_from_ac, out_file, semsim_name, mix_name, query_separator, verbose, tax_include, use_IEA, GOTerm_first, multiple, ac_separator, go, ac, query, SS, use_enhaced
+	global go_file, ac_file, ac_type, ontology, query_file, query_type, query_from_ac, out_file, semsim_name, mix_name, query_separator, verbose, tax_include, use_IEA, GOTerm_first, multiple, ac_separator, go, ac, query, SS, use_enhanced
 	
 	print("-----------------------------------------------")
 	print("FastSemSim 0.5 - Copyright 2011-2012 Marco Mina")
@@ -368,7 +377,8 @@ def start():
 	GOTerm_first = False
 	multiple = False
 	ac_separator = None
-	use_enhaced = False
+	use_enhanced = False
+	cut_thres = None
 	
 	if len(sys.argv) < 2:
 		print_usage()
@@ -445,9 +455,11 @@ def start():
 		elif sys.argv[i] == '--multiple':
 			multiple = True
 			continue
-		elif sys.argv[i] == '--enhaced':
-			use_enhaced = True
+		elif sys.argv[i] == '--enhanced':
+			use_enhanced = True
 			continue
+		elif sys.argv[i] == '--cut':
+			cut_thres = float(sys.argv[i+1])
 		elif sys.argv[i] == '--acsep':
 			if sys.argv[i+1] == 't':
 				ac_separator = "\t"
@@ -465,7 +477,7 @@ def start():
 	if ac_file == None:
 		print "Please specify an annotation corpus"
 		sys.exit()
-	if use_enhaced:
+	if use_enhanced:
 		query_from_ac = True
 		semsim_name = 'Resnik'
 		mix_name = 'max'
@@ -501,16 +513,16 @@ def start():
 		print("Output \t\t\t\tto console")
 	print("SS measure \t\t\t" + str(semsim_name) + " " + str(mix_name))
 	print("GO category \t\t\t" + ontology)
-	print("Using enhaced version\t\t" + str(use_enhaced))
+	print("Using enhanced version\t\t" + str(use_enhanced))
 	print("-----------------------------------------------")
 
 	go = load_go(go_file)
 	ac = load_ac(ac_file, ac_type)
 	
-	if not use_enhaced:
+	if not use_enhanced:
 		SS = init_ss(go, ac, semsim_name, mix_name)
 	else:
-		SS = init_enhaced_ss(go, ac, semsim_name, mix_name)
+		SS = init_enhanced_ss(go, ac, semsim_name, mix_name)
 		
 	if query_from_ac:
 		query = load_query_from_ac(ac)
@@ -520,12 +532,12 @@ def start():
 	if not out_file == None:
 		h = open(out_file, 'w')
 		
-	if use_enhaced:
-		ss_pairwise_enhaced(SS, query, ontology, h)
+	if use_enhanced:
+		ss_pairwise_enhanced(SS, query, ontology, h, cut_thres)
 	elif query_type == 'pairs':
-		ss_pairs(SS, query, ontology, h)
+		ss_pairs(SS, query, ontology, h, cut_thres)
 	else:
-		ss_pairwise(SS, query, ontology, h)
+		ss_pairwise(SS, query, ontology, h, cut_thres)
 	if not h == None:
 		h.close()
 	sys.exit()

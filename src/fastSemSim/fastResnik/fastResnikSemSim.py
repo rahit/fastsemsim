@@ -96,13 +96,16 @@ class fastResnikSemSim(ObjSemSim.ObjSemSim):
 
 
 
-	def int_SemSim(self, onto):
+	def int_SemSim(self, onto, cut_thres = None):
 		self.scores = {}
 		self.matrice = []
 		self.matrice_names = []
 		# sort Terms by Term IC
 		temp_IC = {}
+
 		temp_temps = self.util.get_ancestors(self.ac.reverse_annotations.keys())
+		temp_temps = self.util.intersection(temp_temps, self.util.offspring[onto])
+		
 		for i in temp_temps:
 			if not i in self.go.obsolete_ids:
 				temp_IC[i] = self.util.IC[i]
@@ -174,11 +177,13 @@ class fastResnikSemSim(ObjSemSim.ObjSemSim):
 			#print("-------------------")
 			#if verbose:
 			done += 1
+
 			sys.stdout.write("\b"*len(prev_text))
 			prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
 			sys.stdout.write(prev_text)
 			sys.stdout.flush()
-					
+			
+			
 			if self.stream1 is None:
 				if self.matrice_names[i] in self.scores:
 					print "Errore"
@@ -187,10 +192,13 @@ class fastResnikSemSim(ObjSemSim.ObjSemSim):
 			else:	
 				#self.stream1.write(str(self.matrice_names[i]) + " - " + str(k) + ": " + str(temp_scores[k]) + "\n")
 				for k in temp_scores:
+					if not cut_thres == None:
+						if temp_scores[k] == None or temp_scores[k] < cut_thres:
+							continue
 					self.stream1.write(str(self.matrice_names[i]) + "\t" + str(k) + "\t" + str('%.4f' %temp_scores[k]) + "\n")
 
 
-	def SemSim(self, ontology, stream1 = None):
+	def SemSim(self, ontology, stream1 = None, cut_thres = None):
 		self.stream1 = stream1
 		#self.stream2 = stream2
 		#### translate into id format & check data
@@ -211,37 +219,5 @@ class fastResnikSemSim(ObjSemSim.ObjSemSim):
 			#return None
 		##print(t1
 		##print(t2
-		return self.int_SemSim(onto)
+		return self.int_SemSim(onto, cut_thres)
 #
-
-#if __name__ == "__main__":
-	##### load ontology
-	#tree = GeneOntology.parse(sys.argv[1])
-	#print "Ontology infos: file name: " + str(sys.argv[1]) + ". Nodes: " + str(tree.node_num()) + ". Edges: " + str(tree.edge_num())
-
-	#gp = AnnotationCorpus.AnnotationCorpus(tree)
-	#gp.parse(sys.argv[2],'gaf-2.0')
-
-	#print("Annotated proteins: " + str(len(gp.annotations)))
-	#print("Annotated terms: " + str(len(gp.reverse_annotations)))
-	#print("Check annotation corpus consistency... " + str(gp.check_consistency()))
-
-	##### create SemSimUtils class
-	#ssu = SemSimUtils.SemSimUtils(gp, tree)
-	#ssu.det_offspring_table()
-	#ssu.det_ancestors_table()
-	#ssu.det_freq_table()
-	#ssu.det_GO_division()
-	#ssu.det_ICs_table()
-	#print "------------ IC list -----------"
-	#for i in ssu.IC:
-		#print str(i) + "\t" + str(ssu.IC[i])
-	#print "------------ end IC list -----------"
-	#SS = fastResnikSemSim(gp, tree, ssu)
-	
-	#ontology = str(sys.argv[4]) # "MF" or "BP" or "CC"
-	#print ontology
-	#outfile1 = open(sys.argv[3], 'w')
-	#SS.SemSim(ontology, outfile1)
-	#outfile1.close()
-	#sys.exit(0)
