@@ -152,6 +152,7 @@ if __name__ == "__main__":
 	# You must create an ObjSemSim object providing the following parameters:
 	# 1) annotation corpus, 2) gene ontology, 3) pairwise or goupwise term semantic similarity name, 4)mixing strategy (only for pairwise term semantic similarity measures), 5 (optional) additional parameters
 	SS = ObjSemSim.ObjSemSim(ac, go, "Resnik", "BMA", None)
+	#SS = ObjSemSim.ObjSemSim(ac, go, "SimGIC", None, None)
 	
 	#### Second step: use the ObjSemSim object to determine the semantic similarity between two proteins
 	# You have to specify the GO Category to use ("MF", "BP", "CC") and the names of the two proteins. If the proteins or the category are not valid or not present in the annotation corpus, then None will be returned

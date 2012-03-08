@@ -82,7 +82,10 @@ class GeneOntology:
 		elif type(codes) is dict or type(codes) is list:
 			nid = []
 			for i in codes:
-				tnid = go_2ids(i)
+				if type(i) is str:
+					tnid = go_name2id(i)
+				else:
+					tnid = i
 				if alt_check:
 					tnid = self.alt_ids[tnid]
 				nid.append(tnid)
@@ -102,7 +105,11 @@ class GeneOntology:
 		elif type(codes) is dict or type(codes) is list:
 			sid= []
 			for i in codes:
-				sid.append(go_2names(i))
+				if type(i) is int:
+					tnid = go_id2name(i)
+				else:
+					tnid = i
+				sid.append(tnid)
 		return sid
 
 	def node_num(self):

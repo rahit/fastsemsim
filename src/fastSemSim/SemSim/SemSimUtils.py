@@ -135,10 +135,16 @@ class SemSimUtils:
 		CC_GO = self.offspring[self.go.CC_root]
 		assigns = {}
 		for i in BP_GO:
+			#if i in assigns:
+				#raise Exception
 			assigns[i] = self.go.BP_root
 		for i in MF_GO:
+			#if i in assigns:
+				#raise Exception
 			assigns[i] = self.go.MF_root
 		for i in CC_GO:
+			#if i in assigns:
+				#raise Exception
 			assigns[i] = self.go.CC_root
 		self.GO_root = assigns
 
@@ -199,7 +205,8 @@ class SemSimUtils:
 # ASSUMPTION: Terms are passed as integers or lists of integers, not as strings!
 
 	def det_IC_table(self):
-		return self.int_det_IC_table()
+		self.int_det_IC_table()
+		return self.IC
 
 	def det_IC(self,term):
 		id = self.go.name2id(term)
