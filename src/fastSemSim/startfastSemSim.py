@@ -402,7 +402,7 @@ def start():
 			elif sys.argv[i+1].lower() == 'cc':
 				ontology = 'CC'
 			else:
-				print "Category not recognized."
+				print "Ontology Category not recognized."
 				sys.exit()
 		elif sys.argv[i] == '-g' or sys.argv[i] == '--go':
 			go_file = sys.argv[i+1]
