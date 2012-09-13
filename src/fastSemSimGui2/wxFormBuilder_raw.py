@@ -1,426 +1,29 @@
-# -*- coding: iso-8859-1 -*-
-'''
-Copyright 2011 Marco Mina. All rights reserved.
+# -*- coding: utf-8 -*- 
 
-This file is part of fastSemSim
+###########################################################################
+## Python code generated with wxFormBuilder (version Sep  8 2010)
+## http://www.wxformbuilder.org/
+##
+## PLEASE DO "NOT" EDIT THIS FILE!
+###########################################################################
 
-fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
-'''
-
-#### Import basic packages
-import sys
-import os
-
-#### Import fastSemSim modules
-from fastSemSim.GO import GeneOntology
-from fastSemSim.GO import AnnotationCorpus
-from fastSemSim.SemSim import SemSimMeasures
-from fastSemSim.SemSim import ObjSemSim
-
-#### Include this to work with threads. Not really good for GUI
-#from gui import WorkThread
-#import threading
-
-#### Include this to work with processes
-import WorkProcess
-import multiprocessing 
-
-#### Import wxWidgets
-#from wx.Python.wx import * # old definition
 import wx
 
-#### Import modules
-#from GeneOntologyGui import GeneOntologyGui
-#from AnnotationCorpusGui import AnnotationCorpusGui
-#from OperationGui import OperationGui
-#from OutputCtrlGui import OutputCtrlGui
-#from OutputGui import OutputGui
-#from ConfigGui import *
-#from ControlGui import ControlGui
-#from QueryGui import QueryGui
-#from StatusGui import StatusGui
+###########################################################################
+## Class fastSemSim_gui
+###########################################################################
 
-#################################################################################
-
-debugging = False
-#debugging = True
-
-class fastSemSimGui(wx.Frame):
-
-	## variables to control exclusive communication between gui and background process
-	#process_busy = False
-	#process_busy_lock = None
-	#process_busy_event = None
-	#UPDATE_INTERVAL = 500
-	## temp variables to be removed
-	#superconta = 0
-	
-	debug = True # Switch to False when done
-	##Components handles
-	#GOGui = None
-	#ACGui = None
-	#OperationGui = None
-	#QueryGui = None
-	#OutputCtrlGui = None
-	#OutputGui = None
-	
-	##data structures
-	#config_file = None
-	#go = None
-	#ac = None
-	#selectedGO = None
-	#mixingstrategy = None
-	#ssmeasure = None
-	#output_type = None # 0 = field, 1 = file
-	#output_file = None
-	#query_type = None # 0 = pairs, 1 = list
-	##query_from_ac = False # True if load from ac <-- obsolete!
-	#query_from = None # 0 = field, 1 = file, 2 = ac
-	#query_file = None
-	
-	##objects required for ss calculation
-	#query = None # list of pairs or list of objects, depending on query_type variable
-	#ssobject = None # semantic similarity measure
-	
-	##control data
-	status = 0 # current status: -1 = fatal error, 0 = not running - to configure, 1 = ready to run, 2 = running
-	#go_ok = False
-	#ac_ok = False
-	#query_ok = False
-	#outputctrl_ok = False
-	#operation_ok = False
-	#start_cmd = None # main command to start execution
-	
-	##flags signaling whether some structures should be updated
-	#update_query = True
-	#update_ssobject = True
-	#update_ac = True
-	
-	##other data
-	##Ok_pic = 'gui/V_30.png'
-	##Warning_pic = 'gui/W_30.png'
-
-	#show_pics = True
-	#go_status_pic = None
-	#ac_status_pic = None
-	#query_status_pic = None
-	#outputctrl_status_pic = None
-	#output_status_pic = None
-	#operation_status_pic = None
-	#status_pic = None
-
-	# multiprocessing data
-	ssprocess = []
+class fastSemSim_gui ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = "fastSemSimGui v.2 - Marco Mina", pos = wx.DefaultPosition, size = wx.Size( 652,471 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
-
-		####
-		self.process_busy = False
-		self.process_busy_lock = multiprocessing.Lock()
-		self.process_busy_event = multiprocessing.Event()
-		
-		self.programdirectory = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
-		#self.programdirectory = 'images' # use this with py2exe to build a working binary
-		self.Ok_pic = self.programdirectory + '/V_30.png'
-		self.Warning_pic = self.programdirectory + '/W_30.png'
-		self.Advanced_pic = self.programdirectory + '/advanced.png'
-	
-		self.font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
-		self.font.SetPointSize(9)
-		self.Bind(wx.EVT_CLOSE, self.OnQuit, id=self.GetId())
-		####
-		
-		self.InitWorkProcess()
-		#self.OnAnyUpdate()
-		####
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 652,471 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		
 		fastSemSim_sizer_1 = wx.BoxSizer( wx.VERTICAL )
+		
 		self.fastSemSim_listbook = wx.Listbook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LB_DEFAULT )
-		fastSemSim_sizer_1.Add( self.fastSemSim_listbook, 1, wx.EXPAND |wx.ALL, 5 ) #### This section was in the end
-		self.SetSizer( fastSemSim_sizer_1 )
-		self.Layout()
-		self.fastSemSim_statusbar = self.CreateStatusBar( 1, wx.ST_SIZEGRIP, wx.ID_ANY )
-		self.Centre( wx.BOTH )
-
-		#### Panel GO
-		self.GO_panel = GOPanel( self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.fastSemSim_listbook.AddPage( self.GO_panel, u"Gene Ontology", False )
-		#### Panel AC
-		self.AC_panel = ACPanel( self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.fastSemSim_listbook.AddPage( self.AC_panel, u"Annotation Corpus", False )
-		#### Panel SS
-		self.SS_panel = SSPanel( self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.fastSemSim_listbook.AddPage( self.SS_panel, u"Semantic Similarity", False )
-		#### Panel Query
-		self.query_panel = QueryPanel( self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.fastSemSim_listbook.AddPage( self.query_panel, u"Query", False )
-		#### Panel Output Ctrl
-		self.output_ctrl_panel = OutputCtrlPanel( self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.fastSemSim_listbook.AddPage( self.output_ctrl_panel, u"Output Settings", False )
-		#### Panel Controls
-		self.controls_panel = ControlsPanel( self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.fastSemSim_listbook.AddPage( self.controls_panel, u"Controls", False )
-		#### Panel Output
-		self.output_panel = OutputPanel( self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.fastSemSim_listbook.AddPage( self.output_panel, u"Output", True )
-
-#############################################################################################
-#############################################################################################
-#################           PROCESS COMMUNICATION     #######################################
-#############################################################################################
-#############################################################################################
-
-#### Process Handlers
-	def InitWorkProcess(self):
-		self.running = False
-		self.ssprocess.append(None)
-		
-		self.TIMER_ID = 100
-		self.timer = wx.Timer(self, self.TIMER_ID)
-		wx.EVT_TIMER(self, self.TIMER_ID, self.OnCheckPipes)
-   
-		self.activateGoCmd()
-		self.init_process()
-		self.timer.Start(1000)
-
-	def init_process(self):
-		if not self.running:
-			self.gui2ssprocess_queue = multiprocessing.Queue()
-			self.ssprocess2gui_queue = multiprocessing.Queue()
-			self.gui2ssprocess_pipe, self.ssprocess2gui_pipe = multiprocessing.Pipe()
-			self.ssprocess[0] = WorkProcess.WorkProcess(self.gui2ssprocess_queue, self.ssprocess2gui_queue, self.ssprocess2gui_pipe, self.gui2ssprocess_pipe)
-			self.running = True
-			self.ssprocess[0].start()
-			return True
-		else:
-			print "Already executing"
-			return False
-
-#############################################################################################
-
-	def stop(self):
-		self.stop_process()
-		self.SetStatus(1)
-		return True
-
-	def loadFromField(self):
-		h = self.QueryGui.text_query.GetValue()
-		self.query= []
-		h = h.splitlines()
-		for line in h:
-			if self.query_type == WorkProcess.QUERY_PAIRS:
-				line = line.rsplit(' ')
-				self.query.append((str(line[0]), str(line[1])))
-			else:
-				self.query.append(str(line))
-		#print self.query
-		return True
-
-	def lock(self, wait = True):
-		self.process_busy_lock.acquire()
-		if not wait:
-			if self.process_busy:
-				self.process_busy_lock.release()
-				return False
-		else:
-			while self.process_busy:
-				self.process_busy_lock.release()
-				self.process_busy_event.wait()
-				self.process_busy_lock.acquire()
-		self.process_busy = True
-		self.process_busy_event.clear()
-		self.process_busy_lock.release()
-		return True
-
-	def unlock(self):
-		self.process_busy_lock.acquire()
-		self.process_busy = False
-		self.process_busy_event.clear()
-		self.process_busy_event.set()
-		self.process_busy_lock.release()
-		return True
-	
-	def completed(self):
-		self.progress.SetValue(self.progress.GetRange())
-		self.running = False
-		self.log_field.AppendText("Task completed.\n")
-		self.SetStatus(1)
-		
-		
-	def start_process(self):
-		self.progress.SetValue(float(0))
-		self.lock()
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_SS, self.ssmeasure, None, self.mixingstrategy, None, self.selectedGO))
-		data = self.ssprocess2gui_queue.get()
-		self.SetStatus(2)
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_STATUS, None))
-		data = self.ssprocess2gui_queue.get()
-		if self.query_from == WorkProcess.QUERY_FROM_GUI:
-			self.loadFromField()
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_START, self.query))
-		data = self.ssprocess2gui_queue.get()
-		self.unlock()
-		if data[0] == WorkProcess.CMD_START and data[1]:
-			self.pairs_to_process = data[2]
-		else:
-			return False
-		return True
-
-	def stop_process(self):
-		print "stop called"
-		#self.timer.Stop()
-		#self.ssprocess[0].terminate()
-		#self.ssprocess[0] = None
-		#self.gui2ssprocess_queue.close()
-		#self.gui2ssprocess_queue = None
-		#self.gui2ssprocess_pipe.close()
-		#self.gui2ssprocess_pipe = None
-		#self.ssprocess2gui_pipe.close()
-		#self.ssprocess2gui_pipe = None
-		#self.sspdone = None
-		#self.sstodo = None
-		#self.sscompleted = None
-		self.lock()
-		print "got lock"
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_STOP, None))
-		print "data sent"
-		#data = self.ssprocess2gui_queue.get()
-		print "got answer"
-		self.unlock()
-		self.running = False
-		self.SetStatus(1)
-		return True
-
-	def start(self):
-		self.log_field.AppendText('\n-------------\n')
-		self.skip_checks = False#check if everything is configured
-		if not self.skip_checks:
-			if not self.go_ok:
-				self.log_field.AppendText("Check Gene Ontology.\nAborted\n")
-				return False
-			if not self.ac_ok:
-				self.log_field.AppendText("Check Annotation Corpus.\nAborted.\n")
-				return False
-			if not self.query_ok:
-				self.log_field.AppendText("Check query.\nAborted.\n")
-				return False
-			if not self.outputctrl_ok:
-				self.log_field.AppendText("Check output parameters.\nAborted.\n")
-				return False
-			if not self.operation_ok:
-				self.log_field.AppendText("Check operation parameters.\nAborted.\n")
-				return False
-		#self.log_field.AppendText("Parameters accepted. Starting computation...\n")
-		#self.log_field.AppendText("Evaluating semantic similarity...\n")
-		if self.output_type == 0:
-			self.OutputGui.output_field.Clear()
-			self.OutputGui.Show()
-		return self.start_process()
-
-#############################################################################################
-#############################################################################################
-#################           LOGIC          ##################################################
-#############################################################################################
-#############################################################################################
-
-	def OnAnyUpdate(self):
-		#self.statusgridbox.Fit(self)
-		#self.gostatsbox.Fit(self)
-		#self.commandbox.Fit(self)
-		self.mainbox.Fit(self)
-		#w,h = self.commandbox.GetSizeTuple()
-		#self.mainbox.SetItemMinSize(self.commandbox, w,h)
-		#self.GetBestSize()
-		self.mainbox.Layout()
-
-	def activateGoCmd(self): # should not be called if status is 2
-		if self.status == -1:
-			return
-		if self.debug or (self.go_ok and self.ac_ok and self.query_ok and self.outputctrl_ok and self.operation_ok):
-			self.SetStatus(1) # set to 0
-		else:
-			self.SetStatus(0)
-
-	def SetStatus(self, status):
-		self.status = status
-		return None ## To remove when complete
-		if self.show_pics:
-			if self.status == -1: # Fatal error
-				if not self.start_cmd is None:
-					self.start_cmd.Disable()
-					self.start_cmd.SetLabel("Start")
-			if self.status == 0: # Not running. Not Ready
-				if not self.start_cmd is None:
-					self.start_cmd.Disable()
-					self.start_cmd.SetLabel("Start")
-			if self.status == 1: # Not Running. Ready
-				if not self.start_cmd is None:
-					self.start_cmd.SetLabel("Start")
-					self.start_cmd.Enable()
-			if self.status == 2: # Running. (Completed)
-				if not self.start_cmd is None:
-					self.start_cmd.SetLabel("Stop")
-					#self.statuspicture.SetBitmap(wx.Bitmap(self.s0_pic))
-					self.start_cmd.Enable()
-
-#############################################################################################
-#############################################################################################
-#################           GUI EVENTS HANDLERS          ####################################
-#############################################################################################
-#############################################################################################
-
-#### Events Handlers
-	def OnQuit(self, event):
-		self.ssprocess[0].terminate()
-		sys.exit()
-		
-	def OnCheckPipes(self,event):
-		#print "timer elapsed"
-		if self.ssprocess2gui_pipe.poll():
-			#print "data!"
-			tmp = self.ssprocess2gui_pipe.recv()
-			self.OnOutputData(tmp)
-			gaugerange = self.progress.GetRange()
-			self.progress.SetValue((float(self.superconta)/self.pairs_to_process)*gaugerange)
-			
-		if self.lock(wait = False):
-			#print "THIS CHECK"
-			if not self.ssprocess2gui_queue.empty():
-				data = self.ssprocess2gui_queue.get()
-				#print data
-				if data[0] == WorkProcess.CMD_STOP:
-					if data[1]:
-						self.completed()
-					else:
-						self.completed()
-			self.unlock()
-		else:
-			pass
-#
-
-#################################################################################################################################
-#################################################################################################################################
-#################           END                          ########################################################################
-#################################################################################################################################
-#################################################################################################################################
-
-class GOPanel(wx.Panel):
-	def __init__( self, parent, id, pos, size, style):
-		wx.Panel.__init__ ( self, parent, id, pos, size, style)
-		self.GO_panel = self # temporary workaround
+		self.GO_panel = wx.Panel( self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		GO_panel_sizer_1 = wx.BoxSizer( wx.VERTICAL )
 		
 		sbSizer3 = wx.StaticBoxSizer( wx.StaticBox( self.GO_panel, wx.ID_ANY, u"Source" ), wx.HORIZONTAL )
@@ -490,12 +93,8 @@ class GOPanel(wx.Panel):
 		self.GO_panel.SetSizer( GO_panel_sizer_1 )
 		self.GO_panel.Layout()
 		GO_panel_sizer_1.Fit( self.GO_panel )
-#
-
-class ACPanel(wx.Panel):
-	def __init__( self, parent, id, pos, size, style):
-		wx.Panel.__init__ ( self, parent, id, pos, size, style)
-		self.AC_panel = self # temporary workaround
+		self.fastSemSim_listbook.AddPage( self.GO_panel, u"Gene Ontology", False )
+		self.AC_panel = wx.Panel( self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer31 = wx.BoxSizer( wx.VERTICAL )
 		
 		bSizer28 = wx.BoxSizer( wx.HORIZONTAL )
@@ -591,13 +190,8 @@ class ACPanel(wx.Panel):
 		self.AC_panel.SetSizer( bSizer31 )
 		self.AC_panel.Layout()
 		bSizer31.Fit( self.AC_panel )
-#
-
-class SSPanel(wx.Panel):
-	def __init__( self, parent, id, pos, size, style):
-		wx.Panel.__init__ ( self, parent, id, pos, size, style)
-		self.SS_panel = self # temporary workaround
-
+		self.fastSemSim_listbook.AddPage( self.AC_panel, u"Annotation Corpus", False )
+		self.SS_panel = wx.Panel( self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer25 = wx.BoxSizer( wx.VERTICAL )
 		
 		bSizer27 = wx.BoxSizer( wx.HORIZONTAL )
@@ -646,14 +240,8 @@ class SSPanel(wx.Panel):
 		self.SS_panel.SetSizer( bSizer25 )
 		self.SS_panel.Layout()
 		bSizer25.Fit( self.SS_panel )
-
-#
-
-class QueryPanel(wx.Panel):
-	def __init__( self, parent, id, pos, size, style):
-		wx.Panel.__init__ ( self, parent, id, pos, size, style)
-		self.query_panel = self # temporary workaround
-
+		self.fastSemSim_listbook.AddPage( self.SS_panel, u"Semantic Similarity", False )
+		self.query_panel = wx.Panel( self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer50 = wx.BoxSizer( wx.VERTICAL )
 		
 		sbSizer36 = wx.StaticBoxSizer( wx.StaticBox( self.query_panel, wx.ID_ANY, u"Input method" ), wx.VERTICAL )
@@ -820,14 +408,8 @@ class QueryPanel(wx.Panel):
 		self.query_panel.SetSizer( bSizer50 )
 		self.query_panel.Layout()
 		bSizer50.Fit( self.query_panel )
-#
-
-class OutputCtrlPanel(wx.Panel):
-	def __init__( self, parent, id, pos, size, style):
-		wx.Panel.__init__ ( self, parent, id, pos, size, style)
-		self.output_ctrl_panel = self # temporary workaround
-
-		
+		self.fastSemSim_listbook.AddPage( self.query_panel, u"Query", False )
+		self.output_ctrl_panel = wx.Panel( self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer93 = wx.BoxSizer( wx.VERTICAL )
 		
 		sbSizer511 = wx.StaticBoxSizer( wx.StaticBox( self.output_ctrl_panel, wx.ID_ANY, u"Output parameters" ), wx.VERTICAL )
@@ -959,23 +541,13 @@ class OutputCtrlPanel(wx.Panel):
 		self.output_ctrl_panel.SetSizer( bSizer93 )
 		self.output_ctrl_panel.Layout()
 		bSizer93.Fit( self.output_ctrl_panel )
-#
-
-
-class OutputPanel(wx.Panel):
-	pass
-#
-
-class ControlsPanel(wx.Panel):
-	def __init__( self, parent, id, pos, size, style):
-		wx.Panel.__init__ ( self, parent, id, pos, size, style)
-		self.controls_panel = self # temporary workaround
-		
+		self.fastSemSim_listbook.AddPage( self.output_ctrl_panel, u"Output Settings", False )
+		self.controls_panel = wx.Panel( self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer62 = wx.BoxSizer( wx.VERTICAL )
 		
 		sbSizer35 = wx.StaticBoxSizer( wx.StaticBox( self.controls_panel, wx.ID_ANY, u"Log" ), wx.VERTICAL )
 		
-		self.controls_log_text = wx.TextCtrl( self.controls_panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( -1,300 ), wx.TE_MULTILINE|wx.TE_READONLY )
+		self.controls_log_text = wx.TextCtrl( self.controls_panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( -1,200 ), wx.TE_MULTILINE|wx.TE_READONLY )
 		sbSizer35.Add( self.controls_log_text, 0, wx.ALL|wx.EXPAND, 5 )
 		
 		bSizer62.Add( sbSizer35, 0, wx.ALL|wx.EXPAND, 5 )
@@ -990,210 +562,317 @@ class ControlsPanel(wx.Panel):
 		
 		bSizer62.Add( bSizer63, 0, wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
+		sbSizer321 = wx.StaticBoxSizer( wx.StaticBox( self.controls_panel, wx.ID_ANY, u"Tips" ), wx.HORIZONTAL )
+		
+		self.controls_tip_label = wx.StaticText( self.controls_panel, wx.ID_ANY, u"FastSemSimGui version 2. \nYou should first load a Gene Ontology and then an Annotation Corpus (using the first two panels).\nSelect a Semantic Similarity measure using the Semantic Similarity panel. Enter a query using the Query panel, and", wx.DefaultPosition, wx.Size( 450,-1 ), 0 )
+		self.controls_tip_label.Wrap( -1 )
+		sbSizer321.Add( self.controls_tip_label, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 5 )
+		
+		bSizer62.Add( sbSizer321, 1, wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 5 )
+		
 		self.controls_panel.SetSizer( bSizer62 )
 		self.controls_panel.Layout()
 		bSizer62.Fit( self.controls_panel )
-	#
-
-#
-
-################################################################################################
-####################################################################################
-################################################################################################
-####################################################################################
-################################################################################################
-####################################################################################
-################################################################################################
-####################################################################################
-################################################################################################
-####################################################################################
-################################################################################################
-####################################################################################
-
-#### Old code
-
-
-
-
-		#self.InitMenu()
-#----------------------------------------------------------------------------------------------------------------------------------
-	#'''
-	#Menubar
-	#'''
-	def InitMenu(self):
-		self.ID_NEW=wx.NewId()
-		self.ID_OPEN=wx.NewId()
-		self.ID_QUIT=wx.NewId()
-		self.ID_SAVE=wx.NewId()
-		self.ID_SAVE_AS=wx.NewId()
-		self.MenuBar = wx.MenuBar()
-		self.FileMenu = wx.Menu()
-		self.FileMenu.Append(self.ID_NEW, 'New', 'New')
-		self.FileMenu.Append(self.ID_OPEN, 'Open Configuration...', 'Open Configuration')
-		self.FileMenu.Append(self.ID_SAVE, 'Save Configuration', 'Save Configuration')
-		self.FileMenu.Append(self.ID_SAVE_AS, 'Save Configuration As...', 'Save Configuration As')
-		self.FileMenu.Append(self.ID_QUIT, 'Quit', 'Quit application')
-		self.MenuBar.Append(self.FileMenu,'&File')
-		self.SetMenuBar(self.MenuBar)
-		self.Bind(wx.EVT_MENU, self.OnMenuQuit, id=self.ID_QUIT)
-		self.Bind(wx.EVT_MENU, self.OnMenuOpen, id=self.ID_OPEN)
-		self.Bind(wx.EVT_MENU, self.OnMenuSave, id=self.ID_SAVE)
-		self.Bind(wx.EVT_MENU, self.OnMenuSaveAs, id=self.ID_SAVE_AS)
-		self.Bind(wx.EVT_MENU, self.OnMenuNew, id=self.ID_NEW)
-		return True
+		self.fastSemSim_listbook.AddPage( self.controls_panel, u"Controls", True )
+		self.output_panel = wx.Panel( self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.fastSemSim_listbook.AddPage( self.output_panel, u"Output", False )
+		
+		fastSemSim_sizer_1.Add( self.fastSemSim_listbook, 1, wx.EXPAND |wx.ALL, 5 )
+		
+		self.SetSizer( fastSemSim_sizer_1 )
+		self.Layout()
+		self.fastSemSim_statusbar = self.CreateStatusBar( 1, wx.ST_SIZEGRIP, wx.ID_ANY )
+		
+		self.Centre( wx.BOTH )
 	
-	def OnMenuNew(self, event):
-		print "OnMenuNew still to be implemented."
-
-	def OnMenuQuit(self, event):
-		print "OnMenuQuit still to be implemented correctly."
-		sys.exit()
-
-	def OnMenuOpen(self, event):
-		print "OnMenuOpen still to be implemented."
-		dialog = wx.FileDialog(None, style = wx.OPEN)
-		if dialog.ShowModal() == wx.ID_OK:
-			print 'Loading: ', dialog.GetPath()
-			if not self.config_file == None:
-				self.OnMenuNew(None)
-			self.config_file = dialog.GetPath()
-			self.loadConfigGui = LoadConfigGui(self)
-
-	def OnMenuSave(self, event):
-		if self.config_file == None:
-			return self.OnMenuSaveAs(event)
-		self.saveConfigGui = SaveConfigGui(self)
-
-	def OnMenuSaveAs(self, event):
-		dialog = wx.FileDialog(None, style = wx.SAVE|wx.OVERWRITE_PROMPT)
-		if dialog.ShowModal() == wx.ID_OK:
-			self.config_file = dialog.GetPath()
-			self.OnMenuSave(event)
-
-#----------------------------------------------------------------------------------------------------------------------------------
-
-	# routines to manage flags, status, and variables in general
-
-	def SetGoOk(self, status):
-		self.go_ok = status
-		if self.show_pics:
-			if self.go_ok:
-				self.StatusGui.go_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
-			else:
-				self.StatusGui.go_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
-		self.activateGoCmd()
-		
-	def SetAcOk(self, status):
-		self.ac_ok = status
-		if self.show_pics:
-			if self.ac_ok:
-				self.StatusGui.ac_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
-			else:
-				self.StatusGui.ac_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
-		self.activateGoCmd()
-		
-	def SetQueryOk(self, status):
-		self.query_ok = status
-		if self.show_pics:
-			if self.query_ok:
-				self.StatusGui.query_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
-			else:
-				self.StatusGui.query_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
-		self.activateGoCmd()
-		
-	def SetOutputCtrlOk(self, status):
-		self.outputctrl_ok = status
-		if self.show_pics:
-			if self.outputctrl_ok:
-				self.StatusGui.output_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
-			else:
-				self.StatusGui.output_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
-		self.activateGoCmd()
-
-	def SetOperationOk(self, status):
-		self.operation_ok = status
-		if self.show_pics:
-			if self.operation_ok:
-				self.StatusGui.operation_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
-			else:
-				self.StatusGui.operation_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
-		self.activateGoCmd()
-
-
-#################################
-#'''
-#Following routines start/stop ss computation
-#'''
-
-
-#################################
-
-#'''
-#Following routines handle communications with other processes 
-#'''
-
-
-
-			#print "Busy"
-		
-		#self.OnProgress()
-		#self.OnCompleted()
-
-	#def OnProgress(self):
-		##print "Updating progress bar..."
-		#gaugerange = self.progress.GetRange()
-		#self.progress.SetValue(self.sspdone.value*gaugerange)
-		##self.OnUpdateDone()
-
-	#def OnCompleted(self):
-		#if self.sscompleted.value == 1:
-			#self.log_field.AppendText("Finished.\n")
-			#print self.superconta
-			##self.running = False
-			#self.stop()
-		
-	def OnOutputData(self, t):
-		#print "Printing output data"
-		#print t
-		
-		#for i in t: #range(t[0], t[1] + 1):
-			##frase = self.ssprocess[0].buffer[i][0] + "\t" + self.ssprocess[0].buffer[i][1] + "\t" + self.ssprocess[0].buffer[i][2] + "\n"
-			#self.superconta += 1
-			#frase = str(i[0]) + "\t" + str(i[1]) + "\t" + str(i[2]) + "\n"
-			#self.OutputGui.output_field.AppendText(frase)
-		frase = ""
-		for i in t: #range(t[0], t[1] + 1):
-			#frase = self.ssprocess[0].buffer[i][0] + "\t" + self.ssprocess[0].buffer[i][1] + "\t" + self.ssprocess[0].buffer[i][2] + "\n"
-			self.superconta += 1
-			frase = frase + str(i[0]) + "\t" + str(i[1]) + "\t" + str(i[2]) + "\n"
-		self.OutputGui.output_field.AppendText(frase)
-		#print "Output data printed"
-		#self.OnUpdateDone()
-
-	def OnLogData(self, msg):
-		t = msg.data
-		self.log_field.AppendText(t)
-		#self.OnUpdateDone()
-		
-	def OnUpdateDone(self):
+	def __del__( self ):
 		pass
-		#print "Update done"
-		#self.update_event.set()
+	
 
+###########################################################################
+## Class GO_load_gui
+###########################################################################
 
-##################################################################################
-#### start the main gui. Should be called from outside. Why? ####
-##################################################################################
+class GO_load_gui ( wx.Dialog ):
+	
+	def __init__( self, parent ):
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"Load Gene Ontology", pos = wx.DefaultPosition, size = wx.Size( 650,410 ), style = wx.DEFAULT_DIALOG_STYLE )
+		
+		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		
+		bSizer3 = wx.BoxSizer( wx.VERTICAL )
+		
+		bSizer22 = wx.BoxSizer( wx.HORIZONTAL )
+		
+		sbSizer3 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Source file" ), wx.HORIZONTAL )
+		
+		self.GO_load_source_label = wx.StaticText( self, wx.ID_ANY, u"No file selected. The built-in version will be loaded.", wx.DefaultPosition, wx.DefaultSize, wx.ALIGN_RIGHT|wx.ST_NO_AUTORESIZE )
+		self.GO_load_source_label.Wrap( -1 )
+		sbSizer3.Add( self.GO_load_source_label, 1, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 5 )
+		
+		bSizer22.Add( sbSizer3, 1, wx.LEFT|wx.RIGHT, 5 )
+		
+		bSizer20 = wx.BoxSizer( wx.HORIZONTAL )
+		
+		self.GO_load_select_button = wx.Button( self, wx.ID_ANY, u"Select file...", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer20.Add( self.GO_load_select_button, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 5 )
+		
+		self.GO_load_default_button = wx.Button( self, wx.ID_ANY, u"Set default", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer20.Add( self.GO_load_default_button, 0, wx.ALIGN_CENTER, 5 )
+		
+		bSizer22.Add( bSizer20, 0, wx.ALIGN_RIGHT|wx.RIGHT|wx.TOP, 5 )
+		
+		bSizer3.Add( bSizer22, 0, wx.ALIGN_CENTER|wx.EXPAND|wx.TOP, 5 )
+		
+		bSizer5 = wx.BoxSizer( wx.VERTICAL )
+		
+		bSizer23 = wx.BoxSizer( wx.VERTICAL )
+		
+		sbSizer5 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Options" ), wx.HORIZONTAL )
+		
+		fgSizer1 = wx.FlexGridSizer( 2, 2, 0, 0 )
+		fgSizer1.SetFlexibleDirection( wx.BOTH )
+		fgSizer1.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		self.GO_load_ignore_haspart_check = wx.CheckBox( self, wx.ID_ANY, u"Ignore has_part", wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer1.Add( self.GO_load_ignore_haspart_check, 1, wx.ALL, 5 )
+		
+		self.m_staticText59 = wx.StaticText( self, wx.ID_ANY, u"Check this to ignore 'has_part' relationships", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText59.Wrap( -1 )
+		fgSizer1.Add( self.m_staticText59, 1, wx.ALIGN_RIGHT|wx.ALL, 5 )
+		
+		self.GO_load_ignore_regulates_button = wx.CheckBox( self, wx.ID_ANY, u"Ignore regulates", wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer1.Add( self.GO_load_ignore_regulates_button, 1, wx.ALL, 5 )
+		
+		self.m_staticText591 = wx.StaticText( self, wx.ID_ANY, u"Check this to ignore 'regulates' relationships", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText591.Wrap( -1 )
+		fgSizer1.Add( self.m_staticText591, 1, wx.ALIGN_RIGHT|wx.ALL, 5 )
+		
+		sbSizer5.Add( fgSizer1, 1, wx.EXPAND, 5 )
+		
+		bSizer23.Add( sbSizer5, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+		
+		bSizer5.Add( bSizer23, 1, wx.EXPAND, 5 )
+		
+		bSizer3.Add( bSizer5, 0, wx.ALL|wx.EXPAND, 5 )
+		
+		bSizer4 = wx.BoxSizer( wx.HORIZONTAL )
+		
+		self.GO_load_load_button = wx.Button( self, wx.ID_ANY, u"Load", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.GO_load_load_button.SetDefault() 
+		bSizer4.Add( self.GO_load_load_button, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+		
+		self.GO_load_cancel_button = wx.Button( self, wx.ID_ANY, u"Cancel", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer4.Add( self.GO_load_cancel_button, 0, wx.ALL, 5 )
+		
+		bSizer3.Add( bSizer4, 0, wx.ALIGN_CENTER, 5 )
+		
+		sbSizer18 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Help" ), wx.VERTICAL )
+		
+		self.m_staticText31 = wx.StaticText( self, wx.ID_ANY, u"The Gene Ontology file must be encoded in obo-xml format. It can also be gzipped. Please refer to www.geneontology.org to retrieve the most updated Gene Ontology. If not provided, the Gene Ontology provided with fastSemSim will be loaded.", wx.DefaultPosition, wx.Size( 500,-1 ), 0 )
+		self.m_staticText31.Wrap( -1 )
+		self.m_staticText31.SetMaxSize( wx.Size( 500,-1 ) )
+		
+		sbSizer18.Add( self.m_staticText31, 0, wx.ALL, 5 )
+		
+		bSizer3.Add( sbSizer18, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 5 )
+		
+		self.SetSizer( bSizer3 )
+		self.Layout()
+		
+		self.Centre( wx.BOTH )
+	
+	def __del__( self ):
+		pass
+	
 
-def _start():
-	multiprocessing.freeze_support()
-	app = wx.App()
-	window = fastSemSimGui(None)
-	window.Centre()
-	window.Show()  
-	app.MainLoop()
-#
+###########################################################################
+## Class AC_load_gui
+###########################################################################
 
-if __name__=='__main__':
-	_start()
-#
+class AC_load_gui ( wx.Dialog ):
+	
+	def __init__( self, parent ):
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"Load Annotation Corpus", pos = wx.DefaultPosition, size = wx.Size( 685,442 ), style = wx.DEFAULT_DIALOG_STYLE )
+		
+		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		
+		bSizer3 = wx.BoxSizer( wx.VERTICAL )
+		
+		bSizer22 = wx.BoxSizer( wx.HORIZONTAL )
+		
+		sbSizer3 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Source file" ), wx.HORIZONTAL )
+		
+		self.AC_load_source_label = wx.StaticText( self, wx.ID_ANY, u"No file selected", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.AC_load_source_label.Wrap( -1 )
+		sbSizer3.Add( self.AC_load_source_label, 1, wx.ALIGN_CENTER_VERTICAL|wx.LEFT|wx.RIGHT, 10 )
+		
+		self.AC_load_select_button = wx.Button( self, wx.ID_ANY, u"Select file...", wx.DefaultPosition, wx.DefaultSize, 0 )
+		sbSizer3.Add( self.AC_load_select_button, 0, wx.ALIGN_RIGHT|wx.ALL, 5 )
+		
+		bSizer22.Add( sbSizer3, 1, wx.ALL, 5 )
+		
+		bSizer3.Add( bSizer22, 0, wx.ALIGN_CENTER|wx.EXPAND, 5 )
+		
+		bSizer5 = wx.BoxSizer( wx.VERTICAL )
+		
+		sbSizer22 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Source type" ), wx.VERTICAL )
+		
+		self.AC_load_type_box = wx.Choicebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.CHB_DEFAULT )
+		self.m_panel9 = wx.Panel( self.AC_load_type_box, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		bSizer23 = wx.BoxSizer( wx.VERTICAL )
+		
+		sbSizer29 = wx.StaticBoxSizer( wx.StaticBox( self.m_panel9, wx.ID_ANY, u"Options" ), wx.VERTICAL )
+		
+		gbSizer2 = wx.GridBagSizer( 0, 3 )
+		gbSizer2.SetFlexibleDirection( wx.BOTH )
+		gbSizer2.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		self.AC_load_ignore_IEA_check = wx.CheckBox( self.m_panel9, wx.ID_ANY, u"Ignore IEA", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gbSizer2.Add( self.AC_load_ignore_IEA_check, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		self.m_staticText59 = wx.StaticText( self.m_panel9, wx.ID_ANY, u"Check this to ignore IEA annotations (Inferred Electronically Annotations)", wx.DefaultPosition, wx.Size( 450,-1 ), 0 )
+		self.m_staticText59.Wrap( -1 )
+		self.m_staticText59.SetMaxSize( wx.Size( 450,-1 ) )
+		
+		gbSizer2.Add( self.m_staticText59, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 2 ), wx.ALL, 5 )
+		
+		self.AC_load_simplify_check = wx.CheckBox( self.m_panel9, wx.ID_ANY, u"Simplify", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gbSizer2.Add( self.AC_load_simplify_check, wx.GBPosition( 1, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		self.m_staticText591 = wx.StaticText( self.m_panel9, wx.ID_ANY, u"Check this to simplify the annotation corpus after loading. Removes informartion about annotation reliability, taxonomy, ...", wx.DefaultPosition, wx.Size( 450,-1 ), 0 )
+		self.m_staticText591.Wrap( -1 )
+		self.m_staticText591.SetMaxSize( wx.Size( 450,-1 ) )
+		
+		gbSizer2.Add( self.m_staticText591, wx.GBPosition( 1, 1 ), wx.GBSpan( 1, 2 ), wx.ALL, 5 )
+		
+		self.AC_load_tax_check = wx.CheckBox( self.m_panel9, wx.ID_ANY, u"Select taxonomy", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gbSizer2.Add( self.AC_load_tax_check, wx.GBPosition( 2, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		
+		bSizer51 = wx.BoxSizer( wx.HORIZONTAL )
+		
+		sbSizer23 = wx.StaticBoxSizer( wx.StaticBox( self.m_panel9, wx.ID_ANY, u"Taxonomy Id" ), wx.VERTICAL )
+		
+		self.AC_load_tax_label = wx.TextCtrl( self.m_panel9, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		sbSizer23.Add( self.AC_load_tax_label, 0, wx.ALL, 5 )
+		
+		bSizer51.Add( sbSizer23, 0, wx.ALL|wx.EXPAND, 5 )
+		
+		gbSizer2.Add( bSizer51, wx.GBPosition( 2, 1 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.BOTTOM|wx.EXPAND, 5 )
+		
+		self.m_staticText51 = wx.StaticText( self.m_panel9, wx.ID_ANY, u"Select a taxonomy to consider. All the objects not belonging to the selected taxonomy will be ignored.", wx.DefaultPosition, wx.Size( 300,-1 ), 0 )
+		self.m_staticText51.Wrap( -1 )
+		gbSizer2.Add( self.m_staticText51, wx.GBPosition( 2, 2 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		
+		sbSizer29.Add( gbSizer2, 1, wx.BOTTOM|wx.EXPAND, 10 )
+		
+		bSizer23.Add( sbSizer29, 1, wx.EXPAND, 5 )
+		
+		self.m_panel9.SetSizer( bSizer23 )
+		self.m_panel9.Layout()
+		bSizer23.Fit( self.m_panel9 )
+		self.AC_load_type_box.AddPage( self.m_panel9, u"GAF-2", True )
+		self.m_panel10 = wx.Panel( self.AC_load_type_box, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		bSizer231 = wx.BoxSizer( wx.VERTICAL )
+		
+		sbSizer30 = wx.StaticBoxSizer( wx.StaticBox( self.m_panel10, wx.ID_ANY, u"Options" ), wx.VERTICAL )
+		
+		fgSizer8 = wx.FlexGridSizer( 3, 3, 15, 5 )
+		fgSizer8.SetFlexibleDirection( wx.BOTH )
+		fgSizer8.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		self.m_staticText30 = wx.StaticText( self.m_panel10, wx.ID_ANY, u"Separator", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText30.Wrap( -1 )
+		fgSizer8.Add( self.m_staticText30, 0, wx.ALL, 5 )
+		
+		bSizer46 = wx.BoxSizer( wx.VERTICAL )
+		
+		self.AC_load_sep_tab_radio = wx.RadioButton( self.m_panel10, wx.ID_ANY, u"[tab]  '\\t'", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer46.Add( self.AC_load_sep_tab_radio, 0, wx.LEFT|wx.RIGHT|wx.TOP, 5 )
+		
+		self.AC_load_sep_space_radio = wx.RadioButton( self.m_panel10, wx.ID_ANY, u"[space]", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer46.Add( self.AC_load_sep_space_radio, 0, wx.LEFT|wx.RIGHT, 5 )
+		
+		bSizer47 = wx.BoxSizer( wx.HORIZONTAL )
+		
+		self.AC_load_sep_custom_radio = wx.RadioButton( self.m_panel10, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer47.Add( self.AC_load_sep_custom_radio, 0, wx.LEFT|wx.RIGHT, 5 )
+		
+		self.AC_sep_custom_text = wx.TextCtrl( self.m_panel10, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 35,-1 ), 0 )
+		bSizer47.Add( self.AC_sep_custom_text, 0, wx.RIGHT, 5 )
+		
+		bSizer46.Add( bSizer47, 1, wx.EXPAND, 5 )
+		
+		fgSizer8.Add( bSizer46, 1, wx.EXPAND, 5 )
+		
+		self.m_staticText48 = wx.StaticText( self.m_panel10, wx.ID_ANY, u"Character used to separate fields within each row.", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText48.Wrap( -1 )
+		fgSizer8.Add( self.m_staticText48, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		
+		self.m_staticText49 = wx.StaticText( self.m_panel10, wx.ID_ANY, u"Row format", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText49.Wrap( -1 )
+		fgSizer8.Add( self.m_staticText49, 0, wx.ALL, 5 )
+		
+		bSizer48 = wx.BoxSizer( wx.VERTICAL )
+		
+		self.AC_loiad_multi_check = wx.CheckBox( self.m_panel10, wx.ID_ANY, u"Multiple associations", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer48.Add( self.AC_loiad_multi_check, 0, wx.LEFT|wx.RIGHT, 5 )
+		
+		fgSizer8.Add( bSizer48, 1, wx.EXPAND, 5 )
+		
+		self.m_staticText50 = wx.StaticText( self.m_panel10, wx.ID_ANY, u"Check this option if each row contains more than one association between objects and GO Terms.", wx.DefaultPosition, wx.Size( 325,-1 ), 0 )
+		self.m_staticText50.Wrap( -1 )
+		fgSizer8.Add( self.m_staticText50, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		
+		self.m_staticText511 = wx.StaticText( self.m_panel10, wx.ID_ANY, u"Data order", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText511.Wrap( -1 )
+		fgSizer8.Add( self.m_staticText511, 0, wx.ALL, 5 )
+		
+		bSizer49 = wx.BoxSizer( wx.VERTICAL )
+		
+		self.AC_load_obj_first_radio = wx.RadioButton( self.m_panel10, wx.ID_ANY, u"Object -> GO Term(s)", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer49.Add( self.AC_load_obj_first_radio, 0, wx.LEFT|wx.TOP, 5 )
+		
+		self.AC_load_term_first_radio = wx.RadioButton( self.m_panel10, wx.ID_ANY, u"GO Term -> Object(s)", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer49.Add( self.AC_load_term_first_radio, 0, wx.BOTTOM|wx.LEFT, 5 )
+		
+		fgSizer8.Add( bSizer49, 1, wx.EXPAND, 5 )
+		
+		self.m_staticText52 = wx.StaticText( self.m_panel10, wx.ID_ANY, u"Select whether the first field of each row is an object or a GO Term.", wx.DefaultPosition, wx.Size( 325,-1 ), 0 )
+		self.m_staticText52.Wrap( -1 )
+		fgSizer8.Add( self.m_staticText52, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		
+		sbSizer30.Add( fgSizer8, 0, wx.BOTTOM|wx.EXPAND, 5 )
+		
+		bSizer231.Add( sbSizer30, 1, wx.EXPAND, 5 )
+		
+		self.m_panel10.SetSizer( bSizer231 )
+		self.m_panel10.Layout()
+		bSizer231.Fit( self.m_panel10 )
+		self.AC_load_type_box.AddPage( self.m_panel10, u"Plain File", False )
+		sbSizer22.Add( self.AC_load_type_box, 1, wx.EXPAND |wx.ALL, 5 )
+		
+		bSizer5.Add( sbSizer22, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 5 )
+		
+		bSizer3.Add( bSizer5, 0, wx.ALL|wx.EXPAND, 5 )
+		
+		bSizer4 = wx.BoxSizer( wx.HORIZONTAL )
+		
+		self.AC_load_load_button = wx.Button( self, wx.ID_ANY, u"Load", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.AC_load_load_button.SetDefault() 
+		bSizer4.Add( self.AC_load_load_button, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+		
+		self.AC_load_cancel_button = wx.Button( self, wx.ID_ANY, u"Cancel", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer4.Add( self.AC_load_cancel_button, 0, wx.ALL, 5 )
+		
+		bSizer3.Add( bSizer4, 0, wx.ALIGN_CENTER, 5 )
+		
+		self.SetSizer( bSizer3 )
+		self.Layout()
+		
+		self.Centre( wx.BOTH )
+	
+	def __del__( self ):
+		pass
+	
+
