@@ -53,8 +53,9 @@ SemSimMeasures = {
 'Jaccard' :(JaccardSemSim, False),
 'Czekanowski-Dice' :(CzekanowskiDiceSemSim, False),
 'Cosine' :(CosineSemSim, False),
-'G-SESAME' :(GSESAMESemSim, True)
-
+'G-SESAME' :(GSESAMESemSim, True),
+# new in version 0.7
+#'Cosine' :(CosineSemSim, False),
 }
 
 '''

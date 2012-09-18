@@ -35,79 +35,57 @@ class GOPanel(wx.Panel):
 		self.GO_panel = self # temporary workaround
 		self.real_parent = real_parent
 		GO_panel_sizer_1 = wx.BoxSizer( wx.VERTICAL )
-		
 		sbSizer3 = wx.StaticBoxSizer( wx.StaticBox( self.GO_panel, wx.ID_ANY, u"Source" ), wx.HORIZONTAL )
-		
 		self.GO_source_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"No file loaded", wx.DefaultPosition, wx.Size( -1,-1 ), 0 )
 		self.GO_source_label.Wrap( -1 )
 		sbSizer3.Add( self.GO_source_label, 1, wx.ALIGN_CENTER|wx.ALL, 5 )
-		
 		self.GO_load_button = wx.Button( self.GO_panel, wx.ID_ANY, u"Load ...", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.GO_load_button.SetDefault() 
 		sbSizer3.Add( self.GO_load_button, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-		
 		GO_panel_sizer_1.Add( sbSizer3, 0, wx.ALL|wx.EXPAND, 5 )
-		
 		bSizer5 = wx.BoxSizer( wx.HORIZONTAL )
-		
 		sbSizer5 = wx.StaticBoxSizer( wx.StaticBox( self.GO_panel, wx.ID_ANY, u"Statistics" ), wx.HORIZONTAL )
-		
 		gSizer2 = wx.GridSizer( 6, 2, 0, 0 )
-		
 		self.m_staticText2 = wx.StaticText( self.GO_panel, wx.ID_ANY, u"Terms", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText2.Wrap( -1 )
 		gSizer2.Add( self.m_staticText2, 0, wx.ALL, 5 )
-		
 		self.GO_terms_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.GO_terms_label.Wrap( -1 )
 		gSizer2.Add( self.GO_terms_label, 0, wx.ALL, 5 )
-		
 		self.m_staticText4 = wx.StaticText( self.GO_panel, wx.ID_ANY, u"Edges", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText4.Wrap( -1 )
 		gSizer2.Add( self.m_staticText4, 0, wx.ALL, 5 )
-		
 		self.GO_edges_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.GO_edges_label.Wrap( -1 )
 		gSizer2.Add( self.GO_edges_label, 0, wx.ALL, 5 )
-		
 		self.m_staticText6 = wx.StaticText( self.GO_panel, wx.ID_ANY, u"Categories", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText6.Wrap( -1 )
 		gSizer2.Add( self.m_staticText6, 0, wx.ALL, 5 )
-		
 		self.GO_categories_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.GO_categories_label.Wrap( -1 )
 		gSizer2.Add( self.GO_categories_label, 0, wx.ALL, 5 )
-		
 		sbSizer5.Add( gSizer2, 1, wx.ALIGN_CENTER|wx.SHAPED, 2 )
-		
 		bSizer5.Add( sbSizer5, 0, wx.ALL, 5 )
-		
 		sbSizer6 = wx.StaticBoxSizer( wx.StaticBox( self.GO_panel, wx.ID_ANY, u"Additional information" ), wx.VERTICAL )
-		
 		bSizer51 = wx.BoxSizer( wx.VERTICAL )
-		
-		self.m_staticText8 = wx.StaticText( self.GO_panel, wx.ID_ANY, u"what has been accepted?", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText8 = wx.StaticText( self.GO_panel, wx.ID_ANY, "", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText8.Wrap( -1 )
 		bSizer51.Add( self.m_staticText8, 0, wx.ALL, 5 )
-		
 		sbSizer6.Add( bSizer51, 1, wx.EXPAND, 5 )
-		
 		bSizer5.Add( sbSizer6, 0, wx.ALL, 5 )
-		
 		GO_panel_sizer_1.Add( bSizer5, 0, wx.EXPAND, 5 )
-		
 		bSizer4 = wx.BoxSizer( wx.HORIZONTAL )
-		
 		GO_panel_sizer_1.Add( bSizer4, 0, wx.ALIGN_RIGHT, 5 )
-		
 		self.GO_panel.SetSizer( GO_panel_sizer_1 )
 		self.GO_panel.Layout()
 		GO_panel_sizer_1.Fit( self.GO_panel )
-		
 		self.go_load_gui = GO_load_gui(self, self.real_parent)
 		self.Bind(wx.EVT_BUTTON, self.OnLoadButton, id=self.GO_load_button.GetId())
-		
 #
+
+
+
+
 
 	def OnLoadButton(self, event):
 		if DEBUG_LEVEL>1:
@@ -115,15 +93,34 @@ class GOPanel(wx.Panel):
 		self.go_load_gui.ShowModal()
 #
 
+
+
+
+
 	def _update(self):
 		if DEBUG_LEVEL>0:
 			print "GOPanel: _update()"
 		if self.real_parent.GO_status:
-			self.GO_source_label.SetLabel(self.real_parent.param_GO_filename)
-			self.real_parent.fastSemSim_listbook.SetPageImage(0, 0)
+			if not self.real_parent.param_GO_filename==None:
+				self.GO_source_label.SetLabel(os.path.basename(self.real_parent.param_GO_filename))
+				self.m_staticText8.SetLabel("The Gene Ontology has correctly been loaded from " + os.path.basename(self.real_parent.param_GO_filename) + ".")
+			else:
+				self.GO_source_label.SetLabel("[built-in version]")
+				self.m_staticText8.SetLabel("The built-in version of the Gene Ontology has been correctly loaded.")
 		else:
-			self.GO_source_label.SetLabel(u"No file loaded.")
-			self.real_parent.fastSemSim_listbook.SetPageImage(0, 1)
+			self.GO_source_label.SetLabel("")
+			self.m_staticText8.SetLabel("No Gene Ontology is currently loaded.")
+#
+
+
+
+
+
+
+	def update(self):
+		if DEBUG_LEVEL>1:
+			print "GOPanel: update()"
+		self.real_parent._update()
 #
 
 
@@ -336,14 +333,14 @@ class GO_load_gui ( wx.Dialog ):
 						print "GO load outcome: Load successful."
 					self.status = True
 					self._data_to_main()
-					self.parent._update()
+					self.parent.update()
 					self.Hide()
 				else:
 					if DEBUG_LEVEL>1:
 						print "GO load outcome: Load Fail."
 					self.status = False
 					self._data_to_main()
-					self.parent._update()
+					self.parent.update()
 
 				self.real_parent.communication_thread.unregister_callback(self.GO_load_outcome_handle)
 				self.unfreeze()

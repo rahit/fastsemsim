@@ -35,6 +35,10 @@ class GSESAMESemSim(TermSemSim) :
 	IC_based = False
 	is_a_score = 0.8
 	part_of_score = 0.6
+	regulates_score = 0.6
+	pos_regulates_score = regulates_score
+	neg_regulates_score = regulates_score
+	generic_score = 0.5
 
 	def __init__(self, go, ac, util = None):
 		super(GSESAMESemSim, self).__init__(go, ac, util)
@@ -46,7 +50,7 @@ class GSESAMESemSim(TermSemSim) :
 		queue.append(term)
 		while len(queue) > 0:
 			t = queue.pop()
-			for tp in self.util.parents[t]:
+			for tp in self.util.go.parents[t]:
 				if tp not in processed:
 					queue.append(tp)
 					processed[tp] = processed[t] * self.score_edge(tp, t)
@@ -60,7 +64,16 @@ class GSESAMESemSim(TermSemSim) :
 					return self.is_a_score
 				elif self.go.edge_types[j] == GeneOntology.PART_OF:
 					return self.part_of_score
-		print "Errore."
+				elif self.go.edge_types[j] == GeneOntology.REGULATES:
+					return self.regulates_score
+				elif self.go.edge_types[j] == GeneOntology.POS_REG:
+					return self.pos_regulates_score
+				elif self.go.edge_types[j] == GeneOntology.NEG_REG:
+					return self.neg_regulates_score
+				else:
+					return self.generic_score
+		print "Error"
+		raise Exception
 
 	def int_SemSim(self, term1, term2):
 		ca = self.util.det_common_ancestors(term1, term2)

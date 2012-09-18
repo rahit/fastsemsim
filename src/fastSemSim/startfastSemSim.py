@@ -233,9 +233,47 @@ def ss_pairwise(SS, pairs, ontology, out, cut_thres = None):
 
 
 
+	#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+	# Process several files within a single folder  #
+	#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 
+#def int_do():
+	#ss_pairwise(SS, query, ontology, h)
 
+#def do_test(wf='log_Tempi.txt'):
+def do_test():
+	#global query
+
+	if not out_file == None:
+		if not os.path.exists(out_file):
+			os.makedirs(out_file)
+
+	#tempi = []
+	#t = timeit.Timer(int_do)
+	dirList=os.listdir(query_dir)
+	
+	for fname in dirList:
+		print fname
+		query = load_query_from_file(query_dir+"/"+fname, query_type, query_separator)
+		h = None
+		#h = open("/dev/null", 'w')
+		
+		h = open(out_file + "/" + os.path.splitext(fname) + '.ss', 'w')
+		
+		#tt = time.clock()
+		ss_pairwise(SS, query, ontology, h)
+		#tt = time.clock() - tt
+		
+		#tempi.append((fname,tt))
+		#print(tt)
+		if not h == None:
+			h.close()
+	#h = open(wf, 'w')
+	#for i in tempi:
+		#h.write(str(i[0]) + "\t" + str(i[1]) + "\n")
+	#h.close()
+#
 
 
 	#-#-#-#-#-#-#-#-#-#-#-#-#
@@ -319,16 +357,16 @@ def print_usage():
 	print ""
 	print ""
 	print "Parameters:"
-	print "-a,--ac:\t The Annotation Corpus to use. Can be either in GAF-2 or plain format. See documentation online for information."
+	print "-a,--ac:\t The Annotation Corpus to use. Can be either in GAF-2 or plain format. See documentation online for more information."
 	print "-c, --category:\t The Gene Ontology category to use. Can be \"MF\",\"BP\" or \"CC\". [Default: BP]"
-	print "-g,--go:\t The Gene Ontology to use. Must be in obo-xml format. Can use and automatically detects the gzipped version of the GO. If not provided, the GO version included in FastSemSim will be used."
+	print "-g,--go:\t The Gene Ontology to use. Must be in obo-xml format. Automatically detects whether the file is gzipped. If not provided, the GO included in FastSemSim will be used."
 	print "-h, --help:\t Print this help page."
-	print "-l, --list:\t Consider the query as a list of entries. Evaluates the pairwise semantic similarity."
-	print "-m, --mixing_strategy:\t The mixing strategy to be used (if the SS measure requires it). [Default: BMA]"
+	print "-l, --list:\t Consider the query as a list of entries. Evaluates the pairwise semantic similarity between each entry in the query."
+	print "-m, --mixing_strategy:\t The mixing strategy to be used (if the SS measure requires it). [Default: BMA]. Can be \"max\", \"BMA\", \"avg\""
 	print "-o, --output:\t Output file. If not specified, results will be printed on the console."
-	print "-p, --pairs:\t Consider the query as a set of pairs. If not specified, list will be assumed."
+	print "-p, --pairs:\t Consider the query as a set of pairs, one pair per line. Computes the semantic similarity between each pair. If not specified, list will be assumed."
 	print "-q, --query:\t Specifies the file with the query. If not specified, the behavior will be the same as if -u is specified."
-	print "-s, --semsim:\t The semantic similarity measure to use. [Default: Resnik]"
+	print "-s, --semsim:\t The semantic similarity measure to use. Can be 'Resnik','SimGIC','Lin','Jiang and Conrath','SimIC','Dice','TO','NTO','Jaccard','Czekanowski-Dice','Cosine','G-SESAME'. [Default: Resnik]"
 	print "-t,--actype:\t Describes the format of the annotation corpus. Can be \"plain\" or \"gaf2\". [default: gaf2]"
 	print "-u:\t\t Use all the entries in the annotation corpus as the query. This overrides -l and -p options."
 	print "-v, --verbose:\t Print additional statistics and progress details."
@@ -351,7 +389,7 @@ def print_usage():
 
 
 def start():
-	global go_file, ac_file, ac_type, ontology, query_file, query_type, query_from_ac, out_file, semsim_name, mix_name, query_separator, verbose, tax_include, use_IEA, GOTerm_first, multiple, ac_separator, go, ac, query, SS, use_enhanced
+	global go_file, ac_file, ac_type, ontology, query_file, query_type, query_from_ac, out_file, semsim_name, mix_name, query_separator, verbose, tax_include, use_IEA, GOTerm_first, multiple, ac_separator, go, ac, query, SS, use_enhanced, query_dir
 	
 	print("-----------------------------------------------")
 	print("FastSemSim 0.5 - Copyright 2011-2012 Marco Mina")
@@ -362,6 +400,7 @@ def start():
 	
 	go_file = program_dir + "/data/GO_2012-02-24.obo-xml.gz"
 	ac_file = None
+	query_dir = None
 	ac_type = 'gaf2'
 	ontology = "BP"
 	query_file = None
@@ -449,6 +488,10 @@ def start():
 		elif sys.argv[i] == '--GOTermfirst':
 			GOTerm_first = True
 			continue
+		elif sys.argv[i] == '-d':
+			query_file = None
+			query_dir = sys.argv[i+1]
+			query_from_ac = False
 		elif sys.argv[i] == '--entryfirst':
 			GOTerm_first = False
 			continue
@@ -482,7 +525,7 @@ def start():
 		semsim_name = 'Resnik'
 		mix_name = 'max'
 	if not query_from_ac:
-		if query_file == None:
+		if query_file == None and query_dir==None:
 			print "Please specify a query file or use -u"
 			sys.exit()
 	else:
@@ -523,6 +566,10 @@ def start():
 		SS = init_ss(go, ac, semsim_name, mix_name)
 	else:
 		SS = init_enhanced_ss(go, ac, semsim_name, mix_name)
+
+	if not query_dir == None:
+		do_test(out_file)
+		sys.exit()
 		
 	if query_from_ac:
 		query = load_query_from_ac(ac)

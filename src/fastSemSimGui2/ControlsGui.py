@@ -110,19 +110,38 @@ class ControlsPanel(wx.Panel):
 		
 #
 
+
+
+
+
+
+
+
+
+
 	def OnStopCmd(self, event):
 		self.parent.stop()
+#
+
+
+
+
+
+
+
+
+
 
 	def OnStartCmd(self, event):
 		if self.parent.start():
-			self.controls_start_button.SetLabel(u"Pause")
-			#if self.parentobj.status == 1: # Ready. Not Running
-				#self.parentobj.start()
-			#elif self.parentobj.status == 2: # running
-				#self.parentobj.stop() # set to not running and stops thread
-			#elif self.parentobj.status == 0: # Not ready. Should not be active.
-				#self.parentobj.activateGoCmd()
+			#self.controls_start_button.SetLabel(u"Pause")
+			pass
 #
+
+
+
+
+
 
 	def setBitmap(self, handle, value):
 		if value:

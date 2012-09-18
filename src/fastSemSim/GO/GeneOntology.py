@@ -197,7 +197,9 @@ def parse(file_stream):
 
 
 def load(file_stream):
-	#print type(file_stream)
+	#print "GO FILE TYPE: " + str(type(file_stream))
+	if type(file_stream) == unicode:
+		file_stream = str(file_stream)
 	if type(file_stream) == str:
 		fn,fe = os.path.splitext(file_stream)
 		if fe == '.gz':

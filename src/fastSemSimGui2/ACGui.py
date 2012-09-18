@@ -147,14 +147,16 @@ class ACPanel(wx.Panel):
 		self.ac_load_gui.ShowModal()
 #
 
+
+
+
+
+
 	def _update(self):
 		if self.real_parent.AC_status:
-			self.real_parent.fastSemSim_listbook.SetPageImage(1, 0)
 			self.AC_source_label.SetLabel(self.real_parent.param_AC_filename)
 		else:
 			self.AC_source_label.SetLabel(u"No file loaded.")
-			self.real_parent.fastSemSim_listbook.SetPageImage(1, 1)
-#
 #
 
 ###################################################################################################################
@@ -369,6 +371,8 @@ class AC_load_gui ( wx.Dialog ):
 		#self.param_ignore_regulates = self.GO_load_ignore_regulates_check.GetValue()
 #
 
+
+
 	def _reset_(self):
 		param_filename = None
 		param_filetype = None
@@ -411,6 +415,8 @@ class AC_load_gui ( wx.Dialog ):
 			self.AC_load_source_label.SetLabel(self.param_filename)
 #
 
+
+
 	def _data_to_main(self):
 		self.real_parent.param_AC_filename = self.param_filename
 		self.real_parent.param_AC_filetype = self.param_filetype
@@ -418,6 +424,8 @@ class AC_load_gui ( wx.Dialog ):
 		#self.real_parent.param_ignore_regulates = self.param_ignore_regulates
 		self.real_parent.AC_status = self.status
 #
+
+
 
 	def OnLoad(self, data):
 		#self.parent.parent.lock()
@@ -434,7 +442,7 @@ class AC_load_gui ( wx.Dialog ):
 		#self.AC_load_ignore_haspart_check.Disable()
 		#self.AC_load_ignore_regulates_check.Disable()
 		self.AC_load_outcome_handle = self.real_parent.communication_thread.register_callback(self, self.OnLoadDone)
-		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_LOAD_AC, self.param_filename, self.param_filetype, self.params))
+		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_LOAD_AC, self.param_filename, self.param_filetype, self.params))
 		
 #
 
@@ -449,14 +457,16 @@ class AC_load_gui ( wx.Dialog ):
 						print "AC load outcome: Load successful."
 					self.status = True
 					self._data_to_main()
-					self.parent._update()
+					#self.parent._update()
+					self.parent.real_parent._update()
 					self.Hide()
 				else:
 					if debug:
 						print "AC load outcome: Load Fail."
 					self.status = False
 					self._data_to_main()
-					self.parent._update()
+					self.parent.real_parent._update()
+					#self.parent._update()
 
 				self.real_parent.communication_thread.unregister_callback(self.AC_load_outcome_handle)
 				self.AC_load_cancel_button.Enable()

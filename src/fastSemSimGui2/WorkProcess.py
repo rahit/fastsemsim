@@ -52,7 +52,8 @@ CMD_PAUSE = CMD_BASE + 3 # Pause the computation.
 CMD_RESET = CMD_BASE + 4 # Reinizialize the class. Clear all the variables!
 CMD_STATUS = CMD_BASE + 5 # Return status information
 CMD_DESTROY =  CMD_BASE + 6 # Kill the process
-CMD_SET = CMD_BASE + 10 # Load
+CMD_OUTPUT = CMD_BASE + 10 # Output data
+CMD_SET = CMD_BASE + 11 # Load
 
 # Codes used in incoming set requests
 CMD_LOAD_AC = CMD_SET + 0 # Load a Gene Ontology
@@ -89,6 +90,8 @@ QUERY_FROM_FILE = 1
 
 QUERY_PAIRS = 0
 QUERY_LIST = 1
+
+
 
 
 
@@ -204,6 +207,8 @@ class WorkProcess(multiprocessing.Process):
 
 	def control(self):
 		if self.status == STATUS_RUN:
+			if DEBUG_LEVEL > 0:
+				print "WorkProcess: control(). STATUS_RUN"
 			try:
 				if not self.input_queue.empty():
 					data = self.input_queue.get(False)
@@ -216,7 +221,7 @@ class WorkProcess(multiprocessing.Process):
 					elif data[0] == CMD_RESET: # reinitialize
 						self.reset()
 					elif data[0] == CMD_STATUS:
-						self._status()
+						self._status(data[1:len(data)])
 						self._calculate()
 					elif data[0] == CMD_START:
 						self._calculate()
@@ -250,7 +255,10 @@ class WorkProcess(multiprocessing.Process):
 				print "Unknown request. Ignoring request..."
 				pass
 		elif self.status == STATUS_SET:
-			print "\"Set\" status. Ignoring request..."
+			if data[0] == CMD_STATUS:
+				self._status(data[1:len(data)])
+			else:
+				print "\"Set\" status. Ignoring request..."
 #### Start To Remove 
 		# in PAUSE status only STOP, PAUSE, RESET, STATUS and START commands are accepted. The other are ignored.
 		# get is casted in blocking mode since no computation has to be performed
@@ -276,6 +284,8 @@ class WorkProcess(multiprocessing.Process):
 				#pass
 #### End To Remove
 		else:
+			if data[0] == CMD_STATUS:
+				self._status(data[1:len(data)])
 			print "Invalid status. Reinitializing..."
 			self.status = STATUS_INIT
 		return True
@@ -301,13 +311,52 @@ class WorkProcess(multiprocessing.Process):
 	#-#-#-#-#-#-#-#-#-#-#-#-#
 
 	def send(self, message):
+		if DEBUG_LEVEL > 0:
+			print "WorkProcess: send()"
 		self.output_queue.put(message)
 #
 	def send_data(self, message):
-		self.output_pipe.put(message)
+		if DEBUG_LEVEL > 0:
+			print "WorkProcess: send_data()"
+		#self.output_pipe.send(message)
+		self.send((CMD_OUTPUT, message))
+		#if DEBUG_LEVEL > 0:
+			#print "WorkProcess: send_data(). done"
 #
 
-	def _status(self):
+
+
+
+
+
+
+
+	def _status(self, req):
+		if DEBUG_LEVEL > 0:
+			print "WorkProcess: _status()"
+		if req == None or req[0] == None:
+			data = {}
+			
+			data['status'] = self.status
+			data['GO'] = {}
+			data['AC'] = {}
+			data['query'] = {}
+			data['SS'] = {}
+			data['output'] = {}
+			
+			data['GO']['ok'] = self.ok_go
+			data['GO']['ok_params'] = self.ok_params_go
+			data['AC']['ok'] = self.ok_ac
+			data['AC']['ok_params'] = self.ok_params_ac
+			data['query']['ok'] = self.ok_query
+			data['query']['ok_params'] = self.ok_params_query
+			data['output']['ok'] = self.ok_output
+			data['output']['ok_params'] = self.ok_params_output
+			data['SS']['ok'] = self.ok_ss
+			data['SS']['ok_params'] = self.ok_params_ss
+			self.send((CMD_STATUS, data))
+#
+		
 		#if self.print_output:
 			#print "----------GO----------"
 			#if self.ok_go:
@@ -353,7 +402,6 @@ class WorkProcess(multiprocessing.Process):
 				#print "SS is not ok"
 			#print "--------------------"
 			#print "Current status"
-		self.send((CMD_STATUS, self.status))
 #
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
@@ -416,27 +464,24 @@ class WorkProcess(multiprocessing.Process):
 		#self.ac = None # can remove
 		#self.ok_ss = False # can remove
 		#self.ok_query = False # can remove
+		self.load_AC()
 #
 
 
 
 
 
-	def load_AC(self, data): #### data format: (filename, other) other = (file format, file format params)
+	def load_AC(self):
 		if DEBUG_LEVEL>1:
 			print "WorkProcess: load_AC()"
 		if self.ok_ac:
-			return
-		self.send((CMD_LOAD_AC, ANSWER_PROCESSING))
+			return True
 		self.ok_query = False # important
 		self.ok_ss = False # important
 		self.ac = None # important
 		if self.ok_params_ac:
 			try:
 				self.ac = AnnotationCorpus.AnnotationCorpus(self.go)
-				self.ac_filename = data[0]
-				self.ac_filetype = data[1]
-				self.ac_filetypeparams = data[2]
 				if self.ac.parse(str(self.ac_filename), self.ac_filetype, self.ac_filetypeparams):
 					if self.go == None:
 						self.ok_ac = False
@@ -446,8 +491,10 @@ class WorkProcess(multiprocessing.Process):
 				pass
 		if self.ok_ac:
 			self.send((CMD_LOAD_AC, ANSWER_PROCESSED, True, len(self.ac.annotations), len(self.ac.reverse_annotations)))
+			return True
 		else:
 			self.send((CMD_LOAD_AC, ANSWER_PROCESSED, False))
+			return False
 #
 
 
@@ -490,7 +537,7 @@ class WorkProcess(multiprocessing.Process):
 		if DEBUG_LEVEL>1:
 			print "WorkProcess: load_GO()"
 		if self.ok_go:
-			return
+			return True
 
 		self.ok_ac = False # important
 		self.ok_ss = False # important
@@ -508,9 +555,10 @@ class WorkProcess(multiprocessing.Process):
 			if not self.go == None:
 				self.ok_go = True
 				self.send((CMD_LOAD_GO, ANSWER_PROCESSED, True, self.go.node_num(), self.go.edge_num()))
-				return
+				return True
 		self.ok_go = False
 		self.send((CMD_LOAD_GO, ANSWER_PROCESSED, False))
+		return False
 #
 
 
@@ -526,6 +574,7 @@ class WorkProcess(multiprocessing.Process):
 	def set_query(self, data): #### data format: (query from, query_params) query_params: none (fom ac), (type, filename) (from file), type (from gui)
 		if DEBUG_LEVEL>1:
 			print "WorkProcess: set_query()"
+
 		self.ok_query = False
 		self.ok_params_query = False
 		self.query_from = data[0]
@@ -557,6 +606,8 @@ class WorkProcess(multiprocessing.Process):
 			#self.ssprocess2gui_queue.put((CMD_LOAD_QUERY, True))
 		#else:
 			#self.ssprocess2gui_queue.put((CMD_LOAD_QUERY, False))
+			return False
+		return True
 #
 
 
@@ -611,11 +662,17 @@ class WorkProcess(multiprocessing.Process):
 		self.ms_params = data[3]
 		self.ss_ontology = data[4]
 		self.ok_params_ss = True
+		if self.ms_name == None:
+			self.ok_params_ss = False
+		if self.ss_name == None:
+			self.ok_params_ss = False
+		if self.ss_ontology == None:
+			self.ok_params_ss = False
 
 		if self.ok_params_ss:
-			self.send((CMD_LOAD_SS, True))
+			self.send((CMD_SET_SS, True))
 		else:
-			self.send((CMD_LOAD_SS, False))
+			self.send((CMD_SET_SS, False))
 #
 
 
@@ -625,14 +682,19 @@ class WorkProcess(multiprocessing.Process):
 		if DEBUG_LEVEL>1:
 			print "WorkProcess: build_ss()"
 		if self.ok_ss:
-			return
+			return True
 		self.ss = None
 		if self.ok_params_ss and self.ok_ac and self.ok_go:
-			ssu = SemSimUtils.SemSimUtils(self.ac, self.go)
-			ssu.det_IC_table()
-			self.ss = ObjSemSim.ObjSemSim(self.ac, self.go, self.ss_name, self.ms_name, ssu)
-			self.ss.TSS.format_and_check_data = False
-			self.ss_ok = True
+			try:
+				ssu = SemSimUtils.SemSimUtils(self.ac, self.go)
+				ssu.det_IC_table()
+				self.ss = ObjSemSim.ObjSemSim(self.ac, self.go, self.ss_name, self.ms_name, ssu)
+				self.ss.TSS.format_and_check_data = False # NOTE Enhance performances disabling internal checks
+				self.ok_ss = True
+				return True
+			except Exception:
+				pass
+		return False
 #
 
 
@@ -661,9 +723,9 @@ class WorkProcess(multiprocessing.Process):
 			self.output_params = data[1]
 		self.ok_params_output = True
 		if self.ok_params_output:
-			self.send((CMD_LOAD_OUTPUT, True))
+			self.send((CMD_SET_OUTPUT, True))
 		else:
-			self.send((CMD_LOAD_OUTPUT, False))
+			self.send((CMD_SET_OUTPUT, False))
 #
 
 
@@ -683,8 +745,11 @@ class WorkProcess(multiprocessing.Process):
 			elif self.output_to == OUTPUT_TO_GUI:
 				self.output_buffer = [[]] * self.MAX_BUFFER_SIZE
 				self.query_pairs_saved = 0
+			else:
+				return False
 			self.ok_output = True
-		return True
+			return True
+		return False
 #
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
@@ -715,11 +780,13 @@ class WorkProcess(multiprocessing.Process):
 #
 
 	def build_query_from_ac(self):
-		self.query = []
+		self.query = None
 		if not self.ok_ac:
-			return
+			return False
+		self.query = []
 		for line in self.ac.annotations:
 			self.query.append(line)
+		return True
 #
 
 
@@ -727,24 +794,44 @@ class WorkProcess(multiprocessing.Process):
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 
 	def _init_structures(self):
-		if DEBUG_LEVEL>2:
+		if DEBUG_LEVEL>1:
 			print "WorkProcess: _init_structures()"
 		if not self.ok_params_go or not self.ok_params_ac or not self.ok_params_ss or not self.ok_params_query or not self.ok_params_output:
+			if DEBUG_LEVEL>1:
+				print "WorkProcess: _init_structures(). Something wrong in the parameters."
 			return False
 		if not self.load_GO():
+			if DEBUG_LEVEL>1:
+				print "WorkProcess: _init_structures(). Something wrong in the GO component."
 			return False
 		if not self.load_AC():
+			if DEBUG_LEVEL>1:
+				print "WorkProcess: _init_structures(). Something wrong in the AC component."
 			return False
 		if not self.build_ss():
+			if DEBUG_LEVEL>1:
+				print "WorkProcess: _init_structures(). Something wrong in the SS component."
 			return False
 		if not self.load_query():
+			if DEBUG_LEVEL>1:
+				print "WorkProcess: _init_structures(). Something wrong in the query component."
 			return False
 		if not self.init_output():
+			if DEBUG_LEVEL>1:
+				print "WorkProcess: _init_structures(). Something wrong in the output component."
 			return False
 		if not self.ok_go or not self.ok_ac or not self.ok_ss or not self.ok_query or not self.ok_output:
+			if DEBUG_LEVEL>1:
+				print self.ok_go
+				print self.ok_ac
+				print self.ok_ss
+				print self.ok_query
+				print self.ok_output
+				print "WorkProcess: _init_structures(). Something still wrong."
 			return False
 		return True
 #
+
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
@@ -769,6 +856,8 @@ class WorkProcess(multiprocessing.Process):
 		
 		# initialize modules
 		if not self._init_structures():
+			if DEBUG_LEVEL>0:
+				print "WorkProcess: _start(). Bad Parameters"
 			self.send((CMD_START, ANSWER_PROCESSED,RESULT_BAD, "Invalid parameters."))
 			#self.status = STATUS_WAIT
 			self._stop()
@@ -934,6 +1023,8 @@ class WorkProcess(multiprocessing.Process):
 		self.output_buffer[self.query_pairs_saved] = (a,b,c)
 		self.query_pairs_saved += 1
 		if self.query_pairs_saved == len(self.output_buffer):
+			if DEBUG_LEVEL>1:
+				print "WorkProcess: _send_output(). Cycle"
 			self.send_data(self.output_buffer)
 			self.query_pairs_saved = 0
 #

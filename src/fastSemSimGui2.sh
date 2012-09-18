@@ -24,10 +24,10 @@
 PYTHON_INTERPRETER=python
 
 # if [ ${LOCAL} = 1 ]; then
-if [ -f startGui.py ]; then
+if [ -f startGui2.py ]; then
 	echo "Running the local version"
-	(export PYTHONPATH="."; ${PYTHON_INTERPRETER} startGui.py)
+	(export PYTHONPATH="."; ${PYTHON_INTERPRETER} startGui2.py)
 else
 # 	echo "Running the installed version"
-	${PYTHON_INTERPRETER} -c "from fastSemSimGui import startGui; startGui.go()" "$@"
+	${PYTHON_INTERPRETER} -c "from fastSemSimGui-2 import startGui; startGui.go()" "$@"
 fi

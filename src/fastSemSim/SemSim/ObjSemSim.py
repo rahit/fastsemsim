@@ -59,16 +59,18 @@ class ObjSemSim:
 			self.util.det_IC_table()
 		if self.TSS is None:
 			self.TSS = TermSemSim(self.ac, self.go, self.util)
-		elif type(self.TSS) is str:
+		elif type(self.TSS) is str or unicode:
+			self.TSS = str(self.TSS)
 			self.TSS = self.pick_TSS()
 		else:
-			pass
+			raise Exception
 		if self.mixSS is None:
 			self.mixSS = MixSemSim(self.ac, self.go)
-		elif type(self.mixSS) is str:
+		elif type(self.mixSS) is str or unicode:
+			self.mixSS = str(self.mixSS)
 			self.mixSS = self.pick_mixSS()
 		else:
-			pass
+			raise Exception
 
 	def int_format_data(self, obj, onto):
 		# assume ac is sanitized
