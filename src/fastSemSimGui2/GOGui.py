@@ -297,8 +297,8 @@ class GO_load_gui ( wx.Dialog ):
 		if DEBUG_LEVEL>0:
 			print "GO_load_gui: OnLoad()"
 		self.freeze()
-		self.GO_load_outcome_handle = self.real_parent.communication_thread.register_callback(self, self.OnLoadDone)
-		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_LOAD_GO, self.param_filename, (self.param_ignore_haspart, self.param_ignore_regulates)))
+		self.GO_load_outcome_handle = self.real_parent.communication_thread.register_callback(self.real_parent.EVT_CUSTOM_LOAD_GO, self.OnLoadDone)
+		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_LOAD_GO, self.param_filename, {"ignore_part_of":self.param_ignore_haspart, "ignore_regulates":self.param_ignore_regulates}))
 #
 
 	def freeze(self):

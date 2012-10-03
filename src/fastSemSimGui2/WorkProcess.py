@@ -51,7 +51,7 @@ CMD_STOP = CMD_BASE + 2 # Stop the computation. Semantic similarity scores are c
 CMD_PAUSE = CMD_BASE + 3 # Pause the computation.
 CMD_RESET = CMD_BASE + 4 # Reinizialize the class. Clear all the variables!
 CMD_STATUS = CMD_BASE + 5 # Return status information
-CMD_DESTROY =  CMD_BASE + 6 # Kill the process
+CMD_KILL =  CMD_BASE + 6 # Kill the process
 CMD_OUTPUT = CMD_BASE + 10 # Output data
 CMD_SET = CMD_BASE + 11 # Load
 
@@ -212,7 +212,8 @@ class WorkProcess(multiprocessing.Process):
 			try:
 				if not self.input_queue.empty():
 					data = self.input_queue.get(False)
-					if data[0] == CMD_DESTROY: # kill the process
+					if data[0] == CMD_KILL: # kill the process
+						self._kill()
 						return False
 					if data[0] == CMD_STOP:
 						self._stop()
@@ -236,7 +237,8 @@ class WorkProcess(multiprocessing.Process):
 			self.reset()
 		elif self.status == STATUS_WAIT:
 			data = self.input_queue.get()
-			if data[0] == CMD_DESTROY:
+			if data[0] == CMD_KILL:
+				self._kill()
 				return False
 			if data[0] == CMD_STOP: #### or data[0] == CMD_PAUSE: # No effect here
 				pass
@@ -266,7 +268,7 @@ class WorkProcess(multiprocessing.Process):
 		#elif self.status == STATUS_PAUSE:
 			##print "STATUS: Pause"
 			#data = self.gui2ssprocess_queue.get()
-			#if data[0] == CMD_DESTROY:
+			#if data[0] == CMD_KILL:
 				#return False
 			#if data[0] == CMD_STOP:
 				#self.stop()
@@ -326,6 +328,12 @@ class WorkProcess(multiprocessing.Process):
 
 
 
+
+
+	def _kill(self):
+		# WARNING close open files
+		self.send((CMD_KILL, True))
+#
 
 
 
@@ -516,10 +524,14 @@ class WorkProcess(multiprocessing.Process):
 		self.go = None # can remove
 		if data == None or len(data) == 0:
 			self.go_filename = None
-			self.go_parameters = None
+			self.go_parameters = {'ignore_part_of': False, 'ignore_regulates':False}
 		else:
 			self.go_filename = data[0]
-			self.go_parameters = data[1]
+			self.go_parameters = {'ignore_part_of': False, 'ignore_regulates':False}
+			if 'ignore_part_of' in data[1]:
+				self.go_parameters['ignore_part_of'] = data[1]['ignore_part_of']
+			if 'ignore_regulates' in data[1]:
+				self.go_parameters['ignore_regulates'] = data[1]['ignore_regulates']
 
 		self.ok_params_go = True
 		self.ok_ac = False # can remove
@@ -549,7 +561,7 @@ class WorkProcess(multiprocessing.Process):
 				#program_dir = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
 				#program_dir = '.' # use this with py2exe to build a working binary
 				#go_file = program_dir + "/data/GO_2012-02-24.obo-xml.gz"
-				self.go = GeneOntology.load_GO_XML(str(self.go_filename)) # convert to str or unicode strings might fail to get interpreted correctly!
+				self.go = GeneOntology.load(str(self.go_filename), self.go_parameters['ignore_part_of'], self.go_parameters['ignore_regulates']) # convert to str or unicode strings might fail to get interpreted correctly!
 			except Exception:
 				print "Load Gene Ontology. Exception loading " + str(self.go_filename)
 			if not self.go == None:

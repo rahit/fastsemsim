@@ -186,17 +186,17 @@ class GeneOntology:
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 # load_GO_XML: function to load an obo-xml file
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
-def load_GO_XML(file_stream): # kept for backward compatibility. Should use load or parse instead
-	return load(file_stream)
+def load_GO_XML(file_stream, ignore_part_of=False, ignore_regulates=False): # kept for backward compatibility. Should use load or parse instead
+	return load(file_stream, ignore_part_of, ignore_regulates)
 #
 
 
-def parse(file_stream):
-	return load(file_stream)
+def parse(file_stream, ignore_part_of=False, ignore_regulates=False):
+	return load(file_stream, ignore_part_of, ignore_regulates)
 #
 
 
-def load(file_stream):
+def load(file_stream, ignore_part_of=False, ignore_regulates=False):
 	#print "GO FILE TYPE: " + str(type(file_stream))
 	if type(file_stream) == unicode:
 		file_stream = str(file_stream)
@@ -210,7 +210,7 @@ def load(file_stream):
 		file_stream_handle = file_stream
 	
 	parser = make_parser()
-	handler = OboXmlParser()
+	handler = OboXmlParser(ignore_part_of, ignore_regulates)
 	parser.setContentHandler(handler)
 	parser.parse(file_stream_handle)
 	
@@ -232,10 +232,8 @@ def load(file_stream):
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 
 class OboXmlParser(ContentHandler):
-	ignore_part_of = False
-	ignore_regulates = False
 	
-	def __init__(self,):
+	def __init__(self, ignore_part_of=False, ignore_regulates=False):
 		self.isId, self.isIsA, self.isPartOf, self.isaltId, self.isRelationship = 0,0,0,0,0
 		self.isRelationshipTo, self.isRelationshipType = 0,0
 		self.inTerm = 0
@@ -243,7 +241,11 @@ class OboXmlParser(ContentHandler):
 		self.terms = []
 		self.alt_ids = {}
 		self.id = ''
-		
+		self.ignore_part_of = ignore_part_of
+		self.ignore_regulates = ignore_regulates
+#
+
+
 	def startElement(self, name, attrs):
 		if name == 'term':
 			self.inTerm = 1
@@ -270,7 +272,9 @@ class OboXmlParser(ContentHandler):
 				if self.isRelationship:
 					self.isRelationshipTo = 1
 					self.parent = ''
-	
+#
+
+
 	def endElement(self, name):
 		if self.inTerm == 1:
 			if name == 'term':
@@ -311,7 +315,9 @@ class OboXmlParser(ContentHandler):
 						self.edges.append( (self.id, go_name2id(self.parent), NEG_REG ) )
 					elif self.parent_type == 'is_a':
 						self.edges.append( (self.id, go_name2id(self.parent), IS_A ) )
-	
+#
+
+
 	def characters(self, ch):
 		if self.isId == 1:
 			self.id += ch
@@ -326,3 +332,4 @@ class OboXmlParser(ContentHandler):
 		elif self.isRelationshipType == 1:
 			self.parent_type += ch
 			#print "set: " + ch
+#

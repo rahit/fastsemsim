@@ -29,16 +29,12 @@ from fastSemSim.GO import AnnotationCorpus
 from fastSemSim.SemSim import SemSimMeasures
 from fastSemSim.SemSim import ObjSemSim
 
-#### Include this to work with threads. Not really good for GUI
-#from gui import WorkThread
+#### Include this to work with processes and threads
 import threading
-
-#### Include this to work with processes
-import WorkProcess
 import multiprocessing 
+import WorkProcess
 
 #### Import wxWidgets
-#from wx.Python.wx import * # old definition
 import wx
 import wx.lib.newevent
 
@@ -49,12 +45,8 @@ from QueryGui import *
 from SSGui import *
 from OutputGui import *
 from ControlsGui import *
-#from ConfigGui import *
-#from ControlGui import ControlGui
-#from QueryGui import QueryGui
-#from StatusGui import StatusGui
 
-#################################################################################
+#--------------------------------------------------#
 
 DEBUG_LEVEL = 2
 
@@ -65,6 +57,7 @@ STATUS_BASE = 55
 STATUS_INIT = STATUS_BASE + 0 # performing reset.
 STATUS_WAIT = STATUS_BASE + 1 # waiting for requests.
 STATUS_RUN = STATUS_BASE + 2 # computation in progress.
+STATUS_EXIT = STATUS_BASE + 3
 #
 
 
@@ -129,8 +122,10 @@ class fastSemSimGui(wx.Frame):
 
 
 
+#-------------------------------------------------------------------------------#
+#     This methods initialize the main GUI and the subprocesses/subthreads      #
+#-------------------------------------------------------------------------------#
 
-	# This method initialized the main GUI, the variables and the processes. When ready, status is set to 0
 	def __init__( self, parent ):
 		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = "fastSemSimGui v.2 - Marco Mina", pos = wx.DefaultPosition, size = wx.Size( 652,471 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		if DEBUG_LEVEL>0:
@@ -152,7 +147,7 @@ class fastSemSimGui(wx.Frame):
 	
 		self.font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
 		self.font.SetPointSize(9)
-
+		
 		self.status_images = wx.ImageList(100,50)
 		self.status_images.Add(wx.Bitmap(self.Ok_pic)) # 0
 		self.status_images.Add(wx.Bitmap(self.Warning_pic)) # 1
@@ -163,15 +158,6 @@ class fastSemSimGui(wx.Frame):
 		self.status_images.Add(wx.Bitmap(self.SS_pic)) # 6
 		self.status_images.Add(wx.Bitmap(self.GO_ok_pic)) # 7
 		self.status_images.Add(wx.Bitmap(self.GO_warn_pic)) # 8
-
-# Init modules
-		self.status_handle = None
-		self._init_process()
-		
-		self.Bind(wx.EVT_CLOSE, self.OnQuit, id=self.GetId())
-		#self.activateGoCmd()
-		#self.OnAnyUpdate()
-		####
 
 # Build main GUI
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
@@ -217,12 +203,133 @@ class fastSemSimGui(wx.Frame):
 		##self.fastSemSim_listbook.SetPageImage(5, 5)
 
 		self.output_window = OutputWindow(self, wx.DefaultPosition, wx.DefaultSize, 0)
-		#self.fastSemSim_listbook.SetPageImage(5, 5)
-		
-		self.reset()
+
+		#self.SetStatus(STATUS_WAIT)
+		#self.activateGoCmd()
+		#self.OnAnyUpdate()
+		# Init background process and communication module
+		self._init_communication()
+		self._init_handles()
+		self._init_process()
 		self._update()
-		self.SetStatus(STATUS_WAIT)
-		
+		#self.reset() # should restart gui side section. Do no touch communication channels or background process
+#
+
+
+
+
+
+
+	def _init_process(self):
+		if DEBUG_LEVEL>0:
+			print "fastSemSimGui: _init_process()"
+		if not self.running:
+			if DEBUG_LEVEL>1:
+				print "Starting process"
+			self.ssprocess = []
+			self.ssprocess.append(None)
+			#self._init_communication()
+			self.ssprocess[0] = WorkProcess.WorkProcess(self.gui2ssprocess_queue, self.ssprocess2gui_queue, self.ssprocess2gui_pipe, self.gui2ssprocess_pipe)
+			self.running = True
+			self.ssprocess[0].start()
+			return True
+		else:
+			if DEBUG_LEVEL>1:
+				print "Process already in execution"
+			return False
+#
+
+
+
+	def _init_communication(self):
+		if DEBUG_LEVEL>0:
+			print "fastSemSimGui: _init_communication()"
+		self.process_busy = False
+		self.process_busy_lock = multiprocessing.Lock()
+		self.process_busy_event = multiprocessing.Event()
+		self.gui2ssprocess_queue = multiprocessing.Queue()
+		self.ssprocess2gui_queue = multiprocessing.Queue()
+		self.ssprocess2gui_pipe = None
+		self.gui2ssprocess_pipe = None
+		#self.gui2ssprocess_pipe, self.ssprocess2gui_pipe = multiprocessing.Pipe()
+		self._init_thread()
+#
+
+
+
+	def _init_thread(self):
+		if DEBUG_LEVEL>0:
+			print "fastSemSimGui: _init_thread()"
+		self.communication_thread = CommunicationThread(self)
+		self.communication_thread.start()
+#
+
+
+
+
+	def _init_handles(self):
+		self.start_check_handle = None
+		self.status_handle = None
+		#if not self.start_check_handle == None:
+			#communication_thread.unregister_callback(self.start_check_handle)
+			#self.start_check_handle = None
+		#if not self.status_handle == None:
+			#communication_thread.unregister_callback(self.status_handle)
+			#self.status_handle = None
+
+		self.status_handle = self.communication_thread.register_callback(self.EVT_CUSTOM_STATUS, self.OnStatusEvent)
+		self.generic_handle = self.communication_thread.register_callback(self.EVT_CUSTOM_GENERIC, self.OnGenericEvent)
+		self.start_handle = self.communication_thread.register_callback(self.EVT_CUSTOM_START, self.OnStartEvent)
+		self.stop_handle = self.communication_thread.register_callback(self.EVT_CUSTOM_STOP, self.OnStopEvent)
+		self.output_handle = self.communication_thread.register_callback(self.EVT_CUSTOM_OUTPUT, self.OnOutputEvent)
+		self.kill_handle = self.communication_thread.register_callback(self.EVT_CUSTOM_KILL, self.OnKillEvent)
+
+		self.Bind(wx.EVT_CLOSE, self.OnQuit, id=self.GetId())
+#
+
+
+
+
+#######################################################
+#######################################################
+#################           EVENT HANDLING         ####
+#######################################################
+#######################################################
+
+
+# When the GUI raises a Quit Request
+	def OnQuit(self, event):
+		if DEBUG_LEVEL>0:
+			print "fastSemSimGui: OnQuit()"
+		self.status = STATUS_EXIT # WARNING Should be done in a dedicated function, perhaps disabling all the commands
+		self._kill_process()
+		event.Veto()
+#
+
+
+
+
+
+
+# When the background process terminates. If the gui is in termination phase, then exit.
+# Otherwise reinitialize the background process
+	def OnKillEvent(self, event):
+		if DEBUG_LEVEL>1:
+			print "fastSemSimGui: OnKillEvent()"
+		if self.status == STATUS_EXIT:
+			if DEBUG_LEVEL>1:
+				print "fastSemSimGui: OnKillEvent(). status is STATUS_EXIT. Quitting."
+			self.Destroy()
+			if not self.communication_thread == None:
+				self.ssprocess2gui_queue.put((-1,))
+				self.communication_thread.join()
+				self.communication_thread = None
+			sys.exit()
+		else:
+			if DEBUG_LEVEL>1:
+				print "fastSemSimGui: OnKillEvent(). status is NOT STATUS_EXIT. Respawning background process..."
+			self._init_process() # WARNING what about updating the status?
+			self._update()
 #
 
 
@@ -233,13 +340,85 @@ class fastSemSimGui(wx.Frame):
 
 
 
+	def OnStatusEvent(self, event):
+		if DEBUG_LEVEL>1:
+			print "fastSemSimGui: OnStatusEvent()"
+		self.processStatusEvent(event.data)
+		event.Skip()
+#
 
 
-#############################################################################################
-#############################################################################################
-#################           PROCESS HANDLING AND COMMUNICATION     ##########################
-#############################################################################################
-#############################################################################################
+
+	def OnGenericEvent(self, event):
+		if DEBUG_LEVEL>1:
+			print "fastSemSimGui: OnStatusEvent()"
+		event.Skip()
+#
+
+
+
+	def OnStartEvent(self, event):
+		if DEBUG_LEVEL>1:
+			print "fastSemSimGui: OnStatusEvent()"
+		event.Skip()
+#
+
+
+
+
+
+
+	def OnStopEvent(self, event):
+		if DEBUG_LEVEL>1:
+			print "fastSemSimGui: OnStatusEvent()"
+		event.Skip()
+#
+
+
+
+
+
+
+
+	def OnOutputEvent(self, event):
+		if DEBUG_LEVEL>1:
+			print "fastSemSimGui: OnStatusEvent()"
+		event.Skip()
+#
+
+
+
+
+	#def lock(self, wait = True):
+		#if DEBUG_LEVEL>0:
+			#print "fastSemSimGui: lock()"
+		#self.process_busy_lock.acquire()
+		#if not wait:
+			#if self.process_busy:
+				#self.process_busy_lock.release()
+				#return False
+		#else:
+			#while self.process_busy:
+				#self.process_busy_lock.release()
+				#self.process_busy_event.wait()
+				#self.process_busy_lock.acquire()
+		#self.process_busy = True
+		#self.process_busy_event.clear()
+		#self.process_busy_lock.release()
+		#return True
+##
+
+	#def unlock(self):
+		#if DEBUG_LEVEL>0:
+			#print "fastSemSimGui: unlock()"
+		#self.process_busy_lock.acquire()
+		#self.process_busy = False
+		#self.process_busy_event.clear()
+		#self.process_busy_event.set()
+		#self.process_busy_lock.release()
+		#return True
+##
+
 
 	def OnCheckProcessData(self,event):
 		if DEBUG_LEVEL>0:
@@ -284,111 +463,257 @@ class fastSemSimGui(wx.Frame):
 
 
 
+#################################
+
+#'''
+#Following routines handle communications with other processes 
+#'''
 
 
-	def lock(self, wait = True):
+
+			#print "Busy"
+		
+		#self.OnProgress()
+		#self.OnCompleted()
+
+	#def OnProgress(self):
+		##print "Updating progress bar..."
+		#gaugerange = self.progress.GetRange()
+		#self.progress.SetValue(self.sspdone.value*gaugerange)
+		##self.OnUpdateDone()
+
+	#def OnCompleted(self):
+		#if self.sscompleted.value == 1:
+			#self.log_field.AppendText("Finished.\n")
+			#print self.superconta
+			##self.running = False
+			#self.stop()
+
+
+	def OnLogData(self, msg):
+		t = msg.data
+		self.log_field.AppendText(t)
+		#self.OnUpdateDone()
+#
+
+
+
+
+
+
+	def OnAnyUpdate(self):
 		if DEBUG_LEVEL>0:
-			print "fastSemSimGui: lock()"
-		self.process_busy_lock.acquire()
-		if not wait:
-			if self.process_busy:
-				self.process_busy_lock.release()
+			print "fastSemSimGui: OnAnyUpdate()"
+		#self.statusgridbox.Fit(self)
+		#self.gostatsbox.Fit(self)
+		#self.commandbox.Fit(self)
+		self.mainbox.Fit(self)
+		#w,h = self.commandbox.GetSizeTuple()
+		#self.mainbox.SetItemMinSize(self.commandbox, w,h)
+		#self.GetBestSize()
+		self.mainbox.Layout()
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	def OnUpdateDone(self):
+		if DEBUG_LEVEL>0:
+			print "fastSemSimGui: OnUpdateDone()"
+		pass
+		#print "Update done"
+		#self.update_event.set()
+#
+
+
+
+
+
+
+	def OnDefaultAction(self, event):
+		if DEBUG_LEVEL>0:
+			print "fastSemSimGui: OnDefaultAction()"
+#
+
+
+
+
+
+
+
+
+
+
+
+#CustomEvent_Set, EVT_CUSTOM_SET = wx.lib.newevent.NewEvent()
+#CustomEvent_LoadAC, EVT_CUSTOM_LOAD_AC = wx.lib.newevent.NewEvent()
+#CustomEvent_LoadGO, EVT_CUSTOM_LOAD_GO = wx.lib.newevent.NewEvent()
+#CustomEvent_SetSS, EVT_CUSTOM_SET_SS = wx.lib.newevent.NewEvent()
+#CustomEvent_SetOutput, EVT_CUSTOM_SET_OUTPUT = wx.lib.newevent.NewEvent()
+#CustomEvent_SetQuery, EVT_CUSTOM_SET_QUERY = wx.lib.newevent.NewEvent()
+
+
+	def OnPipeData(self, t):
+		if DEBUG_LEVEL>1:
+			print "fastSemSimGui: OnPipeData()"
+		#print t
+		
+		frase = ""
+		for i in t: #range(t[0], t[1] + 1):
+			##frase = self.ssprocess[0].buffer[i][0] + "\t" + self.ssprocess[0].buffer[i][1] + "\t" + self.ssprocess[0].buffer[i][2] + "\n"
+			#self.superconta += 1
+			frase += str(i[0]) + "\t" + str(i[1]) + "\t" + str(i[2]) + "\n"
+			#self.OutputGui.output_field.AppendText(frase)
+		self.output_window.output_text.AppendText(frase)
+		#frase = ""
+		#for i in t: #range(t[0], t[1] + 1):
+			#frase = self.ssprocess[0].buffer[i][0] + "\t" + self.ssprocess[0].buffer[i][1] + "\t" + self.ssprocess[0].buffer[i][2] + "\n"
+			#self.superconta += 1
+			#frase = frase + str(i[0]) + "\t" + str(i[1]) + "\t" + str(i[2]) + "\n"
+		#self.OutputGui.output_field.AppendText(frase)
+		#print "Output data printed"
+		#self.OnUpdateDone()
+#
+
+
+
+	def OnQueueData(self, data):
+		if DEBUG_LEVEL>1:
+			print "fastSemSimGui: OnQueueData()"
+		if data[0] == WorkProcess.CMD_STOP:
+			if data[1]:
+				#def stop(self):
+					self.completed()
+					self.stop_process()
+			else:
+				self.SetStatus(1)
+				self.completed()
+		return True
+#
+
+
+
+
+
+
+	def OnStartCheck(self, event):
+		if DEBUG_LEVEL>0:
+			print "fastSemSimGui: OnStartCheck()"
+		data = event.data
+		if data[0] == WorkProcess.CMD_STATUS:
+			if DEBUG_LEVEL>1:
+				print "fastSemSimGui: OnStartCheck(). Infos:"
+				print str(data)
+			self.communication_thread.unregister_callback(self.start_check_handle)
+			self.start_check_handle = None
+
+			self.GO_status = data[1]['GO']['ok']
+			self.AC_status = data[1]['AC']['ok']
+			self.ss_status = data[1]['SS']['ok_params']
+			self.query_status = data[1]['query']['ok_params']
+			self.output_status = data[1]['output']['ok_params']
+
+			if not self.GO_status:
+				self.controls_panel.controls_log_text.AppendText("Check Gene Ontology.\nAborted\n")
 				return False
-		else:
-			while self.process_busy:
-				self.process_busy_lock.release()
-				self.process_busy_event.wait()
-				self.process_busy_lock.acquire()
-		self.process_busy = True
-		self.process_busy_event.clear()
-		self.process_busy_lock.release()
-		return True
-#
+			if not self.AC_status:
+				self.controls_panel.controls_log_text.AppendText("Check Annotation Corpus.\nAborted.\n")
+				return False
+			if not self.query_status:
+				self.controls_panel.controls_log_text.AppendText("Check query.\nAborted.\n")
+				return False
+			if not self.output_status:
+				self.controls_panel.controls_log_text.AppendText("Check output parameters.\nAborted.\n")
+				return False
+			if not self.ss_status:
+				self.controls_panel.controls_log_text.AppendText("Check operation parameters.\nAborted.\n")
+				return False
 
-
-
-
-
-
-
-
-
-
-	def unlock(self):
-		if DEBUG_LEVEL>0:
-			print "fastSemSimGui: unlock()"
-		self.process_busy_lock.acquire()
-		self.process_busy = False
-		self.process_busy_event.clear()
-		self.process_busy_event.set()
-		self.process_busy_lock.release()
-		return True
-#
-
-
-
-
-
-
-
-	def _init_communication(self):
-		if DEBUG_LEVEL>0:
-			print "fastSemSimGui: _init_communication()"
-		self.process_busy = False
-		self.process_busy_lock = multiprocessing.Lock()
-		self.process_busy_event = multiprocessing.Event()
-		self.gui2ssprocess_queue = multiprocessing.Queue()
-		self.ssprocess2gui_queue = multiprocessing.Queue()
-		self.gui2ssprocess_pipe, self.ssprocess2gui_pipe = multiprocessing.Pipe()
-
-		#self.TIMER_ID = 100
-		#self.timer = wx.Timer(self, self.TIMER_ID)
-		#wx.EVT_TIMER(self, self.TIMER_ID, self.OnCheckProcessData)
-
-		self._init_thread()
-#
-
-
-
-
-
-
-
-	def _init_thread(self):
-		if DEBUG_LEVEL>0:
-			print "fastSemSimGui: _init_thread()"
-		self.communication_thread = CommunicationThread(self)
-		self.communication_thread.start()
-#
-
-
-
-
-
-
-
-
-
-	def _init_process(self):
-		if DEBUG_LEVEL>0:
-			print "fastSemSimGui: _init_process()"
-		if not self.running:
-			if DEBUG_LEVEL>1:
-				print "Starting process"
-			self.ssprocess = []
-			self.ssprocess.append(None)
-			self._init_communication()
-			self.ssprocess[0] = WorkProcess.WorkProcess(self.gui2ssprocess_queue, self.ssprocess2gui_queue, self.ssprocess2gui_pipe, self.gui2ssprocess_pipe)
-			self.running = True
-			self.ssprocess[0].start()
+			self.controls_panel.controls_log_text.AppendText("Starting computation...\n")
+			#self.log_field.AppendText("Evaluating semantic similarity...\n")
+			#if self.output_type == 0:
+				#self.OutputGui.output_field.Clear()
+				#self.OutputGui.Show()
+				
+				#if self.parentobj.status == 1: # Ready. Not Running
+					#self.parentobj.start()
+				#elif self.parentobj.status == 2: # running
+					#self.parentobj.stop() # set to not running and stops thread
+				#elif self.parentobj.status == 0: # Not ready. Should not be active.
+					#self.parentobj.activateGoCmd()
+			self.start_outcome_handle = self.communication_thread.register_callback(self, self.start_outcome)
+			self.start_output_handle = self.communication_thread.register_callback(self, self.OnCheckProcessData)
+			self.gui2ssprocess_queue.put((WorkProcess.CMD_START, self.param_query))
+			#return self._start_process()
 			return True
-		else:
-			if DEBUG_LEVEL>1:
-				print "Process already in execution"
-			return False
+		return False
 #
 
 
+
+#############################################################################################
+#############################################################################################
+#################           LOGIC          ##################################################
+#############################################################################################
+#############################################################################################
+
+
+	def _update(self):
+		if DEBUG_LEVEL>0:
+			print "fastSemSimGui: _update()"
+		self.gui2ssprocess_queue.put((WorkProcess.CMD_STATUS, None))
+#
+
+
+
+	def processStatusEvent(self, data):
+		if DEBUG_LEVEL>0:
+			print "fastSemSimGui: processStatusEvent()"
+		if DEBUG_LEVEL>1:
+			print "fastSemSimGui: processStatusEvent(). Infos:"
+			print str(data)
+
+		self.GO_status = data[1]['GO']['ok']
+		self.AC_status = data[1]['AC']['ok']
+		self.ss_status = data[1]['SS']['ok_params']
+		self.query_status = data[1]['query']['ok_params']
+		self.output_status = data[1]['output']['ok_params']
+		
+		if self.GO_status:
+			self.fastSemSim_listbook.SetPageImage(1, 7)
+			self.AC_panel.Enable( True )
+		else:
+			self.fastSemSim_listbook.SetPageImage(1, 8)
+			self.AC_panel.Enable( False )
+		if self.AC_status:
+			self.fastSemSim_listbook.SetPageImage(2, 7)
+		else:
+			self.fastSemSim_listbook.SetPageImage(2, 8)
+			
+		self.controls_panel.SetSSCtrlStatus(self.ss_status)
+		self.controls_panel.SetGOStatus(self.GO_status)
+		self.controls_panel.SetAcStatus(self.AC_status)
+		self.controls_panel.SetQueryStatus(self.query_status)
+		self.controls_panel.SetOutputCtrlStatus(self.output_status)
+		
+		self.GO_panel._update()
+		self.AC_panel._update()
+		self.SS_panel._update()
+		#self.query_panel._update()
+		#self.output_window._update()
+		#self.controls_panel._update()
+#
 
 
 
@@ -398,24 +723,12 @@ class fastSemSimGui(wx.Frame):
 		if DEBUG_LEVEL>0:
 			print "fastSemSimGui: _kill_process()"
 
-		if not self.ssprocess[0] == None:
-			self.ssprocess[0].terminate() # DANGER abruptly terminates computation process. Should not use this
-			self.ssprocess[0] = None
-		self.running = False
-
-		if not self.communication_thread == None:
-			self.lock()
-			self.ssprocess2gui_queue.put((-1,))
-			self.unlock()
-			self.communication_thread.join()
-			self.communication_thread = None
-
-		self.gui2ssprocess_queue = None
-		self.ssprocess2gui_queue = None
-		self.ssprocess2gui_pipe = None
-		self.gui2ssprocess_pipe = None
-
-		self.SetStatus(-1)
+		self.gui2ssprocess_queue.put((WorkProcess.CMD_KILL, None))
+		
+		#if not self.ssprocess[0] == None:
+			#self.ssprocess[0].terminate() # DANGER abruptly terminates computation process. Should not use this
+			#self.ssprocess[0] = None
+		#self.running = False
 #
 
 
@@ -479,86 +792,6 @@ class fastSemSimGui(wx.Frame):
 
 
 
-
-
-
-
-
-
-
-#############################################################################################
-#############################################################################################
-#################           LOGIC          ##################################################
-#############################################################################################
-#############################################################################################
-
-
-
-	def reset(self):
-		self.start_check_handle = None
-	
-#
-
-
-
-
-
-	def OnPipeData(self, t):
-		if DEBUG_LEVEL>1:
-			print "fastSemSimGui: OnPipeData()"
-		#print t
-		
-		frase = ""
-		for i in t: #range(t[0], t[1] + 1):
-			##frase = self.ssprocess[0].buffer[i][0] + "\t" + self.ssprocess[0].buffer[i][1] + "\t" + self.ssprocess[0].buffer[i][2] + "\n"
-			#self.superconta += 1
-			frase += str(i[0]) + "\t" + str(i[1]) + "\t" + str(i[2]) + "\n"
-			#self.OutputGui.output_field.AppendText(frase)
-		self.output_window.output_text.AppendText(frase)
-		#frase = ""
-		#for i in t: #range(t[0], t[1] + 1):
-			#frase = self.ssprocess[0].buffer[i][0] + "\t" + self.ssprocess[0].buffer[i][1] + "\t" + self.ssprocess[0].buffer[i][2] + "\n"
-			#self.superconta += 1
-			#frase = frase + str(i[0]) + "\t" + str(i[1]) + "\t" + str(i[2]) + "\n"
-		#self.OutputGui.output_field.AppendText(frase)
-		#print "Output data printed"
-		#self.OnUpdateDone()
-#
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	def OnQueueData(self, data):
-		if DEBUG_LEVEL>1:
-			print "fastSemSimGui: OnQueueData()"
-		if data[0] == WorkProcess.CMD_STOP:
-			if data[1]:
-				def stop(self):
-					self.completed()
-					self.stop_process()
-			else:
-				self.SetStatus(1)
-				self.completed()
-		return True
-#
-
-
-
-
-
-
-
-
 	def SetStatus(self, status):
 		if DEBUG_LEVEL>0:
 			print "fastSemSimGui: SetStatus()"
@@ -597,12 +830,7 @@ class fastSemSimGui(wx.Frame):
 
 
 
-	def _quit(self):
-		if DEBUG_LEVEL>0:
-			print "fastSemSimGui: _quit()"
-		self._kill_process()
-		sys.exit()
-#
+
 
 
 
@@ -724,62 +952,6 @@ class fastSemSimGui(wx.Frame):
 
 
 
-	def OnStartCheck(self, event):
-		if DEBUG_LEVEL>0:
-			print "fastSemSimGui: OnStartCheck()"
-		data = event.data
-		if data[0] == WorkProcess.CMD_STATUS:
-			if DEBUG_LEVEL>1:
-				print "fastSemSimGui: OnStartCheck(). Infos:"
-				print str(data)
-			self.communication_thread.unregister_callback(self.start_check_handle)
-			self.start_check_handle = None
-
-			self.GO_status = data[1]['GO']['ok']
-			self.AC_status = data[1]['AC']['ok']
-			self.ss_status = data[1]['SS']['ok_params']
-			self.query_status = data[1]['query']['ok_params']
-			self.output_status = data[1]['output']['ok_params']
-
-			if not self.GO_status:
-				self.controls_panel.controls_log_text.AppendText("Check Gene Ontology.\nAborted\n")
-				return False
-			if not self.AC_status:
-				self.controls_panel.controls_log_text.AppendText("Check Annotation Corpus.\nAborted.\n")
-				return False
-			if not self.query_status:
-				self.controls_panel.controls_log_text.AppendText("Check query.\nAborted.\n")
-				return False
-			if not self.output_status:
-				self.controls_panel.controls_log_text.AppendText("Check output parameters.\nAborted.\n")
-				return False
-			if not self.ss_status:
-				self.controls_panel.controls_log_text.AppendText("Check operation parameters.\nAborted.\n")
-				return False
-
-			self.controls_panel.controls_log_text.AppendText("Starting computation...\n")
-			#self.log_field.AppendText("Evaluating semantic similarity...\n")
-			#if self.output_type == 0:
-				#self.OutputGui.output_field.Clear()
-				#self.OutputGui.Show()
-				
-				#if self.parentobj.status == 1: # Ready. Not Running
-					#self.parentobj.start()
-				#elif self.parentobj.status == 2: # running
-					#self.parentobj.stop() # set to not running and stops thread
-				#elif self.parentobj.status == 0: # Not ready. Should not be active.
-					#self.parentobj.activateGoCmd()
-			self.start_outcome_handle = self.communication_thread.register_callback(self, self.start_outcome)
-			self.start_output_handle = self.communication_thread.register_callback(self, self.OnCheckProcessData)
-			self.gui2ssprocess_queue.put((WorkProcess.CMD_START, self.param_query))
-			#return self._start_process()
-			return True
-		return False
-#
-
-
-
-
 
 	def start(self):
 		if DEBUG_LEVEL>0:
@@ -829,73 +1001,6 @@ class fastSemSimGui(wx.Frame):
 #############################################################################################
 
 
-	def _update(self):
-		if DEBUG_LEVEL>0:
-			print "fastSemSimGui: _update()"
-
-		if self.status_handle == None:
-			self.status_handle = self.communication_thread.register_callback(self, self.OnProcessInfoUpdate)
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_STATUS, None))
-#
-
-
-	def OnProcessInfoUpdate(self, event):
-		if DEBUG_LEVEL>0:
-			print "fastSemSimGui: OnProcessInfoUpdate()"
-		data = event.data
-		if data[0] == WorkProcess.CMD_STATUS:
-			if DEBUG_LEVEL>1:
-				print "fastSemSimGui: OnProcessInfoUpdate(). Infos:"
-				print str(data)
-			self.communication_thread.unregister_callback(self.status_handle)
-			self.status_handle = None
-
-
-			self.GO_status = data[1]['GO']['ok']
-			self.AC_status = data[1]['AC']['ok']
-			self.ss_status = data[1]['SS']['ok_params']
-			self.query_status = data[1]['query']['ok_params']
-			self.output_status = data[1]['output']['ok_params']
-			
-			if self.GO_status:
-				self.fastSemSim_listbook.SetPageImage(1, 7)
-				self.AC_panel.Enable( True )
-			else:
-				self.fastSemSim_listbook.SetPageImage(1, 8)
-				self.AC_panel.Enable( False )
-			if self.AC_status:
-				self.fastSemSim_listbook.SetPageImage(2, 7)
-			else:
-				self.fastSemSim_listbook.SetPageImage(2, 8)
-				
-			self.controls_panel.SetSSCtrlStatus(self.ss_status)
-			self.controls_panel.SetGOStatus(self.GO_status)
-			self.controls_panel.SetAcStatus(self.AC_status)
-			self.controls_panel.SetQueryStatus(self.query_status)
-			self.controls_panel.SetOutputCtrlStatus(self.output_status)
-			
-			self.GO_panel._update()
-			self.AC_panel._update()
-			self.SS_panel._update()
-			#self.query_panel._update()
-			#self.output_window._update()
-			#self.controls_panel._update()
-
-			return True
-		return False
-#
-
-
-
-
-
-	def OnQuit(self, event):
-		if DEBUG_LEVEL>0:
-			print "fastSemSimGui: OnQuit()"
-		self._quit()
-#
-
-
 
 
 
@@ -933,23 +1038,6 @@ class fastSemSimGui(wx.Frame):
 					##self.statuspicture.SetBitmap(wx.Bitmap(self.s0_pic))
 					#self.start_cmd.Enable()
 #
-
-
-
-
-
-	def OnAnyUpdate(self):
-		if DEBUG_LEVEL>0:
-			print "fastSemSimGui: OnAnyUpdate()"
-		#self.statusgridbox.Fit(self)
-		#self.gostatsbox.Fit(self)
-		#self.commandbox.Fit(self)
-		self.mainbox.Fit(self)
-		#w,h = self.commandbox.GetSizeTuple()
-		#self.mainbox.SetItemMinSize(self.commandbox, w,h)
-		#self.GetBestSize()
-		self.mainbox.Layout()
-		
 
 
 
@@ -1016,136 +1104,81 @@ class fastSemSimGui(wx.Frame):
 
 # routines to manage flags, status, and variables in general
 
-	def SetGoOk(self, status):
-		self.GO_status = status
-		if self.show_pics:
-			if self.GO_status:
-				self.StatusGui.GO_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
-			else:
-				self.StatusGui.GO_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
-		self.activateGoCmd()
+	#def SetGoOk(self, status):
+		#self.GO_status = status
+		#if self.show_pics:
+			#if self.GO_status:
+				#self.StatusGui.GO_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
+			#else:
+				#self.StatusGui.GO_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
+		#self.activateGoCmd()
 		
-	def SetAcOk(self, status):
-		self.AC_status = status
-		if self.show_pics:
-			if self.AC_status:
-				self.StatusGui.AC_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
-			else:
-				self.StatusGui.AC_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
-		self.activateGoCmd()
+	#def SetAcOk(self, status):
+		#self.AC_status = status
+		#if self.show_pics:
+			#if self.AC_status:
+				#self.StatusGui.AC_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
+			#else:
+				#self.StatusGui.AC_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
+		#self.activateGoCmd()
 		
-	def SetQueryOk(self, status):
-		self.query_status = status
-		if self.show_pics:
-			if self.query_status:
-				self.StatusGui.query_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
-			else:
-				self.StatusGui.query_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
-		self.activateGoCmd()
+	#def SetQueryOk(self, status):
+		#self.query_status = status
+		#if self.show_pics:
+			#if self.query_status:
+				#self.StatusGui.query_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
+			#else:
+				#self.StatusGui.query_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
+		#self.activateGoCmd()
 		
-	def SetOutputCtrlOk(self, status):
-		self.outputctrl_ok = status
-		if self.show_pics:
-			if self.outputctrl_ok:
-				self.StatusGui.output_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
-			else:
-				self.StatusGui.output_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
-		self.activateGoCmd()
+	#def SetOutputCtrlOk(self, status):
+		#self.outputctrl_ok = status
+		#if self.show_pics:
+			#if self.outputctrl_ok:
+				#self.StatusGui.output_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
+			#else:
+				#self.StatusGui.output_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
+		#self.activateGoCmd()
 
-	def SetOperationOk(self, status):
-		self.operation_ok = status
-		if self.show_pics:
-			if self.operation_ok:
-				self.StatusGui.operation_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
-			else:
-				self.StatusGui.operation_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
-		self.activateGoCmd()
-#
-
-
+	#def SetOperationOk(self, status):
+		#self.operation_ok = status
+		#if self.show_pics:
+			#if self.operation_ok:
+				#self.StatusGui.operation_status_pic.SetBitmap(wx.Bitmap(self.Ok_pic))
+			#else:
+				#self.StatusGui.operation_status_pic.SetBitmap(wx.Bitmap(self.Warning_pic))
+		#self.activateGoCmd()
+##
 
 
-
-#################################
-#'''
-#Following routines start/stop ss computation
-#'''
-
-
-
-
-
-
-
-
-
-#################################
-
-#'''
-#Following routines handle communications with other processes 
-#'''
-
-
-
-			#print "Busy"
-		
-		#self.OnProgress()
-		#self.OnCompleted()
-
-	#def OnProgress(self):
-		##print "Updating progress bar..."
-		#gaugerange = self.progress.GetRange()
-		#self.progress.SetValue(self.sspdone.value*gaugerange)
-		##self.OnUpdateDone()
-
-	#def OnCompleted(self):
-		#if self.sscompleted.value == 1:
-			#self.log_field.AppendText("Finished.\n")
-			#print self.superconta
-			##self.running = False
-			#self.stop()
-
-
-	def OnLogData(self, msg):
-		t = msg.data
-		self.log_field.AppendText(t)
-		#self.OnUpdateDone()
-#
-
-
-
-
-
-
-
-
-
-	def OnUpdateDone(self):
-		if DEBUG_LEVEL>0:
-			print "fastSemSimGui: OnUpdateDone()"
-		pass
-		#print "Update done"
-		#self.update_event.set()
-#
-
-
-
-
-
-
-	def OnDefaultAction(self, event):
-		if DEBUG_LEVEL>0:
-			print "fastSemSimGui: OnDefaultAction()"
-#
-
-
-
-##################################################################################################################
-##################################################################################################################
-#################           END fastSemSimGui class                         ######################################
-##################################################################################################################
-##################################################################################################################
 #----------------------------------------------------------------------------------------------------------------#
+
+
+
+
+
+
+
+
+	CustomEvent_Generic, EVT_CUSTOM_GENERIC = wx.lib.newevent.NewEvent()
+	CustomEvent_Status, EVT_CUSTOM_STATUS = wx.lib.newevent.NewEvent()
+	CustomEvent_Start, EVT_CUSTOM_START = wx.lib.newevent.NewEvent()
+	CustomEvent_Stop, EVT_CUSTOM_STOP = wx.lib.newevent.NewEvent()
+	CustomEvent_Output, EVT_CUSTOM_OUTPUT = wx.lib.newevent.NewEvent()
+	CustomEvent_Set, EVT_CUSTOM_SET = wx.lib.newevent.NewEvent()
+	CustomEvent_LoadAC, EVT_CUSTOM_LOAD_AC = wx.lib.newevent.NewEvent()
+	CustomEvent_LoadGO, EVT_CUSTOM_LOAD_GO = wx.lib.newevent.NewEvent()
+	CustomEvent_SetSS, EVT_CUSTOM_SET_SS = wx.lib.newevent.NewEvent()
+	CustomEvent_SetOutput, EVT_CUSTOM_SET_OUTPUT = wx.lib.newevent.NewEvent()
+	CustomEvent_SetQuery, EVT_CUSTOM_SET_QUERY = wx.lib.newevent.NewEvent()
+	CustomEvent_Kill, EVT_CUSTOM_KILL = wx.lib.newevent.NewEvent()
+
+
+
+
+
+
+
 #----------------------------------------------------------------------------------------------------------------#
 ##################################################################################################################
 ##################################################################################################################
@@ -1154,11 +1187,8 @@ class fastSemSimGui(wx.Frame):
 ##################################################################################################################
 
 
-
-
-
-
 class CommunicationThread(threading.Thread):
+
 	def __init__(self, gui):
 		threading.Thread.__init__ ( self)
 		if DEBUG_LEVEL>0:
@@ -1167,7 +1197,19 @@ class CommunicationThread(threading.Thread):
 		self.uc = 0
 		self.callbacks = {}
 		self.lock = multiprocessing.Lock()
-		#self.register_callback(self.gui, self.gui.OnDefaultAction)
+		
+		self.connection = {}
+		self.connection[WorkProcess.CMD_STATUS] = self.gui.CustomEvent_Status
+		self.connection[WorkProcess.CMD_START] = self.gui.CustomEvent_Start
+		self.connection[WorkProcess.CMD_STOP] = self.gui.CustomEvent_Stop
+		self.connection[WorkProcess.CMD_OUTPUT] = self.gui.CustomEvent_Output
+		self.connection[WorkProcess.CMD_SET] = self.gui.CustomEvent_Set
+		self.connection[WorkProcess.CMD_LOAD_AC] = self.gui.CustomEvent_LoadAC
+		self.connection[WorkProcess.CMD_LOAD_GO] = self.gui.CustomEvent_LoadGO
+		self.connection[WorkProcess.CMD_SET_SS] = self.gui.CustomEvent_SetSS
+		self.connection[WorkProcess.CMD_SET_OUTPUT] = self.gui.CustomEvent_SetOutput
+		self.connection[WorkProcess.CMD_SET_QUERY] = self.gui.CustomEvent_SetQuery
+		self.connection[WorkProcess.CMD_KILL] = self.gui.CustomEvent_Kill
 #
 
 
@@ -1187,8 +1229,6 @@ class CommunicationThread(threading.Thread):
 
 
 
-
-
 	def run(self):
 		if DEBUG_LEVEL>0:
 			print "CommunicationThread: run(). (Should appear once.)"
@@ -1196,28 +1236,28 @@ class CommunicationThread(threading.Thread):
 			data = self.gui.ssprocess2gui_queue.get(True)
 			if DEBUG_LEVEL>1:
 				print "CommunicationThread: run(). message received from computation process"
-			if data[0]==-1:
+			if data[0]==-1: # NOTE used to kill the thread
 				return
-			#processed = False
-			# Way 2 - Use Events. Cannot establish here if event has been processed
-			self._lock()
-			current_callbacks = copy.copy(self.callbacks)
-			for i in current_callbacks:
-				print wx.PostEvent(current_callbacks[i][0].GetEventHandler(), DataEvent(data=data))
-			self._unlock()
+			if data == None:
+				return
+			if data[0] in self.connection:
+				ne = self.connection[data[0]](data=data)
+			else:
+				ne = CustomEvent_Generic(data=data)
+			print wx.PostEvent(self.gui.GetEventHandler(), ne) # WARNING is it safe tu run it without a lock?
 #
 
 
 
 
 
-	def register_callback(self, who, func):
+	def register_callback(self, what, func):
 		if DEBUG_LEVEL>1:
 			print "CommunicationThread: register_callback()"
 		
 		self._lock()
-		print who.Bind(EVT_DATA, func)
-		self.callbacks[self.uc] = (who, func)
+		print self.gui.Bind(what, func)
+		self.callbacks[self.uc] = (what, func)
 		self.uc += 1
 		self._unlock()
 		return self.uc - 1
@@ -1233,28 +1273,16 @@ class CommunicationThread(threading.Thread):
 				print "CommunicationThread: unregister_callback() error"
 		else:
 			self._lock()
-			self.gui.Unbind(EVT_DATA, self.callbacks[func_id][0], self.callbacks[func_id][1])
+			self.gui.Unbind(self.callbacks[func_id][0], self.callbacks[func_id][1])
 			del self.callbacks[func_id]
 			self._unlock()
 #
-##################################################################################
-##################################################################################
-##################################################################################
-
-
-
-
-
-
-
 
 
 
 ##################################################################################
 #### start the main gui. Should be called from outside. Why? ####
 ##################################################################################
-
-DataEvent, EVT_DATA = wx.lib.newevent.NewEvent()
 
 def _start():
 	multiprocessing.freeze_support()

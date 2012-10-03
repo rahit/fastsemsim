@@ -35,28 +35,31 @@ from fastSemSim.SemSim.CzekanowskiDiceSemSim import *
 from fastSemSim.SemSim.CosineSemSim import *
 from fastSemSim.SemSim.GSESAMESemSim import *
 
+
 '''
 Struct SemSimMeasures.
 Contains a list of all available SS measures.
 It is built as a dictionary. SS measure names are used as keys. Each entry is a tuple with the following structure:
-(class pointer, Pairwise flag, )
+(Class Name, is Pairwise flag, )
 '''
 SemSimMeasures = {
-'Resnik' : (ResnikSemSim, True),
-'SimGIC': (SimGICSemSim, False),
-'Lin' :(LinSemSim, True),
-'Jiang and Conrath' :(JiangConrathSemSim, True),
-'SimIC' :(SimICSemSim, True),
-'Dice' :(DiceSemSim, False),
-'TO' :(SimTOSemSim, False),
-'NTO' :(SimNTOSemSim, False),
-'Jaccard' :(JaccardSemSim, False),
-'Czekanowski-Dice' :(CzekanowskiDiceSemSim, False),
-'Cosine' :(CosineSemSim, False),
-'G-SESAME' :(GSESAMESemSim, True),
+# present in version 0.6
+	'Resnik' : (ResnikSemSim, True),
+	'SimGIC': (SimGICSemSim, False),
+	'Lin' :(LinSemSim, True),
+	'Jiang and Conrath' :(JiangConrathSemSim, True),
+	'SimIC' :(SimICSemSim, True),
+	'Dice' :(DiceSemSim, False),
+	'TO' :(SimTOSemSim, False),
+	'NTO' :(SimNTOSemSim, False),
+	'Jaccard' :(JaccardSemSim, False),
+	'Czekanowski-Dice' :(CzekanowskiDiceSemSim, False),
+	'Cosine' :(CosineSemSim, False),
+	'G-SESAME' :(GSESAMESemSim, True),
 # new in version 0.7
-#'Cosine' :(CosineSemSim, False),
+	#'Cosine' :(CosineSemSim, False),
 }
+
 
 '''
 Struct MixingStrategies.
@@ -65,9 +68,9 @@ It is built as a dictionary. Mixing strategy names are used as keys. Each entry 
 (class pointer, )
 '''
 MixingStrategies = {
-'max':(maxSemSim),
-'BMA':(BMASemSim),
-'avg':(avgSemSim)
+	'max':(maxSemSim),
+	'BMA':(BMASemSim),
+	'avg':(avgSemSim)
 }
 
 	#-#-#-#-#-#-#-#-#-#-#-#-#-#
@@ -75,7 +78,7 @@ MixingStrategies = {
 	#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 	# the function selectTermSemSim helps retrieving the proper class implementing a given Term Sem Sim.
-	# It takes in input the name of the Term Sem Similarity
+	# It takes in input the name (str) of the Term Sem Similarity
 	# It returns the class to be used. Just call the class constructor to instantiante an object.
 
 def selectTermSemSim(tss_name):
@@ -84,3 +87,4 @@ def selectTermSemSim(tss_name):
 		return None
 	else:
 		return SemSimMeasures[tss_name][0]
+#

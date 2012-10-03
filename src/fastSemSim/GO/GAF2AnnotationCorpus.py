@@ -24,6 +24,8 @@ Class to parse Annotation Corporus files in GAF-2.0 format [i.e. Gene Ontology A
 '''
 
 import sys
+import os
+import gzip
 import GeneOntology
 
 SIMPLIFY = 'simplify'
@@ -84,11 +86,23 @@ class GAF2AnnotationCorpus():
 				#print(str(self.temp_term) + " is obsolete.")
 				return False
 		return True
+#
+
+
+
+
+
 
 	def parse(self, fname):
 		self.setFields()
+		if type(fname) == unicode:
+			fname = str(fname)
 		if type(fname) is str:
-			stream = open(fname,'r')
+			fn,fe = os.path.splitext(fname)
+			if fe == '.gz':
+				stream = gzip.open(fname, 'rb')
+			else:
+				stream = open(fname, 'r')
 		else:
 			stream = fname
 		lines_counter = 0
