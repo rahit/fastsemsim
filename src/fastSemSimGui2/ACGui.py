@@ -35,7 +35,7 @@ PLAIN_FILE_TYPE = 'Plain'
 PLAIN_FILE_TYPE_REF = 'plain'
 AC_FILE_TYPES = { GAF2_FILE_TYPE : GAF2_FILE_TYPE_REF, PLAIN_FILE_TYPE : PLAIN_FILE_TYPE_REF }
 
-debug = True
+DEBUG_LEVEL = 2
 
 class ACPanel(wx.Panel):
 	def __init__( self, real_parent, parent, id, pos, size, style):
@@ -141,7 +141,51 @@ class ACPanel(wx.Panel):
 		
 		self.ac_load_gui = AC_load_gui(self, self.real_parent)
 		self.Bind(wx.EVT_BUTTON, self.OnLoadButton, id=self.AC_load_button.GetId())
+		
+		self._reset()
 #
+
+
+
+
+
+
+	def _reset(self):
+		self._update()
+#
+
+
+
+
+
+
+
+	def _freeze(self):
+		self.AC_load_button.Disable()
+#
+
+
+
+
+
+
+	def _unfreeze(self):
+		self.AC_load_button.Enable()
+#
+
+
+
+
+	def update(self):
+		if DEBUG_LEVEL>2:
+			print "ACPanel: update()"
+		self.real_parent.update()
+#
+
+
+
+
+
 
 	def OnLoadButton(self, event):
 		self.ac_load_gui.ShowModal()
@@ -154,7 +198,7 @@ class ACPanel(wx.Panel):
 
 	def _update(self):
 		if self.real_parent.AC_status:
-			self.AC_source_label.SetLabel(self.real_parent.param_AC_filename)
+			self.AC_source_label.SetLabel(os.path.basename(self.real_parent.params_AC['filename']))
 		else:
 			self.AC_source_label.SetLabel(u"No file loaded.")
 #
@@ -395,12 +439,6 @@ class AC_load_gui ( wx.Dialog ):
 		self.Hide()
 #
 
-	def OnLoad(self, event):
-		if debug:
-			print "AC load gui: Load pressed"
-		pass
-#
-
 	def OnFileBrowse(self, event):
 		dialog = wx.FileDialog(None, style = wx.OPEN)
 		if dialog.ShowModal() == wx.ID_OK:
@@ -418,8 +456,8 @@ class AC_load_gui ( wx.Dialog ):
 
 
 	def _data_to_main(self):
-		self.real_parent.param_AC_filename = self.param_filename
-		self.real_parent.param_AC_filetype = self.param_filetype
+		self.real_parent.params_AC['filename'] = self.param_filename
+		self.real_parent.params_AC['type'] = self.param_filetype
 		#self.real_parent.param_ignore_haspart = self.param_ignore_haspart
 		#self.real_parent.param_ignore_regulates = self.param_ignore_regulates
 		self.real_parent.AC_status = self.status
@@ -433,7 +471,7 @@ class AC_load_gui ( wx.Dialog ):
 		self.AC_load_load_button.Disable()
 		self.AC_load_select_button.Disable()
 		self.AC_load_type_box.Disable()
-		
+		#self.freeze()
 		self.filetype = self.AC_load_type_box.GetPageText(self.AC_load_type_box.GetSelection())
 		if self.filetype in AC_FILE_TYPES:
 			self.param_filetype = AC_FILE_TYPES[self.filetype]
@@ -441,32 +479,38 @@ class AC_load_gui ( wx.Dialog ):
 		#if self.param_filetype == GAF2_FILE_TYPE:
 		#self.AC_load_ignore_haspart_check.Disable()
 		#self.AC_load_ignore_regulates_check.Disable()
-		self.AC_load_outcome_handle = self.real_parent.communication_thread.register_callback(self, self.OnLoadDone)
-		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_LOAD_AC, self.param_filename, self.param_filetype, self.params))
-		
+
+		self.AC_load_outcome_handle = self.real_parent.communication_thread.register_callback(self.real_parent.EVT_CUSTOM_LOAD_AC, self.OnLoadDone)
+
+		temp = {}
+		temp['filename'] = self.param_filename
+		temp['type'] = self.param_filetype
+		temp['params'] = self.params
+		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_LOAD_AC, temp))
+#
+
 #
 
 	def OnLoadDone(self, event):
-		if debug:
+		if DEBUG_LEVEL > 1:
 			print "AC Load Gui: OnLoadDone called."
+			print event.data
 		data = event.data
 		if data[0] == WorkProcess.CMD_LOAD_AC:
 			if data[1] == WorkProcess.ANSWER_PROCESSED:
 				if data[2] == WorkProcess. RESULT_OK:
-					if debug:
+					if DEBUG_LEVEL > 1:
 						print "AC load outcome: Load successful."
 					self.status = True
 					self._data_to_main()
-					#self.parent._update()
-					self.parent.real_parent._update()
+					self.parent.update()
 					self.Hide()
 				else:
-					if debug:
+					if DEBUG_LEVEL > 1:
 						print "AC load outcome: Load Fail."
 					self.status = False
 					self._data_to_main()
-					self.parent.real_parent._update()
-					#self.parent._update()
+					self.parent.update()
 
 				self.real_parent.communication_thread.unregister_callback(self.AC_load_outcome_handle)
 				self.AC_load_cancel_button.Enable()
@@ -476,10 +520,10 @@ class AC_load_gui ( wx.Dialog ):
 				#self.AC_load_ignore_haspart_check.Enable()
 				#self.AC_load_ignore_regulates_check.Enable()
 			elif data[1] == WorkProcess.ANSWER_PROCESSING:
-				if debug:
+				if DEBUG_LEVEL > 1:
 					print "AC load outcome: Load in progress."
 			elif data[1] == WorkProcess.ANSWER_IGNORED:
-				if debug:
+				if DEBUG_LEVEL > 1:
 					print "AC load outcome: Load request ignored."
 				self.real_parent.communication_thread.unregister_callback(self.AC_load_outcome_handle)
 				self.AC_load_cancel_button.Enable()
@@ -489,13 +533,14 @@ class AC_load_gui ( wx.Dialog ):
 				#self.AC_load_ignore_haspart_check.Enable()
 				#self.AC_load_ignore_regulates_check.Enable()
 			else:
-				if debug:
+				if DEBUG_LEVEL > 1:
 					print "AC load outcome: Unknown answer."
 				self.real_parent.communication_thread.unregister_callback(self.AC_load_outcome_handle)
 				self.AC_load_cancel_button.Enable()
 				self.AC_load_load_button.Enable()
 				self.AC_load_select_button.Enable()
 				self.AC_load_type_box.Enable()
+				self.parent.update()
 				#self.AC_load_ignore_haspart_check.Enable()
 				#self.AC_load_ignore_regulates_check.Enable()
 			return True

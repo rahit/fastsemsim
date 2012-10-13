@@ -27,13 +27,19 @@ import os
 DEBUG_LEVEL = 2 # NOTE 0: no debug output. 1:level 1 debug output. 2: verbose debug output. In any case it does not affect the performance of the calculation step
 
 class GOPanel(wx.Panel):
+	
+	node_info = None
+	edge_info = None
+	
 	def __init__( self, real_parent, parent, id, pos, size, style):
 		wx.Panel.__init__ ( self, parent, id, pos, size, style)
 		
-		if DEBUG_LEVEL>0:
+		if DEBUG_LEVEL>1:
 			print "GOPanel: init()"
+
 		self.GO_panel = self # temporary workaround
 		self.real_parent = real_parent
+
 		GO_panel_sizer_1 = wx.BoxSizer( wx.VERTICAL )
 		sbSizer3 = wx.StaticBoxSizer( wx.StaticBox( self.GO_panel, wx.ID_ANY, u"Source" ), wx.HORIZONTAL )
 		self.GO_source_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"No file loaded", wx.DefaultPosition, wx.Size( -1,-1 ), 0 )
@@ -80,7 +86,42 @@ class GOPanel(wx.Panel):
 		self.GO_panel.Layout()
 		GO_panel_sizer_1.Fit( self.GO_panel )
 		self.go_load_gui = GO_load_gui(self, self.real_parent)
+		
 		self.Bind(wx.EVT_BUTTON, self.OnLoadButton, id=self.GO_load_button.GetId())
+		
+		self._reset()
+#
+
+
+
+
+
+
+	def _reset(self):
+		self._update()
+#
+
+
+
+
+
+
+
+	def _freeze(self):
+		if DEBUG_LEVEL>2:
+			print "GOPanel: _freeze()"
+		self.GO_load_button.Disable()
+#
+
+
+
+
+
+
+	def _unfreeze(self):
+		if DEBUG_LEVEL>2:
+			print "GOPanel: _unfreeze()"
+		self.GO_load_button.Enable()
 #
 
 
@@ -88,7 +129,7 @@ class GOPanel(wx.Panel):
 
 
 	def OnLoadButton(self, event):
-		if DEBUG_LEVEL>1:
+		if DEBUG_LEVEL>2:
 			print "GOPanel: OnLoadButton()"
 		self.go_load_gui.ShowModal()
 #
@@ -98,18 +139,24 @@ class GOPanel(wx.Panel):
 
 
 	def _update(self):
-		if DEBUG_LEVEL>0:
+		if DEBUG_LEVEL>1:
 			print "GOPanel: _update()"
+		print "DEBUG 3 " + str(self.node_info)
 		if self.real_parent.GO_status:
-			if not self.real_parent.param_GO_filename==None:
-				self.GO_source_label.SetLabel(os.path.basename(self.real_parent.param_GO_filename))
-				self.m_staticText8.SetLabel("The Gene Ontology has correctly been loaded from " + os.path.basename(self.real_parent.param_GO_filename) + ".")
+			if not self.real_parent.params_GO['filename']==None:
+				self.GO_source_label.SetLabel(os.path.basename(self.real_parent.params_GO['filename']))
+				self.GO_terms_label.SetLabel(str(self.node_info))
+				self.GO_edges_label.SetLabel(str(self.edge_info))
+				#self.m_staticText8.SetLabel("The Gene Ontology has correctly been loaded from " + os.path.basename(self.real_parent.param_GO_filename) + ".")
 			else:
 				self.GO_source_label.SetLabel("[built-in version]")
-				self.m_staticText8.SetLabel("The built-in version of the Gene Ontology has been correctly loaded.")
+				#self.m_staticText8.SetLabel("The built-in version of the Gene Ontology has been correctly loaded.")
+
 		else:
-			self.GO_source_label.SetLabel("")
-			self.m_staticText8.SetLabel("No Gene Ontology is currently loaded.")
+			self.GO_source_label.SetLabel("-")
+			self.GO_terms_label.SetLabel("-")
+			self.GO_edges_label.SetLabel("-")
+			#self.m_staticText8.SetLabel("No Gene Ontology is currently loaded.")
 #
 
 
@@ -118,9 +165,9 @@ class GOPanel(wx.Panel):
 
 
 	def update(self):
-		if DEBUG_LEVEL>1:
+		if DEBUG_LEVEL>2:
 			print "GOPanel: update()"
-		self.real_parent._update()
+		self.real_parent.update()
 #
 
 
@@ -142,14 +189,14 @@ class GOPanel(wx.Panel):
 
 class GO_load_gui ( wx.Dialog ):
 	
-	param_ignore_haspart = False
-	param_ignore_regulates = False
+	param_GO_ignore_haspart = False
+	param_GO_ignore_regulates = False
 	param_filename = None
 	
 	def __init__( self, parent , real_parent):
 		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"Load Gene Ontology", pos = wx.DefaultPosition, size = wx.Size( 650,410 ), style = wx.DEFAULT_DIALOG_STYLE )
 		
-		if DEBUG_LEVEL>0:
+		if DEBUG_LEVEL>2:
 			print "GO_load_gui: init()"
 		self.parent = parent
 		self.real_parent = real_parent
@@ -164,7 +211,7 @@ class GO_load_gui ( wx.Dialog ):
 		bSizer20 = wx.BoxSizer( wx.HORIZONTAL )
 		self.GO_load_select_button = wx.Button( self, wx.ID_ANY, u"Select file...", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer20.Add( self.GO_load_select_button, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 5 )
-		self.GO_load_default_button = wx.Button( self, wx.ID_ANY, u"Set default", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.GO_load_default_button = wx.Button( self, wx.ID_ANY, u"Select built-in GO", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer20.Add( self.GO_load_default_button, 0, wx.ALIGN_CENTER, 5 )
 		bSizer22.Add( bSizer20, 0, wx.ALIGN_RIGHT|wx.RIGHT|wx.TOP, 5 )
 		bSizer3.Add( bSizer22, 0, wx.ALIGN_CENTER|wx.EXPAND|wx.TOP, 5 )
@@ -211,6 +258,8 @@ class GO_load_gui ( wx.Dialog ):
 		self.Bind(wx.EVT_BUTTON, self.OnDefaultButton, id=self.GO_load_default_button.GetId())
 		self.Bind(wx.EVT_CHECKBOX, self.ignore_what, id=self.GO_load_ignore_haspart_check.GetId())
 		self.Bind(wx.EVT_CHECKBOX, self.ignore_what, id=self.GO_load_ignore_regulates_check.GetId())
+		
+		self.OnDefaultButton(None)
 #
 
 
@@ -228,8 +277,8 @@ class GO_load_gui ( wx.Dialog ):
 
 
 	def ignore_what(self, event):
-		self.param_ignore_haspart = self.GO_load_ignore_haspart_check.GetValue()
-		self.param_ignore_regulates = self.GO_load_ignore_regulates_check.GetValue()
+		self.param_GO_ignore_haspart = self.GO_load_ignore_haspart_check.GetValue()
+		self.param_GO_ignore_regulates = self.GO_load_ignore_regulates_check.GetValue()
 #
 
 
@@ -247,7 +296,7 @@ class GO_load_gui ( wx.Dialog ):
 
 
 	def OnDefaultButton(self, event):
-		self._set_file_name(None)
+		self._set_file_name(self.real_parent.programdirectory + "/../fastSemSim/data/GO_2012-02-24.obo-xml.gz")
 #
 
 
@@ -269,9 +318,9 @@ class GO_load_gui ( wx.Dialog ):
 	def _set_file_name(self, fn):
 		self.param_filename = fn
 		if fn == None:
-			self.GO_load_source_label.SetLabel(u"No file selected. The built-in version will be loaded.")
+			self.GO_load_source_label.SetLabel(u"No GO selected.")
 		else:
-			self.GO_load_source_label.SetLabel(self.param_filename)
+			self.GO_load_source_label.SetLabel(os.path.basename(self.param_filename))
 #
 
 
@@ -280,12 +329,15 @@ class GO_load_gui ( wx.Dialog ):
 
 
 	def _data_to_main(self):
-		if DEBUG_LEVEL>0:
+		if DEBUG_LEVEL>1:
 			print "GO_load_gui: _data_to_main()"
-		self.real_parent.param_GO_filename = self.param_filename
-		self.real_parent.param_ignore_haspart = self.param_ignore_haspart
-		self.real_parent.param_ignore_regulates = self.param_ignore_regulates
+		self.real_parent.params_GO['filename'] = self.param_filename
+		self.real_parent.params_GO['ignore']['has_part'] = self.param_GO_ignore_haspart
+		self.real_parent.params_GO['ignore']['regulates'] = self.param_GO_ignore_regulates
 		self.real_parent.GO_status = self.status
+		self.parent.edge_info = self.edge_info
+		self.parent.node_info = self.node_info
+		print "DEBUG 2 " + str(self.parent.node_info)
 #
 
 
@@ -294,11 +346,16 @@ class GO_load_gui ( wx.Dialog ):
 
 
 	def OnLoad(self, data):
-		if DEBUG_LEVEL>0:
+		if DEBUG_LEVEL>1:
 			print "GO_load_gui: OnLoad()"
 		self.freeze()
 		self.GO_load_outcome_handle = self.real_parent.communication_thread.register_callback(self.real_parent.EVT_CUSTOM_LOAD_GO, self.OnLoadDone)
-		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_LOAD_GO, self.param_filename, {"ignore_part_of":self.param_ignore_haspart, "ignore_regulates":self.param_ignore_regulates}))
+		
+		temp = {}
+		temp['filename'] = self.param_filename
+		temp['type'] = 'obo-xml'
+		temp['ignore'] = {"has_part":self.param_GO_ignore_haspart, "regulates":self.param_GO_ignore_regulates}
+		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_LOAD_GO, temp))
 #
 
 	def freeze(self):
@@ -331,29 +388,35 @@ class GO_load_gui ( wx.Dialog ):
 				if data[2] == WorkProcess. RESULT_OK:
 					if DEBUG_LEVEL>1:
 						print "GO load outcome: Load successful."
+						print data
 					self.status = True
+					self.node_info = data[3]
+					self.edge_info = data[4]
 					self._data_to_main()
 					self.parent.update()
 					self.Hide()
+					
 				else:
-					if DEBUG_LEVEL>1:
+					if DEBUG_LEVEL>2:
 						print "GO load outcome: Load Fail."
 					self.status = False
+					self.node_info = 0
+					self.edge_info = 0
 					self._data_to_main()
 					self.parent.update()
 
 				self.real_parent.communication_thread.unregister_callback(self.GO_load_outcome_handle)
 				self.unfreeze()
 			elif data[1] == WorkProcess.ANSWER_PROCESSING:
-				if DEBUG_LEVEL>1:
+				if DEBUG_LEVEL>2:
 					print "GO load outcome: Load in progress."
 			elif data[1] == WorkProcess.ANSWER_IGNORED:
-				if DEBUG_LEVEL>1:
+				if DEBUG_LEVEL>2:
 					print "GO load outcome: Load request ignored."
 				self.real_parent.communication_thread.unregister_callback(self.GO_load_outcome_handle)
 				self.unfreeze()
 			else:
-				if DEBUG_LEVEL>1:
+				if DEBUG_LEVEL>2:
 					print "GO load outcome: Unknown answer."
 				self.real_parent.communication_thread.unregister_callback(self.GO_load_outcome_handle)
 				self.unfreeze()

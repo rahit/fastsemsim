@@ -45,6 +45,7 @@ from QueryGui import *
 from SSGui import *
 from OutputGui import *
 from ControlsGui import *
+from ConfigGui import *
 
 #--------------------------------------------------#
 
@@ -68,49 +69,31 @@ STATUS_EXIT = STATUS_BASE + 3
 
 class fastSemSimGui(wx.Frame):
 
-	status = STATUS_INIT # current status. Possible values: STATUS_INIT = uninitialized / to init, STATUS_WAIT = not running, STATUS_RUN = running, STATUS_FATAL = fatal error
+# control & status flags
+	status_gui = STATUS_INIT # current GUI status
+	status = None # most recently known process status
+#
 
-	## variables to control exclusive communication between gui and background process
-	#process_busy = False
-	#process_busy_lock = None
-	#process_busy_event = None
-	#UPDATE_INTERVAL = 500
-	
-	##data structures
-	#config_file = None
-	param_go = None
-	param_ac = None
-	param_mixing_strategy = None
-	param_ss_measure = None
-	param_selected_GO = None
-	param_query = None
-	#output_type = None # 0 = field, 1 = file
-	#output_file = None
-	#query_type = None # 0 = pairs, 1 = list
-	##query_from_ac = False # True if load from ac <-- obsolete!
-	#query_from = None # 0 = field, 1 = file, 2 = ac
-	#query_file = None
-	
-	##objects required for ss calculation
-	#query = None # list of pairs or list of objects, depending on query_type variable
-	#ssobject = None # semantic similarity measure
 
-	running = False
+# params
+	config_file = None
 	
+	params_GO = {'filename':None, 'type':None, 'ignore':{}}
+	params_AC = {'filename':None, 'type':None, 'params':None}
+	params_SS = {'ontology':None, 'measure':None, 'mixing_strategy':None}
+	params_query = {'type':None, 'source':None}
+	params_output = {'to':None}
+
 	GO_status = False
 	AC_status = False
-	ss_status = False
+	SS_status = False
 	query_status = False
 	output_status = False
+#
 
-	#start_cmd = None # main command to start execution
-	
-	##flags signaling whether some structures should be updated
-	#update_query = True
-	#update_ssobject = True
-	#update_ac = True
 
-	# multiprocessing data
+# multiprocessing data
+	running = False # whether the background process is running
 	ssprocess = None
 #
 
@@ -127,7 +110,7 @@ class fastSemSimGui(wx.Frame):
 #-------------------------------------------------------------------------------#
 
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = "fastSemSimGui v.2 - Marco Mina", pos = wx.DefaultPosition, size = wx.Size( 652,471 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = "fastSemSimGui v.2 - Marco Mina", pos = wx.DefaultPosition, size = wx.Size( 652,571 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		if DEBUG_LEVEL>0:
 			print "fastSemSimGui: init()"
 
@@ -166,16 +149,22 @@ class fastSemSimGui(wx.Frame):
 		self.fastSemSim_listbook.SetImageList(self.status_images)
 		
 		fastSemSim_sizer_1.Add( self.fastSemSim_listbook, 1, wx.EXPAND |wx.ALL, 5 ) #### This section was in the end
+
+		self.fastSemSim_statusbar = self.CreateStatusBar( 1, wx.ST_SIZEGRIP, wx.ID_ANY )
+		self.InitMenu()
+
 		self.SetSizer( fastSemSim_sizer_1 )
 		self.Layout()
-		self.fastSemSim_statusbar = self.CreateStatusBar( 1, wx.ST_SIZEGRIP, wx.ID_ANY )
 		self.Centre( wx.BOTH )
 
 		#### Panel Controls
-		self.controls_panel = ControlsPanel(self, self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.fastSemSim_listbook.AddPage( self.controls_panel, u"Controls", True )
-		self.fastSemSim_listbook.SetPageImage(0, 3)
-		
+		#self.controls_panel = ControlsPanel(self, self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		#self.fastSemSim_listbook.AddPage( self.controls_panel, u"Controls", True )
+		#self.fastSemSim_listbook.SetPageImage(0, 3)
+		#### Panel Query
+		self.query_panel = QueryPanel(self, self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.fastSemSim_listbook.AddPage( self.query_panel, u"Query", False )
+		self.fastSemSim_listbook.SetPageImage(0, 4)
 		#### Panel GO
 		self.GO_panel = GOPanel(self, self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		self.fastSemSim_listbook.AddPage( self.GO_panel, u"Gene Ontology", False )
@@ -189,19 +178,17 @@ class fastSemSimGui(wx.Frame):
 		self.SS_panel = SSPanel(self, self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		self.fastSemSim_listbook.AddPage( self.SS_panel, u"Semantic Similarity", False )
 		self.fastSemSim_listbook.SetPageImage(3, 6)
-		#### Panel Query
-		self.query_panel = QueryPanel(self, self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.fastSemSim_listbook.AddPage( self.query_panel, u"Query", False )
-		self.fastSemSim_listbook.SetPageImage(4, 4)
+
 		#### Panel Output Ctrl
 		self.output_ctrl_panel = OutputCtrlPanel(self, self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		self.fastSemSim_listbook.AddPage( self.output_ctrl_panel, u"Output Settings", False )
-		self.fastSemSim_listbook.SetPageImage(5, 5)
+		self.fastSemSim_listbook.SetPageImage(4, 5)
 		#### Panel Output
 		#self.output_window = OutputPanel(self, self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		#self.fastSemSim_listbook.AddPage( self.output_window, u"Output", False )
 		##self.fastSemSim_listbook.SetPageImage(5, 5)
 
+		
 		self.output_window = OutputWindow(self, wx.DefaultPosition, wx.DefaultSize, 0)
 
 		#self.SetStatus(STATUS_WAIT)
@@ -211,13 +198,96 @@ class fastSemSimGui(wx.Frame):
 		self._init_communication()
 		self._init_handles()
 		self._init_process()
-		self._update()
+		self._reset()
 		#self.reset() # should restart gui side section. Do no touch communication channels or background process
 #
 
 
 
+	def InitMenu(self):
+		#self.ID_NEW=wx.NewId()
+		self.ID_OPEN=wx.NewId()
+		self.ID_QUIT=wx.NewId()
+		self.ID_SAVE=wx.NewId()
+		self.ID_SAVE_AS=wx.NewId()
+		self.MenuBar = wx.MenuBar()
+		self.FileMenu = wx.Menu()
+		#self.FileMenu.Append(self.ID_NEW, 'New', 'New')
+		self.FileMenu.Append(self.ID_OPEN, 'Open Configuration...', 'Open Configuration')
+		self.FileMenu.Append(self.ID_SAVE, 'Save Configuration', 'Save Configuration')
+		self.FileMenu.Append(self.ID_SAVE_AS, 'Save Configuration As...', 'Save Configuration As')
+		self.FileMenu.Append(self.ID_QUIT, 'Quit', 'Quit application')
+		self.MenuBar.Append(self.FileMenu,'&File')
+		self.SetMenuBar(self.MenuBar)
+		self.Bind(wx.EVT_MENU, self.OnMenuQuit, id=self.ID_QUIT)
+		self.Bind(wx.EVT_MENU, self.OnMenuOpen, id=self.ID_OPEN)
+		self.Bind(wx.EVT_MENU, self.OnMenuSave, id=self.ID_SAVE)
+		self.Bind(wx.EVT_MENU, self.OnMenuSaveAs, id=self.ID_SAVE_AS)
+		#self.Bind(wx.EVT_MENU, self.OnMenuNew, id=self.ID_NEW)
+#
 
+
+
+	#def OnMenuNew(self, event):
+		#print "OnMenuNew still to be implemented."
+#
+
+
+
+
+
+	def OnMenuQuit(self, event):
+		self.OnQuit(None)
+#
+
+
+
+
+
+
+	def OnMenuOpen(self, event):
+		print "OnMenuOpen still to be implemented."
+		dialog = wx.FileDialog(None, style = wx.OPEN)
+		if dialog.ShowModal() == wx.ID_OK:
+			print 'Loading: ', dialog.GetPath()
+			#if not self.config_file == None:
+				#self.OnMenuNew(None)
+			self.config_file = dialog.GetPath()
+			self.loadConfigGui = LoadConfigGui(self)
+#
+
+
+
+
+
+
+
+
+
+	def OnMenuSave(self, event):
+		if self.config_file == None:
+			return self.OnMenuSaveAs(event)
+		self.saveConfigGui = SaveConfigGui(self)
+#
+
+
+
+
+	def OnMenuSaveAs(self, event):
+		dialog = wx.FileDialog(None, style = wx.SAVE|wx.OVERWRITE_PROMPT)
+		if dialog.ShowModal() == wx.ID_OK:
+			self.config_file = dialog.GetPath()
+			self.OnMenuSave(event)
+#
+
+
+
+
+
+
+	def _reset(self):
+		self.update()
+#
 
 
 	def _init_process(self):
@@ -301,7 +371,7 @@ class fastSemSimGui(wx.Frame):
 	def OnQuit(self, event):
 		if DEBUG_LEVEL>0:
 			print "fastSemSimGui: OnQuit()"
-		self.status = STATUS_EXIT # WARNING Should be done in a dedicated function, perhaps disabling all the commands
+		self.status_gui = STATUS_EXIT # WARNING Should be done in a dedicated function, perhaps disabling all the commands
 		self._kill_process()
 		event.Veto()
 #
@@ -314,9 +384,10 @@ class fastSemSimGui(wx.Frame):
 # When the background process terminates. If the gui is in termination phase, then exit.
 # Otherwise reinitialize the background process
 	def OnKillEvent(self, event):
+		self.running = False
 		if DEBUG_LEVEL>1:
 			print "fastSemSimGui: OnKillEvent()"
-		if self.status == STATUS_EXIT:
+		if self.status_gui == STATUS_EXIT:
 			if DEBUG_LEVEL>1:
 				print "fastSemSimGui: OnKillEvent(). status is STATUS_EXIT. Quitting."
 			self.Destroy()
@@ -329,7 +400,7 @@ class fastSemSimGui(wx.Frame):
 			if DEBUG_LEVEL>1:
 				print "fastSemSimGui: OnKillEvent(). status is NOT STATUS_EXIT. Respawning background process..."
 			self._init_process() # WARNING what about updating the status?
-			self._update()
+			self.update()
 #
 
 
@@ -668,10 +739,62 @@ class fastSemSimGui(wx.Frame):
 #############################################################################################
 #############################################################################################
 
-
 	def _update(self):
 		if DEBUG_LEVEL>0:
 			print "fastSemSimGui: _update()"
+
+		print "################################## DEBUG 1 " + str(self.status)
+		if self.status == WorkProcess.STATUS_WAIT:
+			self.GO_panel._unfreeze()
+			self.AC_panel._unfreeze()
+			self.query_panel._unfreeze()
+			self.output_ctrl_panel._unfreeze()
+			self.SS_panel._unfreeze()
+
+# WorkProcess status specific actions
+# kill: do nothing
+# wait: enable everything
+# run: disable everything
+
+
+		if self.GO_status:
+			self.fastSemSim_listbook.SetPageImage(1, 7)
+			self.AC_panel._unfreeze()
+		else:
+			self.fastSemSim_listbook.SetPageImage(1, 8)
+			self.AC_panel._freeze()
+		if self.AC_status:
+			self.fastSemSim_listbook.SetPageImage(2, 7)
+		else:
+			self.fastSemSim_listbook.SetPageImage(2, 8)
+
+		#self.query_panel.SetSSCtrlStatus(self.ss_status)
+		#self.query_panel.SetGOStatus(self.GO_status)
+		#self.query_panel.SetAcStatus(self.AC_status)
+		#self.query_panel.SetQueryStatus(self.query_status)
+		#self.query_panel.SetOutputCtrlStatus(self.output_status)
+		
+		self.GO_panel._update()
+		self.AC_panel._update()
+		self.SS_panel._update()
+		self.query_panel._update()
+		self.output_ctrl_panel._update()
+		#self.output_window._update()
+		#self.controls_panel._update()
+
+		if not self.status == WorkProcess.STATUS_WAIT:
+			self.GO_panel._freeze()
+			self.AC_panel._freeze()
+			self.query_panel._freeze()
+			self.output_ctrl_panel._freeze()
+			self.SS_panel._freeze()
+#
+
+
+
+	def update(self):
+		if DEBUG_LEVEL>0:
+			print "fastSemSimGui: update()"
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_STATUS, None))
 #
 
@@ -689,30 +812,9 @@ class fastSemSimGui(wx.Frame):
 		self.ss_status = data[1]['SS']['ok_params']
 		self.query_status = data[1]['query']['ok_params']
 		self.output_status = data[1]['output']['ok_params']
-		
-		if self.GO_status:
-			self.fastSemSim_listbook.SetPageImage(1, 7)
-			self.AC_panel.Enable( True )
-		else:
-			self.fastSemSim_listbook.SetPageImage(1, 8)
-			self.AC_panel.Enable( False )
-		if self.AC_status:
-			self.fastSemSim_listbook.SetPageImage(2, 7)
-		else:
-			self.fastSemSim_listbook.SetPageImage(2, 8)
-			
-		self.controls_panel.SetSSCtrlStatus(self.ss_status)
-		self.controls_panel.SetGOStatus(self.GO_status)
-		self.controls_panel.SetAcStatus(self.AC_status)
-		self.controls_panel.SetQueryStatus(self.query_status)
-		self.controls_panel.SetOutputCtrlStatus(self.output_status)
-		
-		self.GO_panel._update()
-		self.AC_panel._update()
-		self.SS_panel._update()
-		#self.query_panel._update()
-		#self.output_window._update()
-		#self.controls_panel._update()
+		self.status = data[1]['status']
+
+		self._update()
 #
 
 
@@ -956,14 +1058,18 @@ class fastSemSimGui(wx.Frame):
 	def start(self):
 		if DEBUG_LEVEL>0:
 			print "fastSemSimGui: start()"
-		self.controls_panel.controls_log_text.Clear()
-		print self.SS_measure
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_SET_SS, self.SS_measure, None, self.SS_mixing_strategy, None, self.SS_ontology))
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_SET_OUTPUT, self.output_to, None))
-		self.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_SET_QUERY, self.query_from, None))
+		self.query_panel.controls_log.Clear()
+		
+		# Send SS requirements
+		if self.SSPanel.SS_to_send:
+			self.SSPanel.SS_to_send = False
+			self.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_SET_SS, self.params_SS))
+		
+		self.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_SET_OUTPUT, self.params_output))
+		self.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_SET_QUERY, self.params_query))
 
-		if self.start_check_handle == None:
-			self.start_check_handle = self.communication_thread.register_callback(self, self.OnStartCheck)
+		#if self.start_check_handle == None:
+			#self.start_check_handle = self.communication_thread.register_callback(self, self.OnStartCheck)
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_STATUS, None))
 		
 		#data = self.ssprocess2gui_queue.get()
@@ -1166,6 +1272,7 @@ class fastSemSimGui(wx.Frame):
 	CustomEvent_Stop, EVT_CUSTOM_STOP = wx.lib.newevent.NewEvent()
 	CustomEvent_Output, EVT_CUSTOM_OUTPUT = wx.lib.newevent.NewEvent()
 	CustomEvent_Set, EVT_CUSTOM_SET = wx.lib.newevent.NewEvent()
+	CustomEvent_Get, EVT_CUSTOM_GET = wx.lib.newevent.NewEvent()
 	CustomEvent_LoadAC, EVT_CUSTOM_LOAD_AC = wx.lib.newevent.NewEvent()
 	CustomEvent_LoadGO, EVT_CUSTOM_LOAD_GO = wx.lib.newevent.NewEvent()
 	CustomEvent_SetSS, EVT_CUSTOM_SET_SS = wx.lib.newevent.NewEvent()
@@ -1204,6 +1311,7 @@ class CommunicationThread(threading.Thread):
 		self.connection[WorkProcess.CMD_STOP] = self.gui.CustomEvent_Stop
 		self.connection[WorkProcess.CMD_OUTPUT] = self.gui.CustomEvent_Output
 		self.connection[WorkProcess.CMD_SET] = self.gui.CustomEvent_Set
+		self.connection[WorkProcess.CMD_GET] = self.gui.CustomEvent_Get
 		self.connection[WorkProcess.CMD_LOAD_AC] = self.gui.CustomEvent_LoadAC
 		self.connection[WorkProcess.CMD_LOAD_GO] = self.gui.CustomEvent_LoadGO
 		self.connection[WorkProcess.CMD_SET_SS] = self.gui.CustomEvent_SetSS
@@ -1244,7 +1352,7 @@ class CommunicationThread(threading.Thread):
 				ne = self.connection[data[0]](data=data)
 			else:
 				ne = CustomEvent_Generic(data=data)
-			print wx.PostEvent(self.gui.GetEventHandler(), ne) # WARNING is it safe tu run it without a lock?
+			wx.PostEvent(self.gui.GetEventHandler(), ne) # WARNING is it safe tu run it without a lock?
 #
 
 
@@ -1273,7 +1381,9 @@ class CommunicationThread(threading.Thread):
 				print "CommunicationThread: unregister_callback() error"
 		else:
 			self._lock()
-			self.gui.Unbind(self.callbacks[func_id][0], self.callbacks[func_id][1])
+			print "A: " + str(self.callbacks[func_id][0])
+			print "B: " + str(self.callbacks[func_id][1])
+			self.gui.Unbind(event=self.callbacks[func_id][0], handler=self.callbacks[func_id][1])
 			del self.callbacks[func_id]
 			self._unlock()
 #

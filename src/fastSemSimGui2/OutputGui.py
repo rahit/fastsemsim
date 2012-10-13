@@ -9,7 +9,7 @@ class OutputCtrlPanel(wx.Panel):
 		self.output_ctrl_panel = self # temporary workaround
 		self.real_parent = real_parent
 		bSizer93 = wx.BoxSizer( wx.VERTICAL )
-		sbSizer511 = wx.StaticBoxSizer( wx.StaticBox( self.output_ctrl_panel, wx.ID_ANY, u"Output parameters" ), wx.VERTICAL )
+		sbSizer511 = wx.StaticBoxSizer( wx.StaticBox( self.output_ctrl_panel, wx.ID_ANY, u"Output settings" ), wx.VERTICAL )
 		sbSizer291 = wx.StaticBoxSizer( wx.StaticBox( self.output_ctrl_panel, wx.ID_ANY, u"Filter Options" ), wx.VERTICAL )
 		gbSizer9 = wx.GridBagSizer( 0, 0 )
 		gbSizer9.SetFlexibleDirection( wx.BOTH )
@@ -39,7 +39,7 @@ class OutputCtrlPanel(wx.Panel):
 		self.m_panel29.SetSizer( bSizer95 )
 		self.m_panel29.Layout()
 		bSizer95.Fit( self.m_panel29 )
-		self.output_to_box.AddPage( self.m_panel29, u"Output Form", False )
+		self.output_to_box.AddPage( self.m_panel29, u"Output Window", True )
 		self.m_panel30 = wx.Panel( self.output_to_box, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer94 = wx.BoxSizer( wx.VERTICAL )
 		bSizer321 = wx.BoxSizer( wx.VERTICAL )
@@ -83,14 +83,21 @@ class OutputCtrlPanel(wx.Panel):
 		self.m_panel30.SetSizer( bSizer94 )
 		self.m_panel30.Layout()
 		bSizer94.Fit( self.m_panel30 )
-		self.output_to_box.AddPage( self.m_panel30, u"File", True )
+		self.output_to_box.AddPage( self.m_panel30, u"File", False )
 		sbSizer52.Add( self.output_to_box, 0, wx.EXPAND |wx.ALL, 5 )
 		sbSizer511.Add( sbSizer52, 0, wx.ALL|wx.EXPAND, 5 )
 		bSizer93.Add( sbSizer511, 0, wx.ALL|wx.EXPAND, 5 )
 		self.output_ctrl_panel.SetSizer( bSizer93 )
 		self.output_ctrl_panel.Layout()
 		bSizer93.Fit( self.output_ctrl_panel )
-		self.reset()
+		self._reset()
+#
+
+
+
+	def _reset(self):
+		self.real_parent.params_output['to'] = WorkProcess.OUTPUT_TO_GUI
+		self._update()
 #
 
 
@@ -98,13 +105,49 @@ class OutputCtrlPanel(wx.Panel):
 
 
 
-	def reset(self):
-		self.real_parent.output_to = WorkProcess.OUTPUT_TO_GUI
-	
-	
+
+	def _freeze(self):
+		self.Disable()
 #
 
 
+
+
+
+
+	def _unfreeze(self):
+		self.Enable()
+#
+
+
+
+
+
+
+	def _update(self):
+		if DEBUG_LEVEL>0:
+			print "OutputPanel: _update()"
+		if self.real_parent.params_output['to'] == WorkProcess.OUTPUT_TO_GUI:
+			self.output_to_box.SetSelection(0)
+		elif self.real_parent.params_output['to'] == WorkProcess.OUTPUT_TO_FILE:
+			self.output_to_box.SetSelection(1)
+			
+		#if 'mixing_strategy' in self.real_parent.params_SS:
+			#self.SS_mix_box.SetStringSelection(self.real_parent.params_SS['mixing_strategy'])
+		#if 'measure' in self.real_parent.params_SS:
+			#self.SS_measure_box.SetStringSelection(self.real_parent.params_SS['measure'])
+		#if 'ontology' in self.real_parent.params_SS:
+			#if self.real_parent.params_SS['ontology'] =="CC":
+				#self.SS_GO_CC_radio.SetValue(1)
+			#elif self.real_parent.params_SS['ontology'] == 'BP':
+				#self.SS_GO_BP_radio.SetValue(1)
+			#elif self.real_parent.params_SS['ontology'] == 'MF':
+				#self.SS_GO_MF_radio.SetValue(1)
+			#else:
+				#self.SS_GO_MF_radio.SetValue(0)
+				#self.SS_GO_BP_radio.SetValue(0)
+				#self.SS_GO_CC_radio.SetValue(0)
+#
 
 
 
