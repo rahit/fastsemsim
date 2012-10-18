@@ -1,9 +1,12 @@
 import wx
 import WorkProcess
 
-DEBUG_LEVEL = 2
+DEBUG_LEVEL = 0
 
 class OutputCtrlPanel(wx.Panel):
+	
+	param_filename = None
+	
 	def __init__( self, real_parent, parent, id, pos, size, style):
 		wx.Panel.__init__ ( self, parent, id, pos, size, style)
 		self.output_ctrl_panel = self # temporary workaround
@@ -23,11 +26,11 @@ class OutputCtrlPanel(wx.Panel):
 		self.output_filter_0_check = wx.CheckBox( self.output_ctrl_panel, wx.ID_ANY, u"= 0.0", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer111.Add( self.output_filter_0_check, 0, 0, 5 )
 		bSizer112 = wx.BoxSizer( wx.HORIZONTAL )
-		self.query_filter_less_check = wx.CheckBox( self.output_ctrl_panel, wx.ID_ANY, u"<", wx.DefaultPosition, wx.DefaultSize, 0 )
-		bSizer112.Add( self.query_filter_less_check, 0, 0, 5 )
-		self.query_filter_less_text = wx.TextCtrl( self.output_ctrl_panel, wx.ID_ANY, u"0.0", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.query_filter_less_text.SetMaxSize( wx.Size( 70,-1 ) )
-		bSizer112.Add( self.query_filter_less_text, 0, 0, 5 )
+		self.output_filter_less_check = wx.CheckBox( self.output_ctrl_panel, wx.ID_ANY, u"<", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer112.Add( self.output_filter_less_check, 0, 0, 5 )
+		self.output_filter_less_text = wx.TextCtrl( self.output_ctrl_panel, wx.ID_ANY, u"0.0", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.output_filter_less_text.SetMaxSize( wx.Size( 70,-1 ) )
+		bSizer112.Add( self.output_filter_less_text, 0, 0, 5 )
 		bSizer111.Add( bSizer112, 1, wx.EXPAND, 5 )
 		gbSizer9.Add( bSizer111, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.EXPAND, 5 )
 		sbSizer291.Add( gbSizer9, 1, wx.EXPAND, 5 )
@@ -71,10 +74,10 @@ class OutputCtrlPanel(wx.Panel):
 		self.output_sep_space_radio = wx.RadioButton( self.m_panel30, wx.ID_ANY, u"[space]", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer4611.Add( self.output_sep_space_radio, 0, wx.ALL, 5 )
 		bSizer4711 = wx.BoxSizer( wx.HORIZONTAL )
-		self.output_sep_custom_radio = wx.RadioButton( self.m_panel30, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		bSizer4711.Add( self.output_sep_custom_radio, 0, wx.ALL|wx.LEFT|wx.RIGHT, 5 )
-		self.output_sep_custom_text = wx.TextCtrl( self.m_panel30, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 35,-1 ), 0 )
-		bSizer4711.Add( self.output_sep_custom_text, 0, wx.ALL|wx.RIGHT, 5 )
+		#self.output_sep_custom_radio = wx.RadioButton( self.m_panel30, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		#bSizer4711.Add( self.output_sep_custom_radio, 0, wx.ALL|wx.LEFT|wx.RIGHT, 5 )
+		#self.output_sep_custom_text = wx.TextCtrl( self.m_panel30, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 35,-1 ), 0 )
+		#bSizer4711.Add( self.output_sep_custom_text, 0, wx.ALL|wx.RIGHT, 5 )
 		bSizer4611.Add( bSizer4711, 1, wx.EXPAND, 5 )
 		gbSizer91.Add( bSizer4611, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.EXPAND, 5 )
 		sbSizer2911.Add( gbSizer91, 1, wx.EXPAND, 5 )
@@ -90,13 +93,28 @@ class OutputCtrlPanel(wx.Panel):
 		self.output_ctrl_panel.SetSizer( bSizer93 )
 		self.output_ctrl_panel.Layout()
 		bSizer93.Fit( self.output_ctrl_panel )
+		
+		self.Bind(wx.EVT_CHOICEBOOK_PAGE_CHANGED, self.OnSelectTo, id=self.output_to_box.GetId())
+		self.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.output_file_select_button.GetId())
+
+		self.Bind(wx.EVT_CHECKBOX, self.filter_what, id=self.output_filter_none_check.GetId())
+		self.Bind(wx.EVT_CHECKBOX, self.filter_what, id=self.output_filter_0_check.GetId())
+		self.Bind(wx.EVT_CHECKBOX, self.filter_what, id=self.output_filter_less_check.GetId())
+		self.real_parent.Bind(wx.EVT_TEXT, self.filter_what, id=self.output_filter_less_text.GetId())
+		self.Bind(wx.EVT_RADIOBUTTON, self.OnSep, id=self.output_sep_tab_radio.GetId())
+		self.Bind(wx.EVT_RADIOBUTTON, self.OnSep, id=self.output_sep_space_radio.GetId())
+		
 		self._reset()
 #
 
 
 
+
+
+
 	def _reset(self):
 		self.real_parent.params_output['to'] = WorkProcess.OUTPUT_TO_GUI
+		self.param_filename = None
 		self._update()
 #
 
@@ -105,9 +123,43 @@ class OutputCtrlPanel(wx.Panel):
 
 
 
+	def filter_what(self, event):
+		if not 'filter' in self.real_parent.params_output:
+			self.real_parent.params_output['filter'] = {}
+		self.real_parent.params_output['filter']['None'] = self.output_filter_none_check.GetValue()
+		self.real_parent.params_output['filter']['0'] = self.output_filter_0_check.GetValue()
+		self.real_parent.params_output['filter']['less'] = self.output_filter_less_check.GetValue()
+		try:
+			if str(self.output_filter_less_text.GetValue()) == "":
+				self.real_parent.params_output['filter']['value'] = None
+			else:
+				self.real_parent.params_output['filter']['value'] = float(self.output_filter_less_text.GetValue())
+		except:
+			self.output_filter_less_text.SetValue(str(""))
+			self.filter_what(None)
+#
+
+
+
+
+
 
 	def _freeze(self):
 		self.Disable()
+#
+
+
+
+
+
+
+
+	def OnSep(self,event):
+		#print "OnSep"
+		if self.output_sep_tab_radio.GetValue():
+			self.real_parent.params_output['params']['sep'] = "\t"
+		elif self.output_sep_space_radio.GetValue():
+			self.real_parent.params_output['params']['sep'] = " "
 #
 
 
@@ -124,6 +176,41 @@ class OutputCtrlPanel(wx.Panel):
 
 
 
+	def OnFileBrowse(self, event):
+		dialog = wx.FileDialog(None, style = wx.OPEN)
+		if dialog.ShowModal() == wx.ID_OK:
+			self.param_filename = dialog.GetPath()
+			self._set_file_name()
+#
+
+
+
+
+
+	def _set_file_name(self):
+		if self.param_filename == None:
+			self.output_file_label.SetLabel(u"No file selected.")
+		else:
+			self.output_file_label.SetLabel(self.param_filename)
+			self.real_parent.params_output['filename'] = self.param_filename
+#
+
+
+
+
+
+
+	def OnSelectTo(self, event):
+		if DEBUG_LEVEL>0:
+			print "OutputPanel: OnSelectTo()"
+		self.real_parent.params_output['to'] = self.output_to_box.GetSelection()
+#
+
+
+
+
+
+
 	def _update(self):
 		if DEBUG_LEVEL>0:
 			print "OutputPanel: _update()"
@@ -131,6 +218,24 @@ class OutputCtrlPanel(wx.Panel):
 			self.output_to_box.SetSelection(0)
 		elif self.real_parent.params_output['to'] == WorkProcess.OUTPUT_TO_FILE:
 			self.output_to_box.SetSelection(1)
+			
+		if 'filename' in self.real_parent.params_output:
+			self.param_filename = self.real_parent.params_output['filename']
+			self._set_file_name()
+			
+		if 'filter' in self.real_parent.params_output:
+			if 'None' in self.real_parent.params_output['filter']:
+				self.output_filter_none_check.SetValue(bool(self.real_parent.params_output['filter']['None']))
+			if '0' in self.real_parent.params_output['filter']:
+				self.output_filter_0_check.SetValue(bool(self.real_parent.params_output['filter']['0']))
+			if 'less' in self.real_parent.params_output['filter']:
+				self.output_filter_less_check.SetValue(bool(self.real_parent.params_output['filter']['less']))
+			if 'value' in self.real_parent.params_output['filter']:
+				self.output_filter_less_text.SetValue(str(self.real_parent.params_output['filter']['value']))
+#
+
+#
+			
 			
 		#if 'mixing_strategy' in self.real_parent.params_SS:
 			#self.SS_mix_box.SetStringSelection(self.real_parent.params_SS['mixing_strategy'])
@@ -150,29 +255,7 @@ class OutputCtrlPanel(wx.Panel):
 #
 
 
-
-#class OutputPanel(wx.Panel):
-	#def __init__( self, real_parent, parent, id, pos, size, style):
-		#wx.Panel.__init__ ( self, parent, id, pos, size, style)
-		#self.out_panel = self
-		#self.real_parent = real_parent
-		
-		#bSizer62 = wx.BoxSizer( wx.VERTICAL )
-		
-		#sbSizer35 = wx.StaticBoxSizer( wx.StaticBox( self.out_panel, wx.ID_ANY, ""), wx.VERTICAL )
-		#self.output_text = wx.TextCtrl( self.out_panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( -1,350), wx.TE_MULTILINE|wx.TE_READONLY )
-		#sbSizer35.Add( self.output_text, 0, wx.ALL|wx.EXPAND, 5 )
-		#bSizer62.Add( sbSizer35, 0, wx.ALL|wx.EXPAND, 5 )
-		
-		#self.out_panel.SetSizer( bSizer62 )
-		#self.out_panel.Layout()
-		#bSizer62.Fit( self.out_panel )
-##
-
-
-
-
-
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 
 
 class OutputWindow(wx.Frame):
@@ -194,8 +277,3 @@ class OutputWindow(wx.Frame):
 		bSizer62.Fit( self )
 		self.Show(True)
 #
-
-
-
-
-

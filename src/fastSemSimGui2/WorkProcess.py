@@ -32,7 +32,7 @@ from fastSemSim.GO import GeneOntology
 from fastSemSim.GO import AnnotationCorpus
 import gzip
 
-DEBUG_LEVEL = 2 # NOTE 0: no debug output. 1:level 1 debug output. 2: verbose debug output. In any case it does not affect the performance of the calculation step
+DEBUG_LEVEL = 1 # NOTE 0: no debug output. 1:level 1 debug output. 2: verbose debug output. In any case it does not affect the performance of the calculation step
 
 # WorkProcess is designed as a state machine. Here are the possible status
 STATUS_BASE = 0
@@ -67,10 +67,18 @@ CMD_SET_OUTPUT = CMD_SET + 4 # Load Output parameters
 
 # Codes used in incoming get requests
 CMD_GET_AC = CMD_GET + 1
-
-# Codes used in incoming GO get requests
 CMD_GET_AC_OBJECTS = CMD_GET_AC + 0
 CMD_GET_AC_TERMS = CMD_GET_AC + 1
+CMD_GET_AC_OBJECTS_NUMBER = CMD_GET_AC + 2
+CMD_GET_AC_TERMS_NUMBER = CMD_GET_AC + 3
+
+CMD_GET_PARAMS = CMD_GET + 100
+CMD_GET_PARAMS_AC = CMD_GET_PARAMS + 0
+CMD_GET_PARAMS_GO = CMD_GET_PARAMS + 1
+CMD_GET_PARAMS_SS = CMD_GET_PARAMS + 2
+CMD_GET_PARAMS_QUERY = CMD_GET_PARAMS + 3
+CMD_GET_PARAMS_OUTPUT = CMD_GET_PARAMS + 4
+
 
 # Codes used in outgoing messages
 ANSWER_BASE = 100
@@ -100,7 +108,6 @@ QUERY_FROM_FILE = 1
 
 QUERY_PAIRS = 0
 QUERY_LIST = 1
-
 
 
 
@@ -158,12 +165,12 @@ class WorkProcess(multiprocessing.Process):
 # GO parameters and datastructures
 		self.go = None # Gene Ontology
 		self.go_filename = None
-		self.go_parameters = None
+		self.go_parameters = {}
 # AC parameters and datastructures
 		self.ac = None # Annotation Corpus
 		self.ac_filename = None
 		self.ac_filetype = None
-		self.ac_filetypeparams = None
+		self.ac_filetypeparams = {}
 # Query parameters and datastructures
 		self.query = None # Query
 		#### DANGER Fill missing variables
@@ -335,12 +342,12 @@ class WorkProcess(multiprocessing.Process):
 	#-#-#-#-#-#-#-#-#-#-#-#-#
 
 	def send(self, message):
-		if DEBUG_LEVEL > 0:
+		if DEBUG_LEVEL > 2:
 			print "WorkProcess: send()"
 		self.output_queue.put(message)
 #
 	def send_data(self, message):
-		if DEBUG_LEVEL > 0:
+		if DEBUG_LEVEL > 2:
 			print "WorkProcess: send_data()"
 		#self.output_pipe.send(message)
 		self.send((CMD_OUTPUT, message))
@@ -370,22 +377,22 @@ class WorkProcess(multiprocessing.Process):
 			data = {}
 			
 			data['status'] = self.status
-			data['GO'] = {}
-			data['AC'] = {}
+			data['go'] = {}
+			data['ac'] = {}
 			data['query'] = {}
-			data['SS'] = {}
+			data['ss'] = {}
 			data['output'] = {}
 			
-			data['GO']['ok'] = self.ok_go
-			data['GO']['ok_params'] = self.ok_params_go
-			data['AC']['ok'] = self.ok_ac
-			data['AC']['ok_params'] = self.ok_params_ac
+			data['go']['ok'] = self.ok_go
+			data['go']['ok_params'] = self.ok_params_go
+			data['ac']['ok'] = self.ok_ac
+			data['ac']['ok_params'] = self.ok_params_ac
 			data['query']['ok'] = self.ok_query
 			data['query']['ok_params'] = self.ok_params_query
 			data['output']['ok'] = self.ok_output
 			data['output']['ok_params'] = self.ok_params_output
-			data['SS']['ok'] = self.ok_ss
-			data['SS']['ok_params'] = self.ok_params_ss
+			data['ss']['ok'] = self.ok_ss
+			data['ss']['ok_params'] = self.ok_params_ss
 			self.send((CMD_STATUS, data))
 #
 		
@@ -470,24 +477,7 @@ class WorkProcess(multiprocessing.Process):
 		self.status = STATUS_WAIT
 #
 
-	
-	def _get(self, data):
-		if DEBUG_LEVEL>0:
-			print "WorkProcess: _get()"
-		if data[0] == CMD_GET_AC:
-			if data[1] == CMD_GET_AC_OBJECTS:
-				results = None
-				if not self.ac == None:
-					results = self.ac.obj_set.keys()
-				self.send((CMD_GET, CMD_GET_AC, CMD_GET_AC_OBJECTS, results))
-			if data[1] == CMD_GET_AC_TERMS:
-				results = None
-				if not self.ac == None:
-					results = self.ac.term_set.keys()
-				self.send((CMD_GET, CMD_GET_AC, CMD_GET_AC_TERMS, results))
-		else:
-			print "Unknown set request. Ignoring request..."
-#
+
 
 
 
@@ -509,7 +499,7 @@ class WorkProcess(multiprocessing.Process):
 		
 		self.ac_filename = data['filename']
 		self.ac_filetype = data['type']
-		self.ac_filetypeparams = None
+		self.ac_filetypeparams = {}
 		if 'params' in data:
 			self.ac_filetypeparams = data['params']
 		self.ok_params_ac = True
@@ -532,15 +522,15 @@ class WorkProcess(multiprocessing.Process):
 		self.ok_ss = False # important
 		self.ac = None # important
 		if self.ok_params_ac:
-			try:
-				self.ac = AnnotationCorpus.AnnotationCorpus(self.go)
-				if self.ac.parse(str(self.ac_filename), self.ac_filetype, self.ac_filetypeparams):
-					if self.go == None:
-						self.ok_ac = False
-					elif self.ac.sanitize():
-						self.ok_ac = True
-			except Exception:
-				pass
+			#try:
+			self.ac = AnnotationCorpus.AnnotationCorpus(self.go)
+			if self.ac.parse(str(self.ac_filename), self.ac_filetype, self.ac_filetypeparams):
+				if self.go == None:
+					self.ok_ac = False
+				elif self.ac.sanitize():
+					self.ok_ac = True
+			#except Exception:
+				#pass
 		if self.ok_ac:
 			self.send((CMD_LOAD_AC, ANSWER_PROCESSED, True, len(self.ac.annotations), len(self.ac.reverse_annotations)))
 			return True
@@ -571,32 +561,16 @@ class WorkProcess(multiprocessing.Process):
 		
 		if data == None or len(data) == 0:
 			self.go_filename = None
-			self.go_parameters = {'ignore_part_of': False, 'ignore_regulates':False}
+			self.go_parameters = {}
 		else:
 			self.go_filename = data['filename']
-			if 'type' in data:
-				self.go_type = data['type']
-			self.go_parameters = {'ignore_part_of': False, 'ignore_regulates':False, 'ignore_has_part':False, 'ignore_is_a':False}
-			
-			if 'ignore' in data:
-				if 'has_part' in data['ignore']:
-					self.go_parameters['ignore_has_part'] = data['ignore']['has_part']
-				if 'regulates' in data['ignore']:
-					self.go_parameters['ignore_regulates'] = data['ignore']['regulates']
-				if 'part_of' in data['ignore']:
-					self.go_parameters['ignore_part_of'] = data['ignore']['part_of']
-				if 'is_a' in data['ignore']:
-					self.go_parameters['ignore_is_a'] = data['ignore']['is_a']
-
+			self.go_parameters = data
 		self.ok_params_go = True
 		self.ok_ac = False # can remove
 		self.ok_ss = False # can remove
 		self.ok_query = False # can remove
 		self.load_GO()
 #
-
-
-
 
 
 
@@ -611,14 +585,14 @@ class WorkProcess(multiprocessing.Process):
 		self.ok_query = False # important
 		self.go = None
 		if self.ok_params_go:
-			try:
+			#try:
 				#add "iffilename is none... then use the std file! Or is it already included?
 				#program_dir = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
 				#program_dir = '.' # use this with py2exe to build a working binary
 				#go_file = program_dir + "/data/GO_2012-02-24.obo-xml.gz"
-				self.go = GeneOntology.load(str(self.go_filename), self.go_parameters['ignore_part_of'], self.go_parameters['ignore_regulates']) # convert to str or unicode strings might fail to get interpreted correctly!
-			except Exception:
-				print "Load Gene Ontology. Exception loading " + str(self.go_filename)
+			self.go = GeneOntology.load(str(self.go_filename), self.go_parameters) # convert unicode to str!!!
+			#except Exception:
+				#print "Load Gene Ontology. Exception loading " + str(self.go_filename)
 			if not self.go == None:
 				self.ok_go = True
 				self.send((CMD_LOAD_GO, ANSWER_PROCESSED, True, self.go.node_num(), self.go.edge_num()))
@@ -644,42 +618,36 @@ class WorkProcess(multiprocessing.Process):
 
 		self.ok_query = False
 		self.ok_params_query = False
+		self.query = None
+		
+		if len(data) > 1:
+			self.query = data[1]
+			self.ok_query = True
+
 		data = data[0] #### WARNING: Why?
-		
-		
+
 		self.query_from = data['source']
 		self.query_type = data['type']
-		self.query = data['query'] #### NOTE 'query' should not be part of parameters
-		
-		if self.query == None:
-			if self.query_from == QUERY_FROM_AC:
-				#print "Query from AC selected."
-				self.query_type = 1
-				self.ok_params_query = True
-				#self.ok_query = True
 
-			elif self.query_from == QUERY_FROM_FILE:
-				#print "Query from FILE selected."
-				self.query_filename = data['filename']
-				#self.query_filetype = data[3]
-				#self.query_filetypeparams = data[4]
-				self.ok_params_query = True
-				#self.ok_query = True
-
-		else:
-			self.ok_params_query = True
+		if self.query == None and 'query' in data:
+			self.query = data['query'] #### NOTE 'query' should not be part of parameters
 			self.ok_query = True
-			#elif self.query_from == QUERY_FROM_GUI: # expect to find query as input parameter of start messages
+
+		if self.query_from == QUERY_FROM_AC:
+			#print "Query from AC selected."
+			self.ok_params_query = True
+		elif self.query_from == QUERY_FROM_FILE:
+			#print "Query from FILE selected."
+			self.query_filename = data['filename']
+			#self.query_filetype = data[3]
+			#self.query_filetypeparams = data[4]
+			self.ok_params_query = True
+		elif self.query_from == QUERY_FROM_GUI:
 				##print "Query from GUI selected."
-				##self.query = data[2]
-				#self.query_type = data[1]
-				#self.ok_params_query = True
-				##self.ok_query = True
-
-			return False
-		return True
+				self.ok_params_query = True
+		else:
+			pass
 #
-
 
 
 
@@ -749,6 +717,68 @@ class WorkProcess(multiprocessing.Process):
 
 
 
+	
+	def _get(self, data):
+		if DEBUG_LEVEL>0:
+			print "WorkProcess: _get()"
+		if data[0] == CMD_GET_AC:
+			if data[1] == CMD_GET_AC_OBJECTS:
+				results = None
+				if not self.ac == None:
+					results = self.ac.obj_set.keys()
+				self.send((CMD_GET, CMD_GET_AC, CMD_GET_AC_OBJECTS, results))
+			elif data[1] == CMD_GET_AC_OBJECTS_NUMBER:
+				results = None
+				if not self.ac == None:
+					results = len(self.ac.obj_set.keys())
+				self.send((CMD_GET, CMD_GET_AC, CMD_GET_AC_OBJECTS_NUMBER, results))
+			elif data[1] == CMD_GET_AC_TERMS:
+				results = None
+				if not self.ac == None:
+					results = self.ac.term_set.keys()
+				self.send((CMD_GET, CMD_GET_AC, CMD_GET_AC_TERMS, results))
+			elif data[1] == CMD_GET_AC_TERMS_NUMBER:
+				results = None
+				#print "WEYWEYWEYWYEYWEYWYEWYEYWYEWYEYWYEWYEYWYEWY"
+				if not self.ac == None:
+					#print "WEYWEYWEYWYEYWEYWYEWYEYWYEWYEYWYEWYEYWYEWY"
+					results = len(self.ac.term_set.keys())
+				self.send((CMD_GET, CMD_GET_AC, CMD_GET_AC_TERMS_NUMBER, results))
+		elif data[0] == CMD_GET_PARAMS:
+			if data[1] == CMD_GET_PARAMS_AC:
+				results = {}
+				results['filename'] = self.ac_filename
+				results['type'] = self.ac_filetype
+				results['params'] = self.ac_filetypeparams
+			elif data[1] == CMD_GET_PARAMS_GO:
+				results = self.go_parameters
+				results['filename'] = self.go_filename
+			elif data[1] == CMD_GET_PARAMS_SS:
+				results = {}
+				results['ontology'] = self.ss_ontology
+				results['measure'] = self.ss_name
+				results['mixing_strategy'] = self.ms_name
+			elif data[1] == CMD_GET_PARAMS_OUTPUT:
+				results = {}
+				results['to'] = self.output_to
+				results['filename'] = self.output_filename
+				results['filetype'] = self.output_filetype
+				results['params'] = self.output_fileparams
+				results['fileparams'] = None
+			elif data[1] == CMD_GET_PARAMS_QUERY:
+				results = {}
+				results['source'] = self.query_from
+				results['type'] = self.query_type
+				results['filename'] = self.query_filename
+			else:
+				print "Unknown get params request. Ignoring request: " + str(data[1])
+				return
+			self.send((CMD_GET, data[0], data[1], results))
+		else:
+			print "Unknown get request. Ignoring request: " + str(data[0])
+#
+
+
 
 	def build_ss(self): # NOTE better if built when start is called. This way the parameters can be varied multiple times without rebuilding the object (potentially expensive!)
 		if DEBUG_LEVEL>1:
@@ -783,17 +813,36 @@ class WorkProcess(multiprocessing.Process):
 	def set_output_params(self, data): #### data format: (output_to, output_params) output_params: for file: (filename, type, params), for gui: (how many scores)
 		if DEBUG_LEVEL>1:
 			print "WorkProcess: set_output_params()"
+			
+		data = data[0] #### WARNING Why??
+		
 		self.ok_output = False
 		self.ok_params_output = False
+		self.output_fileparams = None
+		self.output_params = None
+		self.output_filters = None
+		self.filter_0 = False
+		self.filter_less = 0
+		self.filter_None = False
+		
 		self.output_to = data['to']
+		if 'params' in data:
+			self.output_fileparams = data['params']
+			self.output_params = data['params']
+		if 'filter' in data:
+			self.output_filters = data['filter']
+			if 'None' in self.output_filters:
+				self.filter_None = self.output_filters['None']
+			if '0' in self.output_filters:
+				self.filter_0 = self.output_filters['0']
+			if 'less' in self.output_filters and self.output_filters['less']:
+				self.filter_less = self.output_filters['value']
+			
 		if self.output_to == OUTPUT_TO_FILE:
 			self.output_filename = data['filename']
-			self.output_filetype = data['filetype']
-			self.output_fileparams = data['fileparams']
-			self.output_params = data['params']
 		elif  self.output_to == OUTPUT_TO_GUI:
 			self.output_filename = None
-			self.output_params = data['params']
+			#self.output_params = data['params']
 		self.ok_params_output = True
 		if self.ok_params_output:
 			self.send((CMD_SET_OUTPUT, True))
@@ -931,12 +980,11 @@ class WorkProcess(multiprocessing.Process):
 		if not self._init_structures():
 			if DEBUG_LEVEL>0:
 				print "WorkProcess: _start(). Bad Parameters"
-			self.send((CMD_START, ANSWER_PROCESSED,RESULT_BAD, "Invalid parameters."))
-			#self.status = STATUS_WAIT
+			self.send((CMD_START, ANSWER_PROCESSED, RESULT_BAD, {'go':self.ok_go , 'ac':self.ok_ac, 'ss':self.ok_ss, 'query':self.ok_query, 'output':self.ok_output}))
 			self._stop()
 		
 		else:
-			self.send((CMD_START, ANSWER_PROCESSED, RESULT_OK, self.query_pairs_number))
+			self.send((CMD_START, ANSWER_PROCESSED, RESULT_OK))
 			self.obj1_pos = 0
 			self.obj2_pos = 1
 			self.obj_pos = 0
@@ -976,13 +1024,14 @@ class WorkProcess(multiprocessing.Process):
 	def _stop(self):
 		if DEBUG_LEVEL>0:
 			print "WorkProcess: _stop()"
+		self.send((CMD_STOP, ANSWER_PROCESSING))
 		if self.output_to == OUTPUT_TO_FILE and not self.output_file == None:
 			self.output_file.close()
 		self.output_file = None
 		self.output_buffer = None
 		self.output_update = True
-		self.send((CMD_STOP, True))
 		self.status = STATUS_WAIT
+		self.send((CMD_STOP, ANSWER_PROCESSED, RESULT_OK))
 #
 
 
@@ -1059,8 +1108,15 @@ class WorkProcess(multiprocessing.Process):
 	
 	def _dispatch_output(self):
 		# add here switch to ignore None if required
-		if type(self._temp_ss) is float:
+		if type(self._temp_ss) == float:
+			if self.filter_0 and self._temp_ss == float(0):
+				return
+			if self.filter_less > 0 and self._temp_ss < self.filter_less:
+				return
 			self._temp_ss = str('%.4f' %self._temp_ss)
+		else:
+			if self.filter_None and self._temp_ss == None:
+				return
 
 		if self.query_type == QUERY_LIST:
 			if self.output_to == OUTPUT_TO_GUI:
@@ -1112,6 +1168,8 @@ class WorkProcess(multiprocessing.Process):
 	#-#-#-#-#-#-#-#-#-#-#-#
 	
 	def _flush_output(self):
+		if DEBUG_LEVEL>0:
+				print "WorkProcess: _flush_output"
 		#if self.store_all:
 			#if self.last_sent == self.last_added:
 				#return

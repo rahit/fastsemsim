@@ -96,8 +96,15 @@ class PlainAnnotationCorpus():
 	def parse(self, fname):
 		#self.obso = {}
 		self.setFields()
+		
+		if type(fname) == unicode:
+			fname = str(fname)
 		if type(fname) is str:
-			stream = open(fname, 'r')
+			fn,fe = os.path.splitext(fname)
+			if fe == '.gz':
+				stream = gzip.open(fname, 'rb')
+			else:
+				stream = open(fname, 'r')
 		else:
 			stream = fname
 		#filenum = rowcount(fname);

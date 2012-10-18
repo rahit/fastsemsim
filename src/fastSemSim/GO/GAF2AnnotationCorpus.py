@@ -53,6 +53,7 @@ class GAF2AnnotationCorpus():
 		if len(self.parameters) > 0:
 			if SIMPLIFY in self.parameters:
 				self.int_simplify = self.parameters[SIMPLIFY]
+#
 
 #------------------------------------------------------
 # Parsing routine
@@ -94,6 +95,7 @@ class GAF2AnnotationCorpus():
 
 
 	def parse(self, fname):
+		#print "GAF2AnnotationCorpus: parse()"
 		self.setFields()
 		if type(fname) == unicode:
 			fname = str(fname)
@@ -135,8 +137,8 @@ class GAF2AnnotationCorpus():
 
 			self.temp_term = int(self.temp_term[3:])
 			if not self.ac.go == None and not self.temp_term == self.ac.go.alt_ids[self.temp_term]:
-				#print("Remapping " + str(term) + " to " + str(ac.go.alt_ids[term])
-				self.temp_term = ac.go.alt_ids[self.temp_term]
+				print("Remapping " + str(self.temp_term) + " to " + str(self.ac.go.alt_ids[self.temp_term]))
+				self.temp_term = self.ac.go.alt_ids[self.temp_term]
 
 			#### Build up genes set
 			if self.temp_obj not in self.ac.obj_set:

@@ -41,6 +41,7 @@ PART_OF = 1
 REGULATES = 2
 POS_REG = 3
 NEG_REG = 4
+HAS_PART = 5
 
 BP_root = "GO:0008150"
 MF_root = "GO:0003674"
@@ -186,18 +187,20 @@ class GeneOntology:
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 # load_GO_XML: function to load an obo-xml file
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
-def load_GO_XML(file_stream, ignore_part_of=False, ignore_regulates=False): # kept for backward compatibility. Should use load or parse instead
-	return load(file_stream, ignore_part_of, ignore_regulates)
+
+def load_GO_XML(file_stream, ignore_part_of=False, ignore_regulates=False): # kept for backward compatibility.
+	return load(file_stream, parameters={'ignore':{'part_of':ignore_part_of, 'regulates':ignore_regulates}})
 #
 
 
-def parse(file_stream, ignore_part_of=False, ignore_regulates=False):
-	return load(file_stream, ignore_part_of, ignore_regulates)
+def parse(file_stream, parameters={}):
+	return load(file_stream, parameters)
 #
 
 
-def load(file_stream, ignore_part_of=False, ignore_regulates=False):
-	#print "GO FILE TYPE: " + str(type(file_stream))
+def load(file_stream, parameters={}):
+	go = None
+
 	if type(file_stream) == unicode:
 		file_stream = str(file_stream)
 	if type(file_stream) == str:
@@ -209,15 +212,28 @@ def load(file_stream, ignore_part_of=False, ignore_regulates=False):
 	else:
 		file_stream_handle = file_stream
 	
-	parser = make_parser()
-	handler = OboXmlParser(ignore_part_of, ignore_regulates)
-	parser.setContentHandler(handler)
-	parser.parse(file_stream_handle)
+	
+	if 'type' in parameters:
+		if parameters['type'] == 'obo-xml':
+			parser = make_parser()
+			handler = OboXmlParser(parameters)
+			parser.setContentHandler(handler)
+			parser.parse(file_stream_handle)
+			go = GeneOntology(handler.terms, handler.edges, handler.alt_ids)
+		else:
+			print "GeneOntology load: Unknown file format: " + str(parameters['type'])
+			raise Exception
+
+	else:
+		parser = make_parser()
+		handler = OboXmlParser(parameters)
+		parser.setContentHandler(handler)
+		parser.parse(file_stream_handle)
+		go = GeneOntology(handler.terms, handler.edges, handler.alt_ids)
 	
 	if type(file_stream) == str:
 		file_stream_handle.close()
-
-	return GeneOntology(handler.terms, handler.edges, handler.alt_ids)
+	return go
 #
 
 
@@ -233,23 +249,38 @@ def load(file_stream, ignore_part_of=False, ignore_regulates=False):
 
 class OboXmlParser(ContentHandler):
 	
-	def __init__(self, ignore_part_of=False, ignore_regulates=False):
+	def __init__(self, parameters = {}):
 		self.isId, self.isIsA, self.isPartOf, self.isaltId, self.isRelationship = 0,0,0,0,0
+		self.isObsolete, self.isReplacedBy, self.isConsider = 0,0,0
 		self.isRelationshipTo, self.isRelationshipType = 0,0
 		self.inTerm = 0
+		self.curobsolete = False
 		self.edges = []
 		self.terms = []
 		self.alt_ids = {}
 		self.id = ''
-		self.ignore_part_of = ignore_part_of
-		self.ignore_regulates = ignore_regulates
+		self.ignore_part_of = False
+		self.ignore_regulates = False
+		self.ignore_has_part = True ### NOTE has part ignored by default!
+		self.ignore_is_a = False
+		
+		if 'ignore' in parameters and type(parameters['ignore']) == dict:
+			ignore = parameters['ignore']
+			if 'part_of' in ignore:
+				self.ignore_part_of = bool(ignore['part_of'])
+			if 'regulates' in ignore:
+				self.ignore_regulates = bool(ignore['regulates'])
+			if 'has_part' in ignore:
+				self.ignore_has_part = bool(ignore['has_part'])
+			if 'is_a' in ignore:
+				self.ignore_is_a = bool(ignore['is_a'])
 #
 
 
 	def startElement(self, name, attrs):
 		if name == 'term':
 			self.inTerm = 1
-		if self.inTerm == 1:
+		elif self.inTerm == 1:
 			if name == 'id':
 				self.isId = 1
 				self.id = ''
@@ -272,6 +303,15 @@ class OboXmlParser(ContentHandler):
 				if self.isRelationship:
 					self.isRelationshipTo = 1
 					self.parent = ''
+			elif name == 'is_obsolete':
+				self.isObsolete = 1
+			elif name == 'replaced_by':
+				self.isReplacedBy = 1
+				self.currepid = ''
+				#print "replaced_by"
+			elif name == 'consider':
+				self.isConsider = 1
+				#print "consider"
 #
 
 
@@ -280,23 +320,32 @@ class OboXmlParser(ContentHandler):
 			if name == 'term':
 				self.terms.append(self.id)
 				self.alt_ids[self.id] = self.id
+				self.curobsolete = False
 				self.inTerm = 0
 			elif name == 'id':
 				self.isId = 0
 				self.id = go_name2id(self.id)
 			elif name == 'is_a':
-				#print "original is_a"
+				if self.curobsolete:
+					#print "Inconsistent"
+					raise Exception
 				self.isIsA = 0
-				self.edges.append( (self.id, go_name2id(self.isa), IS_A ) )
+				if not self.ignore_is_a:
+					self.edges.append( (self.id, go_name2id(self.isa), IS_A ) )
 			elif name == 'part_of':
+				if self.curobsolete:
+					raise Exception
 				#print "original part_of"
 				self.isPartOf = 0
-				self.edges.append( (self.id, go_name2id(self.partof), PART_OF ) )
+				if not self.ignore_part_of:
+					self.edges.append( (self.id, go_name2id(self.partof), PART_OF ) )
 			elif name == 'alt_id':
 				#print "original alt_id"
 				self.isaltId = 0
 				self.alt_ids[go_name2id(self.curaltid)] = self.id
 			elif name == 'relationship':
+				if self.curobsolete:
+					raise Exception
 				self.isRelationship = 0
 			elif name == 'type':
 				if self.isRelationship:
@@ -313,8 +362,20 @@ class OboXmlParser(ContentHandler):
 						self.edges.append( (self.id, go_name2id(self.parent), POS_REG ) )
 					elif str(self.parent_type) == 'negatively_regulates' and not self.ignore_regulates:
 						self.edges.append( (self.id, go_name2id(self.parent), NEG_REG ) )
-					elif self.parent_type == 'is_a':
+					elif self.parent_type == 'is_a' and not self.ignore_is_a:
 						self.edges.append( (self.id, go_name2id(self.parent), IS_A ) )
+					elif self.parent_type == 'has_part' and not self.ignore_has_part:
+						self.edges.append( (self.id, go_name2id(self.parent), HAS_PART ) )
+			elif name == 'is_obsolete':
+				if self.isObsolete:
+					self.isObsolete = 0
+			elif name == 'replaced_by':
+				#if self.isReplacedBy == 1:
+				self.alt_ids[self.id] = go_name2id(self.currepid)
+				self.isReplacedBy = 0
+			elif name == 'consider':
+				if self.isConsider:
+					self.isConsider = 0
 #
 
 
@@ -331,5 +392,10 @@ class OboXmlParser(ContentHandler):
 			self.parent += ch
 		elif self.isRelationshipType == 1:
 			self.parent_type += ch
-			#print "set: " + ch
+		elif self.isObsolete == 1:
+			self.curobsolete = bool(ch)
+		elif self.isReplacedBy == 1:
+			self.currepid += ch
+		elif self.isConsider == 1:
+			pass
 #

@@ -24,7 +24,7 @@ import WorkProcess
 import os
 
 
-DEBUG_LEVEL = 2 # NOTE 0: no debug output. 1:level 1 debug output. 2: verbose debug output. In any case it does not affect the performance of the calculation step
+DEBUG_LEVEL = 0 # NOTE 0: no debug output. 1:level 1 debug output. 2: verbose debug output. In any case it does not affect the performance of the calculation step
 
 class GOPanel(wx.Panel):
 	
@@ -64,12 +64,12 @@ class GOPanel(wx.Panel):
 		self.GO_edges_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.GO_edges_label.Wrap( -1 )
 		gSizer2.Add( self.GO_edges_label, 0, wx.ALL, 5 )
-		self.m_staticText6 = wx.StaticText( self.GO_panel, wx.ID_ANY, u"Categories", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText6.Wrap( -1 )
-		gSizer2.Add( self.m_staticText6, 0, wx.ALL, 5 )
-		self.GO_categories_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.GO_categories_label.Wrap( -1 )
-		gSizer2.Add( self.GO_categories_label, 0, wx.ALL, 5 )
+		#self.m_staticText6 = wx.StaticText( self.GO_panel, wx.ID_ANY, u"Categories", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.m_staticText6.Wrap( -1 )
+		#gSizer2.Add( self.m_staticText6, 0, wx.ALL, 5 )
+		#self.GO_categories_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.GO_categories_label.Wrap( -1 )
+		#gSizer2.Add( self.GO_categories_label, 0, wx.ALL, 5 )
 		sbSizer5.Add( gSizer2, 1, wx.ALIGN_CENTER|wx.SHAPED, 2 )
 		bSizer5.Add( sbSizer5, 0, wx.ALL, 5 )
 		sbSizer6 = wx.StaticBoxSizer( wx.StaticBox( self.GO_panel, wx.ID_ANY, u"Additional information" ), wx.VERTICAL )
@@ -88,7 +88,8 @@ class GOPanel(wx.Panel):
 		self.go_load_gui = GO_load_gui(self, self.real_parent)
 		
 		self.Bind(wx.EVT_BUTTON, self.OnLoadButton, id=self.GO_load_button.GetId())
-		
+		self.GO_load_outcome_handle = self.real_parent.communication_thread.register_callback(self.real_parent.EVT_CUSTOM_LOAD_GO, self.OnLoadDone)
+		self.GO_params_handle = None
 		self._reset()
 #
 
@@ -141,7 +142,7 @@ class GOPanel(wx.Panel):
 	def _update(self):
 		if DEBUG_LEVEL>1:
 			print "GOPanel: _update()"
-		print "DEBUG 3 " + str(self.node_info)
+		#print "DEBUG 3 " + str(self.node_info)
 		if self.real_parent.GO_status:
 			if not self.real_parent.params_GO['filename']==None:
 				self.GO_source_label.SetLabel(os.path.basename(self.real_parent.params_GO['filename']))
@@ -162,12 +163,68 @@ class GOPanel(wx.Panel):
 
 
 
+	def OnLoadDone(self, event):
+		if DEBUG_LEVEL>0:
+			print "GOPanel: OnLoadDone()"
+		data = event.data
 
-
-	def update(self):
-		if DEBUG_LEVEL>2:
-			print "GOPanel: update()"
+		if data[0] == WorkProcess.CMD_LOAD_GO:
+			if data[1] == WorkProcess.ANSWER_PROCESSED:
+				if data[2] == WorkProcess. RESULT_OK:
+					if DEBUG_LEVEL>1:
+						print "GO load outcome: Load successful."
+					self.node_info = data[3]
+					self.edge_info = data[4]
+					self.go_load_gui.Hide()
+					
+				else:
+					if DEBUG_LEVEL>2:
+						print "GO load outcome: Load Fail."
+					self.node_info = None
+					self.edge_info = None
+			elif data[1] == WorkProcess.ANSWER_PROCESSING:
+				if DEBUG_LEVEL>2:
+					print "GO load outcome: Load in progress."
+				return
+			elif data[1] == WorkProcess.ANSWER_IGNORED:
+				if DEBUG_LEVEL>2:
+					print "GO load outcome: Load request ignored."
+			else:
+				if DEBUG_LEVEL>2:
+					print "GO load outcome: Unknown answer."
+		#self.unfreeze()
+		self.go_load_gui.unfreeze()
+		if self.GO_params_handle == None:
+			self.GO_params_handle = self.real_parent.communication_thread.register_callback(self.real_parent.EVT_CUSTOM_GET, self.OnGetParams)
+		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_GET, WorkProcess.CMD_GET_PARAMS, WorkProcess.CMD_GET_PARAMS_GO))
 		self.real_parent.update()
+#
+
+
+
+
+
+
+	def OnGetParams(self, event):
+		if DEBUG_LEVEL>0:
+			print "GOPanel: OnGetParams()"
+		data = event.data
+
+		if data[0] == WorkProcess.CMD_GET:
+			if data[1] == WorkProcess.CMD_GET_PARAMS:
+				if data[2] == WorkProcess. CMD_GET_PARAMS_GO:
+					data = data[3]
+					#print data
+					self.real_parent.params_GO = data
+					#self.real_parent.params_GO['filename'] = self.param_filename
+					#self.real_parent.params_GO['ignore']['has_part'] = self.param_GO_ignore_haspart
+					#self.real_parent.params_GO['ignore']['regulates'] = self.param_GO_ignore_regulates
+					#self.real_parent.params_GO['ignore']['is_a'] = self.param_GO_ignore_isa
+					#self.real_parent.params_GO['ignore']['part_of'] = self.param_GO_ignore_partof
+					if not self.GO_params_handle == None:
+						self.real_parent.communication_thread.unregister_callback(self.GO_params_handle)
+						self.GO_params_handle = None
+					#self.real_parent.update()
 #
 
 
@@ -177,19 +234,27 @@ class GOPanel(wx.Panel):
 
 
 
+	#def _data_to_main(self):
+		#if DEBUG_LEVEL>1:
+			#print "GO_load_gui: _data_to_main()"
+
+		#self.real_parent.GO_status = self.status
+		#self.parent.edge_info = self.edge_info
+		#self.parent.node_info = self.node_info
+		#print "DEBUG 2 " + str(self.parent.node_info)
+##
 
 
 
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+# GO load window #
 
-###################################################################################################################
-###################################################################################################################
-#######################        GO LOAD GUI											     ##############################################
-###################################################################################################################
-###################################################################################################################
 
 class GO_load_gui ( wx.Dialog ):
 	
 	param_GO_ignore_haspart = False
+	param_GO_ignore_isa = False
+	param_GO_ignore_partof = False
 	param_GO_ignore_regulates = False
 	param_filename = None
 	
@@ -218,7 +283,7 @@ class GO_load_gui ( wx.Dialog ):
 		bSizer5 = wx.BoxSizer( wx.VERTICAL )
 		bSizer23 = wx.BoxSizer( wx.VERTICAL )
 		sbSizer5 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Options" ), wx.HORIZONTAL )
-		fgSizer1 = wx.FlexGridSizer( 2, 2, 0, 0 )
+		fgSizer1 = wx.FlexGridSizer( 4, 2, 0, 0 )
 		fgSizer1.SetFlexibleDirection( wx.BOTH )
 		fgSizer1.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
 		self.GO_load_ignore_haspart_check = wx.CheckBox( self, wx.ID_ANY, u"Ignore has_part", wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -231,6 +296,20 @@ class GO_load_gui ( wx.Dialog ):
 		self.m_staticText591 = wx.StaticText( self, wx.ID_ANY, u"Check this to ignore 'regulates' relationships", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText591.Wrap( -1 )
 		fgSizer1.Add( self.m_staticText591, 1, wx.ALIGN_RIGHT|wx.ALL, 5 )
+		
+		self.GO_load_ignore_partof_check = wx.CheckBox( self, wx.ID_ANY, u"Ignore part_of", wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer1.Add( self.GO_load_ignore_partof_check, 1, wx.ALL, 5 )
+		self.m_staticText59 = wx.StaticText( self, wx.ID_ANY, u"Check this to ignore 'part_of' relationships", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText59.Wrap( -1 )
+		fgSizer1.Add( self.m_staticText59, 1, wx.ALIGN_RIGHT|wx.ALL, 5 )
+		
+		self.GO_load_ignore_isa_check = wx.CheckBox( self, wx.ID_ANY, u"Ignore is_a", wx.DefaultPosition, wx.DefaultSize, 0 )
+		fgSizer1.Add( self.GO_load_ignore_isa_check, 1, wx.ALL, 5 )
+		self.m_staticText59 = wx.StaticText( self, wx.ID_ANY, u"Check this to ignore 'is_a' relationships", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText59.Wrap( -1 )
+		fgSizer1.Add( self.m_staticText59, 1, wx.ALIGN_RIGHT|wx.ALL, 5 )
+		
+		
 		sbSizer5.Add( fgSizer1, 1, wx.EXPAND, 5 )
 		bSizer23.Add( sbSizer5, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 		bSizer5.Add( bSizer23, 1, wx.EXPAND, 5 )
@@ -258,31 +337,20 @@ class GO_load_gui ( wx.Dialog ):
 		self.Bind(wx.EVT_BUTTON, self.OnDefaultButton, id=self.GO_load_default_button.GetId())
 		self.Bind(wx.EVT_CHECKBOX, self.ignore_what, id=self.GO_load_ignore_haspart_check.GetId())
 		self.Bind(wx.EVT_CHECKBOX, self.ignore_what, id=self.GO_load_ignore_regulates_check.GetId())
+		self.Bind(wx.EVT_CHECKBOX, self.ignore_what, id=self.GO_load_ignore_partof_check.GetId())
+		self.Bind(wx.EVT_CHECKBOX, self.ignore_what, id=self.GO_load_ignore_isa_check.GetId())
 		
 		self.OnDefaultButton(None)
 #
-
-
-	def __del__( self ):
-		pass
-#
-
-
-
-
-
-
-
 
 
 
 	def ignore_what(self, event):
 		self.param_GO_ignore_haspart = self.GO_load_ignore_haspart_check.GetValue()
 		self.param_GO_ignore_regulates = self.GO_load_ignore_regulates_check.GetValue()
+		self.param_GO_ignore_isa = self.GO_load_ignore_isa_check.GetValue()
+		self.param_GO_ignore_partof = self.GO_load_ignore_partof_check.GetValue()
 #
-
-
-
 
 
 
@@ -293,14 +361,9 @@ class GO_load_gui ( wx.Dialog ):
 
 
 
-
-
 	def OnDefaultButton(self, event):
 		self._set_file_name(self.real_parent.programdirectory + "/../fastSemSim/data/GO_2012-02-24.obo-xml.gz")
 #
-
-
-
 
 
 
@@ -309,10 +372,6 @@ class GO_load_gui ( wx.Dialog ):
 		if dialog.ShowModal() == wx.ID_OK:
 			self._set_file_name(dialog.GetPath())
 #
-
-
-
-
 
 
 	def _set_file_name(self, fn):
@@ -324,40 +383,6 @@ class GO_load_gui ( wx.Dialog ):
 #
 
 
-
-
-
-
-	def _data_to_main(self):
-		if DEBUG_LEVEL>1:
-			print "GO_load_gui: _data_to_main()"
-		self.real_parent.params_GO['filename'] = self.param_filename
-		self.real_parent.params_GO['ignore']['has_part'] = self.param_GO_ignore_haspart
-		self.real_parent.params_GO['ignore']['regulates'] = self.param_GO_ignore_regulates
-		self.real_parent.GO_status = self.status
-		self.parent.edge_info = self.edge_info
-		self.parent.node_info = self.node_info
-		print "DEBUG 2 " + str(self.parent.node_info)
-#
-
-
-
-
-
-
-	def OnLoad(self, data):
-		if DEBUG_LEVEL>1:
-			print "GO_load_gui: OnLoad()"
-		self.freeze()
-		self.GO_load_outcome_handle = self.real_parent.communication_thread.register_callback(self.real_parent.EVT_CUSTOM_LOAD_GO, self.OnLoadDone)
-		
-		temp = {}
-		temp['filename'] = self.param_filename
-		temp['type'] = 'obo-xml'
-		temp['ignore'] = {"has_part":self.param_GO_ignore_haspart, "regulates":self.param_GO_ignore_regulates}
-		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_LOAD_GO, temp))
-#
-
 	def freeze(self):
 		self.GO_load_cancel_button.Disable()
 		self.GO_load_load_button.Disable()
@@ -365,6 +390,8 @@ class GO_load_gui ( wx.Dialog ):
 		self.GO_load_select_button.Disable()
 		self.GO_load_ignore_haspart_check.Disable()
 		self.GO_load_ignore_regulates_check.Disable()
+		self.GO_load_ignore_isa_check.Disable()
+		self.GO_load_ignore_partof_check.Disable()
 #
 
 	def unfreeze(self):
@@ -374,52 +401,69 @@ class GO_load_gui ( wx.Dialog ):
 		self.GO_load_select_button.Enable()
 		self.GO_load_ignore_haspart_check.Enable()
 		self.GO_load_ignore_regulates_check.Enable()
+		self.GO_load_ignore_isa_check.Enable()
+		self.GO_load_ignore_partof_check.Enable()
+#
+
+	def OnLoad(self, data):
+		if DEBUG_LEVEL>1:
+			print "GO_load_gui: OnLoad()"
+		self.freeze()
+		
+		temp = {}
+		temp['filename'] = self.param_filename
+		temp['type'] = 'obo-xml'
+		temp['ignore'] = {"has_part":self.param_GO_ignore_haspart, "regulates":self.param_GO_ignore_regulates, 'part_of':self.param_GO_ignore_partof, 'is_a':self.param_GO_ignore_isa}
+		
+		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_LOAD_GO, temp))
 #
 
 
 
-	def OnLoadDone(self, event):
-		if DEBUG_LEVEL>0:
-			print "GO_load_gui: OnLoadDone()"
-		data = event.data
 
-		if data[0] == WorkProcess.CMD_LOAD_GO:
-			if data[1] == WorkProcess.ANSWER_PROCESSED:
-				if data[2] == WorkProcess. RESULT_OK:
-					if DEBUG_LEVEL>1:
-						print "GO load outcome: Load successful."
-						print data
-					self.status = True
-					self.node_info = data[3]
-					self.edge_info = data[4]
-					self._data_to_main()
-					self.parent.update()
-					self.Hide()
+
+	#def OnLoadDone(self, event):
+		#if DEBUG_LEVEL>0:
+			#print "GO_load_gui: OnLoadDone()"
+		#data = event.data
+
+		#if data[0] == WorkProcess.CMD_LOAD_GO:
+			#if data[1] == WorkProcess.ANSWER_PROCESSED:
+				#if data[2] == WorkProcess. RESULT_OK:
+					#if DEBUG_LEVEL>1:
+						#print "GO load outcome: Load successful."
+						#print data
+					#self.status = True
+					#self.node_info = data[3]
+					#self.edge_info = data[4]
+					#self._data_to_main()
+					#self.parent.update()
+					#self.Hide()
 					
-				else:
-					if DEBUG_LEVEL>2:
-						print "GO load outcome: Load Fail."
-					self.status = False
-					self.node_info = 0
-					self.edge_info = 0
-					self._data_to_main()
-					self.parent.update()
+				#else:
+					#if DEBUG_LEVEL>2:
+						#print "GO load outcome: Load Fail."
+					#self.status = False
+					#self.node_info = 0
+					#self.edge_info = 0
+					#self._data_to_main()
+					#self.parent.update()
 
-				self.real_parent.communication_thread.unregister_callback(self.GO_load_outcome_handle)
-				self.unfreeze()
-			elif data[1] == WorkProcess.ANSWER_PROCESSING:
-				if DEBUG_LEVEL>2:
-					print "GO load outcome: Load in progress."
-			elif data[1] == WorkProcess.ANSWER_IGNORED:
-				if DEBUG_LEVEL>2:
-					print "GO load outcome: Load request ignored."
-				self.real_parent.communication_thread.unregister_callback(self.GO_load_outcome_handle)
-				self.unfreeze()
-			else:
-				if DEBUG_LEVEL>2:
-					print "GO load outcome: Unknown answer."
-				self.real_parent.communication_thread.unregister_callback(self.GO_load_outcome_handle)
-				self.unfreeze()
-			return True
-		return False
-#
+				#self.real_parent.communication_thread.unregister_callback(self.GO_load_outcome_handle)
+				#self.unfreeze()
+			#elif data[1] == WorkProcess.ANSWER_PROCESSING:
+				#if DEBUG_LEVEL>2:
+					#print "GO load outcome: Load in progress."
+			#elif data[1] == WorkProcess.ANSWER_IGNORED:
+				#if DEBUG_LEVEL>2:
+					#print "GO load outcome: Load request ignored."
+				#self.real_parent.communication_thread.unregister_callback(self.GO_load_outcome_handle)
+				#self.unfreeze()
+			#else:
+				#if DEBUG_LEVEL>2:
+					#print "GO load outcome: Unknown answer."
+				#self.real_parent.communication_thread.unregister_callback(self.GO_load_outcome_handle)
+				#self.unfreeze()
+			#return True
+		#return False
+##

@@ -114,16 +114,19 @@ class AnnotationCorpus:
 #     - RESET_PARAM: if set to False, do not clean current annotations, but integrate the new data.
 #-----------------------------------------------------------------------------
 	
-	def load(self, fname, ftype, params=None):
+	def load(self, fname, ftype, params={}):
 		self.parse(fname, ftype, params)
 
-	def parse(self, fname, ftype, params=None):
+	def parse(self, fname, ftype, params={}):
+		#print "AnnotationCorpus: parse"
 		if params == None:
 			self.reset()
 		elif RESET_PARAM in params and params[RESET_PARAM]:
 			self.reset()
+
 		if not params == None and FILTER_PARAM in params:
 			self.setCommonfilters(params[FILTER_PARAM])
+
 		if ftype in AnnotationCorpusFormat:
 			temp = AnnotationCorpusFormat[ftype](self, params)
 			return temp.parse(fname)
@@ -131,6 +134,9 @@ class AnnotationCorpus:
 			if INT_DEBUG:
 				print "AnnotationCorpus.py: Format not recognized"
 			raise Exception
+#
+
+
 
 #-----------------------------------------------------------------------------
 # Consistency check and sanitizer, Align the annotation corpus to a Gene Ontology
@@ -319,18 +325,20 @@ class AnnotationCorpus:
 
 	class ECFilter:
 		name = 'EC'
-		EC = ''
+		EC = {}
 		inclusive = False
 		def __init__(self, params):
 			if 'EC' in params:
 				self.EC = params['EC']
+				if type(self.EC) == str or type(self.EC) == unicode:
+					self.EC = {str(self.EC):None}
 			if 'inclusive' in params:
 				self.inclusive = params['inclusive']
 
 		def filter(self, EC):
-			if self.EC == EC and self.inclusive:
+			if EC in self.EC and self.inclusive:
 				return True
-			elif not self.EC == EC and not self.inclusive:
+			elif not EC in self.EC and not self.inclusive:
 				return True
 			return False
 
@@ -391,3 +399,4 @@ class AnnotationCorpus:
 		
 	#def reset_EC_filter(self):
 		#self.resetFilter('EC')
+#

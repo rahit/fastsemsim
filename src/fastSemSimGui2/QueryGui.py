@@ -3,7 +3,7 @@ import WorkProcess
 import os 
 import sys
 
-DEBUG_LEVEL = 2
+DEBUG_LEVEL = 0
 
 ################################################################
 	
@@ -32,7 +32,9 @@ class QueryPanel(wx.Panel):
 		
 		sbSizer32 = wx.StaticBoxSizer( wx.StaticBox( self.query_panel, wx.ID_ANY, u"Query format" ), wx.VERTICAL )
 		
-		self.query_type_choices = [ "Pairs", "List" ]
+		self.query_type_choices = query_types = [ "Pairs", "List" ]
+		self.query_type_ref = {"Pairs":WorkProcess.QUERY_PAIRS, "List":WorkProcess.QUERY_LIST}
+		
 		self.query_type_box = wx.ComboBox( self.query_panel, wx.ID_ANY, "", wx.DefaultPosition, wx.Size( 120,-1 ), self.query_type_choices, wx.CB_READONLY )
 		self.query_type_box.SetSelection(0)
 		sbSizer32.Add( self.query_type_box, 0, wx.ALL, 5 )
@@ -112,13 +114,15 @@ class QueryPanel(wx.Panel):
 
 
 	def _reset(self):
-		
+		if DEBUG_LEVEL > 0:
+			print "QueryGui: _reset()"
 		self.query_text.Enable()
 		self.query_text.SetValue('')
 		self.query_type_box.Enable()
 		self.query_type_box.SetSelection(0)
 		
-		self.real_parent.params_query['query'] = None
+		
+		self.real_parent.query = None
 		self.real_parent.params_query['type'] = None
 		self.real_parent.params_query['source'] = WorkProcess.QUERY_FROM_GUI
 
@@ -128,19 +132,45 @@ class QueryPanel(wx.Panel):
 
 
 
-	def _update(self):
-		if not self.real_parent.GO_status or not self.real_parent.AC_status:
+
+	def update_start_button(self):
+		if self.real_parent.status == WorkProcess.STATUS_WAIT:
+			self.controls_start_button.SetLabel('Start')
+			if self.real_parent.GO_status and self.real_parent.AC_status:
+				self.controls_start_button.Enable()
+			else:
+				self.controls_start_button.Disable()
+		elif self.real_parent.status == WorkProcess.STATUS_RUN:
+			self.controls_start_button.SetLabel('Stop')
+			self.controls_start_button.Enable()
+		else:
 			self.controls_start_button.Disable()
+
+#
+
+
+
+
+	def _update(self):
+		self.update_start_button()
+
+		if not self.real_parent.GO_status or not self.real_parent.AC_status:
 			self.query_from_AC_button.Disable()
 		elif self.real_parent.GO_status and self.real_parent.AC_status:
-			self.controls_start_button.Enable()
 			self.query_from_AC_button.Enable()
-		#self.SetSSCtrlStatus(False)
-		#self.SetGOStatus(False)
-		#self.SetAcStatus(False)
-		#self.SetQueryStatus(False)
-		#self.SetOutputCtrlStatus(False)
-		pass
+
+		if self.real_parent.params_query['source'] == WorkProcess.QUERY_FROM_GUI:
+			pass
+		elif self.real_parent.params_query['source'] == WorkProcess.QUERY_FROM_AC:
+			pass
+		elif self.real_parent.params_query['source'] == WorkProcess.QUERY_FROM_FILE:
+			pass
+		else:
+			self.real_parent.params_query['source'] = WorkProcess.QUERY_FROM_GUI
+			return self._update()
+
+		if 'type' in self.real_parent.params_query and not self.real_parent.params_query['type']==None:
+			self.query_type_box.SetSelection(self.real_parent.params_query['type'])
 #
 
 
@@ -151,7 +181,9 @@ class QueryPanel(wx.Panel):
 
 
 	def _freeze(self):
-		self.Disable()
+		self.query_from_AC_button.Disable()
+		self.query_from_file_button.Disable()
+		self.query_reset_button.Disable()
 #
 
 
@@ -160,7 +192,9 @@ class QueryPanel(wx.Panel):
 
 
 	def _unfreeze(self):
-		self.Enable()
+		self.query_from_AC_button.Enable()
+		self.query_from_file_button.Enable()
+		self.query_reset_button.Enable()
 #
 
 
@@ -169,9 +203,11 @@ class QueryPanel(wx.Panel):
 
 
 	def OnStartCmd(self, event):
-		if self.real_parent.start():
-			#self.controls_start_button.SetLabel(u"Pause")
-			pass
+		if self.real_parent.status == WorkProcess.STATUS_WAIT:
+			self.real_parent.start()
+		elif self.real_parent.status == WorkProcess.STATUS_RUN:
+			self.real_parent.stop()
+			
 #
 
 
@@ -233,12 +269,14 @@ class QueryPanel(wx.Panel):
 
 
 	def OnLoadFromACDone(self, event):
+		if DEBUG_LEVEL > 0:
+			print "OnLoadFromACDone"
 		data = event.data
 		if data[1] == WorkProcess.CMD_GET_AC and data[2] == WorkProcess.CMD_GET_AC_OBJECTS:
 			data = data[3]
 			self.real_parent.communication_thread.unregister_callback(self.query_get_AC_handle)
 			
-			self.query = data
+			self.real_parent.query = data
 			
 			temp = ("\n".join([str(`num`) for num in data]))
 			temp += "\n"
@@ -247,8 +285,8 @@ class QueryPanel(wx.Panel):
 			self.query_type_box.Disable()
 			self.query_type_box.SetSelection(1)
 
-			self.real_parent.params_query['type'] = self.query_type_box.GetString(self.query_type_box.GetCurrentSelection())
-			self.real_parent.params_query['query'] = self.query
+			self.real_parent.params_query['type'] = self.query_type_ref[str(self.query_type_box.GetString(self.query_type_box.GetCurrentSelection()))]
+			#self.real_parent.params_query['query'] = self.query
 			self.real_parent.params_query['source'] = WorkProcess.QUERY_FROM_AC
 			self.query_to_update = False
 #
@@ -269,10 +307,11 @@ class QueryPanel(wx.Panel):
 		self.query_type_box.Disable()
 		self.query_text.Disable()
 		
+		self.real_parent.query = self.query
 		self.parent.query_text.SetValue(self.text_query)
 		
-		self.real_parent.params_query['type'] = self.query_type_box.GetString(self.query_type_box.GetCurrentSelection())
-		self.real_parent.params_query['query'] = self.query
+		self.real_parent.params_query['type'] = self.query_type_ref[str(self.query_type_box.GetString(self.query_type_box.GetCurrentSelection()))]
+		#self.real_parent.params_query['query'] = self.query
 		self.real_parent.params_query['source'] = WorkProcess.QUERY_FROM_FILE
 		self.parent.query_to_update = False
 #
@@ -281,6 +320,7 @@ class QueryPanel(wx.Panel):
 
 
 	def OnSelectQueryType(self, event):
+		self.real_parent.params_query['type'] = self.query_type_ref[str(self.query_type_box.GetString(self.query_type_box.GetCurrentSelection()))]
 		pass
 #
 
@@ -625,7 +665,7 @@ class Query_load_gui ( wx.Dialog ):
 			self.parent.text_query = ""
 			h = open(self.filename, 'r')
 			for i in h:
-				print i
+				#print i
 				i = i.rstrip("\n")
 				i = i.rstrip("\r")
 				i = i.rstrip(" ")

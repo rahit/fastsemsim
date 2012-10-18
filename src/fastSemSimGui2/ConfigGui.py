@@ -22,7 +22,7 @@ import wx
 import time
 import WorkProcess
 
-DEBUG_LEVEL = 1
+DEBUG_LEVEL = 0
 
 class ConfigFileParser():
 	tags = {}
@@ -61,6 +61,8 @@ class ConfigFileParser():
 								tow = float(tow)
 							except Exception:
 								pass
+					else:
+						tow = tow[1:len(tow)-1]
 					precur[line[j-1]] = tow
 				else:
 					if not line[j] in cur:
@@ -96,6 +98,8 @@ class ConfigFileParser():
 				self.save_branch(branch[j], prefix + str(j) + self.separator, h)
 			elif type(branch[j]) == str or type(branch[j]) == unicode:
 				h.write(prefix + j + "\t\"" + str(branch[j]) + "\"\n")
+			elif type(branch[j]) == bool:
+				h.write(prefix + j + "\t" + str(int(branch[j])) + "\n")
 			else:
 				h.write(prefix + j + "\t" + str(branch[j]) + "\n")
 #
@@ -108,12 +112,12 @@ class ConfigFileParser():
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 
 
-#class DummyEvent(wx.PyEvent):
-	#def __init__(self, data):
-		#wx.PyEvent.__init__(self)
-		#self.SetEventType(data)
-		#self.data = None
-#
+class DummyEvent(wx.PyEvent):
+	def __init__(self, data):
+		wx.PyEvent.__init__(self)
+		self.SetEventType(data)
+		self.data = None
+
 
 
 
@@ -172,13 +176,13 @@ class LoadConfigGui(wx.Dialog):
 		#self.EVT_GO_ID = wx.NewId()
 		#self.EVT_AC_ID = wx.NewId()
 		#self.EVT_SS_ID = wx.NewId()
-		#self.EVT_QUERY_ID = wx.NewId()
+		self.EVT_QUERY_ID = wx.NewId()
 		#self.EVT_OUTPUT_ID = wx.NewId()
 		#self.EVT_DONE_ID = wx.NewId()
 		#self.Connect(-1, -1, self.EVT_GO_ID, self.ProcessGO)
 		#self.Connect(-1, -1, self.EVT_AC_ID, self.ProcessAC)
 		#self.Connect(-1, -1, self.EVT_SS_ID, self.ProcessSS)
-		#self.Connect(-1, -1, self.EVT_QUERY_ID, self.ProcessQuery)
+		self.Connect(-1, -1, self.EVT_QUERY_ID, self.ProcessQuery)
 		#self.Connect(-1, -1, self.EVT_OUTPUT_ID, self.ProcessOutput)
 		#self.Connect(-1, -1, self.EVT_DONE_ID, self.ProcessDone)
 		
@@ -191,7 +195,7 @@ class LoadConfigGui(wx.Dialog):
 		self.filename_label.SetLabel(self.real_parent.config_file)
 		self.config = ConfigFileParser(self.real_parent.config_file)
 		self.tags = self.config.load()
-		print self.tags
+		#print self.tags
 		self.ProcessGO()
 #
 
@@ -221,9 +225,12 @@ class LoadConfigGui(wx.Dialog):
 				if data[2] == WorkProcess. RESULT_OK:
 					self.go_pic.SetBitmap(wx.Bitmap(self.real_parent.Ok_pic))
 				else:
+					print "OnProcessGODone: Errore in loading!"
 					self.go_pic.SetBitmap(wx.Bitmap(self.real_parent.Warning_pic))
 
 				self.real_parent.communication_thread.unregister_callback(self.GO_load_outcome_handle)
+				event.Skip()
+				#event.Allow()
 				self.ProcessAC()
 
 			elif data[1] == WorkProcess.ANSWER_PROCESSING:
@@ -232,11 +239,15 @@ class LoadConfigGui(wx.Dialog):
 				if DEBUG_LEVEL>2:
 					print "GO load outcome: Load request ignored."
 				self.real_parent.communication_thread.unregister_callback(self.GO_load_outcome_handle)
+				event.Skip()
+				#event.Allow()
 				self.ProcessAC()
 			else:
 				if DEBUG_LEVEL>2:
 					print "GO load outcome: Unknown answer."
 				self.real_parent.communication_thread.unregister_callback(self.GO_load_outcome_handle)
+				event.Skip()
+				#event.Allow()
 				self.ProcessAC()
 #
 
@@ -251,7 +262,9 @@ class LoadConfigGui(wx.Dialog):
 		self.ac_label.Enable()
 		if not 'ac' in self.tags:
 			self.ac_pic.SetBitmap(wx.Bitmap(self.real_parent.Ok_pic))
-			self.ProcessQuery()
+			#self.ProcessQuery()
+			self.real_parent.update()
+			wx.PostEvent(self.GetEventHandler(), DummyEvent(self.EVT_QUERY_ID))
 			return
 		temp = self.tags['ac']
 		self.real_parent.params_AC = temp.copy()
@@ -274,10 +287,14 @@ class LoadConfigGui(wx.Dialog):
 				if data[2] == WorkProcess. RESULT_OK:
 					self.ac_pic.SetBitmap(wx.Bitmap(self.real_parent.Ok_pic))
 				else:
-					self.AC_pic.SetBitmap(wx.Bitmap(self.real_parent.Warning_pic))
+					self.ac_pic.SetBitmap(wx.Bitmap(self.real_parent.Warning_pic))
 
 				self.real_parent.communication_thread.unregister_callback(self.AC_load_outcome_handle)
-				self.ProcessQuery()
+				event.Skip()
+				#event.Allow()
+				#self.ProcessQuery()
+				self.real_parent.update()
+				wx.PostEvent(self.GetEventHandler(), DummyEvent(self.EVT_QUERY_ID))
 
 			elif data[1] == WorkProcess.ANSWER_PROCESSING:
 				pass
@@ -285,12 +302,21 @@ class LoadConfigGui(wx.Dialog):
 				if DEBUG_LEVEL>2:
 					print "AC load outcome: Load request ignored."
 				self.real_parent.communication_thread.unregister_callback(self.AC_load_outcome_handle)
+				event.Skip()
+				#event.Allow()
 				self.ProcessQuery()
+				self.real_parent.update()
+				wx.PostEvent(self.GetEventHandler(), DummyEvent(self.EVT_QUERY_ID))
+				
 			else:
 				if DEBUG_LEVEL>2:
 					print "AC load outcome: Unknown answer."
 				self.real_parent.communication_thread.unregister_callback(self.AC_load_outcome_handle)
-				self.ProcessQuery()
+				event.Skip()
+				#event.Allow()
+				#self.ProcessQuery()
+				self.real_parent.update()
+				wx.PostEvent(self.GetEventHandler(), DummyEvent(self.EVT_QUERY_ID))
 #
 
 
@@ -298,7 +324,7 @@ class LoadConfigGui(wx.Dialog):
 
 
 
-	def ProcessQuery(self):
+	def ProcessQuery(self, event):
 		self.query_label.Enable()
 		if not 'query' in self.tags:
 			self.query_pic.SetBitmap(wx.Bitmap(self.real_parent.Ok_pic))
@@ -306,6 +332,15 @@ class LoadConfigGui(wx.Dialog):
 			return
 		self.real_parent.params_query = self.tags['query'].copy()
 		self.query_pic.SetBitmap(wx.Bitmap(self.real_parent.Ok_pic))
+		
+		if self.real_parent.params_query['source'] == WorkProcess.QUERY_FROM_AC:
+			print  "QUI"
+			self.real_parent.query_panel.OnLoadFromAC(None)
+		elif self.real_parent.params_query['source'] == WorkProcess.QUERY_FROM_FILE:
+			print "Batch load query from file still to be implemented"
+		elif self.real_parent.params_query['source'] == WorkProcess.QUERY_FROM_GUI:
+			self.real_parent.query_panel.OnReset(None)
+			
 		#self.real_parent.query_file = self.tags['query']['query_filename']
 		#self.real_parent.query_type = int(self.tags['query']['query_format'])
 		#self.real_parent.query_from = int(self.tags['query']['query_from'])

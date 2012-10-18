@@ -35,7 +35,7 @@ PLAIN_FILE_TYPE = 'Plain'
 PLAIN_FILE_TYPE_REF = 'plain'
 AC_FILE_TYPES = { GAF2_FILE_TYPE : GAF2_FILE_TYPE_REF, PLAIN_FILE_TYPE : PLAIN_FILE_TYPE_REF }
 
-DEBUG_LEVEL = 2
+DEBUG_LEVEL = 3
 
 class ACPanel(wx.Panel):
 	def __init__( self, real_parent, parent, id, pos, size, style):
@@ -65,73 +65,81 @@ class ACPanel(wx.Panel):
 		
 		sbSizer51 = wx.StaticBoxSizer( wx.StaticBox( self.AC_panel, wx.ID_ANY, u"Statistics" ), wx.HORIZONTAL )
 		
-		gSizer21 = wx.GridSizer( 6, 2, 0, 0 )
+		gSizer21 = wx.GridSizer( 3, 2, 0, 0 )
 		
 		self.m_staticText21 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"Terms", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText21.Wrap( -1 )
 		gSizer21.Add( self.m_staticText21, 0, wx.ALL, 5 )
 		
-		self.m_staticText31 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText31.Wrap( -1 )
-		gSizer21.Add( self.m_staticText31, 0, wx.ALL, 5 )
-		
-		self.m_staticText41 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"Edges", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText41.Wrap( -1 )
-		gSizer21.Add( self.m_staticText41, 0, wx.ALL, 5 )
-		
-		self.m_staticText51 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.terms_number_label = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.terms_number_label.Wrap( -1 )
+		gSizer21.Add( self.terms_number_label, 0, wx.ALL, 5 )
+
+		self.m_staticText51 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"Objects", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText51.Wrap( -1 )
 		gSizer21.Add( self.m_staticText51, 0, wx.ALL, 5 )
 		
-		self.m_staticText61 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"Categories", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText61.Wrap( -1 )
-		gSizer21.Add( self.m_staticText61, 0, wx.ALL, 5 )
+		self.objects_number_label = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.objects_number_label.Wrap( -1 )
+		gSizer21.Add( self.objects_number_label, 0, wx.ALL, 5 )
 		
-		self.m_staticText71 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText71.Wrap( -1 )
-		gSizer21.Add( self.m_staticText71, 0, wx.ALL, 5 )
+		self.m_staticText18 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"File type", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText18.Wrap( -1 )
+		gSizer21.Add( self.m_staticText18, 0, wx.ALL, 5 )
+		
+		self.file_type_label = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.file_type_label.Wrap( -1 )
+		gSizer21.Add( self.file_type_label, 0, wx.ALL, 5 )
+		
+		#self.m_staticText61 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"Categories", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.m_staticText61.Wrap( -1 )
+		#gSizer21.Add( self.m_staticText61, 0, wx.ALL, 5 )
+		
+		#self.m_staticText71 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"3", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.m_staticText71.Wrap( -1 )
+		#gSizer21.Add( self.m_staticText71, 0, wx.ALL, 5 )
 		
 		sbSizer51.Add( gSizer21, 1, wx.ALIGN_CENTER|wx.SHAPED, 2 )
 		
 		bSizer52.Add( sbSizer51, 0, wx.ALL, 5 )
 		
-		sbSizer61 = wx.StaticBoxSizer( wx.StaticBox( self.AC_panel, wx.ID_ANY, u"Additional information" ), wx.VERTICAL )
+		#sbSizer61 = wx.StaticBoxSizer( wx.StaticBox( self.AC_panel, wx.ID_ANY, u"Additional information" ), wx.VERTICAL )
 		
-		bSizer511 = wx.BoxSizer( wx.VERTICAL )
+		#bSizer511 = wx.BoxSizer( wx.VERTICAL )
 		
-		gbSizer1 = wx.GridBagSizer( 0, 0 )
-		gbSizer1.SetFlexibleDirection( wx.BOTH )
-		gbSizer1.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		#gbSizer1 = wx.GridBagSizer( 0, 0 )
+		#gbSizer1.SetFlexibleDirection( wx.BOTH )
+		#gbSizer1.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
 		
-		self.m_staticText18 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"File type", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText18.Wrap( -1 )
-		gbSizer1.Add( self.m_staticText18, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		#self.m_staticText18 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"File type", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.m_staticText18.Wrap( -1 )
+		#gbSizer1.Add( self.m_staticText18, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 		
-		self.m_staticText19 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText19.Wrap( -1 )
-		gbSizer1.Add( self.m_staticText19, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		#self.file_type_label = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.file_type_label.Wrap( -1 )
+		#gbSizer1.Add( self.file_type_label, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 		
-		self.m_staticText20 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"MyLabel", wx.Point( -1,-1 ), wx.DefaultSize, 0 )
-		self.m_staticText20.Wrap( -1 )
-		gbSizer1.Add( self.m_staticText20, wx.GBPosition( 1, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		#self.m_staticText20 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"MyLabel", wx.Point( -1,-1 ), wx.DefaultSize, 0 )
+		#self.m_staticText20.Wrap( -1 )
+		#gbSizer1.Add( self.m_staticText20, wx.GBPosition( 1, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 		
-		self.m_staticText211 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText211.Wrap( -1 )
-		gbSizer1.Add( self.m_staticText211, wx.GBPosition( 1, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		#self.m_staticText211 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.m_staticText211.Wrap( -1 )
+		#gbSizer1.Add( self.m_staticText211, wx.GBPosition( 1, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 		
-		self.m_staticText22 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"MyLabel", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText22.Wrap( -1 )
-		gbSizer1.Add( self.m_staticText22, wx.GBPosition( 2, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		#self.m_staticText22 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"MyLabel", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.m_staticText22.Wrap( -1 )
+		#gbSizer1.Add( self.m_staticText22, wx.GBPosition( 2, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 		
-		self.m_staticText23 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText23.Wrap( -1 )
-		gbSizer1.Add( self.m_staticText23, wx.GBPosition( 2, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		#self.m_staticText23 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.m_staticText23.Wrap( -1 )
+		#gbSizer1.Add( self.m_staticText23, wx.GBPosition( 2, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 		
-		bSizer511.Add( gbSizer1, 1, wx.EXPAND, 5 )
+		#bSizer511.Add( gbSizer1, 1, wx.EXPAND, 5 )
 		
-		sbSizer61.Add( bSizer511, 1, wx.EXPAND, 5 )
+		#sbSizer61.Add( bSizer511, 1, wx.EXPAND, 5 )
 		
-		bSizer52.Add( sbSizer61, 0, wx.ALL|wx.EXPAND, 5 )
+		#bSizer52.Add( sbSizer61, 0, wx.ALL|wx.EXPAND, 5 )
 		
 		bSizer31.Add( bSizer52, 0, wx.EXPAND, 5 )
 		
@@ -141,7 +149,10 @@ class ACPanel(wx.Panel):
 		
 		self.ac_load_gui = AC_load_gui(self, self.real_parent)
 		self.Bind(wx.EVT_BUTTON, self.OnLoadButton, id=self.AC_load_button.GetId())
-		
+		self.AC_load_outcome_handle = self.real_parent.communication_thread.register_callback(self.real_parent.EVT_CUSTOM_LOAD_AC, self.OnLoadDone)
+		self.AC_get_handle = self.real_parent.communication_thread.register_callback(self.real_parent.EVT_CUSTOM_GET, self.OnGet)
+		self.objects_number = None
+		self.terms_number = None
 		self._reset()
 #
 
@@ -201,13 +212,90 @@ class ACPanel(wx.Panel):
 			self.AC_source_label.SetLabel(os.path.basename(self.real_parent.params_AC['filename']))
 		else:
 			self.AC_source_label.SetLabel(u"No file loaded.")
+		self.objects_number_label.SetLabel(str(self.objects_number))
+		self.terms_number_label.SetLabel(str(self.terms_number))
+		self.file_type_label.SetLabel(str(self.real_parent.params_AC['type']))
 #
 
-###################################################################################################################
-###################################################################################################################
-#######################        GO LOAD GUI											     ##############################################
-###################################################################################################################
-###################################################################################################################
+
+
+
+
+
+	def OnLoadDone(self, event):
+		if DEBUG_LEVEL>0:
+			print "ACPanel: OnLoadDone()"
+		data = event.data
+
+		if data[0] == WorkProcess.CMD_LOAD_AC:
+			if data[1] == WorkProcess.ANSWER_PROCESSED:
+				if data[2] == WorkProcess. RESULT_OK:
+					if DEBUG_LEVEL>1:
+						print "AC load outcome: Load successful."
+					#self.node_info = data[3]
+					#self.edge_info = data[4]
+					self.ac_load_gui.Hide()
+					
+				else:
+					if DEBUG_LEVEL>2:
+						print "AC load outcome: Load Fail."
+					#self.node_info = None
+					#self.edge_info = None
+			elif data[1] == WorkProcess.ANSWER_PROCESSING:
+				if DEBUG_LEVEL>2:
+					print "AC load outcome: Load in progress."
+				return
+			elif data[1] == WorkProcess.ANSWER_IGNORED:
+				if DEBUG_LEVEL>2:
+					print "AC load outcome: Load request ignored."
+			else:
+				if DEBUG_LEVEL>2:
+					print "AC load outcome: Unknown answer."
+		#self.unfreeze()
+		self.ac_load_gui.unfreeze()
+		if self.AC_get_handle == None:
+			self.AC_get_handle = self.real_parent.communication_thread.register_callback(self.real_parent.EVT_CUSTOM_GET, self.OnGetParams)
+		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_GET, WorkProcess.CMD_GET_PARAMS, WorkProcess.CMD_GET_PARAMS_AC))
+		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_GET, WorkProcess.CMD_GET_AC, WorkProcess.CMD_GET_AC_OBJECTS_NUMBER))
+		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_GET, WorkProcess.CMD_GET_AC, WorkProcess.CMD_GET_AC_TERMS_NUMBER))
+		#print "##############################################################################################################"
+		#print str((WorkProcess.CMD_GET, WorkProcess.CMD_GET_AC, WorkProcess.CMD_GET_AC_TERMS_NUMBER))
+		#print "##############################################################################################################"
+		self.real_parent.update()
+#
+
+
+
+
+	def OnGet(self, event):
+		if DEBUG_LEVEL>0:
+			print "ACPanel: OnGetParams()"
+		data = event.data
+		print data
+		if data[0] == WorkProcess.CMD_GET:
+			if data[1] == WorkProcess.CMD_GET_PARAMS:
+				if data[2] == WorkProcess. CMD_GET_PARAMS_AC:
+					data = data[3]
+					#print data
+					self.real_parent.params_AC = data
+					#self.real_parent.params_AC['filename'] = self.param_filename
+					#self.real_parent.params_AC['type'] = self.param_filetype
+					#if not self.AC_get_handle == None:
+						#self.real_parent.communication_thread.unregister_callback(self.AC_get_handle)
+						#self.AC_get_handle = None
+			elif data[1] == WorkProcess.CMD_GET_AC:
+				if DEBUG_LEVEL>0:
+					print "ACPanel: OnGetParams() GET_AC"
+				if data[2] == WorkProcess. CMD_GET_AC_OBJECTS_NUMBER:
+					self.objects_number = data[3]
+					print self.objects_number
+				if data[2] == WorkProcess. CMD_GET_AC_TERMS_NUMBER:
+					self.terms_number = data[3]
+				#self._update()
+#
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+# AC load window #
 
 class AC_load_gui ( wx.Dialog ):
 
@@ -220,7 +308,6 @@ class AC_load_gui ( wx.Dialog ):
 		
 		self.parent = parent
 		self.real_parent = real_parent
-		self._reset_()
 		
 		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
 		
@@ -246,6 +333,9 @@ class AC_load_gui ( wx.Dialog ):
 		sbSizer22 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Source type" ), wx.VERTICAL )
 		
 		self.AC_load_type_box = wx.Choicebook( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.CHB_DEFAULT )
+
+# Gaf-2.0 file type
+
 		self.m_panel9 = wx.Panel( self.AC_load_type_box, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer23 = wx.BoxSizer( wx.VERTICAL )
 		
@@ -280,8 +370,8 @@ class AC_load_gui ( wx.Dialog ):
 		
 		sbSizer23 = wx.StaticBoxSizer( wx.StaticBox( self.m_panel9, wx.ID_ANY, u"Taxonomy Id" ), wx.VERTICAL )
 		
-		self.AC_load_tax_label = wx.TextCtrl( self.m_panel9, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-		sbSizer23.Add( self.AC_load_tax_label, 0, wx.ALL, 5 )
+		self.AC_load_tax_text = wx.TextCtrl( self.m_panel9, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		sbSizer23.Add( self.AC_load_tax_text, 0, wx.ALL, 5 )
 		
 		bSizer51.Add( sbSizer23, 0, wx.ALL|wx.EXPAND, 5 )
 		
@@ -299,6 +389,9 @@ class AC_load_gui ( wx.Dialog ):
 		self.m_panel9.Layout()
 		bSizer23.Fit( self.m_panel9 )
 		self.AC_load_type_box.AddPage( self.m_panel9, GAF2_FILE_TYPE, True )
+
+# Plain file type
+
 		self.m_panel10 = wx.Panel( self.AC_load_type_box, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer231 = wx.BoxSizer( wx.VERTICAL )
 		
@@ -402,25 +495,25 @@ class AC_load_gui ( wx.Dialog ):
 		self.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.AC_load_select_button.GetId())
 		self.Bind(wx.EVT_BUTTON, self.OnCancel, id=self.AC_load_cancel_button.GetId())
 		self.Bind(wx.EVT_BUTTON, self.OnLoad, id=self.AC_load_load_button.GetId())
-		#self.Bind(wx.EVT_CHECKBOX, self.ignore_what, id=self.GO_load_ignore_haspart_check.GetId())
-		#self.Bind(wx.EVT_CHECKBOX, self.ignore_what, id=self.GO_load_ignore_regulates_check.GetId())
-		#self.box_filetype = wx.ComboBox(self.panel, wx.ID_ANY, choices=AC_FILE_TYPES, style=wx.CB_READONLY, size=(-1,-1)) #size=(100,30)
-		#self.Bind(wx.EVT_COMBOBOX, self.OnSelectType, id=self.box_filetype.GetId())
-#
-	def __del__( self ):
-		pass
 
-	#def ignore_what(self, event):
-		#self.param_ignore_haspart = self.GO_load_ignore_haspart_check.GetValue()
-		#self.param_ignore_regulates = self.GO_load_ignore_regulates_check.GetValue()
-#
+		#self.Bind(wx.EVT_CHOICEBOOK_PAGE_CHANGED, self.OnSelectType, id=self.AC_load_type_box.GetId())
+		#self.Bind(wx.EVT_CHECKBOX, self.filter_what, id=self.AC_load_simplify_check.GetId())
+		#self.Bind(wx.EVT_CHECKBOX, self.filter_what, id=self.AC_load_ignore_IEA_check.GetId())
+		self.Bind(wx.EVT_CHECKBOX, self.OnTax, id=self.AC_load_tax_check.GetId())
+		#self.real_parent.Bind(wx.EVT_TEXT, self.filter_what, id=self.AC_load_tax_text.GetId())
 
+		self._reset_()
+		#self.Bind(wx.EVT_RADIOBUTTON, self.OnSep, id=self.output_sep_tab_radio.GetId())
+		#self.Bind(wx.EVT_RADIOBUTTON, self.OnSep, id=self.output_sep_space_radio.GetId())
+		
+#
 
 
 	def _reset_(self):
 		param_filename = None
 		param_filetype = None
 		self.params = {}
+		self._set_file_name(None)
 		#self.params[PlainAnnotationCorpus.SEPARATOR] = '\t'
 		#self.params[PlainAnnotationCorpus.SEPARATOR] = ' '
 		#self.params[PlainAnnotationCorpus.SEPARATOR] = self.text_separator.GetValue()
@@ -435,6 +528,12 @@ class AC_load_gui ( wx.Dialog ):
 
 #
 
+	def OnSelectType(self, event):
+		filetype = self.AC_load_type_box.GetPageText(self.AC_load_type_box.GetSelection())
+		if filetype in AC_FILE_TYPES:
+			self.real_parent.params_AC['type'] = AC_FILE_TYPES[filetype]
+#
+
 	def OnCancel(self, event):
 		self.Hide()
 #
@@ -445,104 +544,88 @@ class AC_load_gui ( wx.Dialog ):
 			self._set_file_name(dialog.GetPath())
 #
 
+	def OnTax(self, event):
+		if self.AC_load_tax_check.GetValue():
+			self.AC_load_tax_text.Enable()
+		else:
+			self.AC_load_tax_text.Disable()
+#
+
+
+
+
+
+	def filter_what(self, event):
+		if not 'params' in self.real_parent.params_AC:
+			self.real_parent.params_AC['params'] = {}
+		if not 'filter' in self.real_parent.params_AC['params']:
+			self.real_parent.params_AC['params']['filter'] = {}
+
+		if self.AC_load_ignore_IEA_check.GetValue():
+		 self.real_parent.params_AC['params']['filter']['EC'] = {}
+		 self.real_parent.params_AC['params']['filter']['EC']['EC'] = {'IEA':None}
+		 self.real_parent.params_AC['params']['filter']['EC']['inclusive'] = False
+		elif 'EC' in self.real_parent.params_AC['params']['filter']:
+			del self.real_parent.params_AC['params']['filter']['EC']
+			
+		if self.AC_load_simplify_check.GetValue():
+		 self.real_parent.params_AC['params']['simplify'] = True
+		else:
+			self.real_parent.params_AC['params']['simplify'] = False
+
+		if self.AC_load_tax_check.GetValue():
+			self.AC_load_tax_text.Enable()
+			self.real_parent.params_AC['params']['filter']['taxonomy'] = self.AC_load_tax_text.GetValue()
+		else:
+			self.AC_load_tax_text.Disable()
+			if 'taxonomy' in self.real_parent.params_AC['params']['filter']:
+				del self.real_parent.params_AC['params']['filter']['taxonomy']
+#
+
+
+
+
+
 	def _set_file_name(self, fn):
 		self.param_filename = fn
 		if fn == None:
 			self.AC_load_source_label.SetLabel(u"No file selected.")
+			self.AC_load_load_button.Disable()
 		else:
 			self.AC_load_source_label.SetLabel(self.param_filename)
+			self.AC_load_load_button.Enable()
 #
 
 
 
-	def _data_to_main(self):
-		self.real_parent.params_AC['filename'] = self.param_filename
-		self.real_parent.params_AC['type'] = self.param_filetype
-		#self.real_parent.param_ignore_haspart = self.param_ignore_haspart
-		#self.real_parent.param_ignore_regulates = self.param_ignore_regulates
-		self.real_parent.AC_status = self.status
-#
-
-
-
-	def OnLoad(self, data):
-		#self.parent.parent.lock()
+	def freeze(self):
 		self.AC_load_cancel_button.Disable()
 		self.AC_load_load_button.Disable()
 		self.AC_load_select_button.Disable()
 		self.AC_load_type_box.Disable()
-		#self.freeze()
-		self.filetype = self.AC_load_type_box.GetPageText(self.AC_load_type_box.GetSelection())
-		if self.filetype in AC_FILE_TYPES:
-			self.param_filetype = AC_FILE_TYPES[self.filetype]
-			print AC_FILE_TYPES[self.filetype]
+#
+
+	def unfreeze(self):
+		self.AC_load_cancel_button.Enable()
+		self.AC_load_load_button.Enable()
+		self.AC_load_select_button.Enable()
+		self.AC_load_type_box.Enable()
+#
+
+	def OnLoad(self, data):
+		self.freeze()
+		#self.filetype = self.AC_load_type_box.GetPageText(self.AC_load_type_box.GetSelection())
+		#if self.filetype in AC_FILE_TYPES:
+			#self.param_filetype = AC_FILE_TYPES[self.filetype]
+			#print AC_FILE_TYPES[self.filetype]
 		#if self.param_filetype == GAF2_FILE_TYPE:
 		#self.AC_load_ignore_haspart_check.Disable()
 		#self.AC_load_ignore_regulates_check.Disable()
+		self.filter_what(None)
+		self.OnSelectType(None)
+		self.real_parent.params_AC['filename'] = self.param_filename
 
-		self.AC_load_outcome_handle = self.real_parent.communication_thread.register_callback(self.real_parent.EVT_CUSTOM_LOAD_AC, self.OnLoadDone)
-
-		temp = {}
-		temp['filename'] = self.param_filename
-		temp['type'] = self.param_filetype
-		temp['params'] = self.params
-		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_LOAD_AC, temp))
+		print self.real_parent.params_AC
+		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_LOAD_AC, self.real_parent.params_AC))
 #
 
-#
-
-	def OnLoadDone(self, event):
-		if DEBUG_LEVEL > 1:
-			print "AC Load Gui: OnLoadDone called."
-			print event.data
-		data = event.data
-		if data[0] == WorkProcess.CMD_LOAD_AC:
-			if data[1] == WorkProcess.ANSWER_PROCESSED:
-				if data[2] == WorkProcess. RESULT_OK:
-					if DEBUG_LEVEL > 1:
-						print "AC load outcome: Load successful."
-					self.status = True
-					self._data_to_main()
-					self.parent.update()
-					self.Hide()
-				else:
-					if DEBUG_LEVEL > 1:
-						print "AC load outcome: Load Fail."
-					self.status = False
-					self._data_to_main()
-					self.parent.update()
-
-				self.real_parent.communication_thread.unregister_callback(self.AC_load_outcome_handle)
-				self.AC_load_cancel_button.Enable()
-				self.AC_load_load_button.Enable()
-				self.AC_load_select_button.Enable()
-				self.AC_load_type_box.Enable()
-				#self.AC_load_ignore_haspart_check.Enable()
-				#self.AC_load_ignore_regulates_check.Enable()
-			elif data[1] == WorkProcess.ANSWER_PROCESSING:
-				if DEBUG_LEVEL > 1:
-					print "AC load outcome: Load in progress."
-			elif data[1] == WorkProcess.ANSWER_IGNORED:
-				if DEBUG_LEVEL > 1:
-					print "AC load outcome: Load request ignored."
-				self.real_parent.communication_thread.unregister_callback(self.AC_load_outcome_handle)
-				self.AC_load_cancel_button.Enable()
-				self.AC_load_load_button.Enable()
-				self.AC_load_select_button.Enable()
-				self.AC_load_type_box.Enable()
-				#self.AC_load_ignore_haspart_check.Enable()
-				#self.AC_load_ignore_regulates_check.Enable()
-			else:
-				if DEBUG_LEVEL > 1:
-					print "AC load outcome: Unknown answer."
-				self.real_parent.communication_thread.unregister_callback(self.AC_load_outcome_handle)
-				self.AC_load_cancel_button.Enable()
-				self.AC_load_load_button.Enable()
-				self.AC_load_select_button.Enable()
-				self.AC_load_type_box.Enable()
-				self.parent.update()
-				#self.AC_load_ignore_haspart_check.Enable()
-				#self.AC_load_ignore_regulates_check.Enable()
-			return True
-		return False
-#

@@ -1,7 +1,7 @@
 import wx
 from fastSemSim.SemSim import SemSimMeasures
 
-DEBUG_LEVEL = 2
+DEBUG_LEVEL = 0
 
 class SSPanel(wx.Panel):
 	def __init__( self, real_parent, parent, id, pos, size, style):
@@ -94,17 +94,6 @@ class SSPanel(wx.Panel):
 
 
 
-
-	def update(self):
-		if DEBUG_LEVEL>1:
-			print "SSPanel: update()"
-		self.real_parent._update()
-#
-
-
-
-
-
 	def _freeze(self):
 		self.Disable()
 #
@@ -148,7 +137,7 @@ class SSPanel(wx.Panel):
 		if DEBUG_LEVEL>0:
 			print "SSPanel: OnSelectMS()"
 		c = self.SS_mix_box.GetCurrentSelection()
-		print c
+		#print c
 		if c >= 0:
 			self.real_parent.params_SS['mixing_strategy'] = self.SS_mix_box.GetString(self.SS_mix_box.GetCurrentSelection())
 			#print self.real_parent.mixingstrategy
@@ -189,32 +178,3 @@ class SSPanel(wx.Panel):
 			self.real_parent.params_SS['measure'] = None
 		self.SS_to_send = True
 #
-
-
-
-
-
-
-
-#--------------------------------------------------------------
-# Utilities to set front-end values
-	#def set_ss(self, measure):
-		#self.ss.SetStringSelection(measure)
-		#self.OnSelectSS(None)
-
-	#def set_ms(self, ms):
-		#self.mixing.SetStringSelection(ms)
-		#self.OnSelectMS(None)
-
-	#def set_go(self, go):
-		#i = -1
-		#for j in range(0,len(self.goradius)):
-			#self.goradius[j].SetValue(False)
-			#if self.gocodes[j] == go:
-				#i = j
-		#self.goradius[i].SetValue(True)
-		#self.OnSelectGO(None)
-#
-
-
-
