@@ -334,7 +334,6 @@ class LoadConfigGui(wx.Dialog):
 		self.query_pic.SetBitmap(wx.Bitmap(self.real_parent.Ok_pic))
 		
 		if self.real_parent.params_query['source'] == WorkProcess.QUERY_FROM_AC:
-			print  "QUI"
 			self.real_parent.query_panel.OnLoadFromAC(None)
 		elif self.real_parent.params_query['source'] == WorkProcess.QUERY_FROM_FILE:
 			print "Batch load query from file still to be implemented"

@@ -27,6 +27,7 @@ This class reads plain annotation corpus files.
 '''
 
 import sys
+import os
 import GeneOntology
 
 MANYASSPERROW = 'multiple'

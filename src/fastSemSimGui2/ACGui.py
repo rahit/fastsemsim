@@ -35,13 +35,14 @@ PLAIN_FILE_TYPE = 'Plain'
 PLAIN_FILE_TYPE_REF = 'plain'
 AC_FILE_TYPES = { GAF2_FILE_TYPE : GAF2_FILE_TYPE_REF, PLAIN_FILE_TYPE : PLAIN_FILE_TYPE_REF }
 
-DEBUG_LEVEL = 3
+DEBUG_LEVEL = 0
 
 class ACPanel(wx.Panel):
 	def __init__( self, real_parent, parent, id, pos, size, style):
 		wx.Panel.__init__ ( self, parent, id, pos, size, style)
 		self.AC_panel = self # temporary workaround
 		self.real_parent = real_parent
+		
 		
 		bSizer31 = wx.BoxSizer( wx.VERTICAL )
 		
@@ -65,7 +66,7 @@ class ACPanel(wx.Panel):
 		
 		sbSizer51 = wx.StaticBoxSizer( wx.StaticBox( self.AC_panel, wx.ID_ANY, u"Statistics" ), wx.HORIZONTAL )
 		
-		gSizer21 = wx.GridSizer( 3, 2, 0, 0 )
+		gSizer21 = wx.GridSizer( 6, 2, 0, 0 )
 		
 		self.m_staticText21 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"Terms", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText21.Wrap( -1 )
@@ -74,78 +75,160 @@ class ACPanel(wx.Panel):
 		self.terms_number_label = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.terms_number_label.Wrap( -1 )
 		gSizer21.Add( self.terms_number_label, 0, wx.ALL, 5 )
-
-		self.m_staticText51 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"Objects", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText51.Wrap( -1 )
-		gSizer21.Add( self.m_staticText51, 0, wx.ALL, 5 )
+		
+		self.m_staticText41 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"Objects", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText41.Wrap( -1 )
+		gSizer21.Add( self.m_staticText41, 0, wx.ALL, 5 )
 		
 		self.objects_number_label = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.objects_number_label.Wrap( -1 )
 		gSizer21.Add( self.objects_number_label, 0, wx.ALL, 5 )
 		
-		self.m_staticText18 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"File type", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText18.Wrap( -1 )
-		gSizer21.Add( self.m_staticText18, 0, wx.ALL, 5 )
+		sbSizer51.Add( gSizer21, 1, wx.ALIGN_CENTER|wx.SHAPED, 2 )
+		
+		bSizer52.Add( sbSizer51, 0, wx.ALL|wx.EXPAND, 5 )
+		
+		sbSizer512 = wx.StaticBoxSizer( wx.StaticBox( self.AC_panel, wx.ID_ANY, u"Information" ), wx.HORIZONTAL )
+		
+		gSizer211 = wx.GridSizer( 6, 2, 0, 0 )
+		
+		self.m_staticText211 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"File Type", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText211.Wrap( -1 )
+		gSizer211.Add( self.m_staticText211, 0, wx.ALL, 5 )
 		
 		self.file_type_label = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.file_type_label.Wrap( -1 )
-		gSizer21.Add( self.file_type_label, 0, wx.ALL, 5 )
+		gSizer211.Add( self.file_type_label, 0, wx.ALL, 5 )
 		
-		#self.m_staticText61 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"Categories", wx.DefaultPosition, wx.DefaultSize, 0 )
-		#self.m_staticText61.Wrap( -1 )
-		#gSizer21.Add( self.m_staticText61, 0, wx.ALL, 5 )
+		self.m_staticText411 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"IEA annotations", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText411.Wrap( -1 )
+		gSizer211.Add( self.m_staticText411, 0, wx.ALL, 5 )
 		
-		#self.m_staticText71 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"3", wx.DefaultPosition, wx.DefaultSize, 0 )
-		#self.m_staticText71.Wrap( -1 )
-		#gSizer21.Add( self.m_staticText71, 0, wx.ALL, 5 )
+		self.IEA_annotations_label = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.IEA_annotations_label.Wrap( -1 )
+		gSizer211.Add( self.IEA_annotations_label, 0, wx.ALL, 5 )
 		
-		sbSizer51.Add( gSizer21, 1, wx.ALIGN_CENTER|wx.SHAPED, 2 )
+		sbSizer512.Add( gSizer211, 1, wx.ALIGN_CENTER|wx.SHAPED, 2 )
 		
-		bSizer52.Add( sbSizer51, 0, wx.ALL, 5 )
+		bSizer52.Add( sbSizer512, 0, wx.ALL|wx.EXPAND, 5 )
 		
-		#sbSizer61 = wx.StaticBoxSizer( wx.StaticBox( self.AC_panel, wx.ID_ANY, u"Additional information" ), wx.VERTICAL )
+		bSizer31.Add( bSizer52, 0, wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
-		#bSizer511 = wx.BoxSizer( wx.VERTICAL )
+		self.AC_status_label = wx.StaticText( self.AC_panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.AC_status_label.Wrap( -1 )
+		self.AC_status_label.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 92, False, wx.EmptyString ) )
 		
-		#gbSizer1 = wx.GridBagSizer( 0, 0 )
-		#gbSizer1.SetFlexibleDirection( wx.BOTH )
-		#gbSizer1.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
-		
-		#self.m_staticText18 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"File type", wx.DefaultPosition, wx.DefaultSize, 0 )
-		#self.m_staticText18.Wrap( -1 )
-		#gbSizer1.Add( self.m_staticText18, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
-		
-		#self.file_type_label = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
-		#self.file_type_label.Wrap( -1 )
-		#gbSizer1.Add( self.file_type_label, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
-		
-		#self.m_staticText20 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"MyLabel", wx.Point( -1,-1 ), wx.DefaultSize, 0 )
-		#self.m_staticText20.Wrap( -1 )
-		#gbSizer1.Add( self.m_staticText20, wx.GBPosition( 1, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
-		
-		#self.m_staticText211 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
-		#self.m_staticText211.Wrap( -1 )
-		#gbSizer1.Add( self.m_staticText211, wx.GBPosition( 1, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
-		
-		#self.m_staticText22 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"MyLabel", wx.DefaultPosition, wx.DefaultSize, 0 )
-		#self.m_staticText22.Wrap( -1 )
-		#gbSizer1.Add( self.m_staticText22, wx.GBPosition( 2, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
-		
-		#self.m_staticText23 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
-		#self.m_staticText23.Wrap( -1 )
-		#gbSizer1.Add( self.m_staticText23, wx.GBPosition( 2, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
-		
-		#bSizer511.Add( gbSizer1, 1, wx.EXPAND, 5 )
-		
-		#sbSizer61.Add( bSizer511, 1, wx.EXPAND, 5 )
-		
-		#bSizer52.Add( sbSizer61, 0, wx.ALL|wx.EXPAND, 5 )
-		
-		bSizer31.Add( bSizer52, 0, wx.EXPAND, 5 )
+		bSizer31.Add( self.AC_status_label, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 10 )
 		
 		self.AC_panel.SetSizer( bSizer31 )
 		self.AC_panel.Layout()
 		bSizer31.Fit( self.AC_panel )
+		
+		
+		
+		#bSizer31 = wx.BoxSizer( wx.VERTICAL )
+		
+		#bSizer28 = wx.BoxSizer( wx.HORIZONTAL )
+		
+		#sbSizer31 = wx.StaticBoxSizer( wx.StaticBox( self.AC_panel, wx.ID_ANY, u"Source file" ), wx.HORIZONTAL )
+		
+		#self.AC_source_label = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.AC_source_label.Wrap( -1 )
+		#sbSizer31.Add( self.AC_source_label, 1, wx.ALIGN_CENTER|wx.ALL, 5 )
+		
+		#self.AC_load_button = wx.Button( self.AC_panel, wx.ID_ANY, u"Load ...", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.AC_load_button.SetDefault() 
+		#sbSizer31.Add( self.AC_load_button, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+		
+		#bSizer28.Add( sbSizer31, 6, wx.ALL|wx.EXPAND, 5 )
+		
+		#bSizer31.Add( bSizer28, 0, wx.EXPAND, 5 )
+		
+		#bSizer52 = wx.BoxSizer( wx.HORIZONTAL )
+		
+		#sbSizer51 = wx.StaticBoxSizer( wx.StaticBox( self.AC_panel, wx.ID_ANY, u"Statistics" ), wx.HORIZONTAL )
+		
+		#gSizer21 = wx.GridSizer( 3, 2, 0, 0 )
+		
+		#self.m_staticText21 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"Terms", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.m_staticText21.Wrap( -1 )
+		#gSizer21.Add( self.m_staticText21, 0, wx.ALL, 5 )
+		
+		#self.terms_number_label = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.terms_number_label.Wrap( -1 )
+		#gSizer21.Add( self.terms_number_label, 0, wx.ALL, 5 )
+
+		#self.m_staticText51 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"Objects", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.m_staticText51.Wrap( -1 )
+		#gSizer21.Add( self.m_staticText51, 0, wx.ALL, 5 )
+		
+		#self.objects_number_label = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.objects_number_label.Wrap( -1 )
+		#gSizer21.Add( self.objects_number_label, 0, wx.ALL, 5 )
+		
+		#self.m_staticText18 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"File type", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.m_staticText18.Wrap( -1 )
+		#gSizer21.Add( self.m_staticText18, 0, wx.ALL, 5 )
+		
+		#self.file_type_label = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.file_type_label.Wrap( -1 )
+		#gSizer21.Add( self.file_type_label, 0, wx.ALL, 5 )
+		
+		##self.m_staticText61 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"Categories", wx.DefaultPosition, wx.DefaultSize, 0 )
+		##self.m_staticText61.Wrap( -1 )
+		##gSizer21.Add( self.m_staticText61, 0, wx.ALL, 5 )
+		
+		##self.m_staticText71 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"3", wx.DefaultPosition, wx.DefaultSize, 0 )
+		##self.m_staticText71.Wrap( -1 )
+		##gSizer21.Add( self.m_staticText71, 0, wx.ALL, 5 )
+		
+		#sbSizer51.Add( gSizer21, 1, wx.ALIGN_CENTER|wx.SHAPED, 2 )
+		
+		#bSizer52.Add( sbSizer51, 0, wx.ALL, 5 )
+		
+		##sbSizer61 = wx.StaticBoxSizer( wx.StaticBox( self.AC_panel, wx.ID_ANY, u"Additional information" ), wx.VERTICAL )
+		
+		##bSizer511 = wx.BoxSizer( wx.VERTICAL )
+		
+		##gbSizer1 = wx.GridBagSizer( 0, 0 )
+		##gbSizer1.SetFlexibleDirection( wx.BOTH )
+		##gbSizer1.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		
+		##self.m_staticText18 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"File type", wx.DefaultPosition, wx.DefaultSize, 0 )
+		##self.m_staticText18.Wrap( -1 )
+		##gbSizer1.Add( self.m_staticText18, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		##self.file_type_label = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		##self.file_type_label.Wrap( -1 )
+		##gbSizer1.Add( self.file_type_label, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		##self.m_staticText20 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"MyLabel", wx.Point( -1,-1 ), wx.DefaultSize, 0 )
+		##self.m_staticText20.Wrap( -1 )
+		##gbSizer1.Add( self.m_staticText20, wx.GBPosition( 1, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		##self.m_staticText211 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		##self.m_staticText211.Wrap( -1 )
+		##gbSizer1.Add( self.m_staticText211, wx.GBPosition( 1, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		##self.m_staticText22 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"MyLabel", wx.DefaultPosition, wx.DefaultSize, 0 )
+		##self.m_staticText22.Wrap( -1 )
+		##gbSizer1.Add( self.m_staticText22, wx.GBPosition( 2, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		##self.m_staticText23 = wx.StaticText( self.AC_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		##self.m_staticText23.Wrap( -1 )
+		##gbSizer1.Add( self.m_staticText23, wx.GBPosition( 2, 1 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		
+		##bSizer511.Add( gbSizer1, 1, wx.EXPAND, 5 )
+		
+		##sbSizer61.Add( bSizer511, 1, wx.EXPAND, 5 )
+		
+		##bSizer52.Add( sbSizer61, 0, wx.ALL|wx.EXPAND, 5 )
+		
+		#bSizer31.Add( bSizer52, 0, wx.EXPAND, 5 )
+		
+		#self.AC_panel.SetSizer( bSizer31 )
+		#self.AC_panel.Layout()
+		#bSizer31.Fit( self.AC_panel )
 		
 		self.ac_load_gui = AC_load_gui(self, self.real_parent)
 		self.Bind(wx.EVT_BUTTON, self.OnLoadButton, id=self.AC_load_button.GetId())
@@ -208,15 +291,38 @@ class ACPanel(wx.Panel):
 
 
 	def _update(self):
+		if DEBUG_LEVEL>1:
+			print "ACPanel: _update()"
+			
 		if self.real_parent.AC_status:
 			self.AC_source_label.SetLabel(os.path.basename(self.real_parent.params_AC['filename']))
+			self.objects_number_label.SetLabel(str(self.objects_number))
+			self.terms_number_label.SetLabel(str(self.terms_number))
+			self.file_type_label.SetLabel(str(self.real_parent.params_AC['type']))
+			if str(self.real_parent.params_AC['type']) == 'gaf-2.0':
+				ook = False
+				if 'params' in self.real_parent.params_AC:
+					if 'filter' in self.real_parent.params_AC['params']:
+						if 'EC' in self.real_parent.params_AC['params']['filter']:
+							if 'EC' in self.real_parent.params_AC['params']['filter']['EC']:
+								if 'IEA' in self.real_parent.params_AC['params']['filter']['EC']['EC']:
+									if 'inclusive' in self.real_parent.params_AC['params']['filter']['EC']:
+										if not self.real_parent.params_AC['params']['filter']['EC']['inclusive']:
+											self.IEA_annotations_label.SetLabel("ignored")
+											ook = True
+				if not ook:
+					self.IEA_annotations_label.SetLabel("considered")
+			else:
+				self.IEA_annotations_label.SetLabel("-")
+			self.AC_status_label.SetLabel("Annotation Corpus correctly loaded")
 		else:
+			self.AC_status_label.SetLabel("No Annotation Corpus currently loaded")
 			self.AC_source_label.SetLabel(u"No file loaded.")
-		self.objects_number_label.SetLabel(str(self.objects_number))
-		self.terms_number_label.SetLabel(str(self.terms_number))
-		self.file_type_label.SetLabel(str(self.real_parent.params_AC['type']))
+			self.objects_number_label.SetLabel("-")
+			self.terms_number_label.SetLabel("-")
+			self.file_type_label.SetLabel("-")
+			self.IEA_annotations_label.SetLabel("-")
 #
-
 
 
 
@@ -253,8 +359,8 @@ class ACPanel(wx.Panel):
 					print "AC load outcome: Unknown answer."
 		#self.unfreeze()
 		self.ac_load_gui.unfreeze()
-		if self.AC_get_handle == None:
-			self.AC_get_handle = self.real_parent.communication_thread.register_callback(self.real_parent.EVT_CUSTOM_GET, self.OnGetParams)
+		#if self.AC_get_handle == None:
+			#self.AC_get_handle = self.real_parent.communication_thread.register_callback(self.real_parent.EVT_CUSTOM_GET, self.OnGetParams)
 		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_GET, WorkProcess.CMD_GET_PARAMS, WorkProcess.CMD_GET_PARAMS_AC))
 		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_GET, WorkProcess.CMD_GET_AC, WorkProcess.CMD_GET_AC_OBJECTS_NUMBER))
 		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_GET, WorkProcess.CMD_GET_AC, WorkProcess.CMD_GET_AC_TERMS_NUMBER))
@@ -262,6 +368,7 @@ class ACPanel(wx.Panel):
 		#print str((WorkProcess.CMD_GET, WorkProcess.CMD_GET_AC, WorkProcess.CMD_GET_AC_TERMS_NUMBER))
 		#print "##############################################################################################################"
 		self.real_parent.update()
+		event.Skip()
 #
 
 
@@ -271,27 +378,20 @@ class ACPanel(wx.Panel):
 		if DEBUG_LEVEL>0:
 			print "ACPanel: OnGetParams()"
 		data = event.data
-		print data
 		if data[0] == WorkProcess.CMD_GET:
 			if data[1] == WorkProcess.CMD_GET_PARAMS:
 				if data[2] == WorkProcess. CMD_GET_PARAMS_AC:
 					data = data[3]
-					#print data
 					self.real_parent.params_AC = data
-					#self.real_parent.params_AC['filename'] = self.param_filename
-					#self.real_parent.params_AC['type'] = self.param_filetype
-					#if not self.AC_get_handle == None:
-						#self.real_parent.communication_thread.unregister_callback(self.AC_get_handle)
-						#self.AC_get_handle = None
 			elif data[1] == WorkProcess.CMD_GET_AC:
-				if DEBUG_LEVEL>0:
+				if DEBUG_LEVEL>3:
 					print "ACPanel: OnGetParams() GET_AC"
 				if data[2] == WorkProcess. CMD_GET_AC_OBJECTS_NUMBER:
 					self.objects_number = data[3]
-					print self.objects_number
 				if data[2] == WorkProcess. CMD_GET_AC_TERMS_NUMBER:
 					self.terms_number = data[3]
-				#self._update()
+				self._update()
+		event.Skip()
 #
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
@@ -408,7 +508,7 @@ class AC_load_gui ( wx.Dialog ):
 		bSizer46 = wx.BoxSizer( wx.VERTICAL )
 		
 		self.AC_load_sep_tab_radio = wx.RadioButton( self.m_panel10, wx.ID_ANY, u"[tab]  '\\t'", wx.DefaultPosition, wx.DefaultSize, 0 )
-		bSizer46.Add( self.AC_load_sep_tab_radio, 0, wx.LEFT|wx.RIGHT|wx.TOP, 5 )
+		bSizer46.Add( self.AC_load_sep_tab_radio, 0, wx.LEFT|wx.RIGHT|wx.TOP|wx.RB_GROUP, 5 )
 		
 		self.AC_load_sep_space_radio = wx.RadioButton( self.m_panel10, wx.ID_ANY, u"[space]", wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer46.Add( self.AC_load_sep_space_radio, 0, wx.LEFT|wx.RIGHT, 5 )
@@ -435,8 +535,8 @@ class AC_load_gui ( wx.Dialog ):
 		
 		bSizer48 = wx.BoxSizer( wx.VERTICAL )
 		
-		self.AC_loiad_multi_check = wx.CheckBox( self.m_panel10, wx.ID_ANY, u"Multiple associations", wx.DefaultPosition, wx.DefaultSize, 0 )
-		bSizer48.Add( self.AC_loiad_multi_check, 0, wx.LEFT|wx.RIGHT, 5 )
+		self.AC_load_multi_check = wx.CheckBox( self.m_panel10, wx.ID_ANY, u"Multiple associations", wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer48.Add( self.AC_load_multi_check, 0, wx.LEFT|wx.RIGHT, 5 )
 		
 		fgSizer8.Add( bSizer48, 1, wx.EXPAND, 5 )
 		
@@ -450,7 +550,7 @@ class AC_load_gui ( wx.Dialog ):
 		
 		bSizer49 = wx.BoxSizer( wx.VERTICAL )
 		
-		self.AC_load_obj_first_radio = wx.RadioButton( self.m_panel10, wx.ID_ANY, u"Object -> GO Term(s)", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.AC_load_obj_first_radio = wx.RadioButton( self.m_panel10, wx.ID_ANY, u"Object -> GO Term(s)", wx.DefaultPosition, wx.DefaultSize, wx.RB_GROUP )
 		bSizer49.Add( self.AC_load_obj_first_radio, 0, wx.LEFT|wx.TOP, 5 )
 		
 		self.AC_load_term_first_radio = wx.RadioButton( self.m_panel10, wx.ID_ANY, u"GO Term -> Object(s)", wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -497,15 +597,15 @@ class AC_load_gui ( wx.Dialog ):
 		self.Bind(wx.EVT_BUTTON, self.OnLoad, id=self.AC_load_load_button.GetId())
 
 		#self.Bind(wx.EVT_CHOICEBOOK_PAGE_CHANGED, self.OnSelectType, id=self.AC_load_type_box.GetId())
-		#self.Bind(wx.EVT_CHECKBOX, self.filter_what, id=self.AC_load_simplify_check.GetId())
-		#self.Bind(wx.EVT_CHECKBOX, self.filter_what, id=self.AC_load_ignore_IEA_check.GetId())
+		#self.Bind(wx.EVT_CHECKBOX, self.collect_gaf2_file_parms, id=self.AC_load_simplify_check.GetId())
+		#self.Bind(wx.EVT_CHECKBOX, self.collect_gaf2_file_parms, id=self.AC_load_ignore_IEA_check.GetId())
 		self.Bind(wx.EVT_CHECKBOX, self.OnTax, id=self.AC_load_tax_check.GetId())
-		#self.real_parent.Bind(wx.EVT_TEXT, self.filter_what, id=self.AC_load_tax_text.GetId())
+		#self.real_parent.Bind(wx.EVT_TEXT, self.collect_gaf2_file_parms, id=self.AC_load_tax_text.GetId())
 
 		self._reset_()
 		#self.Bind(wx.EVT_RADIOBUTTON, self.OnSep, id=self.output_sep_tab_radio.GetId())
 		#self.Bind(wx.EVT_RADIOBUTTON, self.OnSep, id=self.output_sep_space_radio.GetId())
-		
+		self.Show()
 #
 
 
@@ -555,9 +655,11 @@ class AC_load_gui ( wx.Dialog ):
 
 
 
-	def filter_what(self, event):
-		if not 'params' in self.real_parent.params_AC:
-			self.real_parent.params_AC['params'] = {}
+	def collect_gaf2_file_parms(self, event):
+		if 'params' in self.real_parent.params_AC:
+			del self.real_parent.params_AC['params']
+		self.real_parent.params_AC['params'] = {}
+
 		if not 'filter' in self.real_parent.params_AC['params']:
 			self.real_parent.params_AC['params']['filter'] = {}
 
@@ -582,6 +684,32 @@ class AC_load_gui ( wx.Dialog ):
 				del self.real_parent.params_AC['params']['filter']['taxonomy']
 #
 
+
+
+
+
+
+	def collect_plain_file_parms(self, event):
+		if 'params' in self.real_parent.params_AC:
+			del self.real_parent.params_AC['params']
+		self.real_parent.params_AC['params'] = {}
+
+		if self.AC_load_sep_tab_radio.GetValue():
+			self.real_parent.params_AC['params']['separator'] = "\t"
+		if self.AC_load_sep_space_radio.GetValue():
+			self.real_parent.params_AC['params']['separator'] = " "
+		if self.AC_load_sep_custom_radio.GetValue():
+			self.real_parent.params_AC['params']['separator'] = self.AC_sep_custom_text.GetValue()
+			
+		if self.AC_load_obj_first_radio.GetValue():
+			self.real_parent.params_AC['params']['term first'] = False
+		if self.AC_load_term_first_radio.GetValue():
+			self.real_parent.params_AC['params']['term first'] = True
+		if self.AC_load_multi_check.GetValue():
+			self.real_parent.params_AC['params']['multiple'] = True
+		else:
+			self.real_parent.params_AC['params']['multiple'] = False
+#
 
 
 
@@ -621,9 +749,12 @@ class AC_load_gui ( wx.Dialog ):
 		#if self.param_filetype == GAF2_FILE_TYPE:
 		#self.AC_load_ignore_haspart_check.Disable()
 		#self.AC_load_ignore_regulates_check.Disable()
-		self.filter_what(None)
-		self.OnSelectType(None)
 		self.real_parent.params_AC['filename'] = self.param_filename
+		self.OnSelectType(None)
+		if self.real_parent.params_AC['type'] == GAF2_FILE_TYPE_REF:
+			self.collect_gaf2_file_parms(None)
+		elif self.real_parent.params_AC['type'] == PLAIN_FILE_TYPE_REF:
+			self.collect_plain_file_parms(None)
 
 		print self.real_parent.params_AC
 		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_LOAD_AC, self.real_parent.params_AC))

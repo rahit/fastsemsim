@@ -289,6 +289,7 @@ class QueryPanel(wx.Panel):
 			#self.real_parent.params_query['query'] = self.query
 			self.real_parent.params_query['source'] = WorkProcess.QUERY_FROM_AC
 			self.query_to_update = False
+		event.Skip()
 #
 
 

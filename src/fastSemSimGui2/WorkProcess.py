@@ -32,7 +32,7 @@ from fastSemSim.GO import GeneOntology
 from fastSemSim.GO import AnnotationCorpus
 import gzip
 
-DEBUG_LEVEL = 1 # NOTE 0: no debug output. 1:level 1 debug output. 2: verbose debug output. In any case it does not affect the performance of the calculation step
+DEBUG_LEVEL = 0 # NOTE 0: no debug output. 1:level 1 debug output. 2: verbose debug output. In any case it does not affect the performance of the calculation step
 
 # WorkProcess is designed as a state machine. Here are the possible status
 STATUS_BASE = 0
@@ -722,12 +722,16 @@ class WorkProcess(multiprocessing.Process):
 		if DEBUG_LEVEL>0:
 			print "WorkProcess: _get()"
 		if data[0] == CMD_GET_AC:
+			if DEBUG_LEVEL>0:
+				print "WorkProcess: _get() CMD_GET_AC"
 			if data[1] == CMD_GET_AC_OBJECTS:
 				results = None
 				if not self.ac == None:
 					results = self.ac.obj_set.keys()
 				self.send((CMD_GET, CMD_GET_AC, CMD_GET_AC_OBJECTS, results))
 			elif data[1] == CMD_GET_AC_OBJECTS_NUMBER:
+				if DEBUG_LEVEL>0:
+					print "WorkProcess: _get() CMD_GET_AC_OBJECTS_NUMBER"
 				results = None
 				if not self.ac == None:
 					results = len(self.ac.obj_set.keys())
@@ -738,10 +742,10 @@ class WorkProcess(multiprocessing.Process):
 					results = self.ac.term_set.keys()
 				self.send((CMD_GET, CMD_GET_AC, CMD_GET_AC_TERMS, results))
 			elif data[1] == CMD_GET_AC_TERMS_NUMBER:
+				if DEBUG_LEVEL>0:
+					print "WorkProcess: _get() CMD_GET_AC_TERMS_NUMBER"
 				results = None
-				#print "WEYWEYWEYWYEYWEYWYEWYEYWYEWYEYWYEWYEYWYEWY"
 				if not self.ac == None:
-					#print "WEYWEYWEYWYEYWEYWYEWYEYWYEWYEYWYEWYEYWYEWY"
 					results = len(self.ac.term_set.keys())
 				self.send((CMD_GET, CMD_GET_AC, CMD_GET_AC_TERMS_NUMBER, results))
 		elif data[0] == CMD_GET_PARAMS:

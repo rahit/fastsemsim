@@ -40,56 +40,161 @@ class GOPanel(wx.Panel):
 		self.GO_panel = self # temporary workaround
 		self.real_parent = real_parent
 
+		
+
 		GO_panel_sizer_1 = wx.BoxSizer( wx.VERTICAL )
+		
 		sbSizer3 = wx.StaticBoxSizer( wx.StaticBox( self.GO_panel, wx.ID_ANY, u"Source" ), wx.HORIZONTAL )
+		
 		self.GO_source_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"No file loaded", wx.DefaultPosition, wx.Size( -1,-1 ), 0 )
 		self.GO_source_label.Wrap( -1 )
 		sbSizer3.Add( self.GO_source_label, 1, wx.ALIGN_CENTER|wx.ALL, 5 )
+		
 		self.GO_load_button = wx.Button( self.GO_panel, wx.ID_ANY, u"Load ...", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.GO_load_button.SetDefault() 
 		sbSizer3.Add( self.GO_load_button, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+		
 		GO_panel_sizer_1.Add( sbSizer3, 0, wx.ALL|wx.EXPAND, 5 )
+		
 		bSizer5 = wx.BoxSizer( wx.HORIZONTAL )
+		
 		sbSizer5 = wx.StaticBoxSizer( wx.StaticBox( self.GO_panel, wx.ID_ANY, u"Statistics" ), wx.HORIZONTAL )
+		
 		gSizer2 = wx.GridSizer( 6, 2, 0, 0 )
+		
 		self.m_staticText2 = wx.StaticText( self.GO_panel, wx.ID_ANY, u"Terms", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText2.Wrap( -1 )
 		gSizer2.Add( self.m_staticText2, 0, wx.ALL, 5 )
+		
 		self.GO_terms_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.GO_terms_label.Wrap( -1 )
 		gSizer2.Add( self.GO_terms_label, 0, wx.ALL, 5 )
+		
 		self.m_staticText4 = wx.StaticText( self.GO_panel, wx.ID_ANY, u"Edges", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText4.Wrap( -1 )
 		gSizer2.Add( self.m_staticText4, 0, wx.ALL, 5 )
+		
 		self.GO_edges_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.GO_edges_label.Wrap( -1 )
 		gSizer2.Add( self.GO_edges_label, 0, wx.ALL, 5 )
-		#self.m_staticText6 = wx.StaticText( self.GO_panel, wx.ID_ANY, u"Categories", wx.DefaultPosition, wx.DefaultSize, 0 )
-		#self.m_staticText6.Wrap( -1 )
-		#gSizer2.Add( self.m_staticText6, 0, wx.ALL, 5 )
-		#self.GO_categories_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
-		#self.GO_categories_label.Wrap( -1 )
-		#gSizer2.Add( self.GO_categories_label, 0, wx.ALL, 5 )
-		sbSizer5.Add( gSizer2, 1, wx.ALIGN_CENTER|wx.SHAPED, 2 )
-		bSizer5.Add( sbSizer5, 0, wx.ALL, 5 )
-		sbSizer6 = wx.StaticBoxSizer( wx.StaticBox( self.GO_panel, wx.ID_ANY, u"Additional information" ), wx.VERTICAL )
-		bSizer51 = wx.BoxSizer( wx.VERTICAL )
-		self.m_staticText8 = wx.StaticText( self.GO_panel, wx.ID_ANY, "", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText8.Wrap( -1 )
-		bSizer51.Add( self.m_staticText8, 0, wx.ALL, 5 )
-		sbSizer6.Add( bSizer51, 1, wx.EXPAND, 5 )
+		
+		self.m_staticText6 = wx.StaticText( self.GO_panel, wx.ID_ANY, u"Categories", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText6.Wrap( -1 )
+		gSizer2.Add( self.m_staticText6, 0, wx.ALL, 5 )
+		
+		self.GO_categories_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.GO_categories_label.Wrap( -1 )
+		gSizer2.Add( self.GO_categories_label, 0, wx.ALL, 5 )
+		
+		sbSizer5.Add( gSizer2, 1, wx.ALIGN_CENTER|wx.EXPAND|wx.SHAPED, 2 )
+		
+		bSizer5.Add( sbSizer5, 0, wx.ALL|wx.EXPAND, 5 )
+		
+		sbSizer6 = wx.StaticBoxSizer( wx.StaticBox( self.GO_panel, wx.ID_ANY, u"Relationships" ), wx.VERTICAL )
+		
+		gSizer22 = wx.GridSizer( 6, 2, 0, 0 )
+		
+		self.m_staticText24 = wx.StaticText( self.GO_panel, wx.ID_ANY, u"is_a", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText24.Wrap( -1 )
+		gSizer22.Add( self.m_staticText24, 0, wx.ALL, 5 )
+		
+		self.GO_isa_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.GO_isa_label.Wrap( -1 )
+		gSizer22.Add( self.GO_isa_label, 0, wx.ALL, 5 )
+		
+		self.m_staticText42 = wx.StaticText( self.GO_panel, wx.ID_ANY, u"part_of", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText42.Wrap( -1 )
+		gSizer22.Add( self.m_staticText42, 0, wx.ALL, 5 )
+		
+		self.GO_partof_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.GO_partof_label.Wrap( -1 )
+		gSizer22.Add( self.GO_partof_label, 0, wx.ALL, 5 )
+		
+		self.m_staticText62 = wx.StaticText( self.GO_panel, wx.ID_ANY, u"has_part", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText62.Wrap( -1 )
+		gSizer22.Add( self.m_staticText62, 0, wx.ALL, 5 )
+		
+		self.GO_haspart_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.GO_haspart_label.Wrap( -1 )
+		gSizer22.Add( self.GO_haspart_label, 0, wx.ALL, 5 )
+		
+		self.m_staticText59 = wx.StaticText( self.GO_panel, wx.ID_ANY, u"regulates", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText59.Wrap( -1 )
+		gSizer22.Add( self.m_staticText59, 0, wx.ALL, 5 )
+		
+		self.GO_regulates_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.GO_regulates_label.Wrap( -1 )
+		gSizer22.Add( self.GO_regulates_label, 0, wx.ALL, 5 )
+		
+		sbSizer6.Add( gSizer22, 1, wx.EXPAND, 5 )
+		
 		bSizer5.Add( sbSizer6, 0, wx.ALL, 5 )
-		GO_panel_sizer_1.Add( bSizer5, 0, wx.EXPAND, 5 )
-		bSizer4 = wx.BoxSizer( wx.HORIZONTAL )
-		GO_panel_sizer_1.Add( bSizer4, 0, wx.ALIGN_RIGHT, 5 )
+		
+		GO_panel_sizer_1.Add( bSizer5, 0, wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		
+		self.GO_status_label = wx.StaticText( self.GO_panel, wx.ID_ANY, "", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.GO_status_label.Wrap( -1 )
+		self.GO_status_label.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 92, False, wx.EmptyString ) )
+		
+		GO_panel_sizer_1.Add( self.GO_status_label, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_TOP|wx.ALL, 10 )
+		
 		self.GO_panel.SetSizer( GO_panel_sizer_1 )
 		self.GO_panel.Layout()
 		GO_panel_sizer_1.Fit( self.GO_panel )
+		
+		
+		#GO_panel_sizer_1 = wx.BoxSizer( wx.VERTICAL )
+		#sbSizer3 = wx.StaticBoxSizer( wx.StaticBox( self.GO_panel, wx.ID_ANY, u"Source" ), wx.HORIZONTAL )
+		#self.GO_source_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"No file loaded", wx.DefaultPosition, wx.Size( -1,-1 ), 0 )
+		#self.GO_source_label.Wrap( -1 )
+		#sbSizer3.Add( self.GO_source_label, 1, wx.ALIGN_CENTER|wx.ALL, 5 )
+		#self.GO_load_button = wx.Button( self.GO_panel, wx.ID_ANY, u"Load ...", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.GO_load_button.SetDefault() 
+		#sbSizer3.Add( self.GO_load_button, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+		#GO_panel_sizer_1.Add( sbSizer3, 0, wx.ALL|wx.EXPAND, 5 )
+		#bSizer5 = wx.BoxSizer( wx.HORIZONTAL )
+		#sbSizer5 = wx.StaticBoxSizer( wx.StaticBox( self.GO_panel, wx.ID_ANY, u"Statistics" ), wx.HORIZONTAL )
+		#gSizer2 = wx.GridSizer( 6, 2, 0, 0 )
+		#self.m_staticText2 = wx.StaticText( self.GO_panel, wx.ID_ANY, u"Terms", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.m_staticText2.Wrap( -1 )
+		#gSizer2.Add( self.m_staticText2, 0, wx.ALL, 5 )
+		#self.GO_terms_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.GO_terms_label.Wrap( -1 )
+		#gSizer2.Add( self.GO_terms_label, 0, wx.ALL, 5 )
+		#self.m_staticText4 = wx.StaticText( self.GO_panel, wx.ID_ANY, u"Edges", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.m_staticText4.Wrap( -1 )
+		#gSizer2.Add( self.m_staticText4, 0, wx.ALL, 5 )
+		#self.GO_edges_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.GO_edges_label.Wrap( -1 )
+		#gSizer2.Add( self.GO_edges_label, 0, wx.ALL, 5 )
+		##self.m_staticText6 = wx.StaticText( self.GO_panel, wx.ID_ANY, u"Categories", wx.DefaultPosition, wx.DefaultSize, 0 )
+		##self.m_staticText6.Wrap( -1 )
+		##gSizer2.Add( self.m_staticText6, 0, wx.ALL, 5 )
+		##self.GO_categories_label = wx.StaticText( self.GO_panel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, 0 )
+		##self.GO_categories_label.Wrap( -1 )
+		##gSizer2.Add( self.GO_categories_label, 0, wx.ALL, 5 )
+		#sbSizer5.Add( gSizer2, 1, wx.ALIGN_CENTER|wx.SHAPED, 2 )
+		#bSizer5.Add( sbSizer5, 0, wx.ALL, 5 )
+		#sbSizer6 = wx.StaticBoxSizer( wx.StaticBox( self.GO_panel, wx.ID_ANY, u"Additional information" ), wx.VERTICAL )
+		#bSizer51 = wx.BoxSizer( wx.VERTICAL )
+		#self.m_staticText8 = wx.StaticText( self.GO_panel, wx.ID_ANY, "", wx.DefaultPosition, wx.DefaultSize, 0 )
+		#self.m_staticText8.Wrap( -1 )
+		#bSizer51.Add( self.m_staticText8, 0, wx.ALL, 5 )
+		#sbSizer6.Add( bSizer51, 1, wx.EXPAND, 5 )
+		#bSizer5.Add( sbSizer6, 0, wx.ALL, 5 )
+		#GO_panel_sizer_1.Add( bSizer5, 0, wx.EXPAND, 5 )
+		#bSizer4 = wx.BoxSizer( wx.HORIZONTAL )
+		#GO_panel_sizer_1.Add( bSizer4, 0, wx.ALIGN_RIGHT, 5 )
+		#self.GO_panel.SetSizer( GO_panel_sizer_1 )
+		#self.GO_panel.Layout()
+		#GO_panel_sizer_1.Fit( self.GO_panel )
+		
 		self.go_load_gui = GO_load_gui(self, self.real_parent)
 		
 		self.Bind(wx.EVT_BUTTON, self.OnLoadButton, id=self.GO_load_button.GetId())
 		self.GO_load_outcome_handle = self.real_parent.communication_thread.register_callback(self.real_parent.EVT_CUSTOM_LOAD_GO, self.OnLoadDone)
-		self.GO_params_handle = None
+		#self.GO_params_handle = None
+		self.GO_params_handle = self.real_parent.communication_thread.register_callback(self.real_parent.EVT_CUSTOM_GET, self.OnGetParams)
 		self._reset()
 #
 
@@ -146,17 +251,36 @@ class GOPanel(wx.Panel):
 		if self.real_parent.GO_status:
 			if not self.real_parent.params_GO['filename']==None:
 				self.GO_source_label.SetLabel(os.path.basename(self.real_parent.params_GO['filename']))
-				self.GO_terms_label.SetLabel(str(self.node_info))
-				self.GO_edges_label.SetLabel(str(self.edge_info))
-				#self.m_staticText8.SetLabel("The Gene Ontology has correctly been loaded from " + os.path.basename(self.real_parent.param_GO_filename) + ".")
 			else:
 				self.GO_source_label.SetLabel("[built-in version]")
-				#self.m_staticText8.SetLabel("The built-in version of the Gene Ontology has been correctly loaded.")
 
+			self.GO_terms_label.SetLabel(str(self.node_info))
+			self.GO_edges_label.SetLabel(str(self.edge_info))
+			self.GO_categories_label.SetLabel(str(3))
+			self.GO_status_label.SetLabel("Gene Ontology correcty loaded")
+			self.GO_isa_label.SetLabel("considered")
+			self.GO_haspart_label.SetLabel("considered")
+			self.GO_regulates_label.SetLabel("considered")
+			self.GO_partof_label.SetLabel("considered")
+			if "ignore" in self.real_parent.params_GO:
+				if "is_a" in self.real_parent.params_GO['ignore'] and self.real_parent.params_GO['ignore']['is_a']:
+					self.GO_isa_label.SetLabel("ignored")
+				if "has_part" in self.real_parent.params_GO['ignore'] and self.real_parent.params_GO['ignore']['has_part']:
+					self.GO_haspart_label.SetLabel("ignored")
+				if "regulates" in self.real_parent.params_GO['ignore'] and self.real_parent.params_GO['ignore']['regulates']:
+					self.GO_regulates_label.SetLabel("ignored")
+				if "part_of" in self.real_parent.params_GO['ignore'] and self.real_parent.params_GO['ignore']['part_of']:
+					self.GO_partof_label.SetLabel("ignored")
 		else:
 			self.GO_source_label.SetLabel("-")
 			self.GO_terms_label.SetLabel("-")
 			self.GO_edges_label.SetLabel("-")
+			self.GO_categories_label.SetLabel("-")
+			self.GO_isa_label.SetLabel("-")
+			self.GO_haspart_label.SetLabel("-")
+			self.GO_regulates_label.SetLabel("-")
+			self.GO_partof_label.SetLabel("-")
+			self.GO_status_label.SetLabel("No Gene Ontology currently loaded")
 			#self.m_staticText8.SetLabel("No Gene Ontology is currently loaded.")
 #
 
@@ -194,10 +318,11 @@ class GOPanel(wx.Panel):
 					print "GO load outcome: Unknown answer."
 		#self.unfreeze()
 		self.go_load_gui.unfreeze()
-		if self.GO_params_handle == None:
-			self.GO_params_handle = self.real_parent.communication_thread.register_callback(self.real_parent.EVT_CUSTOM_GET, self.OnGetParams)
+		#if self.GO_params_handle == None:
+			#self.GO_params_handle = self.real_parent.communication_thread.register_callback(self.real_parent.EVT_CUSTOM_GET, self.OnGetParams)
 		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_GET, WorkProcess.CMD_GET_PARAMS, WorkProcess.CMD_GET_PARAMS_GO))
 		self.real_parent.update()
+		event.Skip()
 #
 
 
@@ -216,15 +341,17 @@ class GOPanel(wx.Panel):
 					data = data[3]
 					#print data
 					self.real_parent.params_GO = data
+					self._update()
 					#self.real_parent.params_GO['filename'] = self.param_filename
 					#self.real_parent.params_GO['ignore']['has_part'] = self.param_GO_ignore_haspart
 					#self.real_parent.params_GO['ignore']['regulates'] = self.param_GO_ignore_regulates
 					#self.real_parent.params_GO['ignore']['is_a'] = self.param_GO_ignore_isa
 					#self.real_parent.params_GO['ignore']['part_of'] = self.param_GO_ignore_partof
-					if not self.GO_params_handle == None:
-						self.real_parent.communication_thread.unregister_callback(self.GO_params_handle)
-						self.GO_params_handle = None
+					#if not self.GO_params_handle == None:
+						#self.real_parent.communication_thread.unregister_callback(self.GO_params_handle)
+						#self.GO_params_handle = None
 					#self.real_parent.update()
+		event.Skip()
 #
 
 
@@ -417,53 +544,3 @@ class GO_load_gui ( wx.Dialog ):
 		
 		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_LOAD_GO, temp))
 #
-
-
-
-
-
-	#def OnLoadDone(self, event):
-		#if DEBUG_LEVEL>0:
-			#print "GO_load_gui: OnLoadDone()"
-		#data = event.data
-
-		#if data[0] == WorkProcess.CMD_LOAD_GO:
-			#if data[1] == WorkProcess.ANSWER_PROCESSED:
-				#if data[2] == WorkProcess. RESULT_OK:
-					#if DEBUG_LEVEL>1:
-						#print "GO load outcome: Load successful."
-						#print data
-					#self.status = True
-					#self.node_info = data[3]
-					#self.edge_info = data[4]
-					#self._data_to_main()
-					#self.parent.update()
-					#self.Hide()
-					
-				#else:
-					#if DEBUG_LEVEL>2:
-						#print "GO load outcome: Load Fail."
-					#self.status = False
-					#self.node_info = 0
-					#self.edge_info = 0
-					#self._data_to_main()
-					#self.parent.update()
-
-				#self.real_parent.communication_thread.unregister_callback(self.GO_load_outcome_handle)
-				#self.unfreeze()
-			#elif data[1] == WorkProcess.ANSWER_PROCESSING:
-				#if DEBUG_LEVEL>2:
-					#print "GO load outcome: Load in progress."
-			#elif data[1] == WorkProcess.ANSWER_IGNORED:
-				#if DEBUG_LEVEL>2:
-					#print "GO load outcome: Load request ignored."
-				#self.real_parent.communication_thread.unregister_callback(self.GO_load_outcome_handle)
-				#self.unfreeze()
-			#else:
-				#if DEBUG_LEVEL>2:
-					#print "GO load outcome: Unknown answer."
-				#self.real_parent.communication_thread.unregister_callback(self.GO_load_outcome_handle)
-				#self.unfreeze()
-			#return True
-		#return False
-##
