@@ -316,7 +316,10 @@ class ACPanel(wx.Panel):
 				self.IEA_annotations_label.SetLabel("-")
 			self.AC_status_label.SetLabel("Annotation Corpus correctly loaded")
 		else:
-			self.AC_status_label.SetLabel("No Annotation Corpus currently loaded")
+			if not self.real_parent.GO_status:
+				self.AC_status_label.SetLabel("No Annotation Corpus currently loaded.\nA Gene Ontology should be loaded before")
+			else:
+				self.AC_status_label.SetLabel("No Annotation Corpus currently loaded")
 			self.AC_source_label.SetLabel(u"No file loaded.")
 			self.objects_number_label.SetLabel("-")
 			self.terms_number_label.SetLabel("-")
@@ -605,7 +608,6 @@ class AC_load_gui ( wx.Dialog ):
 		self._reset_()
 		#self.Bind(wx.EVT_RADIOBUTTON, self.OnSep, id=self.output_sep_tab_radio.GetId())
 		#self.Bind(wx.EVT_RADIOBUTTON, self.OnSep, id=self.output_sep_space_radio.GetId())
-		self.Show()
 #
 
 

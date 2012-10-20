@@ -302,19 +302,22 @@ class QueryPanel(wx.Panel):
 
 
 
-	def OnLoadFromFileDone(self):
+	def OnLoadFromFileDone(self, event):
 
-		self.parent.query_type_box.SetSelection(self.query_file_type_box.GetSelection())
+	
+	
+		self.query_type_box.SetSelection(self.query_load_gui.query_file_type_box.GetSelection())
 		self.query_type_box.Disable()
 		self.query_text.Disable()
-		
-		self.real_parent.query = self.query
-		self.parent.query_text.SetValue(self.text_query)
+	
+		self.query = self.query_load_gui.current_query
+		self.real_parent.query = self.query_load_gui.current_query
+		self.query_text.SetValue(self.text_query)
 		
 		self.real_parent.params_query['type'] = self.query_type_ref[str(self.query_type_box.GetString(self.query_type_box.GetCurrentSelection()))]
 		#self.real_parent.params_query['query'] = self.query
 		self.real_parent.params_query['source'] = WorkProcess.QUERY_FROM_FILE
-		self.parent.query_to_update = False
+		self.query_to_update = False
 #
 
 
@@ -333,11 +336,14 @@ class QueryPanel(wx.Panel):
 #
 
 
-###################################################################################################################
-###################################################################################################################
-#######################        Query LOAD GUI										     ##############################################
-###################################################################################################################
-###################################################################################################################
+
+
+
+
+
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+# Query LOAD GUI
 
 class Query_load_gui ( wx.Dialog ):
 	
@@ -451,14 +457,10 @@ class Query_load_gui ( wx.Dialog ):
 		bSizer83.Add( self.query_cancel_button, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 		
 		bSizer521.Add( bSizer83, 0, wx.ALIGN_CENTER|wx.ALIGN_CENTER_HORIZONTAL, 5 )
-		
 		self.SetSizer( bSizer521 )
 		self.Layout()
-		
 		self.Centre( wx.BOTH )
-	
-
-
+		
 # Bind events to controls
 		self.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.query_pick_file_button.GetId())
 		self.Bind(wx.EVT_BUTTON, self.OnCancel, id=self.query_cancel_button.GetId())
@@ -468,6 +470,7 @@ class Query_load_gui ( wx.Dialog ):
 		self.Bind(wx.EVT_RADIOBUTTON, self.OnSelectSep, id=self.query_sep_tab_radio.GetId())
 		self.Bind(wx.EVT_RADIOBUTTON, self.OnSelectSep, id=self.query_sep_space_radio.GetId())
 		self.Bind(wx.EVT_RADIOBUTTON, self.OnSelectSep, id=self.query_sep_none_radio.GetId())
+		self.Bind(wx.EVT_TEXT, self.OnSelectSep, id=self.query_sep_custom_text.GetId())
 		self.Bind(wx.EVT_CHECKBOX, self.OnBackgroundCheck, id=self.query_background_check.GetId())
 		#self.Bind(wx.EVT_BUTTON, self.OnFileBrowse, id=self.AC_load_select_button.GetId())
 		#self.Bind(wx.EVT_BUTTON, self.OnCancel, id=self.AC_load_cancel_button.GetId())
@@ -497,9 +500,10 @@ class Query_load_gui ( wx.Dialog ):
 
 
 
-
-	def __del__( self ):
-		pass
+	def OnBackgroundCheck(self, event):
+		if DEBUG_LEVEL>1:
+			print "QueryGui:OnBackgroundCheck()"
+		self.query_background = self.query_background_check.GetValue()
 #
 
 
@@ -513,14 +517,13 @@ class Query_load_gui ( wx.Dialog ):
 			print "QueryGui: OnSelectSep()"
 		if self.query_sep_custom_radio.GetValue():
 			self.query_sep_custom_text.Enable()
-			#self.file_sep = self.query_sep_custom_text.GetValue()
-			self.file_sep = None
+			self.file_sep  = self.query_sep_custom_text.GetValue()
 		elif self.query_sep_space_radio.GetValue():
 			self.query_sep_custom_text.Disable()
 			self.file_sep = " "
 		elif self.query_sep_none_radio.GetValue():
 			self.query_sep_custom_text.Disable()
-			self.file_sep = ""
+			self.file_sep = None
 		elif self.query_sep_tab_radio.GetValue():
 			self.query_sep_custom_text.Disable()
 			self.file_sep = "\t"
@@ -543,29 +546,11 @@ class Query_load_gui ( wx.Dialog ):
 			self.query_sep_none_radio.Disable()
 			if self.query_sep_none_radio.GetValue():
 				self.query_sep_tab_radio.SetValue(True)
+				self.file_sep = "\t"
 				self.query_sep_none_radio.SetValue(False)
 		if not self.query_type == 'Pairs':
 			self.query_sep_none_radio.Enable()
-			
 #
-
-
-	def OnBackgroundCheck(self, event):
-		if DEBUG_LEVEL>1:
-			print "QueryGui:OnBackgroundCheck()"
-		self.query_background = self.query_background_check.GetValue()
-#
-
-
-
-
-	def ignore_what(self, event):
-		self.param_GO_ignore_haspart = self.GO_load_ignore_haspart_check.GetValue()
-		self.param_GO_ignore_regulates = self.GO_load_ignore_regulates_check.GetValue()
-#
-
-
-
 
 
 
@@ -609,15 +594,6 @@ class Query_load_gui ( wx.Dialog ):
 #
 
 
-	def _data_to_main(self):
-		if DEBUG_LEVEL>1:
-			print "query_load_gui: _data_to_main()"
-		self.parent.query = self.current_query
-		self.parent.OnLoadFromFileDone()
-#
-
-
-
 
 	def freeze(self):
 		self.query_pick_file_button.Disable()
@@ -626,9 +602,13 @@ class Query_load_gui ( wx.Dialog ):
 		self.query_file_type_box.Disable()
 		self.query_sep_tab_radio.Disable()
 		self.query_sep_space_radio.Disable()
+		self.query_sep_none_radio.Disable()
 		self.query_sep_custom_radio.Disable()
 		self.query_sep_custom_text.Disable()
 #
+
+
+
 
 	def unfreeze(self):
 		self.query_pick_file_button.Enable()
@@ -639,6 +619,7 @@ class Query_load_gui ( wx.Dialog ):
 		self.query_sep_space_radio.Enable()
 		self.query_sep_custom_radio.Enable()
 		self.query_sep_custom_text.Enable()
+		self.query_sep_none_radio.Enable()
 		self._reset()
 #
 
@@ -651,10 +632,6 @@ class Query_load_gui ( wx.Dialog ):
 			print "query_load_gui: OnLoad()"
 		self.freeze()
 
-		current_sep = self.file_sep
-		if self.file_sep == None:
-			current_sep = self.query_sep_custom_text.GetValue()
-			
 		if self.query_background:
 			# process background
 			#self.query_load_outcome_handle = self.real_parent.communication_thread.register_callback(self.real_parent.EVT_CUSTOM_LOAD_GO, self.OnLoadDone)
@@ -666,37 +643,34 @@ class Query_load_gui ( wx.Dialog ):
 			self.parent.text_query = ""
 			h = open(self.filename, 'r')
 			for i in h:
-				#print i
 				i = i.rstrip("\n")
 				i = i.rstrip("\r")
 				i = i.rstrip(" ")
 				
 				if self.query_type == 'List':
-					if self.file_sep == '':
+					if self.file_sep == '' or self.file_sep == None:
 						self.current_query.append(i)
-						temp_query += i
+						self.parent.text_query += (i+"\n")
 					else:
 						line = i.split(self.file_sep)
 						for j in line:
-							#print j
 							self.current_query.append(j)
-							#self.parent.query_text.AppendText(j+"\n")
 							self.parent.text_query += (j+"\n")
 				if self.query_type == 'Pairs':
-					if self.file_sep == '':
+					if self.file_sep == '' or self.file_sep == None:
 						raise Exception
 					else:
 						line = i.split(self.file_sep)
-						#print line[0]+"\t"+line[1]
-						#self.parent.query_text.AppendText(line[0]+"\t"+line[1]+"\n")
-						self.parent.text_query += (line[0]+"\t"+line[1]+"\n")
-						self.current_query.append((line[0],line[1]))
+						if len(line) >= 2:
+							self.parent.text_query += (line[0]+"\t"+line[1]+"\n")
+							self.current_query.append((line[0],line[1]))
 
 			#print temp_query
 			h.close()
 			
 			#print self.current_query
-			self._data_to_main()
+			#self._data_to_main()
+			self.parent.OnLoadFromFileDone(None)
 			self.unfreeze()
 			self.OnCancel(None)
 

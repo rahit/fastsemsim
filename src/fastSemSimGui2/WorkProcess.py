@@ -349,6 +349,7 @@ class WorkProcess(multiprocessing.Process):
 	def send_data(self, message):
 		if DEBUG_LEVEL > 2:
 			print "WorkProcess: send_data()"
+		#print str(message[0]) + "\t"  + str(message[1])
 		#self.output_pipe.send(message)
 		self.send((CMD_OUTPUT, message))
 		#if DEBUG_LEVEL > 0:
@@ -613,7 +614,7 @@ class WorkProcess(multiprocessing.Process):
 	####-#-#-#-#-#-#-#-#-#
 
 	def set_query(self, data): #### data format: (query from, query_params) query_params: none (fom ac), (type, filename) (from file), type (from gui)
-		if DEBUG_LEVEL>1:
+		if DEBUG_LEVEL>0:
 			print "WorkProcess: set_query()"
 
 		self.ok_query = False
@@ -621,6 +622,7 @@ class WorkProcess(multiprocessing.Process):
 		self.query = None
 		
 		if len(data) > 1:
+			#print "WorkProcess: set_query() using data[1]"
 			self.query = data[1]
 			self.ok_query = True
 
@@ -630,6 +632,7 @@ class WorkProcess(multiprocessing.Process):
 		self.query_type = data['type']
 
 		if self.query == None and 'query' in data:
+			#print "WorkProcess: set_query() using data['query']"
 			self.query = data['query'] #### NOTE 'query' should not be part of parameters
 			self.ok_query = True
 
@@ -655,26 +658,40 @@ class WorkProcess(multiprocessing.Process):
 
 
 	def load_query(self):
-		if DEBUG_LEVEL>1:
+		if DEBUG_LEVEL>0:
 			print "WorkProcess: load_query()"
 		if self.ok_query:
+			if DEBUG_LEVEL>0:
+				print "WorkProcess: load_query() already ok"
 			return True
 		self.query = None
 		if not self.ok_params_query:
+			if DEBUG_LEVEL>0:
+				print "WorkProcess: load_query() params not ok"
 			return False
 		if self.query_from == QUERY_FROM_GUI:
+			if DEBUG_LEVEL>0:
+				print "WorkProcess: load_query() Wrong"
 			self.query = self.start_data[0]; #### DANGER expecting query as start parameters!
 		elif self.query_from == QUERY_FROM_FILE:
+			if DEBUG_LEVEL>0:
+				print "WorkProcess: load_query() load from file"
 			self.build_query_from_file()
 		elif self.query_from == QUERY_FROM_AC:
+			if DEBUG_LEVEL>0:
+				print "WorkProcess: load_query() load from AC"
 			self.build_query_from_ac()
 		if not self.query == None:
+			if DEBUG_LEVEL>0:
+				print "WorkProcess: load_query() fixing pairs_number"
 			if self.query_type == QUERY_PAIRS:
 				self.query_pairs_number = len(self.query) 
 			elif self.query_type == QUERY_LIST:
 				self.query_pairs_number = len(self.query) * (len(self.query)-1) / 2
 			self.ok_query = True
 			return True
+		if DEBUG_LEVEL>0:
+			print "WorkProcess: load_query() Returning false"
 		return False
 #
 
@@ -875,6 +892,8 @@ class WorkProcess(multiprocessing.Process):
 				return False
 			self.ok_output = True
 			return True
+		else:
+			print "WorkProcess: init_output() NO PARAMS OK!!!"
 		return False
 #
 
@@ -993,6 +1012,7 @@ class WorkProcess(multiprocessing.Process):
 			self.obj2_pos = 1
 			self.obj_pos = 0
 			self.pairs_done = 0
+			#print "First Params:\tobj1_pos: " + str(self.obj1_pos) + "\tobj2_pos: " + str(self.obj2_pos) + "\tpairs_done: " + str(self.pairs_done) + "\tquery_pairs_saved: " + str(self.query_pairs_saved)
 			self._calculate()
 #
 
@@ -1071,10 +1091,15 @@ class WorkProcess(multiprocessing.Process):
 			print "WorkProcess: _calculate()"
 		if self.query_type == QUERY_LIST:
 			for self.obj1_pos in range(self.obj1_pos, len(self.query)):
+				#print str(self.query[self.obj1_pos])
 				for self.obj2_pos in range(self.obj2_pos, len(self.query)):
 					self._temp_ss = self.ss.SemSim(self.query[self.obj1_pos],self.query[self.obj2_pos], self.ss_ontology)
 					self._dispatch_output()
 					self.pairs_done += 1
+					
+					#if True: # self.obj2_pos < self.obj1_pos + 10:
+						#print "\tobj1_pos: " + str(self.obj1_pos) + "\tobj2_pos: " + str(self.obj2_pos) + "\tpairs_done: " + str(self.pairs_done) + "\tquery_pairs_saved: " + str(self.query_pairs_saved) + "\tobj1: " + str(self.query[self.obj1_pos]) + "\tobj2: "  + str(self.query[self.obj2_pos]) + "\tscore: " + str(self._temp_ss) 
+
 					#print self.pairs_done
 					if self.obj2_pos == len(self.query) - 1:
 						self.obj2_pos = self.obj1_pos + 2
@@ -1159,6 +1184,8 @@ class WorkProcess(multiprocessing.Process):
 			if DEBUG_LEVEL>1:
 				print "WorkProcess: _send_output(). Cycle"
 			self.send_data(self.output_buffer)
+			self.output_buffer = [[]] * self.MAX_BUFFER_SIZE
+				#self.query_pairs_saved = 0
 			self.query_pairs_saved = 0
 #
 
@@ -1185,6 +1212,7 @@ class WorkProcess(multiprocessing.Process):
 		if self.query_pairs_saved == 0:
 			return
 		self.send_data(self.output_buffer[0: self.query_pairs_saved])
+		self.output_buffer = [[]] * self.MAX_BUFFER_SIZE
 		self.query_pairs_saved = 0
 #
 

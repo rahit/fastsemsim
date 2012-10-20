@@ -259,21 +259,23 @@ class OutputCtrlPanel(wx.Panel):
 
 
 class OutputWindow(wx.Frame):
-	def __init__( self, parent, pos, size, style):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = "Output", pos = pos, size = size, style = style )
-
+	def __init__( self, parent):
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = "Output", pos = wx.DefaultPosition, size = wx.Size( 420,400 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL| wx.RESIZE_BORDER )
 		self.real_parent = parent
 		self.parent = parent
 		
-		bSizer62 = wx.BoxSizer( wx.VERTICAL )
+		self.SetSizeHintsSz( wx.Size( 330,-1 ), wx.DefaultSize )
+		#self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		bSizer62 = wx.BoxSizer( wx.VERTICAL)
 		
-		sbSizer35 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, ""), wx.VERTICAL )
-		self.output_text = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 200,300), wx.TE_MULTILINE|wx.TE_READONLY )
+		sbSizer35 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, ""), wx.HORIZONTAL|wx.EXPAND )
+		self.output_text = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_MULTILINE|wx.TE_READONLY)
+		self.output_text.SetMinSize( wx.Size( 300, 400 ) )
 		sbSizer35.Add( self.output_text, 0, wx.ALL|wx.EXPAND, 5 )
-		bSizer62.Add( sbSizer35, 0, wx.ALL|wx.EXPAND, 5 )
+		bSizer62.Add( sbSizer35, 1, wx.ALL|wx.EXPAND, 5 )
 		
 		self.SetSizer( bSizer62 )
 		self.Layout()
 		bSizer62.Fit( self )
-		self.Show(True)
+		#self.Show(True)
 #

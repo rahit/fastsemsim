@@ -191,9 +191,6 @@ class fastSemSimGui(wx.Frame):
 		#self.fastSemSim_listbook.AddPage( self.output_window, u"Output", False )
 		##self.fastSemSim_listbook.SetPageImage(5, 5)
 
-		
-		self.output_window = OutputWindow(self, wx.DefaultPosition, wx.DefaultSize, 0)
-
 		#self.SetStatus(STATUS_WAIT)
 		#self.activateGoCmd()
 		#self.OnAnyUpdate()
@@ -449,6 +446,8 @@ class fastSemSimGui(wx.Frame):
 					if DEBUG_LEVEL>0:
 						print "start_outcome: Computation start."
 					self.query_panel.controls_log.AppendText("Starting computation...\n")
+					self.output_window = OutputWindow(self)
+					self.output_window.Show(True)
 						#self.SetStatus(1)
 					
 				else:
@@ -536,6 +535,7 @@ class fastSemSimGui(wx.Frame):
 		data = event.data
 		if data[0] == WorkProcess.CMD_OUTPUT:
 			data = data[1]
+			#print "OUTPUT: " + str(data[0]) + "\t" + str(data[1]) + "\t" + str(data[2])
 			#temp = ("\n".join([str(`num`) for num in data]))
 			temp = "\n".join(["\t".join([str(b) for b in num]) for num in data])
 			temp += "\n"
@@ -770,7 +770,7 @@ class fastSemSimGui(wx.Frame):
 			print "fastSemSimGui: _update()"
 
 		if self.status == WorkProcess.STATUS_WAIT:
-			print "STATUS_WAIT"
+			#print "STATUS_WAIT"
 			self._unfreeze()
 
 		if self.GO_status:
@@ -791,7 +791,7 @@ class fastSemSimGui(wx.Frame):
 		self.output_ctrl_panel._update()
 		
 		if not self.status == WorkProcess.STATUS_WAIT:
-			print "not STATUS_WAIT"
+			#print "not STATUS_WAIT"
 			self._freeze()
 #
 
