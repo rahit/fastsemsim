@@ -200,6 +200,7 @@ class QueryPanel(wx.Panel):
 		self.query_from_file_button.Disable()
 		self.query_reset_button.Disable()
 		self.query_text.Disable()
+		self.query_type_box.Disable()
 #
 
 
@@ -212,6 +213,7 @@ class QueryPanel(wx.Panel):
 		self.query_from_file_button.Enable()
 		self.query_reset_button.Enable()
 		self.query_text.Enable()
+		self.query_type_box.Enable()
 #
 
 

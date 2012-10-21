@@ -758,7 +758,7 @@ class AC_load_gui ( wx.Dialog ):
 		elif self.real_parent.params_AC['type'] == PLAIN_FILE_TYPE_REF:
 			self.collect_plain_file_parms(None)
 
-		print self.real_parent.params_AC
+		#print self.real_parent.params_AC
 		self.real_parent.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_LOAD_AC, self.real_parent.params_AC))
 #
 

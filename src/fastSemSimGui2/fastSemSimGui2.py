@@ -245,10 +245,9 @@ class fastSemSimGui(wx.Frame):
 
 
 	def OnMenuOpen(self, event):
-		print "OnMenuOpen still to be implemented."
 		dialog = wx.FileDialog(None, style = wx.OPEN)
 		if dialog.ShowModal() == wx.ID_OK:
-			print 'Loading: ', dialog.GetPath()
+			self.fastSemSim_statusbar.SetStatusText("Loading config file: " + str(dialog.GetPath()))
 			#if not self.config_file == None:
 				#self.OnMenuNew(None)
 			self.config_file = dialog.GetPath()
@@ -372,7 +371,8 @@ class fastSemSimGui(wx.Frame):
 			print "fastSemSimGui: OnQuit()"
 		self.status_gui = STATUS_EXIT # WARNING Should be done in a dedicated function, perhaps disabling all the commands
 		self._kill_process()
-		event.Veto()
+		if not event == None:
+			event.Veto()
 #
 
 
@@ -438,7 +438,7 @@ class fastSemSimGui(wx.Frame):
 	def OnStartEvent(self, event):
 		if DEBUG_LEVEL>1:
 			print "fastSemSimGui: OnStartEvent()"
-		print len(event.data)
+		#print len(event.data)
 		data = event.data
 		if data[0] == WorkProcess.CMD_START:
 			if data[1] == WorkProcess.ANSWER_PROCESSED:
@@ -785,7 +785,7 @@ class fastSemSimGui(wx.Frame):
 		elif self.status == WorkProcess.STATUS_RUN:
 			self.fastSemSim_statusbar.SetStatusText("Calculation in progress. Press Stop to abort (Query panel)")
 		elif self.status == WorkProcess.STATUS_WAIT:
-			self.fastSemSim_statusbar.SetStatusText("Input a query (Query panel) and start the computation. Customize other parameters through the other panels")
+			self.fastSemSim_statusbar.SetStatusText("Use the Query panel to start the computation.")
 #
 
 
@@ -993,6 +993,11 @@ class fastSemSimGui(wx.Frame):
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_SET_OUTPUT, self.params_output))
 		if self.query_panel.query_to_update:
 			self.query_panel.OnLoadFromGui(None)
+		if len(self.query) == 0:
+			wx.MessageBox('Empty or Invalid query. Perhaps the wrong type (list/pairs) has been selected?', 'Invalid Query', 
+        wx.OK | wx.ICON_ERROR)
+			self._unfreeze()
+			return
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_SET_QUERY, self.params_query, self.query))
 
 		#self.gui2ssprocess_queue.put((WorkProcess.CMD_STATUS, None))
