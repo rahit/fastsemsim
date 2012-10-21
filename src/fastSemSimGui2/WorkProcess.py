@@ -998,7 +998,7 @@ class WorkProcess(multiprocessing.Process):
 			print "WorkProcess: _start()"
 		self.status = STATUS_RUN
 		self.start_data = data
-		
+		self.send((CMD_START, ANSWER_PROCESSING, RESULT_OK, {'go':self.ok_go , 'ac':self.ok_ac, 'ss':self.ok_ss, 'query':self.ok_query, 'output':self.ok_output}))
 		# initialize modules
 		if not self._init_structures():
 			if DEBUG_LEVEL>0:

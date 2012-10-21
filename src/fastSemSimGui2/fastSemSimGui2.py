@@ -445,16 +445,14 @@ class fastSemSimGui(wx.Frame):
 				if data[2] == WorkProcess. RESULT_OK:
 					if DEBUG_LEVEL>0:
 						print "start_outcome: Computation start."
-					self.query_panel.controls_log.AppendText("Starting computation...\n")
-					self.output_window = OutputWindow(self)
-					self.output_window.Show(True)
-						#self.SetStatus(1)
-					
+					if self.params_output['to'] == WorkProcess.OUTPUT_TO_FILE:
+						self.query_panel.controls_log.AppendText("Output data redirected to the selected output file.\n")
+					else:
+						self.output_window = OutputWindow(self)
+						self.output_window.Show(True)
 				else:
 					if DEBUG_LEVEL>0:
 						print "start_outcome: Computation not started."
-					#self.SetStatus(0)
-
 					if not data[3]['go']:
 						self.query_panel.controls_log.AppendText("Check Gene Ontology.\nAborted\n")
 					if not data[3]['ac']:
@@ -469,6 +467,7 @@ class fastSemSimGui(wx.Frame):
 			elif data[1] == WorkProcess.ANSWER_PROCESSING:
 				if DEBUG_LEVEL>0:
 					print "start_outcome: Start request is being processed."
+				self.query_panel.controls_log.AppendText("Starting computation...\n")
 				return
 			elif data[1] == WorkProcess.ANSWER_IGNORED:
 				if DEBUG_LEVEL>0:
@@ -476,21 +475,6 @@ class fastSemSimGui(wx.Frame):
 			else:
 				if DEBUG_LEVEL>0:
 					print "start_outcome: Unknown answer."
-					
-			#self.log_field.AppendText("Evaluating semantic similarity...\n")
-			#if self.output_type == 0:
-				#self.OutputGui.output_field.Clear()
-				#self.OutputGui.Show()
-				
-				#if self.parentobj.status == 1: # Ready. Not Running
-					#self.parentobj.start()
-				#elif self.parentobj.status == 2: # running
-					#self.parentobj.stop() # set to not running and stops thread
-				#elif self.parentobj.status == 0: # Not ready. Should not be active.
-					#self.parentobj.activateGoCmd()
-					
-		#self.query_panel.controls_log.Clear()
-		#self.controls_start_button.SetLabel('Stop')
 			self.update()
 #
 
@@ -793,6 +777,15 @@ class fastSemSimGui(wx.Frame):
 		if not self.status == WorkProcess.STATUS_WAIT:
 			#print "not STATUS_WAIT"
 			self._freeze()
+			
+		if not self.GO_status:
+			self.fastSemSim_statusbar.SetStatusText("Load a Gene Ontology (Gene Ontology panel)")
+		elif not self.AC_status:
+			self.fastSemSim_statusbar.SetStatusText("Load an Annotation Corpus (Annotation Corpus panel)")
+		elif self.status == WorkProcess.STATUS_RUN:
+			self.fastSemSim_statusbar.SetStatusText("Calculation in progress. Press Stop to abort (Query panel)")
+		elif self.status == WorkProcess.STATUS_WAIT:
+			self.fastSemSim_statusbar.SetStatusText("Input a query (Query panel) and start the computation. Customize other parameters through the other panels")
 #
 
 
@@ -998,6 +991,8 @@ class fastSemSimGui(wx.Frame):
 			self.SS_panel.SS_to_send = False
 			self.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_SET_SS, self.params_SS))
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_SET_OUTPUT, self.params_output))
+		if self.query_panel.query_to_update:
+			self.query_panel.OnLoadFromGui(None)
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_SET, WorkProcess.CMD_SET_QUERY, self.params_query, self.query))
 
 		#self.gui2ssprocess_queue.put((WorkProcess.CMD_STATUS, None))

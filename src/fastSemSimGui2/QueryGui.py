@@ -43,7 +43,7 @@ class QueryPanel(wx.Panel):
 		
 		sbSizer33 = wx.StaticBoxSizer( wx.StaticBox( self.query_panel, wx.ID_ANY, u"Help" ), wx.VERTICAL )
 		
-		self.m_staticText53 = wx.StaticText( self.query_panel, wx.ID_ANY, u"Enter a list of objects or object pairs. You can also load the query from a file or use the whole annotation corpus (see buttons below).", wx.DefaultPosition, wx.Size( 225,-1 ), 0 )
+		self.m_staticText53 = wx.StaticText( self.query_panel, wx.ID_ANY, u"Manually enter a query in the field on the left. Separate the entries with tabs. Spaces will not be considered as separators. You can also load the query from a file or use the whole annotation corpus.", wx.DefaultPosition, wx.Size( 225,-1 ), 0 )
 		self.m_staticText53.Wrap( -1 )
 		sbSizer33.Add( self.m_staticText53, 0, wx.ALL, 5 )
 		
@@ -70,9 +70,16 @@ class QueryPanel(wx.Panel):
 		
 		bSizer54.Add( bSizer53, 0, wx.EXPAND, 5 )
 		
+		
 		bSizer512.Add( bSizer54, 1, wx.BOTTOM|wx.TOP, 5 )
 		
-		bSizer50.Add( bSizer512, 1, wx.EXPAND | wx.BOTTOM, 5 )
+		bSizer50.Add( bSizer512, 0, wx.EXPAND | wx.BOTTOM, 5 )
+		
+		self.query_status_label = wx.StaticText( self.query_panel, wx.ID_ANY, u"", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.query_status_label.Wrap( -1 )
+		self.query_status_label.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 92, False, wx.EmptyString ) )
+		
+		bSizer50.Add( self.query_status_label, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 		
 		self.m_staticline1 = wx.StaticLine( self.query_panel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LI_HORIZONTAL )
 		bSizer50.Add( self.m_staticline1, 0, wx.EXPAND |wx.ALL, 5 )
@@ -124,6 +131,7 @@ class QueryPanel(wx.Panel):
 		
 		self.real_parent.query = None
 		self.real_parent.params_query['type'] = None
+		self.OnSelectQueryType(None)
 		self.real_parent.params_query['source'] = WorkProcess.QUERY_FROM_GUI
 
 		self.query_to_update = True
@@ -171,6 +179,13 @@ class QueryPanel(wx.Panel):
 
 		if 'type' in self.real_parent.params_query and not self.real_parent.params_query['type']==None:
 			self.query_type_box.SetSelection(self.real_parent.params_query['type'])
+			
+		if not self.real_parent.GO_status:
+			self.query_status_label.SetLabel("Please load a valid Gene Ontology and Annotation Corpus.")
+		elif  not self.real_parent.AC_status:
+			self.query_status_label.SetLabel("Please load a valid Annotation Corpus.")
+		else:
+			self.query_status_label.SetLabel("Specify a query.")
 #
 
 
@@ -184,6 +199,7 @@ class QueryPanel(wx.Panel):
 		self.query_from_AC_button.Disable()
 		self.query_from_file_button.Disable()
 		self.query_reset_button.Disable()
+		self.query_text.Disable()
 #
 
 
@@ -195,6 +211,7 @@ class QueryPanel(wx.Panel):
 		self.query_from_AC_button.Enable()
 		self.query_from_file_button.Enable()
 		self.query_reset_button.Enable()
+		self.query_text.Enable()
 #
 
 
@@ -250,10 +267,34 @@ class QueryPanel(wx.Panel):
 #
 
 
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
-
 	def OnReset(self, event):
 		self._reset()
+#
+
+
+	def OnLoadFromGui(self, event):
+		temp_query = self.query_panel.query_text.GetValue()
+		current_query = []
+		temp_query = temp_query.split("\n")
+		for i in temp_query:
+			i = i.rstrip("\n")
+			i = i.rstrip("\r")
+			if len(i) == 0:
+				continue
+			#i = i.rstrip(" ")
+			if self.real_parent.params_query['type'] == WorkProcess.QUERY_LIST:
+				line = i.split("\t")
+				for j in line:
+					if not str(j) == "" and not str(j) == " ":
+						current_query.append(j)
+			elif self.real_parent.params_query['type'] == WorkProcess.QUERY_PAIRS:
+				line = i.split("\t")
+				if len(line) >= 2:
+					if not str(line[0]) == "" and not str(line[0]) == " " and not str(line[1]) == "" and not str(line[1]) == " ":
+						current_query.append((line[0],line[1]))
+
+		self.real_parent.query = current_query
+		self.query_to_update = False
 #
 
 
@@ -278,11 +319,11 @@ class QueryPanel(wx.Panel):
 			
 			self.real_parent.query = data
 			
-			temp = ("\n".join([str(`num`) for num in data]))
+			temp = ("\n".join([str(num) for num in data]))
 			temp += "\n"
-			self.query_text.Disable()
+			#self.query_text.Disable()
 			self.query_text.SetValue(temp)
-			self.query_type_box.Disable()
+			#self.query_type_box.Disable()
 			self.query_type_box.SetSelection(1)
 
 			self.real_parent.params_query['type'] = self.query_type_ref[str(self.query_type_box.GetString(self.query_type_box.GetCurrentSelection()))]
@@ -303,20 +344,17 @@ class QueryPanel(wx.Panel):
 
 
 	def OnLoadFromFileDone(self, event):
-
-	
-	
 		self.query_type_box.SetSelection(self.query_load_gui.query_file_type_box.GetSelection())
-		self.query_type_box.Disable()
-		self.query_text.Disable()
+		#self.query_type_box.Disable()
+		#self.query_text.Disable()
 	
-		self.query = self.query_load_gui.current_query
+		#self.query = self.query_load_gui.current_query
 		self.real_parent.query = self.query_load_gui.current_query
 		self.query_text.SetValue(self.text_query)
 		
 		self.real_parent.params_query['type'] = self.query_type_ref[str(self.query_type_box.GetString(self.query_type_box.GetCurrentSelection()))]
-		#self.real_parent.params_query['query'] = self.query
 		self.real_parent.params_query['source'] = WorkProcess.QUERY_FROM_FILE
+		self.real_parent.params_query['filename'] = self.query_load_gui.filename
 		self.query_to_update = False
 #
 
@@ -325,12 +363,13 @@ class QueryPanel(wx.Panel):
 
 	def OnSelectQueryType(self, event):
 		self.real_parent.params_query['type'] = self.query_type_ref[str(self.query_type_box.GetString(self.query_type_box.GetCurrentSelection()))]
-		pass
+		self.query_to_update = True
 #
 
 
 	def OnQueryUpdate(self, event):
 		self.query_to_update = True
+		self.real_parent.params_query['source'] = WorkProcess.QUERY_FROM_GUI
 		#print self.query_text.GetValue()
 
 #
@@ -348,7 +387,7 @@ class QueryPanel(wx.Panel):
 class Query_load_gui ( wx.Dialog ):
 	
 	def __init__( self, parent , real_parent):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 480,415 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"Load Query from File", pos = wx.DefaultPosition, size = wx.Size( 480,415 ), style = wx.DEFAULT_DIALOG_STYLE )
 		
 		self.parent = parent
 		self.real_parent = real_parent
@@ -361,7 +400,7 @@ class Query_load_gui ( wx.Dialog ):
 		
 		sbSizer34 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Source file" ), wx.HORIZONTAL )
 		
-		self.query_input_file_label = wx.StaticText( self, wx.ID_ANY, u"No file selected.", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.query_input_file_label = wx.StaticText( self, wx.ID_ANY, u"", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.query_input_file_label.Wrap( -1 )
 		sbSizer34.Add( self.query_input_file_label, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 		
@@ -425,20 +464,21 @@ class Query_load_gui ( wx.Dialog ):
 		self.query_file_type_box.SetSelection(0)
 		fgSizer8.Add( self.query_file_type_box, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 		
-		self.m_staticText52 = wx.StaticText( self, wx.ID_ANY, u"Select whether the input is a list of objects or a set of pairs first field of each row is an object or a GO Term.", wx.DefaultPosition, wx.Size( 200,60 ), 0 )
+		self.m_staticText52 = wx.StaticText( self, wx.ID_ANY, u"Select whether the input is a list of objects or a set of pairs.", wx.DefaultPosition, wx.Size( 200,60 ), 0 )
 		self.m_staticText52.Wrap( -1 )
 		fgSizer8.Add( self.m_staticText52, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 		
 		self.m_staticText46 = wx.StaticText( self, wx.ID_ANY, u"Process mode", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText46.Wrap( -1 )
-		fgSizer8.Add( self.m_staticText46, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		fgSizer8.Add( self.m_staticText46, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 5 )
 		
 		self.query_background_check = wx.CheckBox( self, wx.ID_ANY, u"In background", wx.DefaultPosition, wx.Size( -1,-1 ), 0 )
 		fgSizer8.Add( self.query_background_check, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 		
-		self.m_staticText45 = wx.StaticText( self, wx.ID_ANY, u"Select this option to load the query without displaying it. Useful for huge queries.", wx.DefaultPosition, wx.Size( 200,50 ), 0 )
+		#self.m_staticText45 = wx.StaticText( self, wx.ID_ANY, u"Select this option to load the query without displaying it. Useful for huge queries.", wx.DefaultPosition, wx.Size( 200,50 ), 0 )
+		self.m_staticText45 = wx.StaticText( self, wx.ID_ANY, u"", wx.DefaultPosition, wx.Size( 200,50 ), 0 )
 		self.m_staticText45.Wrap( -1 )
-		fgSizer8.Add( self.m_staticText45, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		fgSizer8.Add( self.m_staticText45, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER_HORIZONTAL|wx.ALL, 5 )
 		
 		sbSizer29.Add( fgSizer8, 1, wx.ALL|wx.EXPAND, 5 )
 		
@@ -579,7 +619,7 @@ class Query_load_gui ( wx.Dialog ):
 	def _set_file_name(self, fn):
 		self.filename = fn
 		if fn == None:
-			self.query_input_file_label.SetLabel(u"No GO selected.")
+			self.query_input_file_label.SetLabel(u"No query file selected.")
 		else:
 			self.query_input_file_label.SetLabel(os.path.basename(self.filename))
 		self.is_ok()
