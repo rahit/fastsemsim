@@ -16,15 +16,15 @@ class SSPanel(wx.Panel):
 		self.SS_measure_box = wx.ComboBox( self.SS_panel, wx.ID_ANY, value="", pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.CB_READONLY)
 
 		sbSizer15.Add( self.SS_measure_box, 0, wx.ALL, 5 )
-		self.SS_measure_settings_button = wx.BitmapButton( self.SS_panel, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW )
-		sbSizer15.Add( self.SS_measure_settings_button, 0, wx.ALL, 5 )
+		#self.SS_measure_settings_button = wx.BitmapButton( self.SS_panel, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW )
+		#sbSizer15.Add( self.SS_measure_settings_button, 0, wx.ALL, 5 )
 		bSizer26.Add( sbSizer15, 1, wx.EXPAND|wx.RIGHT, 5 )
 		sbSizer16 = wx.StaticBoxSizer( wx.StaticBox( self.SS_panel, wx.ID_ANY, u"Mixing Strategy" ), wx.HORIZONTAL )
 
 		self.SS_mix_box = wx.ComboBox( self.SS_panel, wx.ID_ANY, "", wx.DefaultPosition, wx.DefaultSize, style = wx.CB_READONLY)
 		sbSizer16.Add( self.SS_mix_box, 0, wx.ALL, 5 )
-		self.SS_mix_settings_button = wx.BitmapButton( self.SS_panel, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW )
-		sbSizer16.Add( self.SS_mix_settings_button, 0, wx.ALL, 5 )
+		#self.SS_mix_settings_button = wx.BitmapButton( self.SS_panel, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW )
+		#sbSizer16.Add( self.SS_mix_settings_button, 0, wx.ALL, 5 )
 		bSizer26.Add( sbSizer16, 1, wx.EXPAND|wx.RIGHT|wx.TOP, 5 )
 		bSizer27.Add( bSizer26, 0, 0, 5 )
 		sbSizer17 = wx.StaticBoxSizer( wx.StaticBox( self.SS_panel, wx.ID_ANY, u"Ontology" ), wx.VERTICAL )
@@ -75,8 +75,10 @@ class SSPanel(wx.Panel):
 			print "SSPanel: _update()"
 		if 'mixing_strategy' in self.real_parent.params_SS:
 			self.SS_mix_box.SetStringSelection(self.real_parent.params_SS['mixing_strategy'])
+			self.OnSelectMS(None)
 		if 'measure' in self.real_parent.params_SS:
 			self.SS_measure_box.SetStringSelection(self.real_parent.params_SS['measure'])
+			self.OnSelectSS(None)
 		if 'ontology' in self.real_parent.params_SS:
 			if self.real_parent.params_SS['ontology'] =="CC":
 				self.SS_GO_CC_radio.SetValue(1)

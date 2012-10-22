@@ -131,8 +131,9 @@ class WorkProcess(multiprocessing.Process):
 
 	# some static settings
 	print_output = False
-	MAX_BUFFER_SIZE = 5000
-	CHECK_INTERVAL = 5000
+	MAX_BUFFER_SIZE = 1000
+	CURRENT_BUFFER_SIZE = MAX_BUFFER_SIZE
+	CHECK_INTERVAL = 500
 
 #### __init__ receives in input the 4 channels used for bidirectional communication with gui process
 # WorkProcess communicates through 4 channels: 2 ingoing and 2 outgoing. In each direction a pipe and a queue are available.#
@@ -886,7 +887,7 @@ class WorkProcess(multiprocessing.Process):
 			if self.output_to == OUTPUT_TO_FILE:
 				self.output_file = open(self.output_filename, 'w')
 			elif self.output_to == OUTPUT_TO_GUI:
-				self.output_buffer = [[]] * self.MAX_BUFFER_SIZE
+				self.output_buffer = [[]] * self.CURRENT_BUFFER_SIZE
 				self.query_pairs_saved = 0
 			else:
 				return False
@@ -1013,6 +1014,7 @@ class WorkProcess(multiprocessing.Process):
 			self.obj_pos = 0
 			self.pairs_done = 0
 			#print "First Params:\tobj1_pos: " + str(self.obj1_pos) + "\tobj2_pos: " + str(self.obj2_pos) + "\tpairs_done: " + str(self.pairs_done) + "\tquery_pairs_saved: " + str(self.query_pairs_saved)
+			self.CURRENT_BUFFER_SIZE = 100
 			self._calculate()
 #
 
@@ -1184,7 +1186,8 @@ class WorkProcess(multiprocessing.Process):
 			if DEBUG_LEVEL>1:
 				print "WorkProcess: _send_output(). Cycle"
 			self.send_data(self.output_buffer)
-			self.output_buffer = [[]] * self.MAX_BUFFER_SIZE
+			self.CURRENT_BUFFER_SIZE = self.MAX_BUFFER_SIZE
+			self.output_buffer = [[]] * self.CURRENT_BUFFER_SIZE
 				#self.query_pairs_saved = 0
 			self.query_pairs_saved = 0
 #
@@ -1212,7 +1215,7 @@ class WorkProcess(multiprocessing.Process):
 		if self.query_pairs_saved == 0:
 			return
 		self.send_data(self.output_buffer[0: self.query_pairs_saved])
-		self.output_buffer = [[]] * self.MAX_BUFFER_SIZE
+		self.output_buffer = [[]] * self.CURRENT_BUFFER_SIZE
 		self.query_pairs_saved = 0
 #
 

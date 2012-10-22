@@ -476,6 +476,8 @@ class fastSemSimGui(wx.Frame):
 				if DEBUG_LEVEL>0:
 					print "start_outcome: Unknown answer."
 			self.update()
+			#self.query_panel.controls_start_button.Enable()
+			#self.query_panel.controls_start_button.SetLabel("Stop")
 #
 
 
@@ -505,6 +507,7 @@ class fastSemSimGui(wx.Frame):
 			else:
 				if DEBUG_LEVEL>1:
 					print "stop_outcome: Unknown answer."
+			self.query_panel.controls_log.AppendText("Computation terminated.\n-------------------------\n")
 			self.update()
 			#event.Skip()
 #
@@ -1008,7 +1011,7 @@ class fastSemSimGui(wx.Frame):
 		#print self.params_AC
 		#print self.query
 
-		#controls_start_button.Disable()
+		self.query_panel.controls_start_button.Disable()
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_START, None))
 #
 
@@ -1023,7 +1026,9 @@ class fastSemSimGui(wx.Frame):
 	def stop(self):
 		if DEBUG_LEVEL>0:
 			print "fastSemSimGui: stop()"
+		self.query_panel.controls_log.AppendText("Stopping computation...\n")
 		self.gui2ssprocess_queue.put((WorkProcess.CMD_STOP, None))
+		self.query_panel.controls_start_button.Disable()
 #
 
 

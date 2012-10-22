@@ -96,7 +96,7 @@ class fastResnikSemSim(ObjSemSim.ObjSemSim):
 
 
 
-	def int_SemSim(self, onto, cut_thres = None):
+	def int_SemSim(self, onto, cut_thres = None, cut_none = False):
 		self.scores = {}
 		self.matrice = []
 		self.matrice_names = []
@@ -193,8 +193,11 @@ class fastResnikSemSim(ObjSemSim.ObjSemSim):
 				#self.stream1.write(str(self.matrice_names[i]) + " - " + str(k) + ": " + str(temp_scores[k]) + "\n")
 				for k in temp_scores:
 					if not cut_thres == None:
-						if temp_scores[k] == None or temp_scores[k] < cut_thres:
+						if temp_scores[k] == None or temp_scores[k] <= cut_thres:
 							continue
+						if cut_none:
+							if temp_scores[k] == None:
+								continue
 					self.stream1.write(str(self.matrice_names[i]) + "\t" + str(k) + "\t" + str('%.4f' %temp_scores[k]) + "\n")
 
 

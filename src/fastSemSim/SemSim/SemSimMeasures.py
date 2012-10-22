@@ -83,7 +83,7 @@ MixingStrategies = {
 
 def selectTermSemSim(tss_name):
 	if not tss_name in SemSimMeasures:
-		raise "Semantic Similarity Measure not available."
+		raise "Semantic Similarity measure not available."
 		return None
 	else:
 		return SemSimMeasures[tss_name][0]
