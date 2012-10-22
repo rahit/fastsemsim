@@ -1,0 +1,45 @@
+
+Usage:	python FastSemSim.py [-g|--go go_file] -a|--ac ac_file [-c|--category MF|BP|CC ] [-t|--actype ac_type] [-q|--query query_file] [-u] [-s|--semsim sem_sim] [-m|--mix mixing_strategy] [-o|--output output_file] [-p|--pairs] [-l|--list] [-v] [-h]
+
+-h, --help:	Print this help page.
+
+	[[Input Parameters]]
+
+-a,--ac:	Specify the file containing the Annotation Corpus. Can be either in GAF-2 or plain format. See documentation online for more information.
+--acsep:	Separator used for the plain annotation corpus files. Use "s" for space, and "t" for tab. [Default: tab]
+--entryfirst:	If specified, plain annotation corpus files will be parsed assuming that the first column of each row contains the entry, and the second the GO Term. Used only with plain files. [this is the standard behavior]
+-g,--go:	The file containing the Gene Ontology. Only the obo-xml format is currently supported (either gzipped or not). If not provided, the GO included in FastSemSim will be used. See geneontology.org for details and to download the Gene Ontology.
+--GOTermfirst:	If specified, plain annotation corpus files will be parsed assuming that the first column of each row contains the GO Term, and the second one contains the Entry. Used only with plain files.
+--IEA:	If specified, IEA annotations will be considered. Used only with gaf2 files. [that is the standard behavior]
+--ignore_has_part, --ignore_is_a, --ignore_part_of, --ignore_regulates:	Specify which GO relationships to ignore. By default all the relationships but has_part are considered.
+--consider_has_part:	Consider has_part relationships. By default has_part relationships are ignored.
+--multiple:	If specified, each line in plain annotation corpus files can contain more than one GO Term or Entry." 
+--noIEA:	If specified, IEA annotations will be ignored. Used only with gaf2 files.
+-t,--actype:	Describes the format of the Annotation Corpus file. Can be "plain" or "gaf2". [default: gaf2]
+--tax:	Filter the Annotation Corpus. Removes protein/genes according to the taxonomy. Used only with gaf2 files
+
+	[[Query Parameters]]
+
+-l, --list:	Consider the query as a list of entries. Evaluates the pairwise semantic similarity between each entry in the query. [This is the default assumption]
+-p, --pairs:	Consider the query as a set of pairs, one pair per line. Computes the semantic similarity for each pair.
+-q, --query:	Specifies the file with the query. If not specified, the behavior will be the same as if -u is used.
+--sep, --separator:	Separator used in the query file (only for pairs). Use "s" for space, and "t" for tab. [Default: tab]
+-u:	Use all the entries in the annotation corpus as the query.
+
+	[[Semantic Similarity Parameters]]
+
+-c, --category:	The Gene Ontology category to use. Can be "MF","BP" or "CC". [Default: BP]
+--enhanced:	Use the fast implementation of the semantic similarity measure. Currently only Resnik max is supported. Forces -l and -u. Overrides -p and -q. This limitation will be removed in the future.
+-m, --mix:	The mixing strategy to be used (if the SS measure requires it). [Default: BMA]. Can be "max", "BMA", "avg".
+-s, --semsim:	The semantic similarity measure to use. Can be 'Resnik','SimGIC','Lin','Jiang and Conrath','SimIC','Dice','TO','NTO','Jaccard','Czekanowski-Dice','Cosine','G-SESAME'. [Default: Resnik]
+
+	[[Output Parameters]]
+
+--cut:	Do not print/save pairs whose semantic similarity is smaller or equal to the specified threshold. This drastically reduces the size of output data for whole proteome comparison. [default: --cut 0]
+-o, --output:	Output file. If not specified, results will be printed on the console.
+--remove_none:	Do not print/save pairs without semantic similarity (otherwise a "None" score is assigned). This drastically reduces the size of output data for whole proteome comparison.
+-v, --verbose:	Print additional statistics and progress details.
+
+	[[Additional Notes]]
+
+A "None" score is returned if at least one entry of a pair is not annotated with any term in the selected category. Using --cut 0 removes such pairs.

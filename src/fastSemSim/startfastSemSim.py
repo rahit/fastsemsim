@@ -392,7 +392,7 @@ def parse_parameters():
 	ac_file = None
 	ac_separator = None
 	GOTerm_first = False
-	go_file = program_dir + "/data/GO_2012-02-24.obo-xml.gz"
+	go_file = program_dir + "/data/GO_2012-10-22.obo-xml.gz"
 	use_IEA = True
 	multiple = False
 	ac_type = 'gaf2'

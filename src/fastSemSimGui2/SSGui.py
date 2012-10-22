@@ -59,6 +59,7 @@ class SSPanel(wx.Panel):
 			self.SS_mix_box.Append(i)
 		self.SS_mix_box.SetSelection(0)
 		self.SS_measure_box.SetSelection(0)
+		self.SS_GO_MF_radio.SetValue(True)
 		self.OnSelectGO(None)
 		self.OnSelectSS(None)
 		self.OnSelectMS(None)

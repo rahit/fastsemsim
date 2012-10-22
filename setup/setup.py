@@ -58,8 +58,8 @@ setup(
         'Programming Language :: Python',
     ],
 
-    package_dir={'fastSemSim':'fastSemSim', 'fastSemSimGui':'fastSemSimGui'},
-    package_data={'fastSemSimGui':['*.png'], 'fastSemSim.data':['*']},
-    packages=['fastSemSim', 'fastSemSim.data', 'fastSemSim.GO', 'fastSemSim.SemSim', 'fastSemSimGui', 'fastSemSim.fastResnik'],
+    package_dir={'fastSemSim':'fastSemSim', 'fastSemSimGui2':'fastSemSimGui2'},
+    package_data={'fastSemSimGui2':['*.png'], 'fastSemSim.data':['*'], 'fastSemSim':['fastSemSim_commandline.txt']},
+    packages=['fastSemSim', 'fastSemSim.data', 'fastSemSim.GO', 'fastSemSim.SemSim', 'fastSemSimGui2', 'fastSemSim.fastResnik'],
     #requires=['wx (>=2.8)']
 )

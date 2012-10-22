@@ -43,7 +43,7 @@ class QueryPanel(wx.Panel):
 		
 		sbSizer33 = wx.StaticBoxSizer( wx.StaticBox( self.query_panel, wx.ID_ANY, u"Help" ), wx.VERTICAL )
 		
-		self.m_staticText53 = wx.StaticText( self.query_panel, wx.ID_ANY, u"Manually enter a query in the field on the left. Separate the entries with tabs. Spaces will not be considered as separators. You can also load the query from a file or use the whole annotation corpus.", wx.DefaultPosition, wx.Size( 225,-1 ), 0 )
+		self.m_staticText53 = wx.StaticText( self.query_panel, wx.ID_ANY, u"Manually enter a query in the field on the left. Separate the entries with tabs. Spaces will not be considered as separators. You can also load the query from a file or use the whole annotation corpus.", wx.DefaultPosition, wx.Size( 225,150 ), 0 )
 		self.m_staticText53.Wrap( -1 )
 		sbSizer33.Add( self.m_staticText53, 0, wx.ALL, 5 )
 		

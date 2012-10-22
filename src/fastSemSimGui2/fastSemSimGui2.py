@@ -44,7 +44,6 @@ from ACGui import *
 from QueryGui import *
 from SSGui import *
 from OutputGui import *
-from ControlsGui import *
 from ConfigGui import *
 
 #--------------------------------------------------#

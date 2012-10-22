@@ -306,6 +306,8 @@ class GOPanel(wx.Panel):
 						print "GO load outcome: Load Fail."
 					self.node_info = None
 					self.edge_info = None
+					wx.MessageBox('Gene Ontology not loaded. Perhaps the wrong file has been selected?', 'Invalid Gene Ontology file', 
+        wx.OK | wx.ICON_ERROR)
 			elif data[1] == WorkProcess.ANSWER_PROCESSING:
 				if DEBUG_LEVEL>2:
 					print "GO load outcome: Load in progress."
@@ -396,7 +398,7 @@ class GO_load_gui ( wx.Dialog ):
 		bSizer3 = wx.BoxSizer( wx.VERTICAL )
 		bSizer22 = wx.BoxSizer( wx.HORIZONTAL )
 		sbSizer3 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Source file" ), wx.HORIZONTAL )
-		self.GO_load_source_label = wx.StaticText( self, wx.ID_ANY, u"No file selected. The built-in version will be loaded.", wx.DefaultPosition, wx.DefaultSize, wx.ALIGN_RIGHT)
+		self.GO_load_source_label = wx.StaticText( self, wx.ID_ANY, u"No file selected. The built-in version will be loaded.", wx.DefaultPosition, wx.DefaultSize, wx.ALIGN_LEFT)
 		self.GO_load_source_label.Wrap( -1 )
 		sbSizer3.Add( self.GO_load_source_label, 1, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 5 )
 		bSizer22.Add( sbSizer3, 1, wx.LEFT|wx.RIGHT, 5 )
@@ -449,7 +451,7 @@ class GO_load_gui ( wx.Dialog ):
 		bSizer4.Add( self.GO_load_cancel_button, 0, wx.ALL, 5 )
 		bSizer3.Add( bSizer4, 0, wx.ALIGN_CENTER, 5 )
 		sbSizer18 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Help" ), wx.VERTICAL )
-		self.m_staticText31 = wx.StaticText( self, wx.ID_ANY, u"The Gene Ontology file must be encoded in obo-xml format. It can also be gzipped. Please refer to www.geneontology.org to retrieve the most updated Gene Ontology. If not provided, the Gene Ontology provided with fastSemSim will be loaded.", wx.DefaultPosition, wx.Size( 500,-1 ), 0 )
+		self.m_staticText31 = wx.StaticText( self, wx.ID_ANY, u"The Gene Ontology file must be encoded in obo-xml format. It can also be gzipped. Please refer to www.geneontology.org to retrieve the most updated Gene Ontology. If not provided, the Gene Ontology provided with fastSemSim will be loaded.", wx.DefaultPosition, wx.Size( 500,150 ), 0 )
 		self.m_staticText31.Wrap( -1 )
 		self.m_staticText31.SetMaxSize( wx.Size( 500,-1 ) )
 		sbSizer18.Add( self.m_staticText31, 0, wx.ALL, 5 )
@@ -489,7 +491,8 @@ class GO_load_gui ( wx.Dialog ):
 
 
 	def OnDefaultButton(self, event):
-		self._set_file_name(self.real_parent.programdirectory + "/../fastSemSim/data/GO_2012-02-24.obo-xml.gz")
+		self._set_file_name(self.real_parent.programdirectory + "/../fastSemSim/data/GO_2012-10-22.obo-xml.gz")
+		#self._set_file_name("data/GO_2012-10-22.obo-xml.gz")
 #
 
 

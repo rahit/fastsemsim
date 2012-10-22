@@ -29,5 +29,5 @@ if [ -f startGui2.py ]; then
 	(export PYTHONPATH="."; ${PYTHON_INTERPRETER} startGui2.py)
 else
 # 	echo "Running the installed version"
-	${PYTHON_INTERPRETER} -c "from fastSemSimGui-2 import startGui; startGui.go()" "$@"
+	${PYTHON_INTERPRETER} -c "from fastSemSimGui2 import startGui; startGui.go()" "$@"
 fi

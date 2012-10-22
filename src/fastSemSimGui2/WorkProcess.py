@@ -587,14 +587,15 @@ class WorkProcess(multiprocessing.Process):
 		self.ok_query = False # important
 		self.go = None
 		if self.ok_params_go:
-			#try:
+			try:
 				#add "iffilename is none... then use the std file! Or is it already included?
 				#program_dir = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
 				#program_dir = '.' # use this with py2exe to build a working binary
 				#go_file = program_dir + "/data/GO_2012-02-24.obo-xml.gz"
-			self.go = GeneOntology.load(str(self.go_filename), self.go_parameters) # convert unicode to str!!!
-			#except Exception:
+				self.go = GeneOntology.load(str(self.go_filename), 	self.go_parameters) # convert unicode to str!!!
+			except Exception:
 				#print "Load Gene Ontology. Exception loading " + str(self.go_filename)
+				pass
 			if not self.go == None:
 				self.ok_go = True
 				self.send((CMD_LOAD_GO, ANSWER_PROCESSED, True, self.go.node_num(), self.go.edge_num()))
