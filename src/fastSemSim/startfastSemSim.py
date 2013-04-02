@@ -33,17 +33,289 @@ import gzip
 
 import argparse
 
-# def parse_args():
-# 	parser = argparse.ArgumentParser(description='Process some integers.')
-# 	parser.add_argument('integers', metavar='N', type=int, nargs='+',
-#                    help='an integer for the accumulator')
-# 	parser.add_argument('--sum', dest='accumulate', action='store_const',
-#                    const=sum, default=max,
-#                    help='sum the integers (default: find the max)')
 
-# 	args = parser.parse_args()
-# 	print args.accumulate(args.integers)
-# 	return None
+	#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+	# Cmd line parameter parsing  #
+	#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+
+def prbool(string):
+	if string == 'True' or string == 'true' or string == True or string == 'yes' or string == 'Yes' or string == '1':
+		return True
+	if string == 'False' or string == 'false' or string == False or string == 'No' or string == 'no' or string == '0':
+		return False
+	msg = 'Cannot interpret %r as a boolean. Allowed arguments: True, False, 0, 1, Yes, No' % string
+	raise argparse.ArgumentTypeError(msg)
+	return None
+#
+
+def parse_args():
+	parser = argparse.ArgumentParser(
+		description='FastSemSim commad line tool',
+		prog='FastSemSim', usage=None, epilog=None, 
+		fromfile_prefix_chars='@', add_help=True)
+
+	param_ac = parser.add_argument_group(title='Annotation Corpus (AC)', description='Parameters relative to Annotation Corpus')
+	param_go = parser.add_argument_group(title='Gene Ontology (GO)', description='Parameters relative to the Gene Ontology')
+	param_ss = parser.add_argument_group(title='Semantic Similarity (SS)', description='Parameters relative to the Semantic Similarity measure')
+	param_query = parser.add_argument_group(title='Query', description='Query Parameters')
+	param_output = parser.add_argument_group(title='Output parameters', description='Output parameters')
+	param_extended = parser.add_argument_group(title='Advanced parameters', description='Advanced parameters')
+
+	params_help = dict()
+	params_help['ac'] = 'AC containing file. Can be either in GAF-2 or plain format.'
+	params_help['ac_type'] = 'Format of AC file. Can be either "plain" or "gaf2". [default: gaf2]'
+
+	params_help['ac_sep'] = 'Separator used in plain AC files. Use "s" or " " for space, and "t" or \\t for tab. [Default: tab]'
+	params_help['ac_GOfirst'] = 'If specified, plain annotation corpus files will be parsed assuming that the first column of each row contains the entry, and the second the GO Term. Used only with plain files. [this is the standard behavior]'
+	params_help['ac_multiple'] = 'If specified, each line in plain annotation corpus files can contain more than one GO Term or Entry.'
+
+	params_help['tax'] = 'Filter AC by taxonomy. For gaf2 files, taxonomies should be specified as integers. If negative integers are specified, all the taxa are retained but the specified ones.'
+	params_help['EC'] = 'If specified, IEA annotations will be considered. Used only with gaf2 files. [that is the standard behavior]'
+
+
+	param_ac.add_argument('-a','--ac', '--ac_file', action='store', nargs=1, default=None, help=params_help['ac'], metavar='ac_file', dest='ac_file')
+	param_ac.add_argument('--ac_type', action='store', nargs=1, default='gaf2', help=params_help['ac_type'], metavar='ac_type', dest='ac_type', choices=['gaf2','plain'])
+
+	param_ac.add_argument('--ac_sep', action='store', nargs=1, default='\t', help=params_help['ac_sep'], metavar='ac_sep', dest='ac_sep')
+	param_ac.add_argument('--ac_GOfirst', action='store_const', const=True, default=False, help=params_help['ac_GOfirst'], metavar='ac_GOfirst', dest='ac_GOfirst')
+	param_ac.add_argument('--ac_multiple', action='store_const', const=True, default=False, help=params_help['ac_multiple'], metavar='ac_multiple', dest='ac_multiple')
+
+	param_ac.add_argument('--tax', action='append', nargs='+', default=None, type=int, help=params_help['tax'], metavar='tax', dest='tax')
+	param_ac.add_argument('--EC', action='append', nargs='+', default=None, help=params_help['EC'], metavar='Evidence Code', dest='EC')
+	
+
+	params_help['go'] = 'File containing the Gene Ontology. Only the obo-xml format is currently supported (either gzipped or not). If not provided, the GO included in FastSemSim will be used. See geneontology.org for details and to download the Gene Ontology.'
+	params_help['ignore_has_part'] = 'Whether consider or ignore has_part relationships [default:True]'
+	params_help['ignore_is_a'] = 'Whether consider or ignore is_a relationships [default:False]'
+	params_help['ignore_part_of'] = 'Whether consider or ignore part_of relationships [default:False]'
+	params_help['ignore_regulates'] = 'Whether consider or ignore regulates relationships [default:False]'
+
+	param_go.add_argument('-g','--go', '--go_file', action='store', nargs=1, default=None, help=params_help['go'], metavar='go_file', dest='go_file')
+	param_go.add_argument('--ignore_has_part', action='store', nargs='?', default=True, type=prbool, help=params_help['ignore_has_part'], metavar='ignore_has_part', dest='ignore_has_part')
+	param_go.add_argument('--ignore_is_a', action='store', nargs='?', default=False, type=prbool, help=params_help['ignore_is_a'], metavar='ignore_is_a', dest='ignore_is_a')
+	param_go.add_argument('--ignore_part_of', action='store', nargs='?', default=False, type=prbool, help=params_help['ignore_part_of'], metavar='ignore_part_of', dest='ignore_part_of')
+	param_go.add_argument('--ignore_regulates', action='store', nargs='?', default=False, type=prbool, help=params_help['ignore_regulates'], metavar='ignore_regulates', dest='ignore_regulates')
+
+
+	params_help['go'] = 'File containing the Gene Ontology. Only the obo-xml format is currently supported (either gzipped or not). If not provided, the GO included in FastSemSim will be used. See geneontology.org for details and to download the Gene Ontology.'
+	params_help['ignore_has_part'] = 'Whether consider or ignore has_part relationships [default:True]'
+	params_help['ignore_is_a'] = 'Whether consider or ignore is_a relationships [default:False]'
+	params_help['ignore_part_of'] = 'Whether consider or ignore part_of relationships [default:False]'
+	params_help['ignore_regulates'] = 'Whether consider or ignore regulates relationships [default:False]'
+
+	params_help['query_type'] = 'Whether to evaluate the SS between pairs of GO terms (term), objects annotated in the AC (ac), or the Information Content (IC) of GO terms.'
+	params_help['query_mode'] = 'Either ac, list or pairs. ac: same as query_all. pairs: Consider the query as a set of pairs, one pair per line. Computes the semantic similarity for each pair. list: Consider the query as a list of entries. Evaluates the pairwise semantic similarity between each entry in the query. [This is the default assumption]'
+	params_help['query_file'] = 'Specifies the file with the query. If not specified, the behavior will be the same as if -u is used.'
+	params_help['query_sep'] = 'Separator used in the query file (only for pairs). Use "s" for space, and "t" for tab. [Default: tab]'
+	params_help['query_all'] = 'Use all the entries in the annotation corpus/Gene Ontology as query.'
+	params_help['query_GO'] = 'Evaluate the semantic similarity between GO Terms. The query file should contain GO Term entries instead of proteins/genes. The GO category is ignored, but the GO Terms must come from the same category.'
+
+
+	param_query.add_argument('--query_type', action='store', nargs=1, default='ac', choices=['ac', 'term', 'IC'], help=params_help['query_type'], metavar='query_type', dest='query_type')
+	param_query.add_argument('--query_mode', action='store', nargs=1, default='ac', choices=['ac', 'list', 'pairs'], help=params_help['query_mode'], metavar='query_mode', dest='query_mode')
+	param_query.add_argument('--query_file', action='store', nargs=1, default=None, help=params_help['query_file'], metavar='query_file', dest='query_file')
+	param_query.add_argument('--query_sep', action='store', nargs=1, default='\t', help=params_help['query_sep'], metavar='query_sep', dest='query_sep')
+	param_query.add_argument('--query_all', action='store_const', const='ac', help=params_help['query_all'], metavar='query_all', dest='query_mode')
+	param_query.add_argument('--query_GOterm', action='store_const', const='term', help=params_help['query_GO'], metavar='query_GO', dest='query_type')
+
+
+	params_help['ss_category'] = 'The Gene Ontology category to use. Can be "MF","BP" or "CC". [Default: BP]'
+	params_help['ss_enhanced'] = 'Use the fast implementation of the semantic similarity measure. Currently only Resnik max is supported. Forces -l and -u. Overrides -p and -q. This limitation will be removed in the future.'
+	params_help['ss_mix'] = 'The mixing strategy to be used (if the SS measure requires it). [Default: BMA]. Can be "max", "BMA", "avg".'
+	params_help['ss_measure'] = "The semantic similarity measure to use. Can be 'Resnik','SimGIC','Lin','Jiang and Conrath','SimIC','Dice','TO','NTO','Jaccard','Czekanowski-Dice','Cosine','G-SESAME'. [Default: Resnik]"
+
+	param_ss.add_argument('--ss', '-s', action='store', nargs=1, default='Resnik', help=params_help['ss_measure'], metavar='ss_measure', dest='ss_measure')
+	param_ss.add_argument('--mix', '-m', action='store', nargs=1, default='BMA', help=params_help['ss_mix'], metavar='ss_mix', dest='ss_mix')
+	param_ss.add_argument('--category', '-c', action='store', nargs=1, default='BP', help=params_help['ss_category'], metavar='ss_category', dest='ss_category')
+	param_ss.add_argument('--enhanced', action='store_const', const=True, default=False, help=params_help['ss_enhanced'], metavar='ss_enhanced', dest='ss_enhanced')
+
+# -v, --verbose:	Print additional statistics and progress details.
+
+	params_help['output_cut'] = 'Do not print/save pairs whose semantic similarity is smaller or equal to the specified threshold. This drastically reduces the size of output data for whole proteome comparison. [default: --cut 0]'
+	params_help['output_file'] = 'Output file. If not specified, results will be printed on the console.'
+	params_help['output_remove_nan'] = 'Do not print/save pairs without semantic similarity (otherwise a "None" score is assigned). This drastically reduces the size of output data for whole proteome comparison.'
+
+	param_output.add_argument('--cut', action='store', nargs=1, default=None, type=float, help=params_help['output_cut'], metavar='output_cut', dest='output_cut')
+	param_output.add_argument('--remove_nan', action='store', nargs=1, default=False, type=prbool, help=params_help['output_remove_nan'], metavar='output_remove_nan', dest='output_remove_nan')
+	param_output.add_argument('--output_file', action='store', nargs=1, default=None, help=params_help['output_file'], metavar='output_file', dest='output_file')
+
+
+	params_help['IC_table'] = 'Load Information Content values of GO Terms from an external file.'
+	param_extended.add_argument('--IC_table', action='store', nargs=1, default=None, help=params_help['IC_table'], metavar='IC_table', dest='IC_table')
+
+	params_help['verbose'] = 'Verbosity level. Repeat multiple time to increase verbosity level (i.e. -vvv)'
+	param_extended.add_argument('--verbose', '-v', action='count', default=None, help=params_help['verbose'], dest='verbose')
+
+		# elif sys.argv[i] == '--acsep':
+		# 	if sys.argv[i+1] == 't':
+		# 		ac_separator = "\t"
+		# 	elif sys.argv[i+1] == 's':
+		# 		ac_separator = " "
+		# 	else:
+		# 		ac_separator = sys.argv[i+1]
+
+		# elif sys.argv[i] == '--entryfirst':
+		# 	GOTerm_first = False
+		# 	continue
+	# parser.add_argument('--sum', dest='accumulate', action='store_const',
+                   # const=sum, default=max,
+                   # help='sum the integers (default: find the max)')
+
+	args = parser.parse_args()
+	print(args)
+	return None
+
+			
+
+		
+		# elif sys.argv[i] == '-g' or sys.argv[i] == '--go':
+		# 	go_file = sys.argv[i+1]
+			
+		# elif sys.argv[i] == '--GOTermfirst':
+		# 	GOTerm_first = True
+		# 	continue
+		
+		# elif sys.argv[i] == '--IEA':
+		# 	use_IEA = True
+		# 	continue
+		
+		# elif sys.argv[i] == '--ignore_has_part':
+		# 	ignore_has_part = True
+		# 	continue
+		# elif sys.argv[i] == '--GOTerms':
+		# 	termss = True
+		# 	continue
+		# elif sys.argv[i] == '--consider_has_part':
+		# 	ignore_has_part = False
+		# 	continue
+		# elif sys.argv[i] == '--ignore_regulates':
+		# 	ignore_regulates = True
+		# 	continue
+		# elif sys.argv[i] == '--ignore_part_of':
+		# 	ignore_partof = True
+		# 	continue
+		# elif sys.argv[i] == '--ignore_is_a':
+		# 	ignore_isa = True
+		# 	continue
+
+		# elif sys.argv[i] == '--multiple':
+		# 	multiple = True
+		# 	continue
+		# elif sys.argv[i] == '--noIEA':
+		# 	use_IEA = False
+		# 	continue
+		
+
+		
+		# elif sys.argv[i] == '--tax':
+		# 	tax_include = sys.argv[i+1]
+			
+		# elif sys.argv[i] == '-l' or sys.argv[i] == '--list':
+		# 	query_type = 'list'
+		# 	continue
+			
+		# elif sys.argv[i] == '-p' or sys.argv[i] == '--pairs':
+		# 	query_type = 'pairs'
+		# 	continue
+
+		# elif sys.argv[i] == '-q' or sys.argv[i] == '--query':
+		# 	query_file = sys.argv[i+1]
+		# 	query_from_ac = False
+		# 	query_from_GO = False
+		# elif sys.argv[i] == '--sep' or sys.argv[i] == '--separator':
+		# 	if sys.argv[i+1] == 't':
+		# 		query_separator = "\t"
+		# 	elif sys.argv[i+1] == 's':
+		# 		query_separator = " "
+		# 	else:
+		# 		query_separator = sys.argv[i+1]
+		# elif sys.argv[i] == '-u':
+		# 	query_from_ac = True
+		# 	query_from_GO = True
+		# 	continue
+
+		# elif sys.argv[i] == '-c' or sys.argv[i] == '--category':
+		# 	if sys.argv[i+1].lower() == 'bp':
+		# 		ontology = 'BP'
+		# 	elif sys.argv[i+1].lower() == 'mf':
+		# 		ontology = 'MF'
+		# 	elif sys.argv[i+1].lower() == 'cc':
+		# 		ontology = 'CC'
+		# 	else:
+		# 		print "Ontology Category not recognized."
+		# 		sys.exit()
+				
+		# elif sys.argv[i] == '--enhanced':
+		# 	use_enhanced = True
+		# 	continue
+
+		# elif sys.argv[i] == '-m' or sys.argv[i] == '--mix':
+		# 	mix_name = sys.argv[i+1]
+			
+		# elif sys.argv[i] == '-s' or sys.argv[i] == '--semsim':
+		# 	semsim_name = sys.argv[i+1]
+
+		# elif sys.argv[i] == '--cut':
+		# 	cut_thres = float(sys.argv[i+1])
+
+		# elif sys.argv[i] == '-o' or sys.argv[i] == '--output':
+		# 	out_file = sys.argv[i+1]
+
+		# elif sys.argv[i] == '--remove_none':
+		# 	cut_none = True
+		# 	continue
+
+		# elif sys.argv[i] == '-v' or sys.argv[i] == '--verbose':
+		# 	verbose = True
+		# 	continue
+
+		# #elif sys.argv[i] == '-d':
+		# 	#query_file = None
+		# 	#query_dir = sys.argv[i+1]
+		# 	#query_from_ac = False
+
+		# else:
+		# 	print "Unknown parameter " + sys.argv[i]
+		# 	print ""
+		# 	print_usage()
+		# 	sys.exit()
+		# skip = True
+#
+
+
+def parse_parameters():
+	global ac_file, ac_separator, GOTerm_first, go_file, ignore_has_part, ignore_isa, ignore_partof, ignore_regulates, use_IEA, multiple, ac_type, tax_include, query_type, query_file, query_from_ac, query_separator, ontology, use_enhanced, mix_name, semsim_name, cut_thres, out_file, cut_none, verbose, termss, query_from_GO
+
+# Set dafault parameters
+	ac_file = None
+	ac_separator = None
+	GOTerm_first = False
+	go_file = program_dir + "/data/GO_2012-10-22.obo-xml.gz"
+	use_IEA = True
+	multiple = False
+	ac_type = 'gaf2'
+	tax_include = None
+	query_type = 'list'
+	query_file = None
+	query_from_ac = True
+	query_separator = '\t'
+	ontology = "BP"
+	use_enhanced = False
+	mix_name = 'BMA'
+	semsim_name = 'Resnik'
+	cut_thres = None
+	out_file = None
+	cut_none = False
+	verbose = False
+	ignore_has_part = True
+	ignore_isa = False
+	ignore_partof = False
+	ignore_regulates = False
+	termss = False
+	query_from_GO = True
+	#query_dir = None
+
+
 
 
 	#-#-#-#-#-#-#-#-#-#-#-#
@@ -505,183 +777,7 @@ def print_usage():
 #
 
 
-def parse_parameters():
-	global ac_file, ac_separator, GOTerm_first, go_file, ignore_has_part, ignore_isa, ignore_partof, ignore_regulates, use_IEA, multiple, ac_type, tax_include, query_type, query_file, query_from_ac, query_separator, ontology, use_enhanced, mix_name, semsim_name, cut_thres, out_file, cut_none, verbose, termss, query_from_GO
 
-# Set dafault parameters
-	ac_file = None
-	ac_separator = None
-	GOTerm_first = False
-	go_file = program_dir + "/data/GO_2012-10-22.obo-xml.gz"
-	use_IEA = True
-	multiple = False
-	ac_type = 'gaf2'
-	tax_include = None
-	query_type = 'list'
-	query_file = None
-	query_from_ac = True
-	query_separator = '\t'
-	ontology = "BP"
-	use_enhanced = False
-	mix_name = 'BMA'
-	semsim_name = 'Resnik'
-	cut_thres = None
-	out_file = None
-	cut_none = False
-	verbose = False
-	ignore_has_part = True
-	ignore_isa = False
-	ignore_partof = False
-	ignore_regulates = False
-	termss = False
-	query_from_GO = True
-	#query_dir = None
-
-# Parse command line
-	if sys.argv == None or len(sys.argv) < 1:
-		print_usage()
-		sys.exit()
-
-	skip=False
-	for i in range(1,len(sys.argv)):
-
-		if skip:
-			skip = False
-			continue
-		
-		elif sys.argv[i] == '--help' or sys.argv[i] == '-h':
-			print_usage()
-			sys.exit()
-			
-		elif sys.argv[i] == '-a' or sys.argv[i] == '--ac':
-			ac_file = sys.argv[i+1]
-			
-		elif sys.argv[i] == '--acsep':
-			if sys.argv[i+1] == 't':
-				ac_separator = "\t"
-			elif sys.argv[i+1] == 's':
-				ac_separator = " "
-			else:
-				ac_separator = sys.argv[i+1]
-
-		elif sys.argv[i] == '--entryfirst':
-			GOTerm_first = False
-			continue
-		
-		elif sys.argv[i] == '-g' or sys.argv[i] == '--go':
-			go_file = sys.argv[i+1]
-			
-		elif sys.argv[i] == '--GOTermfirst':
-			GOTerm_first = True
-			continue
-		
-		elif sys.argv[i] == '--IEA':
-			use_IEA = True
-			continue
-		
-		elif sys.argv[i] == '--ignore_has_part':
-			ignore_has_part = True
-			continue
-		elif sys.argv[i] == '--GOTerms':
-			termss = True
-			continue
-		elif sys.argv[i] == '--consider_has_part':
-			ignore_has_part = False
-			continue
-		elif sys.argv[i] == '--ignore_regulates':
-			ignore_regulates = True
-			continue
-		elif sys.argv[i] == '--ignore_part_of':
-			ignore_partof = True
-			continue
-		elif sys.argv[i] == '--ignore_is_a':
-			ignore_isa = True
-			continue
-
-		elif sys.argv[i] == '--multiple':
-			multiple = True
-			continue
-		elif sys.argv[i] == '--noIEA':
-			use_IEA = False
-			continue
-		
-		elif sys.argv[i] == '-t' or sys.argv[i] == '--actype':
-			ac_type = sys.argv[i+1]
-		
-		elif sys.argv[i] == '--tax':
-			tax_include = sys.argv[i+1]
-			
-		elif sys.argv[i] == '-l' or sys.argv[i] == '--list':
-			query_type = 'list'
-			continue
-			
-		elif sys.argv[i] == '-p' or sys.argv[i] == '--pairs':
-			query_type = 'pairs'
-			continue
-
-		elif sys.argv[i] == '-q' or sys.argv[i] == '--query':
-			query_file = sys.argv[i+1]
-			query_from_ac = False
-			query_from_GO = False
-		elif sys.argv[i] == '--sep' or sys.argv[i] == '--separator':
-			if sys.argv[i+1] == 't':
-				query_separator = "\t"
-			elif sys.argv[i+1] == 's':
-				query_separator = " "
-			else:
-				query_separator = sys.argv[i+1]
-		elif sys.argv[i] == '-u':
-			query_from_ac = True
-			query_from_GO = True
-			continue
-
-		elif sys.argv[i] == '-c' or sys.argv[i] == '--category':
-			if sys.argv[i+1].lower() == 'bp':
-				ontology = 'BP'
-			elif sys.argv[i+1].lower() == 'mf':
-				ontology = 'MF'
-			elif sys.argv[i+1].lower() == 'cc':
-				ontology = 'CC'
-			else:
-				print "Ontology Category not recognized."
-				sys.exit()
-				
-		elif sys.argv[i] == '--enhanced':
-			use_enhanced = True
-			continue
-
-		elif sys.argv[i] == '-m' or sys.argv[i] == '--mix':
-			mix_name = sys.argv[i+1]
-			
-		elif sys.argv[i] == '-s' or sys.argv[i] == '--semsim':
-			semsim_name = sys.argv[i+1]
-
-		elif sys.argv[i] == '--cut':
-			cut_thres = float(sys.argv[i+1])
-
-		elif sys.argv[i] == '-o' or sys.argv[i] == '--output':
-			out_file = sys.argv[i+1]
-
-		elif sys.argv[i] == '--remove_none':
-			cut_none = True
-			continue
-
-		elif sys.argv[i] == '-v' or sys.argv[i] == '--verbose':
-			verbose = True
-			continue
-
-		#elif sys.argv[i] == '-d':
-			#query_file = None
-			#query_dir = sys.argv[i+1]
-			#query_from_ac = False
-
-		else:
-			print "Unknown parameter " + sys.argv[i]
-			print ""
-			print_usage()
-			sys.exit()
-		skip = True
-#
 
 
 
@@ -690,13 +786,15 @@ def parse_parameters():
 def start():
 	global ac_file, ac_separator, GOTerm_first, go_file, use_IEA, multiple, ac_type, tax_include, query_type, query_file, query_from_ac, query_separator, ontology, use_enhanced, mix_name, semsim_name, cut_thres, out_file, cut_none, verbose,  go, ac, query, SS, program_dir
 	
-	print("-----------------------------------------------")
-	print("FastSemSim 0.7 - Copyright 2011-2012 Marco Mina")
-	print("-----------------------------------------------")
+	# print("-----------------------------------------------")
+	# print("FastSemSim 0.7 - Copyright 2011-2012 Marco Mina")
+	# print("-----------------------------------------------")
 
 	program_dir = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
 	#program_dir = '.' # use this with py2exe to build a working binary
 
+	parse_args()
+	return None
 	parse_parameters()
 
 	if not termss:
