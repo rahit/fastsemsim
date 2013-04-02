@@ -24,7 +24,8 @@ Usage:	python FastSemSim.py [-g|--go go_file] -a|--ac ac_file [-c|--category MF|
 -p, --pairs:	Consider the query as a set of pairs, one pair per line. Computes the semantic similarity for each pair.
 -q, --query:	Specifies the file with the query. If not specified, the behavior will be the same as if -u is used.
 --sep, --separator:	Separator used in the query file (only for pairs). Use "s" for space, and "t" for tab. [Default: tab]
--u:	Use all the entries in the annotation corpus as the query.
+-u:	Use all the entries in the annotation corpus/Gene Ontology as query.
+--GOTerms:	Evaluate the semantic similarity between GO Terms. The query file should contain GO Term entries instead of proteins/genes. The GO category is ignored, but the GO Terms must come from the same category.
 
 	[[Semantic Similarity Parameters]]
 

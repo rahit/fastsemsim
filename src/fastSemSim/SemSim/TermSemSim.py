@@ -43,6 +43,11 @@ import math
 	# class TermSemSim  #
 	#-#-#-#-#-#-#-#-#-#-#
 
+class MissingAcException(Exception):
+	def __init__(self, message):
+		self.message = message
+#
+
 class TermSemSim(object):
 	
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
@@ -60,6 +65,8 @@ class TermSemSim(object):
 		self.go = go
 		self.annotation_corpus = ac
 		self.util = util
+		if self.IC_based and self.annotation_corpus == None:
+			raise MissingAcException("The selected semantic measure is based on IC and requires an annotation corpus.")
 		if self.util == None:
 			self.util = SemSimUtils(ac, go)
 		if self.IC_based and self.util.IC == None:
@@ -70,20 +77,26 @@ class TermSemSim(object):
 	# verifies whether a single GO terms is valid. It means it has not to be obsolete.
 	# In addition, if the Term SS measure is based on IC, the GO Term should also possess an IC [which means it has to be annotated for at least one protein]
 	# ONLY NUMERIC INPUT IS ACCEPTED HERE
-
 		if not type(term) is int:
 			#print "Invalid term format: " + str(type(term))
-			return False
+			return None
 		if term not in self.go.nodes_edges:
-			return False
+			if term not in self.go.alt_ids:
+				return None
+			if self.go.alt_ids[term] == term:
+					#print("Term " + str(term) + " is an obsolete id.")
+				return None
+			else:
+				term = self.go.alt_ids[term]
+			return None
 		if self.IC_based:
 			if not term in self.util.IC:
 				#print("Term " + str(term) + " does not have an IC.")
-				return False
+				return None
 			if self.util.IC[term] == None:
 				#print("Term " + str(term) + " does not have an IC.")
-				return False
-		return True
+				return None
+		return term
 
 
 	def int_format_data(self, term1):
@@ -91,27 +104,34 @@ class TermSemSim(object):
 	# verify query data are consistent with current GO
 	# verify query data come from the same GO. Overload this function for cross-ontological Term Sem Sim measures or they won't work.
 
-		id1 = self.util.go.name2id(term1) # convert Go Term ids to internal format. See name2id function in GeneOntology class
+		id1 = self.util.go.name2id(term1) # convert GO Term ids to internal format. See name2id function in GeneOntology class
 		if self.SS_type == self.P_TSS:
-			if self.int_validate_single_term(id1):
-				return id1
+			nid = self.int_validate_single_term(id1)
+			#print str(id1) + " --> " + str(nid) 
+			if not nid==None:
+				return nid
 			return None
 		elif self.SS_type == self.G_TSS:
 			if type(id1) is int:
-				temp_id1 = []
-				temp_id1.append(id1)
+				temp_id1 = {}
+				temp_id1[id1] = None
 			else:
 				temp_id1 = id1
 			current_onto = None
+			temp_id1 = temp_id1.keys()
+			n_temp_id1 = {}
 			for i in temp_id1:
-				if not self.int_validate_single_term(i):
+				nid = self.int_validate_single_term(i)
+				print str(i) + " --> " + str(nid) 
+				if nid == None:
 					return None
+				n_temp_id1[nid] = None
 				if current_onto is None:
-					current_onto = self.util.GO_root[i]
-				elif not current_onto == self.util.GO_root[i]:
+					current_onto = self.util.GO_root[nid]
+				elif not current_onto == self.util.GO_root[nid]:
 					#print("Terms are not from the same ontology")
 					return None
-			return temp_id1
+			return n_temp_id1.keys()
 
 	def int_SemSim(self, term1, term2):
 		# Return None, since this class is just a prototype
@@ -131,12 +151,15 @@ class TermSemSim(object):
 	# This is the main function that should be called to evaluate the Term Sem Sim
 	# It takes care of verifying data, format them, and evaluate the Sem Sim.
 	# It might be necessary to Overload this function for cross-ontological Term Sem Sim measures 
-
 		if self.format_and_check_data:
 			if term1 is None or term2 is None:
 				return None
 			id1 = self.int_format_data(term1)
 			id2 = self.int_format_data(term2)
+			#print "\""+term1+"\""
+			#print "\""+term2+"\""
+			#print id1
+			#print id2
 			if id1 is None or id2 is None or (self.SS_type == self.G_TSS and len(id1) == 0) or (self.SS_type == self.G_TSS and len(id2) == 0):
 				#print(str(term1) + " or " + str(term2) + "   not valid.")
 				return None

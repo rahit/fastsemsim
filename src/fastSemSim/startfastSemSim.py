@@ -23,12 +23,27 @@ from fastSemSim.GO import GeneOntology
 from fastSemSim.SemSim import ObjSemSim
 from fastSemSim.SemSim import TermSemSim
 from fastSemSim.fastResnik import fastResnikSemSim
+from fastSemSim.SemSim import SemSimMeasures
+from fastSemSim.SemSim import TermSemSim
+
 import sys
 import os
 import math
 import gzip
 
+import argparse
 
+# def parse_args():
+# 	parser = argparse.ArgumentParser(description='Process some integers.')
+# 	parser.add_argument('integers', metavar='N', type=int, nargs='+',
+#                    help='an integer for the accumulator')
+# 	parser.add_argument('--sum', dest='accumulate', action='store_const',
+#                    const=sum, default=max,
+#                    help='sum the integers (default: find the max)')
+
+# 	args = parser.parse_args()
+# 	print args.accumulate(args.integers)
+# 	return None
 
 
 	#-#-#-#-#-#-#-#-#-#-#-#
@@ -159,6 +174,25 @@ def init_ss(go, ac, termss='Resnik', mixp="BMA", params = None):
 #
 
 
+def init_term_ss(go, ac, termss='Resnik', mixp=None, params = None):
+
+	# Semantic similarity between Genes/proteins 
+	# The basic approach here is to create a "SemSim" object with some fixed parameters, and then use it to evaluate the semantic similarity between paris of proteins/genes
+
+	#### First step: create a SemSim object
+	# You must create an ObjSemSim object providing the following parameters:
+	# 1) annotation corpus, 2) gene ontology, 3) pairwise or goupwise term semantic similarity name, 4)mixing strategy (only for pairwise term semantic similarity measures), 5 (optional) additional parameters
+	print "Initializing Semantic Similarity class..."
+	try:
+		TermSemSimClass = SemSimMeasures.selectTermSemSim(termss)
+		TSS = TermSemSimClass(ac, go)
+	except TermSemSim.MissingAcException as e:
+		print e.message
+		return None
+	return TSS
+#
+
+
 
 #### Second step: use the ObjSemSim object to determine the semantic similarity between two proteins
 	# You have to specify the GO Category to use ("MF", "BP", "CC") and the names of the two proteins. If the proteins or the category are not valid or not present in the annotation corpus, then None will be returned
@@ -187,6 +221,37 @@ def ss_pairs(SS, pairs, ontology, out, cut_thres = None, cut_none=False):
 		sys.stdout.flush()
 	for i in range(0,len(pairs)):
 		temp = SS.SemSim(pairs[i][0],pairs[i][1],ontology)
+		#scores.append((pairs[i][0],pairs[i][1],temp))
+		done+=1
+		if not cut_thres == None:
+			if temp == None or temp <= cut_thres:
+				continue
+			if cut_none:
+				if temp == None:
+					continue
+		if out == None:
+			print pairs[i][0] + "\t" + pairs[i][1] + "\t" + str(temp)
+		else:
+			out.write(pairs[i][0] + "\t" + pairs[i][1] + "\t" + str(temp) + "\n")
+			if verbose:
+				sys.stdout.write("\b"*len(prev_text))
+				prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
+				sys.stdout.write(prev_text)
+				sys.stdout.flush()
+	#return scores
+#
+
+def ss_term_pairs(SS, pairs, ontology, out, cut_thres = None, cut_none=False):
+	print "Evluating semantic similarity between " + str(len(pairs)) + " pairs."
+	scores = []
+	done = 0
+	total = len(pairs)
+	if verbose:
+		prev_text = ""
+		sys.stdout.write("Done: ")
+		sys.stdout.flush()
+	for i in range(0,len(pairs)):
+		temp = SS.SemSim(pairs[i][0],pairs[i][1])
 		#scores.append((pairs[i][0],pairs[i][1],temp))
 		done+=1
 		if not cut_thres == None:
@@ -241,6 +306,41 @@ def ss_pairwise(SS, pairs, ontology, out, cut_thres = None, cut_none=False):
 					continue
 			if out == None:
 				print pairs[i] + "\t" + pairs[j] + "\t" + str(temp)
+			else:
+				out.write(pairs[i] + "\t" + pairs[j] + "\t" + str(temp) + "\n")
+				if verbose:
+					sys.stdout.write("\b"*len(prev_text))
+					prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
+					sys.stdout.write(prev_text)
+					sys.stdout.flush()
+	#return scores
+#
+
+
+def ss_term_pairwise(SS, pairs, ontology, out, cut_thres = None, cut_none=False):
+	print "Evluating pairwise semantic similarity between " + str(len(pairs)) + " GO Terms (" + str(len(pairs)*(len(pairs)-1)/2) + " pairs)"
+	scores = {}
+	done = 0
+	total = len(pairs)*(len(pairs)-1)/2
+
+	if verbose:
+		prev_text = ""
+		sys.stdout.write("Done: ")
+		sys.stdout.flush()
+	for i in range(0,len(pairs)):
+		scores[pairs[i]] = {}
+		for j in range(i+1,len(pairs)):
+			temp = SS.SemSim(pairs[i],pairs[j])
+			#scores[pairs[i]][pairs[j]] = temp
+			done+=1
+			if not cut_thres == None:
+				if temp == None or temp <= cut_thres:
+					continue
+			if cut_none:
+				if temp == None:
+					continue
+			if out == None:
+				print str(pairs[i]) + "\t" + str(pairs[j]) + "\t" + str(temp)
 			else:
 				out.write(pairs[i] + "\t" + pairs[j] + "\t" + str(temp) + "\n")
 				if verbose:
@@ -339,6 +439,26 @@ def load_query_from_ac(ac):
 	return query
 #
 
+def load_query_from_GO(SS, ontology):
+	#print ontology
+	#print SS.util.BP_ontology
+	#print SS.util.MF_ontology
+	#print SS.util.CC_ontology
+	if ontology == SS.util.BP_ontology:
+		query = list(SS.util.offspring[SS.util.go.BP_root])
+	elif ontology == SS.util.MF_ontology:
+		query = list(SS.util.offspring[SS.util.go.MF_root])
+	elif ontology == SS.util.CC_ontology:
+		query = list(SS.util.offspring[SS.util.go.CC_root])
+	else:
+		return None
+		
+	#print str(query)
+	print "-> Query loaded from the Gene Ontology: " + str(len(query)) + " entries."
+	
+	return query
+#
+
 
 
 ####----####----####----####----####----####----####----####----####----####----####----####----####----####----####----####----
@@ -386,7 +506,7 @@ def print_usage():
 
 
 def parse_parameters():
-	global ac_file, ac_separator, GOTerm_first, go_file, ignore_has_part, ignore_isa, ignore_partof, ignore_regulates, use_IEA, multiple, ac_type, tax_include, query_type, query_file, query_from_ac, query_separator, ontology, use_enhanced, mix_name, semsim_name, cut_thres, out_file, cut_none, verbose
+	global ac_file, ac_separator, GOTerm_first, go_file, ignore_has_part, ignore_isa, ignore_partof, ignore_regulates, use_IEA, multiple, ac_type, tax_include, query_type, query_file, query_from_ac, query_separator, ontology, use_enhanced, mix_name, semsim_name, cut_thres, out_file, cut_none, verbose, termss, query_from_GO
 
 # Set dafault parameters
 	ac_file = None
@@ -413,6 +533,8 @@ def parse_parameters():
 	ignore_isa = False
 	ignore_partof = False
 	ignore_regulates = False
+	termss = False
+	query_from_GO = True
 	#query_dir = None
 
 # Parse command line
@@ -460,6 +582,9 @@ def parse_parameters():
 		elif sys.argv[i] == '--ignore_has_part':
 			ignore_has_part = True
 			continue
+		elif sys.argv[i] == '--GOTerms':
+			termss = True
+			continue
 		elif sys.argv[i] == '--consider_has_part':
 			ignore_has_part = False
 			continue
@@ -497,6 +622,7 @@ def parse_parameters():
 		elif sys.argv[i] == '-q' or sys.argv[i] == '--query':
 			query_file = sys.argv[i+1]
 			query_from_ac = False
+			query_from_GO = False
 		elif sys.argv[i] == '--sep' or sys.argv[i] == '--separator':
 			if sys.argv[i+1] == 't':
 				query_separator = "\t"
@@ -506,6 +632,7 @@ def parse_parameters():
 				query_separator = sys.argv[i+1]
 		elif sys.argv[i] == '-u':
 			query_from_ac = True
+			query_from_GO = True
 			continue
 
 		elif sys.argv[i] == '-c' or sys.argv[i] == '--category':
@@ -572,19 +699,27 @@ def start():
 
 	parse_parameters()
 
-	if ac_file == None:
-		print "Please specify an annotation corpus"
-		sys.exit()
-	if use_enhanced:
-		query_from_ac = True
-		semsim_name = 'Resnik'
-		mix_name = 'max'
-	if not query_from_ac:
-		if query_file == None and query_dir==None:
-			print "Please specify a query file or use -u"
+	if not termss:
+		if ac_file == None:
+			print "Please specify an annotation corpus"
 			sys.exit()
+		if use_enhanced:
+			query_from_ac = True
+			semsim_name = 'Resnik'
+			mix_name = 'max'
+		if not query_from_ac:
+			if query_file == None and query_dir==None:
+				print "Please specify a query file or use -u"
+				sys.exit()
+		else:
+			query_type = 'list'
 	else:
-		query_type = 'list'
+		if not query_from_GO:
+			if query_file == None and query_dir==None:
+				print "Please specify a query file or use -u"
+				sys.exit()
+		else:
+			query_type = 'list'
 
 	print("Gene Ontology:\t\t" + str(go_file))
 	print("Annotation Corpus:\t\t" + str(ac_file))
@@ -614,34 +749,62 @@ def start():
 	print("-----------------------------------------------")
 
 	go = load_go(go_file)
-	ac = load_ac(ac_file, ac_type)
-	
-	if not use_enhanced:
-		SS = init_ss(go, ac, semsim_name, mix_name)
-	else:
-		SS = init_enhanced_ss(go, ac, semsim_name, mix_name)
+	if not termss:
+		ac = load_ac(ac_file, ac_type)
+		
+		if not use_enhanced:
+			SS = init_ss(go, ac, semsim_name, mix_name)
+		else:
+			SS = init_enhanced_ss(go, ac, semsim_name, mix_name)
 
-	#if not query_dir == None:
-		#do_test(out_file)
-		#sys.exit()
-		
-	if query_from_ac:
-		query = load_query_from_ac(ac)
+		#if not query_dir == None:
+			#do_test(out_file)
+			#sys.exit()
+			
+		if query_from_ac:
+			query = load_query_from_ac(ac)
+		else:
+			query = load_query_from_file(query_file, query_type, query_separator)
+		h = None
+		if not out_file == None:
+			h = open(out_file, 'w')
+			
+		if use_enhanced:
+			ss_pairwise_enhanced(SS, query, ontology, h, cut_thres, cut_none)
+		elif query_type == 'pairs':
+			ss_pairs(SS, query, ontology, h, cut_thres, cut_none)
+		else:
+			ss_pairwise(SS, query, ontology, h, cut_thres, cut_none)
+		if not h == None:
+			h.close()
+		sys.exit()
+	#
 	else:
-		query = load_query_from_file(query_file, query_type, query_separator)
-	h = None
-	if not out_file == None:
-		h = open(out_file, 'w')
-		
-	if use_enhanced:
-		ss_pairwise_enhanced(SS, query, ontology, h, cut_thres, cut_none)
-	elif query_type == 'pairs':
-		ss_pairs(SS, query, ontology, h, cut_thres, cut_none)
-	else:
-		ss_pairwise(SS, query, ontology, h, cut_thres, cut_none)
-	if not h == None:
-		h.close()
-	sys.exit()
+		if not ac_file == None:
+			ac = load_ac(ac_file, ac_type)
+		else:
+			ac = None
+
+		SS = init_term_ss(go, ac, semsim_name, mix_name)
+		if SS==None:
+			sys.exit()
+
+		if query_from_GO:
+			query = load_query_from_GO(SS, ontology)
+		else:
+			query = load_query_from_file(query_file, query_type, query_separator)
+
+		h = None
+		if not out_file == None:
+			h = open(out_file, 'w')
+		if query_type == 'pairs':
+			ss_term_pairs(SS, query, ontology, h, cut_thres, cut_none)
+		else:
+			ss_term_pairwise(SS, query, ontology, h, cut_thres, cut_none)
+		if not h == None:
+			h.close()
+		sys.exit()
+
 #
 
 if __name__ == "__main__":

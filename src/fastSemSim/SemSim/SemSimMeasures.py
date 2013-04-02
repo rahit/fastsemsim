@@ -22,6 +22,7 @@ from fastSemSim.SemSim.ResnikSemSim import *
 from fastSemSim.SemSim.LinSemSim import *
 from fastSemSim.SemSim.JiangConrathSemSim import *
 from fastSemSim.SemSim.SimGICSemSim import *
+from fastSemSim.SemSim.SimUISemSim import *
 from fastSemSim.SemSim.SimICSemSim import *
 from fastSemSim.SemSim.SimRelSemSim import *
 from fastSemSim.SemSim.avgSemSim import *
@@ -34,6 +35,8 @@ from fastSemSim.SemSim.JaccardSemSim import *
 from fastSemSim.SemSim.CzekanowskiDiceSemSim import *
 from fastSemSim.SemSim.CosineSemSim import *
 from fastSemSim.SemSim.GSESAMESemSim import *
+from fastSemSim.SemSim.SimICNDSemSim import *
+from fastSemSim.SemSim.SimICNPSemSim import *
 
 
 '''
@@ -46,6 +49,7 @@ SemSimMeasures = {
 # present in version 0.6
 	'Resnik' : (ResnikSemSim, True),
 	'SimGIC': (SimGICSemSim, False),
+	'SimUI': (SimUISemSim, False),
 	'Lin' :(LinSemSim, True),
 	'Jiang and Conrath' :(JiangConrathSemSim, True),
 	'SimIC' :(SimICSemSim, True),
@@ -56,6 +60,8 @@ SemSimMeasures = {
 	'Czekanowski-Dice' :(CzekanowskiDiceSemSim, False),
 	'Cosine' :(CosineSemSim, False),
 	'G-SESAME' :(GSESAMESemSim, True),
+	'SimICND' :(ICNDSemSim, True),
+	'SimICNP' :(ICNPSemSim, True),
 # new in version 0.7
 	#'Cosine' :(CosineSemSim, False),
 }

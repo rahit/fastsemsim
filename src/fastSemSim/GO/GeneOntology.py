@@ -78,8 +78,12 @@ class GeneOntology:
 		nid = None
 		if type(codes) is str:
 			nid = go_name2id(codes)
+			nid = self.name2id(nid, alt_check)
 		elif type(codes) is int:
 			nid = codes
+			if alt_check:
+				if nid in self.alt_ids:
+					nid = self.alt_ids[nid]
 		elif type(codes) is dict or type(codes) is list:
 			nid = []
 			for i in codes:
@@ -88,11 +92,9 @@ class GeneOntology:
 				else:
 					tnid = i
 				if alt_check:
-					tnid = self.alt_ids[tnid]
+					if tnid in self.alt_ids:
+						tnid = self.alt_ids[tnid]
 				nid.append(tnid)
-			return nid
-		if alt_check:
-			nid = self.alt_ids[nid]
 		return nid
 
 	def id2name(self, codes, alt_check = False):
