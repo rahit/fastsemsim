@@ -313,13 +313,23 @@ class AnnotationCorpus:
 
 	class TaxonomyFilter:
 		name = 'taxonomy'
+		taxonomy = {}
+		inclusive = False
+
 		def __init__(self, params):
-			self.taxonomy = params
+			if 'taxonomy' in params:
+				self.taxonomy = params['taxonomy']
+				if type(self.taxonomy) == str or type(self.taxonomy) == unicode:
+					self.taxonomy = {str(self.taxonomy):None}
+			if 'inclusive' in params:
+				self.inclusive = params['inclusive']
 
 		def filter(self, taxonomy):
 			#print self.taxonomy
 			#print taxonomy
-			if self.taxonomy == taxonomy:
+			if taxonomy in self.taxonomy and self.inclusive:
+				return True
+			elif not taxonomy in self.taxonomy and not self.inclusive:
 				return True
 			return False
 
