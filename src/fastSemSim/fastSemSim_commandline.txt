@@ -6,17 +6,20 @@ Usage:	python FastSemSim.py [-g|--go go_file] -a|--ac ac_file [-c|--category MF|
 	[[Input Parameters]]
 
 -a,--ac:	Specify the file containing the Annotation Corpus. Can be either in GAF-2 or plain format. See documentation online for more information.
---acsep:	Separator used for the plain annotation corpus files. Use "s" for space, and "t" for tab. [Default: tab]
---entryfirst:	If specified, plain annotation corpus files will be parsed assuming that the first column of each row contains the entry, and the second the GO Term. Used only with plain files. [this is the standard behavior]
--g,--go:	The file containing the Gene Ontology. Only the obo-xml format is currently supported (either gzipped or not). If not provided, the GO included in FastSemSim will be used. See geneontology.org for details and to download the Gene Ontology.
---GOTermfirst:	If specified, plain annotation corpus files will be parsed assuming that the first column of each row contains the GO Term, and the second one contains the Entry. Used only with plain files.
---IEA:	If specified, IEA annotations will be considered. Used only with gaf2 files. [that is the standard behavior]
---ignore_has_part, --ignore_is_a, --ignore_part_of, --ignore_regulates:	Specify which GO relationships to ignore. By default all the relationships but has_part are considered.
---consider_has_part:	Consider has_part relationships. By default has_part relationships are ignored.
---multiple:	If specified, each line in plain annotation corpus files can contain more than one GO Term or Entry." 
---noIEA:	If specified, IEA annotations will be ignored. Used only with gaf2 files.
 -t,--actype:	Describes the format of the Annotation Corpus file. Can be "plain" or "gaf2". [default: gaf2]
 --tax:	Filter the Annotation Corpus. Removes protein/genes according to the taxonomy. Used only with gaf2 files
+--acsep:	Separator used for the plain annotation corpus files. Use "s" for space, and "t" for tab. [Default: tab]
+--entryfirst:	If specified, plain annotation corpus files will be parsed assuming that the first column of each row contains the entry, and the second the GO Term. Used only with plain files. [this is the standard behavior]
+--GOTermfirst:	If specified, plain annotation corpus files will be parsed assuming that the first column of each row contains the GO Term, and the second one contains the Entry. Used only with plain files.
+--IEA:	If specified, IEA annotations will be considered. Used only with gaf2 files. [that is the standard behavior]
+--multiple:	If specified, each line in plain annotation corpus files can contain more than one GO Term or Entry." 
+--noIEA:	If specified, IEA annotations will be ignored. Used only with gaf2 files.
+
+-g,--go:	The file containing the Gene Ontology. Only the obo-xml format is currently supported (either gzipped or not). If not provided, the GO included in FastSemSim will be used. See geneontology.org for details and to download the Gene Ontology.
+--ignore_has_part, --ignore_is_a, --ignore_part_of, --ignore_regulates:	Specify which GO relationships to ignore. By default all the relationships but has_part are considered.
+--consider_has_part:	Consider has_part relationships. By default has_part relationships are ignored.
+
+
 
 	[[Query Parameters]]
 

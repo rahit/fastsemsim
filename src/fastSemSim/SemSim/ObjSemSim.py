@@ -108,4 +108,6 @@ class ObjSemSim:
 			return None
 		t1 = self.int_format_data(obj1, onto)
 		t2 = self.int_format_data(obj2, onto)
+		# print t1
+		# print t2
 		return self.int_SemSim(t1, t2)

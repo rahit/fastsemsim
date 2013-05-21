@@ -115,14 +115,18 @@ class TermSemSim(object):
 			if type(id1) is int:
 				temp_id1 = {}
 				temp_id1[id1] = None
-			else:
+			elif type(id1) is dict:
 				temp_id1 = id1
+				temp_id1 = temp_id1.keys()
+			elif type(id1) is list:
+				temp_id1 = id1
+			else:
+				raise Exception
 			current_onto = None
-			temp_id1 = temp_id1.keys()
 			n_temp_id1 = {}
 			for i in temp_id1:
 				nid = self.int_validate_single_term(i)
-				print str(i) + " --> " + str(nid) 
+				# print str(i) + " --> " + str(nid) 
 				if nid == None:
 					return None
 				n_temp_id1[nid] = None
