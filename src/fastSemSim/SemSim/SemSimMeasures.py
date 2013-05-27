@@ -52,6 +52,7 @@ SemSimMeasures = {
 	'SimUI': (SimUISemSim, False),
 	'Lin' :(LinSemSim, True),
 	'Jiang and Conrath' :(JiangConrathSemSim, True),
+	'SimRel' :(SimRelSemSim, True),
 	'SimIC' :(SimICSemSim, True),
 	'Dice' :(DiceSemSim, False),
 	'TO' :(SimTOSemSim, False),

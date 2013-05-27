@@ -1,6 +1,6 @@
 # -*- coding: iso-8859-1 -*-
 '''
-Copyright 2011 Marco Mina. All rights reserved.
+Copyright 2011-2013 Marco Mina. All rights reserved.
 
 This file is part of fastSemSim
 
@@ -20,7 +20,7 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 #--------------------------------------------------------------------------
 """
 @mail marco.mina.85@gmail.com
-@version 1.0
+@version 2.0
 @desc GeneOntology class handles Gene Ontology
 
 Function load_GO_XML(file_stream) loads XML files. It returns a GeneOntology object.
@@ -51,6 +51,7 @@ def go_name2id(code):
 	return int(code[3:])
 
 def go_id2name(code):
+	# assumption: GO terms are 3 + 7 characters long.
 	return "GO:" + '0'*(7 - len(str(code))) + str(code)
 	
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
@@ -59,9 +60,9 @@ def go_id2name(code):
 
 class GeneOntology:
 	
-	BP_root = 8150
-	MF_root = 3674
-	CC_root = 5575
+	BP_root = go_name2id(BP_root)
+	MF_root = go_name2id(MF_root)
+	CC_root = go_name2id(CC_root)
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 # public functions and variables that should be used 
@@ -99,7 +100,7 @@ class GeneOntology:
 
 	def id2name(self, codes, alt_check = False):
 		if alt_check:
-			print "go_2names - alt_check not yet implemented."
+			print "id2name - alt_check not yet implemented."
 		sid = None
 		if type(codes) is int:
 			sid = go_id2name(codes)
@@ -211,7 +212,7 @@ def load(file_stream, parameters={}):
 			file_stream_handle = gzip.open(file_stream, 'rb')
 		else:
 			file_stream_handle = open(file_stream, 'r')
-	else:
+	else: # assume that the passed object is a file stream
 		file_stream_handle = file_stream
 	
 	
@@ -226,7 +227,7 @@ def load(file_stream, parameters={}):
 			print "GeneOntology load: Unknown file format: " + str(parameters['type'])
 			raise Exception
 
-	else:
+	else: # default assumption: obo-xml GO
 		parser = make_parser()
 		handler = OboXmlParser(parameters)
 		parser.setContentHandler(handler)
