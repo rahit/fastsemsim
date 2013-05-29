@@ -26,7 +26,7 @@ Class to parse Annotation Corporus files in GAF-2.0 format [i.e. Gene Ontology A
 import sys
 import os
 import gzip
-import GeneOntology
+# import GeneOntology
 
 SIMPLIFY = 'simplify'
 
@@ -76,14 +76,17 @@ class GAF2AnnotationCorpus():
 		if not self.ac.isOk('EC', self.temp_EC): return False
 
 		if self.ac.int_exclude_GO_root:
-			if self.temp_term == GeneOntology.BP_root or self.temp_term == GeneOntology.CC_root or self.temp_term == GeneOntology.MF_root:
+			if self.temp_term == self.ac.go.BP_root_str or self.temp_term == self.ac.go.CC_root_str or self.temp_term == self.ac.go.MF_root_str:
 				return False
+		# if not self.go == None:
+			# temp_term = self.go.name2id(self.temp_term)
+		# else:
 		temp_term = int(self.temp_term[3:])
 		if not self.ac.go == None and not self.ac.go.alt_ids == None:
 			if not temp_term in self.ac.go.alt_ids:
 				#print(str(self.temp_term) + " not found in GO.")
 				return False
-			if not temp_term in self.ac.go.nodes_edges:
+			if not temp_term in self.ac.go.nodes:
 				#print(str(self.temp_term) + " is obsolete.")
 				return False
 		return True

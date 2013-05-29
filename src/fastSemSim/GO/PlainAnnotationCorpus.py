@@ -28,7 +28,7 @@ This class reads plain annotation corpus files.
 
 import sys
 import os
-import GeneOntology
+# import GeneOntology
 
 MANYASSPERROW = 'multiple'
 TERMFIRST = 'term first'
@@ -81,14 +81,14 @@ class PlainAnnotationCorpus():
 
 	def isOk(self):
 		if self.ac.int_exclude_GO_root:
-			if self.temp_term == GeneOntology.BP_root or self.temp_term == GeneOntology.CC_root or self.temp_term == GeneOntology.MF_root:
+			if self.temp_term == self.ac.go.BP_root_str or self.temp_term == self.ac.go.CC_root_str or self.temp_term == self.ac.go.MF_root_str:
 				return False
 		temp_term = int(self.temp_term[3:])
 		if not self.ac.go == None and not self.ac.go.alt_ids == None:
 			if not temp_term in self.ac.go.alt_ids:
 				#print(str(self.temp_term) + " not found in GO.")
 				return False
-			if not temp_term in self.ac.go.nodes_edges:
+			if not temp_term in self.ac.go.nodes:
 				#print(str(self.temp_term) + " is obsolete.")
 				#self.obso[self.temp_term] = None
 				return False

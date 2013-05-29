@@ -38,7 +38,7 @@ TODO:
 """
 
 from fastSemSim.GO import AnnotationCorpus
-from fastSemSim.GO import GeneOntology
+from fastSemSim.GO import Ontology
 import sys
 import os
 import math
@@ -49,9 +49,9 @@ class SemSimUtils:
 # internal functions
 
 # variables available
-	BP_ontology = "BP"
-	MF_ontology = "MF"
-	CC_ontology = "CC"
+	# BP_ontology = "BP"
+	# MF_ontology = "MF"
+	# CC_ontology = "CC"
 
 	go = None
 	ac = None
@@ -76,12 +76,12 @@ class SemSimUtils:
 
 	def int_det_offspring_table(self):
 		self.offspring = {}
-		for i in self.go.nodes_edges:
+		for i in self.go.nodes:
 			self.offspring[i] = self.int_det_offspring(i)
 
 	def int_det_ancestors_table(self):
 		self.ancestors = {}
-		for i in self.go.nodes_edges:
+		for i in self.go.nodes:
 			self.ancestors[i] = self.int_det_ancestors(i)
 
 	def int_det_offspring(self, goid):
@@ -158,12 +158,12 @@ class SemSimUtils:
 
 	def int_det_freq_table(self):
 		self.freq = {}
-		for i in self.go.nodes_edges:
+		for i in self.go.nodes:
 			self.freq[i] = self.int_det_freq(i)
 
 	def int_det_p_table(self):
 		self.p = {}
-		for i in self.go.nodes_edges:
+		for i in self.go.nodes:
 			self.p[i] = self.int_det_p(i)
 
 	def int_det_p(self,term_id):
@@ -191,7 +191,7 @@ class SemSimUtils:
 	def int_det_IC_table(self):
 		self.IC = {}
 		conta = 0
-		for i in self.go.nodes_edges:
+		for i in self.go.nodes:
 			conta+= 1
 			#print conta
 			#print len(self.go.nodes_edges)
