@@ -21,9 +21,7 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 """
 @mail marco.mina.85@gmail.com
 @version 2.0
-@desc DiseaseOntology class handles DiseaseOntology
-
-Function load_DO(file_stream) loads DO in OBO files. It returns a DiseaseOntology object.
+@desc CellOntology class handles CellOntology
 """
 import types
 import os
@@ -44,21 +42,21 @@ POS_REG = 3
 NEG_REG = 4
 HAS_PART = 5
 
-def do_name2id(code):
-	return int(code[5:])
+def co_name2id(code):
+	return int(code[3:])
 
-def do_id2name(code):
-	# assumption: GO terms are 5 + 7 characters long.
-	return "DOID:" + '0'*(7 - len(str(code))) + str(code)
+def co_id2name(code):
+	# assumption: CO terms are 3 + 7 characters long.
+	return "CL:" + '0'*(7 - len(str(code))) + str(code)
 	
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 # GeneOntology class
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 
-class DiseaseOntology(Ontology.Ontology):
+class CellOntology(Ontology.Ontology):
 	
-	DO_root_str = "DOID:0000004"
-	DO_root = do_name2id(DO_root_str)
+	CO_root_str = "CL:0000000"
+	CO_root = co_name2id(CO_root_str)
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 # public functions and variables that should be used 
@@ -70,7 +68,7 @@ class DiseaseOntology(Ontology.Ontology):
 	def name2id(self, codes, alt_check = True):
 		nid = None
 		if type(codes) is str:
-			nid = do_name2id(codes)
+			nid = co_name2id(codes)
 			nid = self.name2id(nid, alt_check)
 		elif type(codes) is int:
 			nid = codes
@@ -81,7 +79,7 @@ class DiseaseOntology(Ontology.Ontology):
 			nid = []
 			for i in codes:
 				if type(i) is str:
-					tnid = do_name2id(i)
+					tnid = co_name2id(i)
 				else:
 					tnid = i
 				if alt_check:
@@ -95,14 +93,14 @@ class DiseaseOntology(Ontology.Ontology):
 			print "id2name - alt_check not yet implemented."
 		sid = None
 		if type(codes) is int:
-			sid = do_id2name(codes)
+			sid = co_id2name(codes)
 		elif type(codes) is str:
 			sid = codes
 		elif type(codes) is dict or type(codes) is list:
 			sid= []
 			for i in codes:
 				if type(i) is int:
-					tnid = do_id2name(i)
+					tnid = co_id2name(i)
 				else:
 					tnid = i
 				sid.append(tnid)
@@ -186,6 +184,7 @@ class OboParser:
 	def __init__(self, parameters = {}):
 		self.edges = []
 		self.terms = []
+		self.namespace = None
 		self.alt_ids = {}
 		self.namespace = {}
 		self.ignore_part_of = False
@@ -254,14 +253,16 @@ class OboParser:
 			for line in lines:
 				if line.startswith("id:"):
 					curid = self.strip_tag(line)
-					curid = do_name2id(curid)
+					curid = co_name2id(curid)
 					got_id = True
 				elif line.startswith("alt_id:"):
 					curaltid = self.strip_tag(line)
-					self.alt_ids[do_name2id(curaltid)] = curid
+					if curaltid.startswith('CL:'):
+						self.alt_ids[co_name2id(curaltid)] = curid
 				elif line.startswith("replaced_by:"):
 					curaltid = self.strip_tag(line)
-					self.alt_ids[do_name2id(curaltid)] = curid
+					if curaltid.startswith('CL:'):
+						self.alt_ids[co_name2id(curaltid)] = curid
 				elif line.startswith("namespace:"):
 					namespace = self.strip_tag(line)
 					self.namespace[curid] = namespace
@@ -279,14 +280,14 @@ class OboParser:
 					if is_obsolete:
 						raise Exception
 					if not self.ignore_is_a:
-						self.edges.append( (curid, do_name2id(isa), IS_A ) )
+						self.edges.append( (curid, co_name2id(isa), IS_A ) )
 				elif line.startswith("part_of:"):
 					pof = self.strip_tag(line).split()[0]
 					got_pof = True
 					if is_obsolete:
 						raise Exception
 					if not self.ignore_part_of:
-						self.edges.append( (curid, do_name2id(pof), PART_OF ) )
+						self.edges.append( (curid, co_name2id(pof), PART_OF ) )
 				elif line.startswith("relationship:"):
 					if is_obsolete:
 						raise Exception
@@ -294,17 +295,17 @@ class OboParser:
 					ctype = cline[0]
 					cto = cline[1]
 					if str(ctype) == 'part_of' and not self.ignore_part_of:
-						self.edges.append( (curid, do_name2id(cto), PART_OF ) )
+						self.edges.append( (curid, co_name2id(cto), PART_OF ) )
 					elif str(ctype) == 'regulates' and not self.ignore_regulates:
-						self.edges.append( (curid, do_name2id(cto), REGULATES ) )
+						self.edges.append( (curid, co_name2id(cto), REGULATES ) )
 					elif str(ctype) == 'positively_regulates' and not self.ignore_regulates:
-						self.edges.append( (curid, do_name2id(cto), POS_REG ) )
+						self.edges.append( (curid, co_name2id(cto), POS_REG ) )
 					elif str(ctype) == 'negatively_regulates' and not self.ignore_regulates:
-						self.edges.append( (curid, do_name2id(cto), NEG_REG ) )
+						self.edges.append( (curid, co_name2id(cto), NEG_REG ) )
 					elif str(ctype) == 'is_a' and not self.ignore_is_a:
-						self.edges.append( (curid, do_name2id(cto), IS_A ) )
+						self.edges.append( (curid, co_name2id(cto), IS_A ) )
 					elif str(ctype) == 'has_part' and not self.ignore_has_part:
-						self.edges.append( (curid, do_name2id(cto), HAS_PART ) )
+						self.edges.append( (curid, co_name2id(cto), HAS_PART ) )
 
 			# commit Term info
 			if is_obsolete:
@@ -348,16 +349,16 @@ def load(file_stream, parameters={}):
 	
 	
 	if 'type' in parameters:
-		if parameters['type'] == 'obo-xml':
-			parser = make_parser()
-			handler = OboXmlParser(parameters)
-			parser.setContentHandler(handler)
-			parser.parse(file_stream_handle)
-			go = DiseaseOntology(handler.terms, handler.edges, handler.alt_ids)
-		elif parameters['type'] == 'obo':
+		# if parameters['type'] == 'obo-xml':
+		# 	parser = make_parser()
+		# 	handler = OboXmlParser(parameters)
+		# 	parser.setContentHandler(handler)
+		# 	parser.parse(file_stream_handle)
+		# 	go = DiseaseOntology(handler.terms, handler.edges, handler.alt_ids)
+		if parameters['type'] == 'obo':
 			handler = OboParser(parameters)
 			handler.parse(file_stream_handle)
-			go = DiseaseOntology(handler.terms, handler.edges, handler.alt_ids, handler.namespace)
+			go = CellOntology(handler.terms, handler.edges, handler.alt_ids, handler.namespace)
 		else:
 			print "DiseaseOntology load: Unknown file format: " + str(parameters['type'])
 			raise Exception
@@ -365,7 +366,7 @@ def load(file_stream, parameters={}):
 	else: # default assumption: obo GO
 			handler = OboParser(parameters)
 			handler.parse(file_stream_handle)
-			go = DiseaseOntology(handler.terms, handler.edges, handler.alt_ids, handler.namespace)
+			go = CellOntology(handler.terms, handler.edges, handler.alt_ids, handler.namespace)
 	
 	if type(file_stream) == str:
 		file_stream_handle.close()
@@ -460,25 +461,25 @@ def load(file_stream, parameters={}):
 # 				self.inTerm = 0
 # 			elif name == 'id':
 # 				self.isId = 0
-# 				self.id = do_name2id(self.id)
+# 				self.id = co_name2id(self.id)
 # 			elif name == 'is_a':
 # 				if self.curobsolete:
 # 					#print "Inconsistent"
 # 					raise Exception
 # 				self.isIsA = 0
 # 				if not self.ignore_is_a:
-# 					self.edges.append( (self.id, do_name2id(self.isa), IS_A ) )
+# 					self.edges.append( (self.id, co_name2id(self.isa), IS_A ) )
 # 			elif name == 'part_of':
 # 				if self.curobsolete:
 # 					raise Exception
 # 				#print "original part_of"
 # 				self.isPartOf = 0
 # 				if not self.ignore_part_of:
-# 					self.edges.append( (self.id, do_name2id(self.partof), PART_OF ) )
+# 					self.edges.append( (self.id, co_name2id(self.partof), PART_OF ) )
 # 			elif name == 'alt_id':
 # 				#print "original alt_id"
 # 				self.isaltId = 0
-# 				self.alt_ids[do_name2id(self.curaltid)] = self.id
+# 				self.alt_ids[co_name2id(self.curaltid)] = self.id
 # 			elif name == 'relationship':
 # 				if self.curobsolete:
 # 					raise Exception
@@ -491,23 +492,23 @@ def load(file_stream, parameters={}):
 # 				if self.isRelationship:
 # 					self.isRelationshipTo = 0
 # 					if str(self.parent_type) == 'part_of' and not self.ignore_part_of:
-# 						self.edges.append( (self.id, do_name2id(self.parent), PART_OF ) )
+# 						self.edges.append( (self.id, co_name2id(self.parent), PART_OF ) )
 # 					elif str(self.parent_type) == 'regulates' and not self.ignore_regulates:
-# 						self.edges.append( (self.id, do_name2id(self.parent), REGULATES ) )
+# 						self.edges.append( (self.id, co_name2id(self.parent), REGULATES ) )
 # 					elif str(self.parent_type) == 'positively_regulates' and not self.ignore_regulates:
-# 						self.edges.append( (self.id, do_name2id(self.parent), POS_REG ) )
+# 						self.edges.append( (self.id, co_name2id(self.parent), POS_REG ) )
 # 					elif str(self.parent_type) == 'negatively_regulates' and not self.ignore_regulates:
-# 						self.edges.append( (self.id, do_name2id(self.parent), NEG_REG ) )
+# 						self.edges.append( (self.id, co_name2id(self.parent), NEG_REG ) )
 # 					elif self.parent_type == 'is_a' and not self.ignore_is_a:
-# 						self.edges.append( (self.id, do_name2id(self.parent), IS_A ) )
+# 						self.edges.append( (self.id, co_name2id(self.parent), IS_A ) )
 # 					elif self.parent_type == 'has_part' and not self.ignore_has_part:
-# 						self.edges.append( (self.id, do_name2id(self.parent), HAS_PART ) )
+# 						self.edges.append( (self.id, co_name2id(self.parent), HAS_PART ) )
 # 			elif name == 'is_obsolete':
 # 				if self.isObsolete:
 # 					self.isObsolete = 0
 # 			elif name == 'replaced_by':
 # 				#if self.isReplacedBy == 1:
-# 				self.alt_ids[self.id] = do_name2id(self.currepid)
+# 				self.alt_ids[self.id] = co_name2id(self.currepid)
 # 				self.isReplacedBy = 0
 # 			elif name == 'consider':
 # 				if self.isConsider:

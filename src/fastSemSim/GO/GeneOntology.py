@@ -16,14 +16,22 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
-'''
-#--------------------------------------------------------------------------
-"""
+
 @mail marco.mina.85@gmail.com
 @version 2.0
-@desc GeneOntology class handles Gene Ontology
+@desc GeneOntology class: extend Ontology to handle the GeneOntology
+'''
 
-Function load_GO_XML(file_stream) loads XML files. It returns a GeneOntology object.
+"""
+Out-of-class variables:
+	types of relationships: is_a, part_of, regulates, ...
+Out-of-class functions:
+	go_name2id
+	go_id2name
+
+Current implementation can only handle single-scope ontologies. All terms have to begin with GO:
+
+Superclasses can extend the basic datastructure with additional layers of information. 
 """
 import types
 import os
@@ -129,7 +137,10 @@ class GeneOntology(Ontology.Ontology):
 
 
 		# self.edge_types = [0 for i in range(len(edges))]
-		for (u,v,z) in edges:
+		for i in edges:
+			if i == None:
+				continue
+			(u,v,z) = i
 			ce = self._add_edge(v, u, False)
 			self.edges['type'].append(z)
 			if (not namespace == None) and (not namespace[v] == namespace[u]):
@@ -212,18 +223,18 @@ def load(file_stream, parameters={}):
 	else: # assume that the passed object is a file stream
 		file_stream_handle = file_stream
 	
-	
+
+	namespace = None
 	if 'type' in parameters:
 		if parameters['type'] == 'obo-xml':
 			parser = make_parser()
 			handler = OboXmlParser(parameters)
 			parser.setContentHandler(handler)
 			parser.parse(file_stream_handle)
-			go = GeneOntology(handler.terms, handler.edges, handler.alt_ids)
 		elif parameters['type'] == 'obo':
 			handler = OboParser(parameters)
 			handler.parse(file_stream_handle)
-			go = GeneOntology(handler.terms, handler.edges, handler.alt_ids, handler.namespace)
+			namespace = handler.namespace
 		else:
 			print "GeneOntology load: Unknown file format: " + str(parameters['type'])
 			raise Exception
@@ -233,8 +244,22 @@ def load(file_stream, parameters={}):
 		handler = OboXmlParser(parameters)
 		parser.setContentHandler(handler)
 		parser.parse(file_stream_handle)
-		go = GeneOntology(handler.terms, handler.edges, handler.alt_ids)
+
+	if 'ignore' in parameters and 'inter' in parameters['ignore'] and parameters['ignore']['inter']:
+		for i in range(0, len(handler.edges)):
+			(u,v,z) = handler.edges[i] 
+			if not namespace == None:
+				vn = None
+				un = None
+				if u in namespace:
+					un = namespace[u]
+				if v in namespace:
+					vn = namespace[v]
+				if not un == vn:
+					handler.edges[i] = None	
 	
+	go = GeneOntology(handler.terms, handler.edges, handler.alt_ids, handler.namespace)
+
 	if type(file_stream) == str:
 		file_stream_handle.close()
 	return go
@@ -242,8 +267,8 @@ def load(file_stream, parameters={}):
 
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
-# OboXmlParser: Class to parse GO obo-xml files
-# Given an obo-xml file builds a GeneOntology object parsing it
+# OboParser: Class to parse GO obo files
+# Given an obo file builds a GeneOntology object parsing it
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 
 class OboParser:

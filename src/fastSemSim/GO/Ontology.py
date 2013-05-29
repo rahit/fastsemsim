@@ -16,25 +16,25 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
-'''
-#--------------------------------------------------------------------------
-"""
+
 @mail marco.mina.85@gmail.com
 @version 2.0
-@desc Ontology class is the basic datastructure representing multirooted connected DAGs.
+@desc Ontology is the basic class representing ontologies representable with multirooted connected DAGs.
+'''
 
 """
+Supported ontologies are those representable as multirooted DAGs. It is not required DAGs to be disconnected, but 'inter-DAG' edges are required to be specified. Class Ontology provides a function is_consistent that checks whether this contraints is satisfied. Inconsistent DAGs are NOT currently usable.
 
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
-# Ontology class
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+Different datastructures can be used to represent ontologies. The section Variables lists a set of different alternatives. Currently Ontology is tuned for using a parent-children and a node-edge representation.
 
+Superclasses can extend the basic datastructure with additional layers of information. 
+"""
 
 class Ontology:
 
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 # variables 
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 	_use_parent_children_ = True
 	_use_node_edges_ = True
@@ -93,12 +93,12 @@ class Ontology:
 		return self.next_edge
 
 	def __init__(self):
-		nodes = {}
-		edges = {}
-		edges['inter'] = {}
-		edges['nodes'] = []
-		parents = {}
-		children = {}
+		self.nodes = {}
+		self.edges = {}
+		self.edges['inter'] = {}
+		self.edges['nodes'] = []
+		self.parents = {}
+		self.children = {}
 
 		self.next_edge = 0
 
