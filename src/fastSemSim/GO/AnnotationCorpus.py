@@ -39,10 +39,26 @@ Each type of file carries different types of information. How to deal with that?
 
 '''
 
+'''
+Tentative class for loading generic Annotation Corpora.
+Constraint: an Ontology MUST be loaded and provided as an AnnotationCorpus object is istantiated.
+AnnotationCorpus relies on the functions and datastructures of the Ontology to map the IDS properly.
+
+Requires:
+	GO:
+		roots
+		name2id
+		id2name
+		nodes
+		edges
+		alt_ids
+		?obsolete?
+'''
+
 import sys
 import copy
 
-from GeneOntology import *
+# from Ontology import *
 from PlainAnnotationCorpus import PlainAnnotationCorpus
 from GAF2AnnotationCorpus import GAF2AnnotationCorpus
 
@@ -50,17 +66,38 @@ INT_DEBUG = True
 FILTER_PARAM = 'filter'
 RESET_PARAM = 'reset'
 
-AnnotationCorpusFormat = {'gaf-2.0':GAF2AnnotationCorpus,
-													'gaf-1.0':None,
-													'GOA':GAF2AnnotationCorpus,
-													'plain':PlainAnnotationCorpus
-													}
+AnnotationCorpusFormat = {	'gaf-2.0':GAF2AnnotationCorpus,
+							'gaf-1.0':None,
+							'GOA':GAF2AnnotationCorpus,
+							'plain':PlainAnnotationCorpus
+							}
 
 class AnnotationCorpus:
-	#----------------------------------------------------------------------------------------
-	int_exclude_GO_root = True
 
-	#----------------------------------------------------------------------------------------
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+# variables 
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+
+	_exclude_roots = True
+
+# data struct 1: dicts
+	annotations = {} # dict with objects as keys, dict of annotated terms as values
+	reverse_annotations = {} # dict as terms as keys, dicts of annotated objects as values
+	obj_set = {} # set of all the objects 
+	term_set = {} # set of all the terms involved in the annotation corpus
+	obj_fields = [] # ?
+	term_fields = [] # ?
+	annotations_fields = [] # ?
+	reverse_annotations_fields = [] # ?
+	obj_field2pos= {} # ?
+	term_field2pos= {} # ?
+	annotations_field2pos= {} # ?
+	reverse_annotations_field2pos= {} # ??
+
+	
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+# functions
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 	def reset(self):
 		self.annotations = {}
@@ -80,8 +117,10 @@ class AnnotationCorpus:
 		self.annotations_field2pos= {}
 		self.reverse_annotations_field2pos= {}
 
-	def __init__(self, go=None):
+	def __init__(self, go):
 		self.go = go
+		if self.go == None:
+			raise Exception
 		self.initCommonFilter()
 		self.reset()
 
@@ -155,7 +194,7 @@ class AnnotationCorpus:
 					del self.annotations[j][i]
 				del self.reverse_annotations[i]
 				continue
-			if not i in self.go.nodes_edges:
+			if not i in self.go.nodes:
 				if self.go.alt_ids[i] == i:
 					#print("Term " + str(i) + " is an obsolete id.")
 					for j in self.reverse_annotations[i]:
@@ -195,7 +234,7 @@ class AnnotationCorpus:
 					print("Term " + str(i) + " not found in GO.")
 				valid = False
 				continue
-			if not i in self.go.nodes_edges:
+			if not i in self.go.nodes:
 				if self.go.alt_ids[i] == i:
 					if INT_DEBUG:
 						print("Term " + str(i) + " is an obsolete id.")
@@ -320,7 +359,7 @@ class AnnotationCorpus:
 			if 'taxonomy' in params:
 				self.taxonomy = params['taxonomy']
 				if type(self.taxonomy) == str or type(self.taxonomy) == unicode:
-					self.taxonomy = {str(self.taxonomy):None}
+					self.taxonomy = {str(self.taxonomy): None}
 			if 'inclusive' in params:
 				self.inclusive = params['inclusive']
 

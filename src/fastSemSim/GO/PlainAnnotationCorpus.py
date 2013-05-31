@@ -80,18 +80,18 @@ class PlainAnnotationCorpus():
 		pass
 
 	def isOk(self):
-		if self.ac.int_exclude_GO_root:
-			if self.temp_term == self.ac.go.BP_root_str or self.temp_term == self.ac.go.CC_root_str or self.temp_term == self.ac.go.MF_root_str:
+
+		temp_term = self.ac.go.name2id(self.temp_term)
+		if self.ac._exclude_roots:
+			if temp_term in self.ac.go.roots:
 				return False
-		temp_term = int(self.temp_term[3:])
-		if not self.ac.go == None and not self.ac.go.alt_ids == None:
-			if not temp_term in self.ac.go.alt_ids:
-				#print(str(self.temp_term) + " not found in GO.")
-				return False
-			if not temp_term in self.ac.go.nodes:
-				#print(str(self.temp_term) + " is obsolete.")
-				#self.obso[self.temp_term] = None
-				return False
+		if not temp_term in self.ac.go.alt_ids:
+			#print(str(self.temp_term) + " not found in GO.")
+			return False
+		if not temp_term in self.ac.go.nodes:
+			#print(str(self.temp_term) + " is obsolete.")
+			#self.obso[self.temp_term] = None
+			return False
 		return True
 
 	def parse(self, fname):
@@ -151,11 +151,10 @@ class PlainAnnotationCorpus():
 					#ignored+=1
 					continue
 
-				term = int(term[3:])
-				if not self.ac.go == None and not term == self.ac.go.alt_ids[term]:
+				term = self.ac.go.name2id(term)
+				if not term == self.ac.go.alt_ids[term]:
 				#print("Remapping " + str(term) + " to " + str(ac.go.alt_ids[term])
 					term = ac.go.alt_ids[term]
-
 
 				#### Build up genes set
 				if obj_id not in self.ac.obj_set:

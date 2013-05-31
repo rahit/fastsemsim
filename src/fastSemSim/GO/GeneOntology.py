@@ -258,7 +258,7 @@ def load(file_stream, parameters={}):
 				if not un == vn:
 					handler.edges[i] = None	
 	
-	go = GeneOntology(handler.terms, handler.edges, handler.alt_ids, handler.namespace)
+	go = GeneOntology(handler.terms, handler.edges, handler.alt_ids, namespace)
 
 	if type(file_stream) == str:
 		file_stream_handle.close()
@@ -351,7 +351,7 @@ class OboParser:
 					self.alt_ids[go_name2id(curaltid)] = curid
 				elif line.startswith("replaced_by:"):
 					curaltid = self.strip_tag(line)
-					self.alt_ids[go_name2id(curaltid)] = curid
+					self.alt_ids[curid] = go_name2id(curaltid)
 				elif line.startswith("namespace:"):
 					namespace = self.strip_tag(line)
 					self.namespace[curid] = namespace
