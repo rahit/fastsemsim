@@ -116,21 +116,24 @@ class fastSemSimGui(wx.Frame):
 # Set constants. Load images
 		self.programdirectory = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
 		#self.programdirectory = 'images' # use this with py2exe to build a working binary
-		
-		self.Ok_pic = self.programdirectory + '/V_30.png'
-		self.Warning_pic = self.programdirectory + '/W_30.png'
-		self.Advanced_pic = self.programdirectory + '/advanced_30.png'
-		self.work_pic = self.programdirectory + '/work_30.png'
-		self.query_pic = self.programdirectory + '/query_30.png'
-		self.GO_ok_pic = self.programdirectory + '/GO_ok.png'
-		self.GO_warn_pic = self.programdirectory + '/GO_warn.png'
-		self.output_pic = self.programdirectory + '/output_30.png'
-		self.SS_pic = self.programdirectory + '/tweak_30.png'
+
+		self.icons_folder 	= self.programdirectory + '/icons/32x32/'
+
+		self.Ok_pic 		= self.icons_folder + 'V.png'
+		self.Warning_pic 	= self.icons_folder + 'W.png'
+		self.Advanced_pic 	= self.icons_folder + 'advanced.png'
+		self.work_pic 		= self.icons_folder + 'work.png'
+		self.query_pic 		= self.icons_folder + 'query.png'
+		self.GO_ok_pic 		= self.icons_folder + 'GO_ok.png'
+		self.GO_warn_pic 	= self.icons_folder + 'GO_warn.png'
+		self.output_pic 	= self.icons_folder + 'output.png'
+		self.SS_pic 		= self.icons_folder + 'tweak.png'
 	
 		self.font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
 		self.font.SetPointSize(9)
-		
-		self.status_images = wx.ImageList(100,50)
+
+		self.status_images = wx.ImageList(32,32)
+
 		self.status_images.Add(wx.Bitmap(self.Ok_pic)) # 0
 		self.status_images.Add(wx.Bitmap(self.Warning_pic)) # 1
 		self.status_images.Add(wx.Bitmap(self.Advanced_pic)) # 2

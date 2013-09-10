@@ -49,9 +49,6 @@ class SemSimUtils:
 # internal functions
 
 # variables available
-	# BP_ontology = "BP"
-	# MF_ontology = "MF"
-	# CC_ontology = "CC"
 
 	go = None
 	ac = None
@@ -67,6 +64,7 @@ class SemSimUtils:
 	def __init__(self, ac, go):
 		self.go = go
 		self.ac = ac
+		self.go._s1_to_s2()
 		self.int_det_offspring_table()
 		self.int_det_ancestors_table()
 		self.int_det_GO_root()
@@ -127,25 +125,13 @@ class SemSimUtils:
 		return anc
 
 	def int_det_GO_root(self):
-		#BP_GO = self.offspring[self.go.name2id(self.go.BP_root)]
-		#MF_GO = self.offspring[self.go.name2id(self.go.MF_root)]
-		#CC_GO = self.offspring[self.go.name2id(self.go.CC_root)]
-		BP_GO = self.offspring[self.go.BP_root]
-		MF_GO = self.offspring[self.go.MF_root]
-		CC_GO = self.offspring[self.go.CC_root]
 		assigns = {}
-		for i in BP_GO:
-			#if i in assigns:
-				#raise Exception
-			assigns[i] = self.go.BP_root
-		for i in MF_GO:
-			#if i in assigns:
-				#raise Exception
-			assigns[i] = self.go.MF_root
-		for i in CC_GO:
-			#if i in assigns:
-				#raise Exception
-			assigns[i] = self.go.CC_root
+		for j in self.go.roots:
+			BP_GO = self.offspring[j]
+			for i in BP_GO:
+				if i in assigns:
+					raise Exception
+				assigns[i] = j
 		self.GO_root = assigns
 
 	def int_det_freq(self,term_id):
