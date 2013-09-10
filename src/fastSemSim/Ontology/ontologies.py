@@ -282,7 +282,7 @@ class OboParser:
 					if not got_term:
 						raise Exception
 					namespace = self.strip_tag(line)
-					self.namespace[curid] = namespace
+					self.namespace[term_id] = namespace
 	            # elif line.startswith("name:"):
 	            #     rec.name = after_colon(line)
 	            # elif line.startswith("namespace:"):
@@ -555,11 +555,11 @@ class OboXmlParser(ContentHandler):
 					raise Exception
 				if not self.inner_term:
 					return
-				curaltid = self.ontology_class._name2id(self.curaltid, strict = True) # modify strict to allow refs to external ontologies
-				if not curaltid == None:
+				currepid = self.ontology_class._name2id(self.currepid, strict = True) # modify strict to allow refs to external ontologies
+				if not currepid == None:
 					if self.id not in self.term_alt_ids:
 						self.term_alt_ids[self.id] = []
-					self.term_alt_ids[self.id].append(curaltid)
+					self.term_alt_ids[self.id].append(currepid)
 			#
 
 			elif name == 'consider':
