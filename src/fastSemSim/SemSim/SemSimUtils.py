@@ -37,37 +37,49 @@ TODO:
             I could use pairs module to to this!
 """
 
-from fastSemSim.GO import AnnotationCorpus
-from fastSemSim.GO import Ontology
+# from fastSemSim.Ontology import AnnotationCorpus
+# from fastSemSim.Ontology import Ontology
 import sys
 import os
 import math
 
-
 class SemSimUtils:
-	
-# internal functions
 
-# variables available
+# variables
 
-	go = None
-	ac = None
-	ancestors = None
-	offspring = None
-	IC = None
-	freq = None
-	GO_root = None
-	p = None
+	# go = None
+	# ac = None
+	# ancestors = None
+	# offspring = None
+	# IC = None
+	# freq = None
+	# GO_root = None
+	# p = None
+
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 #internal functions
 
 	def __init__(self, ac, go):
 		self.go = go
+		if self.go == None:
+			raise Exception
 		self.ac = ac
+		if self.ac == None:
+			raise Exception
+
+		self.ancestors = None
+		self.offspring = None
+		self.IC = None
+		self.freq = None
+		self.p = None
+
 		self.go._s1_to_s2()
+		self.roots = self.go.roots
+		self.lineage = None
+
 		self.int_det_offspring_table()
 		self.int_det_ancestors_table()
-		self.int_det_GO_root()
+		self.int_det_lineage()
 
 		#self.det_freq_table()
 		#self.det_ICs_table()
@@ -86,53 +98,55 @@ class SemSimUtils:
 		if goid not in self.go.children:
 			return set()
 		anc = set()
-		anc.add(goid)
+		# anc.add(goid)
 		processed = {}
-		queue = []
-		for i in self.go.children[goid]:
-			queue.append(i)
-		#print(queue
+		queue = [goid]
+		# for i in self.go.children[goid]:
+			# if self.go.children[goid][i] in self.go.edges['inter'] and self.go.edges['inter'][self.go.children[goid][i]]:
+				# continue
+			# queue.append(i)
 		while len(queue) > 0:
 			t = queue.pop()
 			anc.add(t)
-			#print(child_going[t]
 			for tp in self.go.children[t]:
-				#print(tp
+				if self.go.children[t][tp] in self.go.edges['inter'] and self.go.edges['inter'][self.go.children[t][tp]]:
+					continue
 				if tp not in processed:
 					queue.append(tp)
-			processed[t] = 0
+			processed[t] = None
 		return anc
 
 	def int_det_ancestors(self, goid):
 		if goid not in self.go.parents:
 			return set()
 		anc = set()
-		anc.add(goid)
+		# anc.add(goid)
 		processed = {}
-		queue = []
-		for i in self.go.parents[goid]:
-			queue.append(i)
+		queue = [goid]
+		# for i in self.go.parents[goid]:
+			# queue.append(i)
 		#print(queue
 		while len(queue) > 0:
 			t = queue.pop()
 			anc.add(t)
 			#print(parent_going[t]
 			for tp in self.go.parents[t]:
-				#print(tp
+				if self.go.parents[t][tp] in self.go.edges['inter'] and self.go.edges['inter'][self.go.parents[t][tp]]:
+					continue
 				if tp not in processed:
 					queue.append(tp)
 			processed[t] = 0
 		return anc
 
-	def int_det_GO_root(self):
-		assigns = {}
+	def int_det_lineage(self):
+		self.lineage = {}
 		for j in self.go.roots:
-			BP_GO = self.offspring[j]
-			for i in BP_GO:
-				if i in assigns:
+			temp = self.offspring[j]
+			for i in temp:
+				if i in self.lineage:
 					raise Exception
-				assigns[i] = j
-		self.GO_root = assigns
+				self.lineage[i] = j
+		return self.lineage
 
 	def int_det_freq(self,term_id):
 		freq = 0
@@ -159,7 +173,7 @@ class SemSimUtils:
 			return None
 		if self.freq[term_id] == float(0):
 			return float(0)
-		rootf = self.freq[self.GO_root[term_id]]
+		rootf = self.freq[self.lineage[term_id]]
 		temp_p = float(self.freq[term_id])/float(rootf)
 		return temp_p
 

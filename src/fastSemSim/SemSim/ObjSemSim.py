@@ -22,8 +22,8 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 This class provides the prototype for a generic Protein (or more in general, an Object) Semantic Similarity measure (PSS)
 """
 
-from fastSemSim.GO import AnnotationCorpus
-from fastSemSim.GO import GeneOntology
+from fastSemSim.Ontology import AnnotationCorpus
+from fastSemSim.Ontology import Ontology
 from SemSimUtils import *
 from TermSemSim import *
 from MixSemSim import *
@@ -81,7 +81,11 @@ class ObjSemSim:
 		for i in self.ac.annotations[obj]:
 			#if i in self.go.obsolete_ids: # not present in GO_root
 				#continue
-			if i in self.util.GO_root and self.util.GO_root[i] == onto:
+			# print i
+			# print self.util.lineage[i]
+			# print onto
+			# print "--"
+			if i in self.util.lineage and self.util.lineage[i] == onto:
 				terms.append(i)
 		return terms
 
@@ -96,16 +100,19 @@ class ObjSemSim:
 			raise "Semantic Similarity measure not properly configured."
 		return sscore
 
-	def SemSim(self, obj1, obj2, ontology):
-		if str(ontology) == self.util.BP_ontology:
-			onto = self.util.go.BP_root
-		elif str(ontology) == self.util.MF_ontology:
-			onto = self.util.go.MF_root
-		elif str(ontology) == self.util.CC_ontology:
-			onto = self.util.go.CC_root
-		else:
-			raise "No valid ontology selected: " + str(ontology)
-			return None
+	def SemSim(self, obj1, obj2, ontology_root):
+		# if str(ontology) == self.util.BP_ontology:
+		# 	onto = self.util.go.BP_root
+		# elif str(ontology) == self.util.MF_ontology:
+		# 	onto = self.util.go.MF_root
+		# elif str(ontology) == self.util.CC_ontology:
+		# 	onto = self.util.go.CC_root
+		# else:
+		# 	raise "No valid ontology selected: " + str(ontology)
+		# 	return None
+		onto = ontology_root
+		# print obj1
+		# print obj2
 		t1 = self.int_format_data(obj1, onto)
 		t2 = self.int_format_data(obj2, onto)
 		# print t1

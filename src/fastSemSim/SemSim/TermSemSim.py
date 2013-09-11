@@ -29,8 +29,8 @@ TermSemSim relies on SemSimUtils to perform a lot of tasks (such as evaluating T
 a SemSimUtils object can be passed to the constructor as input data. Otherwise, a new instance will be created. Using only one copy of SemSimUtils helps reducing time and spece requirements and is strongly adviced.
 """
 
-from fastSemSim.GO import AnnotationCorpus
-from fastSemSim.GO import GeneOntology
+from fastSemSim.Ontology import AnnotationCorpus
+from fastSemSim.Ontology import Ontology
 from SemSimUtils import *
 import sys
 import os
@@ -80,7 +80,7 @@ class TermSemSim(object):
 		if not type(term) is int:
 			#print "Invalid term format: " + str(type(term))
 			return None
-		if term not in self.go.nodes_edges:
+		if term not in self.go.nodes:
 			if term not in self.go.alt_ids:
 				return None
 			if self.go.alt_ids[term] == term:
@@ -131,8 +131,8 @@ class TermSemSim(object):
 					return None
 				n_temp_id1[nid] = None
 				if current_onto is None:
-					current_onto = self.util.GO_root[nid]
-				elif not current_onto == self.util.GO_root[nid]:
+					current_onto = self.util.lineage[nid]
+				elif not current_onto == self.util.lineage[nid]:
 					#print("Terms are not from the same ontology")
 					return None
 			return n_temp_id1.keys()
@@ -168,7 +168,7 @@ class TermSemSim(object):
 				#print(str(term1) + " or " + str(term2) + "   not valid.")
 				return None
 			if self.SS_type == self.P_TSS:
-				if not self.util.GO_root[id1] == self.util.GO_root[id2]:
+				if not self.util.lineage[id1] == self.util.lineage[id2]:
 					#raise "Terms are not from the same ontology"
 					return None
 			elif self.SS_type == self.G_TSS:
@@ -178,7 +178,7 @@ class TermSemSim(object):
 				for i in id2:
 					t2 = i
 					break
-				if not self.util.GO_root[t1] == self.util.GO_root[t2]:
+				if not self.util.lineage[t1] == self.util.lineage[t2]:
 					#raise "Terms are not from the same ontology"
 					return None
 		else:
