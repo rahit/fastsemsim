@@ -22,8 +22,8 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 This class provides a fast implementation of Resnik max
 """
 
-from fastSemSim.GO import AnnotationCorpus
-from fastSemSim.GO import GeneOntology
+from fastSemSim.Ontology import AnnotationCorpus
+from fastSemSim.Ontology import ontologies
 from fastSemSim.SemSim import ObjSemSim
 from fastSemSim.SemSim import SemSimUtils
 from fastSemSim.SemSim import ResnikSemSim
