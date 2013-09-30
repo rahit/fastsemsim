@@ -28,8 +28,8 @@ import math
 
 class MixSemSim(object):
 
-	def __init__(self, ac, go, util = None):
-		self.go = go
+	def __init__(self, ontology, ac, util = None):
+		self.ontology = ontology
 		self.annotation_corpus = ac
 		self.util = util
 		#if self.util == None:

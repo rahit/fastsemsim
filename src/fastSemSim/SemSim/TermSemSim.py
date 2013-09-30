@@ -37,8 +37,6 @@ import os
 import math
 
 
-
-
 	#-#-#-#-#-#-#-#-#-#-#
 	# class TermSemSim  #
 	#-#-#-#-#-#-#-#-#-#-#
@@ -46,6 +44,7 @@ import math
 class MissingAcException(Exception):
 	def __init__(self, message):
 		self.message = message
+	#
 #
 
 class TermSemSim(object):
@@ -54,96 +53,95 @@ class TermSemSim(object):
 	format_and_check_data = True
 	P_TSS = "Pairwise"
 	G_TSS = "Groupwise"
-	SS_type = None # Type of Term Sem Sim: Can be P_TSS or G_TSS
-	IC_based = False # Tells whether te Term Sem Sim is based on Information Content
+	# SS_type # Type of Term Sem Sim: Can be P_TSS or G_TSS 
+	# IC_based # Tells whether te Term Sem Sim is based on Information Content
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 #### internal functions
 
-	def __init__(self, ac, go, util = None):
-		self.go = go
-		self.annotation_corpus = ac
+	def __init__(self, ontology, ac = None, util = None):
+		# self.SS_type = None # Type of Term Sem Sim: Can be P_TSS or G_TSS
+		# self.IC_based = False # Tells whether te Term Sem Sim is based on Information Content
+		self.ontology = ontology
+		self.ac = ac
 		self.util = util
-		if self.IC_based and self.annotation_corpus == None:
+		
+		if self.IC_based and self.ac == None:
 			raise MissingAcException("The selected semantic measure is based on IC and requires an annotation corpus.")
 		if self.util == None:
-			self.util = SemSimUtils(ac, go)
+			self.util = SemSimUtils(self.ontology, self.ac)
 		if self.IC_based and self.util.IC == None:
 			self.util.det_IC_table()
+	#
 
+	# def _validate_single_term_(self, term):
+	# # verifies whether a single Term is valid. It means it has not to be obsolete.
+	# # In addition, if the Term SS measure is based on IC, the GO Term should also possess an IC [which means it has to be annotated for at least one protein]
+	# 	# # if not type(term) is int:
+	# 	# # 	print "Invalid term format: " + str(type(term))
+	# 	# # 	return None
+	# 	if not self.ontology.is_valid(term):
+	# 		return None
+	# 	# if term not in self.ontology.nodes:
+	# 		# if term not in self.ontology.alt_ids:
+	# 			# return None
+	# 		# if self.ontology.alt_ids[term] == term:
+	# 				#print("Term " + str(term) + " is an obsolete id.")
+	# 			# return None
+	# 		# else:
+	# 			# term = self.ontology.alt_ids[term]
+	# 		# return None
 
-	def int_validate_single_term(self, term):
-	# verifies whether a single GO terms is valid. It means it has not to be obsolete.
-	# In addition, if the Term SS measure is based on IC, the GO Term should also possess an IC [which means it has to be annotated for at least one protein]
-	# ONLY NUMERIC INPUT IS ACCEPTED HERE
-		if not type(term) is int:
-			#print "Invalid term format: " + str(type(term))
+	# #
+
+	def _has_IC_(self, term):
+		# if self.util.IC == None:
+			# return None
+		if not term in self.util.IC:
 			return None
-		if term not in self.go.nodes:
-			if term not in self.go.alt_ids:
-				return None
-			if self.go.alt_ids[term] == term:
-					#print("Term " + str(term) + " is an obsolete id.")
-				return None
-			else:
-				term = self.go.alt_ids[term]
+		if self.util.IC[term] == None:
 			return None
-		if self.IC_based:
-			if not term in self.util.IC:
-				#print("Term " + str(term) + " does not have an IC.")
-				return None
-			if self.util.IC[term] == None:
-				#print("Term " + str(term) + " does not have an IC.")
-				return None
 		return term
+	#
 
+	def _format_data_(self, term1):
+	# 1) convert terms to proper ontology format
+	# 2) verify terms are in current ontology
+	# 3) verify terms have the same root. (this blocks cross-ontological Term SemSim measures)
+		id1 = self.ontology.name2id(term1, alt_check = True)
 
-	def int_format_data(self, term1):
-	# convert query data in the proper format
-	# verify query data are consistent with current GO
-	# verify query data come from the same GO. Overload this function for cross-ontological Term Sem Sim measures or they won't work.
-
-		id1 = self.util.go.name2id(term1) # convert GO Term ids to internal format. See name2id function in GeneOntology class
 		if self.SS_type == self.P_TSS:
-			nid = self.int_validate_single_term(id1)
-			#print str(id1) + " --> " + str(nid) 
-			if not nid==None:
-				return nid
-			return None
+			if (not self.ontology.is_valid(id1)) or (id1 == None) or (self.IC_based and self._has_IC_(id1) == None):
+				return None
+			return nid
+
 		elif self.SS_type == self.G_TSS:
-			if type(id1) is int:
-				temp_id1 = {}
-				temp_id1[id1] = None
-			elif type(id1) is dict:
-				temp_id1 = id1
-				temp_id1 = temp_id1.keys()
+			temp_id1 = []
+			if type(id1) is dict:
+				temp_id1 = id1.keys()
 			elif type(id1) is list:
 				temp_id1 = id1
 			else:
-				raise Exception
+				temp_id1 = [ id1 ]
 			current_onto = None
-			n_temp_id1 = {}
 			for i in temp_id1:
-				nid = self.int_validate_single_term(i)
-				# print str(i) + " --> " + str(nid) 
-				if nid == None:
+				if (not self.ontology.is_valid(i)) or (i == None) or (self.IC_based and self._has_IC_(i) == None):
 					return None
-				n_temp_id1[nid] = None
 				if current_onto is None:
-					current_onto = self.util.lineage[nid]
-				elif not current_onto == self.util.lineage[nid]:
-					#print("Terms are not from the same ontology")
+					current_onto = self.util.lineage[i]
+				elif not current_onto == self.util.lineage[i]:
 					return None
-			return n_temp_id1.keys()
+			return temp_id1
+	#
 
-	def int_SemSim(self, term1, term2):
-		# Return None, since this class is just a prototype
+	def _SemSim_(self, term1, term2):
 		return None
+	#
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
-#### public function
+#### public functions
 
 	def setSanityCheck(self, en):
 	# This enables or disables sanity checks and conversion on query data.
@@ -158,8 +156,8 @@ class TermSemSim(object):
 		if self.format_and_check_data:
 			if term1 is None or term2 is None:
 				return None
-			id1 = self.int_format_data(term1)
-			id2 = self.int_format_data(term2)
+			id1 = self._format_data_(term1)
+			id2 = self._format_data_(term2)
 			#print "\""+term1+"\""
 			#print "\""+term2+"\""
 			#print id1
@@ -184,4 +182,6 @@ class TermSemSim(object):
 		else:
 			id1 = term1
 			id2 = term2
-		return self.int_SemSim(id1, id2)
+		return self._SemSim_(id1, id2)
+	#
+#

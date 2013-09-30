@@ -44,3 +44,4 @@ class avgSemSim(MixSemSim):
 			finale += i[2]
 		finale /= float(len(scores))
 		return finale
+#

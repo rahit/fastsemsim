@@ -46,7 +46,8 @@ ontologies = {
 	'GeneOntology' : (GeneOntology.GeneOntology, ),
 	'DiseaseOntology' : (DiseaseOntology.DiseaseOntology, ),
 	'CellOntology' : (CellOntology.CellOntology, ),
-	'GenericOntology' : (Ontology.Ontology, )
+	'GenericOntology' : (Ontology.Ontology, ),
+	'Ontology' : (Ontology.Ontology, )
 }
 
 def parse(source, parameters={}):

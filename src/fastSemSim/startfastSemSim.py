@@ -66,10 +66,13 @@ params_help['query_all'] = 'Use all the entries in the annotation corpus/ontolog
 # params_help['query_ontology'] = 'Evaluate the semantic similarity between GO Terms. The query file should contain GO Term entries instead of proteins/genes. The GO category is ignored, but the GO Terms must come from the same category.'
 
 params_help['ss'] = 'Semantic Similarity settings.'
+params_help['tss_measure'] = "Semantic similarity measure to use between ontology terms. Can be 'Resnik','SimGIC','Lin','Jiang and Conrath','SimIC','Dice','TO','NTO','Jaccard','Czekanowski-Dice','Cosine','G-SESAME', .... [Default: Resnik]"
+params_help['tss_mix'] = 'The mixing strategy to use when merging term SSs. (if term SS measure requires it). Can be "max", "BMA" (best match average), or "avg". [Default: BMA]'
+params_help['oss_measure'] = "Semantic similarity measure to use between objects. [Default: Resnik]"
+params_help['oss_mix'] = 'The mixing strategy to use when merging obj SSs. (if object SS measure requires it). Can be "max", "BMA" (best match average), or "avg". [Default: BMA]'
+
 params_help['ss_category'] = 'The ontology category/namespace to use, if any. It must be one of the roots of the ontology. If not specified, one of the roots of the ontology will be used at random.'
 params_help['ss_enhanced'] = 'Use the fast implementation of the semantic similarity measure. Currently only Resnik max is supported. Forces -l and -u. Overrides -p and -q. This limitation will be removed in the future.'
-params_help['ss_mix'] = 'The mixing strategy to use (if the SS measure requires it). [Default: BMA]. Can be "max", "BMA", or "avg".'
-params_help['ss_measure'] = "The semantic similarity measure to use. Can be 'Resnik','SimGIC','Lin','Jiang and Conrath','SimIC','Dice','TO','NTO','Jaccard','Czekanowski-Dice','Cosine','G-SESAME', .... [Default: Resnik]"
 
 params_help['output'] = 'Output parameters'
 params_help['output_file'] = 'Output file. If not specified, results will be printed on the console.'
@@ -133,8 +136,11 @@ def parse_args():
 	param_query.add_argument('--query_all', action='store_const', const=['all'], help=params_help['query_all'], metavar='query_all', dest='query_mode')
 	# param_query.add_argument('--query_GOterm', action='store_const', const=['term'], help=params_help['query_GO'], metavar='query_GO', dest='query_type')
 
-	param_ss.add_argument('--ss', '-s', action='store', nargs=1, default=['Resnik'], help=params_help['ss_measure'], metavar='ss_measure', dest='ss_measure')
-	param_ss.add_argument('--mix', '-m', action='store', nargs=1, default=['BMA'], help=params_help['ss_mix'], metavar='ss_mix', dest='ss_mix')
+	param_ss.add_argument('--tss', '--ss', '-s', action='store', nargs=1, default=['Resnik'], help=params_help['tss_measure'], metavar='tss_measure', dest='tss_measure')
+	param_ss.add_argument('--tmix', '--mix', '-m', action='store', nargs=1, default=['BMA'], help=params_help['tss_mix'], metavar='tss_mix', dest='tss_mix')
+	param_ss.add_argument('--oss', action='store', nargs=1, default=['single'], help=params_help['oss_measure'], metavar='oss_measure', dest='oss_measure')
+	param_ss.add_argument('--omix', action='store', nargs=1, default=[None], help=params_help['oss_mix'], metavar='oss_mix', dest='oss_mix')
+
 	param_ss.add_argument('--root', '-ontology_root', action='store', nargs=1, default=None, help=params_help['ss_category'], metavar='ss_category', dest='ss_category')
 	param_ss.add_argument('--enhanced', action='store_const', const=True, default=False, help=params_help['ss_enhanced'], metavar='ss_enhanced', dest='ss_enhanced')
 
@@ -146,20 +152,19 @@ def parse_args():
 	param_extended.add_argument('--verbose', '-v', action='count', default=None, help=params_help['verbose'], dest='verbose')
 
 	args = parser.parse_args()
-	print(args)
+	# print(args)
 	return args
 #
 
 def parse_parameters(args):
-	# global input parameters
+	global params
 	global ontology_file, ontology_type, ontology_file_format, ignore_is_a, ignore_part_of, ignore_has_part, ignore_regulates
 	global EC_include, EC_ignore, tax_include, tax_ignore, ac_file, ac_term_first, ac_separator, ac_type, ac_multiple
 	global use_enhanced
-	global ss_root, ss_mix, ss_measure
+	global ss_root, ss_mix, ss_measure, oss_mix, oss_measure
 	global query_mode, query_type, query_file, query_separator
 	global cut_thres, out_file, cut_nan
 	global verbose, ext_IC_table
-
 
 	ontology_file = args.ontology_file
 	ontology_type = args.ontology_type
@@ -188,6 +193,8 @@ def parse_parameters(args):
 	use_enhanced = args.ss_enhanced
 	ss_mix = args.ss_mix
 	ss_measure = args.ss_measure
+	oss_mix = args.oss_mix
+	oss_measure = args.oss_measure
 
 	cut_thres = args.output_cut
 	out_file = args.output_file
@@ -233,6 +240,47 @@ def parse_parameters(args):
 
 	if not ext_IC_table == None:
 		ext_IC_table = ext_IC_table[0]
+
+	params = dict()
+
+	params['ontology_file'] = ontology_file
+	params['ontology_type'] = ontology_type
+	params['ontology_file_format'] = ontology_file_format
+	params['ignore_regulates'] = ignore_regulates
+	params['ignore_has_part'] = ignore_has_part
+	params['ignore_part_of'] = ignore_part_of
+	params['ignore_is_a'] = ignore_is_a
+
+	params['EC_include'] = EC_include	
+	params['EC_ignore'] = EC_ignore
+	params['ac_multiple'] = ac_multiple
+	params['ac_type'] = ac_type
+	params['ac_separator'] = ac_separator
+	params['ac_term_first'] = ac_term_first
+	params['ac_file'] = ac_file
+	params['tax_ignore'] = tax_ignore
+	params['tax_include'] = tax_include
+
+	params['query_type'] = query_type
+	params['query_mode'] = query_mode
+	params['query_separator'] = query_separator
+	params['query_file'] = query_file
+
+	params['ss_root'] = ss_root
+	params['use_enhanced'] = use_enhanced
+	params['tss_measure'] = ss_measure
+	params['tss_mix'] = ss_mix
+	params['oss_measure'] = oss_measure
+	params['oss_mix'] = oss_mix
+
+	params['cut_thres'] = cut_thres
+	params['out_file'] = out_file
+	params['cut_nan'] = cut_nan
+
+	params['verbose'] = verbose
+	params['ext_IC_table'] = ext_IC_table
+
+	return params
 #
 
 # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # 
@@ -402,23 +450,25 @@ def init_ss():
 
 
 def init_term_ss():
-	global ss_mix, ss_measure, ss_params
+	global params
 	global ontology, ac
 
+	tss_measure = params['tss_measure']
+	tss_mix = params['tss_mix']
 	# Semantic similarity between Genes/proteins 
 	# The basic approach here is to create a "SemSim" object with some fixed parameters, and then use it to evaluate the semantic similarity between paris of proteins/genes
 
-	#### First step: create a SemSim object
-	# You must create an ObjSemSim object providing the following parameters:
-	# 1) annotation corpus, 2) gene ontology, 3) pairwise or goupwise term semantic similarity name, 4)mixing strategy (only for pairwise term semantic similarity measures), 5 (optional) additional parameters
+	#### create a Term SemSim object
+	# Parameters:
+	# 1) annotation corpus, 2) gene ontology, 3) pairwise or goupwise term semantic similarity name, 4) mixing strategy (only for pairwise term semantic similarity measures), 5 (optional) additional parameters
 	print "Initializing Semantic Similarity class..."
 	try:
-		TermSemSimClass = SemSimMeasures.selectTermSemSim(ss_measure)
-		TSS = TermSemSimClass(ac, ontology)
+		tss_class = SemSimMeasures.selectTermSemSim(tss_measure)
+		tss = TermSemSimClass(ac, ontology)
 	except TermSemSim.MissingAcException as e:
 		print e.message
 		return None
-	return TSS
+	return tss
 #
 
 
@@ -836,7 +886,7 @@ def start():
 	#program_dir = '.' # use this with py2exe to build a working binary
 
 	args = parse_args()
-	parse_parameters(args)
+	params = parse_parameters(args)
 
 
 	if ontology_file == None:
@@ -923,24 +973,65 @@ def start():
 	print("Using enhanced version:\t\t" + str(use_enhanced))
 	print("-----------------------------------------------")
 
-	print "-> Loading Gene Ontology from " + str(ontology_file) + "..."
+
+# ----- Load ontology
+
+	print "-> Loading ontology from " + str(ontology_file) + "..."
 	ontology = load_ontology()
 	print "-> Ontology correctly loaded: " + str(ontology.node_number()) + " nodes and " +  str(ontology.edge_number()) + " edges."
 
+# ----- Load annotation corpus
+
 	ac = None
 	if not ac_file == None:
+		print "-> Loading annotation corpus from " + str(ac_file) + "..."
 		ac = load_ac()
+		print "-> Annotation corpus loaded."
 
+# ----- Stats mode
 
-	if query_type == 'term':
-		ss = init_term_ss(ontology, ac, ss_measure, ss_mix)
-		if ss == None:
-			sys.exit()
+	if query_type == 'IC':
+		util = SemSimUtils.SemSimUtils(ac, ontology)
+		util.det_IC_table()
 
-		if not ext_IC_table == None:
-			print 'Injecting GO terms IC from ' + ext_IC_table
-			ext_IC = load_IC_from_file(ext_IC_table)
-			ss.util.IC = ext_IC
+		if query_mode == 'all':
+			query = load_query_from_util(util, ontology)
+		else:
+			query = load_query_from_file(query_file, query_mode, query_separator)
+
+		h = None
+		if not out_file == None:
+			h = open(out_file, 'w')
+		print_IC(util.IC, query, h, cut_thres, cut_nan)
+		if not h == None:
+			h.close()
+		sys.exit()
+	#
+
+# ----- SS mode
+
+# ----- Generate SS
+
+	print "-> Generating the required SS object..."
+	if query_type == 'term'
+		ss = init_term_ss()
+	elif query_type == 'ac':
+		if not use_enhanced:
+			ss = init_ss()
+		else:
+			ss = init_enhanced_ss()
+	if ss == None:
+		print "Unable to create the proper Semantic Similarity object."
+		sys.exit()
+
+# ----- Inject IC
+
+	if not ext_IC_table == None:
+		print 'Injecting GO terms IC from ' + ext_IC_table + "..."
+		ext_IC = load_IC_from_file(ext_IC_table)
+		ss.util.IC = ext_IC
+
+# ----- Load query
 
 		if query_mode == 'all':
 			query = load_query_from_SS(ss, ontology_root)
@@ -959,16 +1050,7 @@ def start():
 		sys.exit()
 	#
 
-	elif query_type == 'ac':
-		if not use_enhanced:
-			ss = init_ss(ontology, ac, ss_measure, ss_mix)
-		else:
-			ss = init_enhanced_ss(ontology, ac, ss_measure, ss_mix)
 
-		if not ext_IC_table == None:
-			ext_IC = load_IC_from_file(ext_IC_table)
-			# print 'Read from IC table not yet implemented.'
-			SS.util.IC = ext_IC
 		#if not query_dir == None:
 			#do_test(out_file)
 			#sys.exit()
@@ -977,6 +1059,9 @@ def start():
 			query = load_query_from_ac(ac)
 		else:
 			query = load_query_from_file(query_file, query_mode, query_separator)
+
+# ----- Process query
+
 		h = None
 		if not out_file == None:
 			h = open(out_file, 'w')
@@ -992,27 +1077,9 @@ def start():
 		sys.exit()
 	#
 
-	elif query_type == 'IC':
-			util = SemSimUtils.SemSimUtils(ac, ontology)
-			util.det_IC_table()
 
-			if query_mode == 'all':
-				query = load_query_from_util(util, ontology)
-			else:
-				query = load_query_from_file(query_file, query_mode, query_separator)
 
-			h = None
-			if not out_file == None:
-				h = open(out_file, 'w')
-			print_IC(util.IC, query, h, cut_thres, cut_nan)
-			if not h == None:
-				h.close()
-			sys.exit()
-	#
-
-	else: # query_type == 'term'
-		raise Exception		
-
+	raise Exception
 #
 
 if __name__ == "__main__":

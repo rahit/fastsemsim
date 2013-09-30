@@ -34,8 +34,8 @@ class ResnikSemSim(TermSemSim) :
 	SS_type = TermSemSim.P_TSS
 	IC_based = True
 
-	def __init__(self, go, ac, util = None):
-		super(ResnikSemSim, self).__init__(go, ac, util)
+	def __init__(self, ontology, ac, util = None):
+		super(ResnikSemSim, self).__init__(ontology, ac, util)
 		#self.SS_type = TermSemSim.P_TSS
 		#self.IC_based = True
 

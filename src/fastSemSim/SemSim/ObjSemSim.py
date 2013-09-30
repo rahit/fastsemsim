@@ -24,62 +24,72 @@ This class provides the prototype for a generic Protein (or more in general, an 
 
 from fastSemSim.Ontology import AnnotationCorpus
 from fastSemSim.Ontology import Ontology
-from SemSimUtils import *
-from TermSemSim import *
-from MixSemSim import *
-from SemSimMeasures import *
+from SemSimUtils import SemSimUtils
+# from TermSemSim import *
+# from MixSemSim import *
+import SemSimMeasures
 
 import sys
 import os
 import math
 
 class ObjSemSim:
-	def pick_TSS(self):
-		if not self.TSS in SemSimMeasures:
-			raise "Semantic Similarity Measure not available."
-			return TermSemSim(self.ac, self.go, self.util)
-		else:
-			return SemSimMeasures[self.TSS][0](self.ac, self.go, self.util)
+	# def pick_TSS(self):
+	# 	if not self.TSS in SemSimMeasures:
+	# 		raise "Semantic Similarity Measure not available."
+	# 		return TermSemSim(self.ac, self.ontology, self.util)
+	# 	else:
+	# 		return SemSimMeasures[self.TSS][0](self.ac, self.ontology, self.util)
 
-	def pick_mixSS(self):
-		if not self.mixSS in MixingStrategies:
-			raise "Mixing Strategy not available."
-			return MixSemSim(self.ac, self.go)
-		else:
-			return MixingStrategies[self.mixSS](self.ac, self.go)
+	# def pick_mixSS(self):
+	# 	if not self.mixSS in MixingStrategies:
+	# 		raise "Mixing Strategy not available."
+	# 		return MixSemSim(self.ac, self.ontology)
+	# 	else:
+	# 		return MixingStrategies[self.mixSS](self.ac, self.ontology)
 
-	def __init__(self, ac, go, TSS = None, MSS = None, util = None):
-		self.go = go
+	def __init__(self, ontology, ac, TSS = None, MSS = None, util = None):
+		self.ontology = ontology
 		self.ac = ac
 		self.util = util
-		self.TSS = TSS
-		self.mixSS = MSS
 		if self.util == None:
-			self.util = SemSimUtils(self.ac, self.go)
+			self.util = SemSimUtils(self.ontology, self.ac)
 			self.util.det_IC_table()
-		if self.TSS is None:
-			self.TSS = TermSemSim(self.ac, self.go, self.util)
-		elif type(self.TSS) is str or unicode:
-			self.TSS = str(self.TSS)
-			self.TSS = self.pick_TSS()
-		else:
-			raise Exception
-		if self.mixSS is None:
-			self.mixSS = MixSemSim(self.ac, self.go)
-		elif type(self.mixSS) is str or unicode:
-			self.mixSS = str(self.mixSS)
-			self.mixSS = self.pick_mixSS()
-		else:
-			raise Exception
 
-	def int_format_data(self, obj, onto):
-		# assume ac is sanitized
+		self.term_SS_class = SemSimMeasures.select_term_SemSim(TSS)
+		self.term_SS = self.term_SS_class(self.ontology, self.ac, self.util)
+
+		if not MSS == None:
+			self.mix_SS_class = SemSimMeasures.select_mix_SemSim(MSS)
+			self.mix_SS = self.mix_SS_class(self.ontology, self.ac, self.util)
+		else:
+			self.mix_SS = None
+
+		# self.TSS = TSS
+		# self.mixSS = MSS
+		# if self.TSS is None:
+		# 	self.TSS = TermSemSim(self.ac, self.ontology, self.util)
+		# elif type(self.TSS) is str or unicode:
+		# 	self.TSS = str(self.TSS)
+		# 	self.TSS = self.pick_TSS()
+		# else:
+		# 	raise Exception
+		# if self.mixSS is None:
+		# 	self.mixSS = MixSemSim(self.ac, self.ontology)
+		# elif type(self.mixSS) is str or unicode:
+		# 	self.mixSS = str(self.mixSS)
+		# 	self.mixSS = self.pick_mixSS()
+		# else:
+		# 	raise Exception
+	#
+
+	def _format_data_(self, obj, onto):
 		if not obj in self.ac.annotations:
 			#print(str(obj) + " not found in Annotation Corpus.")
 			return None
 		terms = []
 		for i in self.ac.annotations[obj]:
-			#if i in self.go.obsolete_ids: # not present in GO_root
+			#if i in self.ontology.obsolete_ids: # not present in GO_root
 				#continue
 			# print i
 			# print self.util.lineage[i]
@@ -89,32 +99,30 @@ class ObjSemSim:
 				terms.append(i)
 		return terms
 
-	def int_SemSim(self, term1, term2):
+	def _SemSim_(self, term1, term2):
 		if term1 is None or term2 is None or len(term1) == 0 or len(term2) == 0:
 			return None
-		if self.TSS.SS_type == self.TSS.P_TSS:
-			sscore = self.mixSS.SemSim(term1, term2, self.TSS)
-		elif self.TSS.SS_type == self.TSS.G_TSS:
-			sscore = self.TSS.SemSim(term1, term2)
+		if self.term_SS.SS_type == self.term_SS.P_TSS:
+			sscore = self.mix_SS.SemSim(term1, term2, self.term_SS)
+		elif self.term_SS.SS_type == self.term_SS.G_TSS:
+			sscore = self.term_SS.SemSim(term1, term2)
 		else:
 			raise "Semantic Similarity measure not properly configured."
 		return sscore
+	#
 
-	def SemSim(self, obj1, obj2, ontology_root):
-		# if str(ontology) == self.util.BP_ontology:
-		# 	onto = self.util.go.BP_root
-		# elif str(ontology) == self.util.MF_ontology:
-		# 	onto = self.util.go.MF_root
-		# elif str(ontology) == self.util.CC_ontology:
-		# 	onto = self.util.go.CC_root
-		# else:
-		# 	raise "No valid ontology selected: " + str(ontology)
-		# 	return None
-		onto = ontology_root
+	def SemSim(self, obj1, obj2, root = None):
+		if root == None:
+			root = self.ontology.roots.keys()[0]
+		if not root in self.ontology.roots:
+			raise(str(root) + " is not an ontology root.")
+			return None
 		# print obj1
 		# print obj2
-		t1 = self.int_format_data(obj1, onto)
-		t2 = self.int_format_data(obj2, onto)
+		t1 = self._format_data_(obj1, root)
+		t2 = self._format_data_(obj2, root)
 		# print t1
 		# print t2
-		return self.int_SemSim(t1, t2)
+		return self._SemSim_(t1, t2)
+	#
+#

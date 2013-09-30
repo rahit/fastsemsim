@@ -37,15 +37,16 @@ from fastSemSim.SemSim.CosineSemSim import *
 from fastSemSim.SemSim.GSESAMESemSim import *
 from fastSemSim.SemSim.SimICNDSemSim import *
 from fastSemSim.SemSim.SimICNPSemSim import *
-
+# from fastSemSim.SemSim.ObjSemSim import *
+# from fastSemSim.SemSim.TermSemSim import *
 
 '''
-Struct SemSimMeasures.
-Contains a list of all available SS measures.
+Struct term_SemSim_measures.
+Contains a list of all available term SS measures.
 It is built as a dictionary. SS measure names are used as keys. Each entry is a tuple with the following structure:
 (Class Name, is Pairwise flag, )
 '''
-SemSimMeasures = {
+term_SemSim_measures = {
 # present in version 0.6
 	'Resnik' : (ResnikSemSim, True),
 	'SimGIC': (SimGICSemSim, False),
@@ -69,16 +70,26 @@ SemSimMeasures = {
 
 
 '''
-Struct MixingStrategies.
+Struct mix_strategies.
 Contains a list of all available mixing strategies
 It is built as a dictionary. Mixing strategy names are used as keys. Each entry is a tuple with the following structure:
 (class pointer, )
 '''
-MixingStrategies = {
-	'max':(maxSemSim),
-	'BMA':(BMASemSim),
-	'avg':(avgSemSim)
+mix_strategies = {
+	'max':(maxSemSim, ),
+	'BMA':(BMASemSim, ),
+	'avg':(avgSemSim, )
 }
+
+# '''
+# Struct obj_SemSim_measures.
+# Contains a list of all available obj sem sim measures
+# It is built as a dictionary. Mixing strategy names are used as keys. Each entry is a tuple with the following structure:
+# (class pointer, )
+# '''
+# obj_SemSim_measures = {
+# 	'obj':(ObjSemSim)
+# }
 
 	#-#-#-#-#-#-#-#-#-#-#-#-#-#
 	# select Term Sem Sim     #
@@ -88,10 +99,26 @@ MixingStrategies = {
 	# It takes in input the name (str) of the Term Sem Similarity
 	# It returns the class to be used. Just call the class constructor to instantiante an object.
 
-def selectTermSemSim(tss_name):
-	if not tss_name in SemSimMeasures:
+def select_term_SemSim(tss_name):
+	if not tss_name in term_SemSim_measures:
 		raise "Semantic Similarity measure not available."
 		return None
 	else:
-		return SemSimMeasures[tss_name][0]
+		return term_SemSim_measures[tss_name][0]
 #
+
+def select_mix_SemSim(mix_name):
+	if not mix_name in mix_strategies:
+		raise "Semantic Similarity measure not available."
+		return None
+	else:
+		return mix_strategies[mix_name][0]
+#
+
+# def select_obj_SemSim(oss_name='obj'):
+# 	if not oss_name in obj_SemSim_measures:
+# 		raise "Semantic Similarity measure not available."
+# 		return None
+# 	else:
+# 		return obj_SemSim_measures[oss_name][0]
+# #

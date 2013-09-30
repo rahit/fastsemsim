@@ -59,9 +59,9 @@ class SemSimUtils:
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 #internal functions
 
-	def __init__(self, ac, go):
-		self.go = go
-		if self.go == None:
+	def __init__(self, ontology, ac):
+		self.ontology = ontology
+		if self.ontology == None:
 			raise Exception
 		self.ac = ac
 		if self.ac == None:
@@ -73,8 +73,8 @@ class SemSimUtils:
 		self.freq = None
 		self.p = None
 
-		self.go._s1_to_s2()
-		self.roots = self.go.roots
+		self.ontology._s1_to_s2()
+		self.roots = self.ontology.roots
 		self.lineage = None
 
 		self.int_det_offspring_table()
@@ -86,30 +86,30 @@ class SemSimUtils:
 
 	def int_det_offspring_table(self):
 		self.offspring = {}
-		for i in self.go.nodes:
+		for i in self.ontology.nodes:
 			self.offspring[i] = self.int_det_offspring(i)
 
 	def int_det_ancestors_table(self):
 		self.ancestors = {}
-		for i in self.go.nodes:
+		for i in self.ontology.nodes:
 			self.ancestors[i] = self.int_det_ancestors(i)
 
 	def int_det_offspring(self, goid):
-		if goid not in self.go.children:
+		if goid not in self.ontology.children:
 			return set()
 		anc = set()
 		# anc.add(goid)
 		processed = {}
 		queue = [goid]
-		# for i in self.go.children[goid]:
-			# if self.go.children[goid][i] in self.go.edges['inter'] and self.go.edges['inter'][self.go.children[goid][i]]:
+		# for i in self.ontology.children[goid]:
+			# if self.ontology.children[goid][i] in self.ontology.edges['inter'] and self.ontology.edges['inter'][self.ontology.children[goid][i]]:
 				# continue
 			# queue.append(i)
 		while len(queue) > 0:
 			t = queue.pop()
 			anc.add(t)
-			for tp in self.go.children[t]:
-				if self.go.children[t][tp] in self.go.edges['inter'] and self.go.edges['inter'][self.go.children[t][tp]]:
+			for tp in self.ontology.children[t]:
+				if self.ontology.children[t][tp] in self.ontology.edges['inter'] and self.ontology.edges['inter'][self.ontology.children[t][tp]]:
 					continue
 				if tp not in processed:
 					queue.append(tp)
@@ -117,21 +117,21 @@ class SemSimUtils:
 		return anc
 
 	def int_det_ancestors(self, goid):
-		if goid not in self.go.parents:
+		if goid not in self.ontology.parents:
 			return set()
 		anc = set()
 		# anc.add(goid)
 		processed = {}
 		queue = [goid]
-		# for i in self.go.parents[goid]:
+		# for i in self.ontology.parents[goid]:
 			# queue.append(i)
 		#print(queue
 		while len(queue) > 0:
 			t = queue.pop()
 			anc.add(t)
 			#print(parent_going[t]
-			for tp in self.go.parents[t]:
-				if self.go.parents[t][tp] in self.go.edges['inter'] and self.go.edges['inter'][self.go.parents[t][tp]]:
+			for tp in self.ontology.parents[t]:
+				if self.ontology.parents[t][tp] in self.ontology.edges['inter'] and self.ontology.edges['inter'][self.ontology.parents[t][tp]]:
 					continue
 				if tp not in processed:
 					queue.append(tp)
@@ -140,7 +140,7 @@ class SemSimUtils:
 
 	def int_det_lineage(self):
 		self.lineage = {}
-		for j in self.go.roots:
+		for j in self.ontology.roots:
 			temp = self.offspring[j]
 			for i in temp:
 				if i in self.lineage:
@@ -158,12 +158,12 @@ class SemSimUtils:
 
 	def int_det_freq_table(self):
 		self.freq = {}
-		for i in self.go.nodes:
+		for i in self.ontology.nodes:
 			self.freq[i] = self.int_det_freq(i)
 
 	def int_det_p_table(self):
 		self.p = {}
-		for i in self.go.nodes:
+		for i in self.ontology.nodes:
 			self.p[i] = self.int_det_p(i)
 
 	def int_det_p(self,term_id):
@@ -191,10 +191,10 @@ class SemSimUtils:
 	def int_det_IC_table(self):
 		self.IC = {}
 		conta = 0
-		for i in self.go.nodes:
+		for i in self.ontology.nodes:
 			conta+= 1
 			#print conta
-			#print len(self.go.nodes_edges)
+			#print len(self.ontology.nodes_edges)
 			temp_IC = self.int_det_IC(i)
 			#if not temp_IC == None:
 			self.IC[i] = temp_IC
@@ -209,7 +209,7 @@ class SemSimUtils:
 		return self.IC
 
 	def det_IC(self,term):
-		id = self.go.name2id(term)
+		id = self.ontology.name2id(term)
 		if self.IC == None:
 			self.det_IC_table()
 		if id in self.IC:
@@ -316,3 +316,4 @@ class SemSimUtils:
 		for i in gene2anc:
 			ca[i] = None
 		return ca
+#
