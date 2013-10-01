@@ -34,11 +34,11 @@ class ResnikSemSim(TermSemSim) :
 	SS_type = TermSemSim.P_TSS
 	IC_based = True
 
-	def __init__(self, ontology, ac, util = None):
-		super(ResnikSemSim, self).__init__(ontology, ac, util)
-		#self.SS_type = TermSemSim.P_TSS
-		#self.IC_based = True
+	# def __init__(self, ontology, ac, util = None):
+		# super(ResnikSemSim, self).__init__(ontology, ac, util)
+		# self.SS_type = TermSemSim.P_TSS
+		# self.IC_based = True
 
-	def int_SemSim(self, term1, term2):
+	def _SemSim(self, term1, term2):
 		termid = self.util.det_MICA(term1, term2)
 		return self.util.IC[termid]

@@ -251,13 +251,13 @@ class SemSimUtils:
 		return ca
 
 	def det_common_ancestors(self, term1, term2):
-		if type(term1) is int:
+		if type(term1) is int or type(term1) is str:
 			gene1anc = self.ancestors[term1]
 		else:
 			gene1anc = {}
 			for i in term1:
 				gene1anc = self.int_merge_sets(gene1anc, self.ancestors[i])
-		if type(term2) is int:
+		if type(term2) is int or type(term2) is str:
 			gene2anc = self.ancestors[term2]
 		else:
 			gene2anc = {}
@@ -272,7 +272,7 @@ class SemSimUtils:
 		return ca
 
 	def get_ancestors(self, term1):
-		if type(term1) is int:
+		if type(term1) is int or type(term1) is str:
 			if term1 not in self.ancestors:
 				return {}
 			gene1anc = self.ancestors[term1]
@@ -288,7 +288,7 @@ class SemSimUtils:
 		return ca
 		
 	def det_ancestors_union(self, term1, term2):
-		if type(term1) is int:
+		if type(term1) is int or type(term1) is str:
 			if term1 not in self.ancestors:
 				return {}
 			gene1anc = self.ancestors[term1]
@@ -299,7 +299,7 @@ class SemSimUtils:
 					continue
 				gene1anc = self.int_merge_sets(gene1anc, self.ancestors[i])
 		#print(gene1anc
-		if type(term2) is int:
+		if type(term2) is int or type(term2) is str:
 			if term2 not in self.ancestors:
 				return {}
 			gene2anc = self.ancestors[term2]

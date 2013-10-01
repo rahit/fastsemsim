@@ -33,8 +33,8 @@ class CosineSemSim(TermSemSim):
 	IC_based = False
 	extend_annotations = True
 
-	def __init__(self, go, ac, util = None):
-		super(CosineSemSim, self).__init__(go, ac, util)
+	# def __init__(self, go, ac, util = None):
+		# super(CosineSemSim, self).__init__(go, ac, util)
 	
 	def dotprod(self, vector1, vector2):
 		dotprod = 0.0
@@ -42,7 +42,7 @@ class CosineSemSim(TermSemSim):
 			dotprod += vector1[i]*vector2[i]
 		return dotprod
 		
-	def int_SemSim(self, term1, term2):
+	def _SemSim(self, term1, term2):
 		if self.extend_annotations:
 			anc1 = self.util.get_ancestors(term1)
 			anc2 = self.util.get_ancestors(term2)
@@ -65,7 +65,9 @@ class CosineSemSim(TermSemSim):
 				self.vector2.append(1)
 				self.vector1.append(0)
 
-		num = self.dotprod(vector1,vector2)
-		den1 = math.sqrt(self.dotprod(vector1,vector1))
-		den2 = math.sqrt(self.dotprod(vector2,vector2))
+		num = self.dotprod(self.vector1, self.vector2)
+		den1 = math.sqrt(self.dotprod(self.vector1, self.vector1))
+		den2 = math.sqrt(self.dotprod(self.vector2, self.vector2))
 		return float(num)/float(den1*den2)
+	#
+#

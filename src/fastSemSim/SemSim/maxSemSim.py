@@ -29,7 +29,7 @@ import math
 
 class maxSemSim(MixSemSim):
 
-	def int_SemSim(self, scores):
+	def _SemSim(self, scores):
 		if len(scores) == 0:
 			return 0
 		finale = 0

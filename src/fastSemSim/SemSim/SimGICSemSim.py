@@ -34,10 +34,10 @@ class SimGICSemSim(TermSemSim) :
 	SS_type = TermSemSim.G_TSS
 	IC_based = True
 
-	def __init__(self, go, ac, util = None):
-		super(SimGICSemSim, self).__init__(go, ac, util)
+	# def __init__(self, go, ac, util = None):
+		# super(SimGICSemSim, self).__init__(go, ac, util)
 		
-	def int_SemSim(self, term1, term2):
+	def _SemSim(self, term1, term2):
 		#print term1
 		#print term2
 		inters = self.util.det_common_ancestors(term1, term2)

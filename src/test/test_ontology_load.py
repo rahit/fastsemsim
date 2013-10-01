@@ -134,7 +134,7 @@ def start():
 
 	print("->Testing ontology\t\t" + str(ontology_file))
 	ontology = load_ontology()
-	print ontology.nodes
+	# print ontology.nodes
 	print "-> Ontology correctly loaded: " + str(ontology.node_number()) + " nodes and " +  str(ontology.edge_number()) + " edges."
 	sys.exit()
 #

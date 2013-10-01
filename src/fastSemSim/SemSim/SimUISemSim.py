@@ -30,20 +30,23 @@ import sys
 import os
 import math
 
-class SimRelSemSim(TermSemSim) :
-	use_Lin = True
-	SS_type = TermSemSim.P_TSS
-	IC_based = True
+class SimUISemSim(TermSemSim) :
+	SS_type = TermSemSim.G_TSS
+	IC_based = False
 
 	# def __init__(self, go, ac, util = None):
-		# super(SimRelSemSim, self).__init__(go, ac, util)
+		# super(SimUISemSim, self).__init__(go, ac, util)
 		
 	def _SemSim(self, term1, term2):
-		termid = self.util.det_MICA(term1, term2)
-		if self.use_Lin:
-			sim = (2 * self.util.IC[termid])/(self.util.IC[term1] + self.util.IC[term2])
-		else:
-			return None
-		factor = self.util.int_det_p(termid)
-		sim *= (1 - factor)
-		return sim
+		#print term1
+		#print term2
+		inters = self.util.det_common_ancestors(term1, term2)
+		union = self.util.det_ancestors_union(term1, term2)
+		#print inters
+		#print union
+		intIC = float(len(inters))
+		uniIC = float(len(union))
+		if uniIC == 0 and intIC == 0:
+			return 0
+		return intIC/uniIC
+#

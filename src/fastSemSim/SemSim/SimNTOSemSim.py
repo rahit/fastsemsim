@@ -35,10 +35,10 @@ class SimNTOSemSim(TermSemSim):
 	IC_based = False
 	extend_annotations = True
 
-	def __init__(self, go, ac, util = None):
-		super(SimNTOSemSim, self).__init__(go, ac, util)
+	# def __init__(self, go, ac, util = None):
+		# super(SimNTOSemSim, self).__init__(go, ac, util)
 		
-	def int_SemSim(self, term1, term2):
+	def _SemSim(self, term1, term2):
 		if self.extend_annotations:
 			inters = self.util.det_common_ancestors(term1, term2)
 			anc1 = self.util.get_ancestors(term1)

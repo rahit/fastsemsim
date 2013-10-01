@@ -33,22 +33,9 @@ import sys
 import os
 import math
 
-class ObjSemSim:
-	# def pick_TSS(self):
-	# 	if not self.TSS in SemSimMeasures:
-	# 		raise "Semantic Similarity Measure not available."
-	# 		return TermSemSim(self.ac, self.ontology, self.util)
-	# 	else:
-	# 		return SemSimMeasures[self.TSS][0](self.ac, self.ontology, self.util)
+class SetSemSim:
 
-	# def pick_mixSS(self):
-	# 	if not self.mixSS in MixingStrategies:
-	# 		raise "Mixing Strategy not available."
-	# 		return MixSemSim(self.ac, self.ontology)
-	# 	else:
-	# 		return MixingStrategies[self.mixSS](self.ac, self.ontology)
-
-	def __init__(self, ontology, ac, TSS = None, MSS = None, util = None, do_log = False):
+	def __init__(self, ontology, ac = None, TSS = None, MSS = None, util = None, do_log = False):
 		self.ontology = ontology
 		self.ac = ac
 		self.do_log = do_log
@@ -56,7 +43,7 @@ class ObjSemSim:
 		self.util = util
 		if self.util == None:
 			self.util = SemSimUtils(self.ontology, self.ac)
-			self.util.det_IC_table()
+			self.util.det_IC_table() # only if required by SS measure
 
 		self.term_SS_class = SemSimMeasures.select_term_SemSim(TSS)
 		self.term_SS = self.term_SS_class(self.ontology, self.ac, self.util)
@@ -85,24 +72,19 @@ class ObjSemSim:
 		# 	raise Exception
 	#
 
-	def _format_data(self, obj, onto):
-		if not obj in self.ac.annotations:
-			#print(str(obj) + " not found in Annotation Corpus.")
-			if self.do_log:
-				reason = 'Object not in annotation corpus'
-				self.log.append(reason)
-			return None
+	def _format_data(self, term1, onto):
+		if type(term1) is list or type(term1) is dict or type(term1) is set:
+			obj = term1
+		else:
+			obj = [term1,]
 		terms = []
-		for i in self.ac.annotations[obj]:
-			#if i in self.ontology.obsolete_ids: # not present in GO_root
-				#continue
-			# print i
-			# print self.util.lineage[i]
-			# print onto
-			# print "--"
-			if i in self.util.lineage and self.util.lineage[i] == onto:
+		for i in obj:
+			if onto == None:
+				terms.append(i)
+			elif i in self.util.lineage and self.util.lineage[i] == onto:
 				terms.append(i)
 		return terms
+	#
 
 	def _SemSim(self, term1, term2):
 		if term1 is None or term2 is None:
@@ -125,12 +107,9 @@ class ObjSemSim:
 	#
 
 	def SemSim(self, obj1, obj2, root = None):
-		if root == None:
-			root = self.ontology.roots.keys()[0]
-		if not root in self.ontology.roots:
-			raise(str(root) + " is not an ontology root.")
+		if (not root == None) and (not root in self.ontology.roots):
 			if self.do_log:
-				reason = 'Selected root not in ontology.'
+				reason = 'Selected non-null root not in ontology.'
 				self.log.append(reason)
 			return None
 		# print obj1

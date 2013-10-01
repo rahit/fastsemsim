@@ -33,7 +33,7 @@ import sys
 import os
 import math
 
-class ObjSemSim:
+class ObjSetSemSim:
 	# def pick_TSS(self):
 	# 	if not self.TSS in SemSimMeasures:
 	# 		raise "Semantic Similarity Measure not available."
@@ -49,6 +49,9 @@ class ObjSemSim:
 	# 		return MixingStrategies[self.mixSS](self.ac, self.ontology)
 
 	def __init__(self, ontology, ac, TSS = None, MSS = None, util = None, do_log = False):
+
+		raise Exception
+		
 		self.ontology = ontology
 		self.ac = ac
 		self.do_log = do_log

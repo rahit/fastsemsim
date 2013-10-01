@@ -28,32 +28,57 @@ import math
 
 class MixSemSim(object):
 
-	def __init__(self, ontology, ac, util = None):
+	def __init__(self, ontology, ac, util = None, do_log=False):
 		self.ontology = ontology
 		self.annotation_corpus = ac
 		self.util = util
+		self.do_log = do_log
+
 		#if self.util == None:
 			#self.util = SemSimUtils(ac, go)
 			#self.ssu.det_IC_table()
+	#
 
-	def int_format_data(self, term1):
+	def _format_data(self, term1): # simply organize input data
 		if type(term1) is list or type(term1) is dict or type(term1) is set:
 			return term1
 		else:
 			return [term1,]
+	#
 		
 	def SemSim(self, set1, set2, TSS):
-		lset1 = self.int_format_data(set1)
-		lset2 = self.int_format_data(set2)
-		#### translate into id format & check data
+		if self.do_log:
+			self.log = []
+		lset1 = self._format_data(set1)
+		lset2 = self._format_data(set2)
 		if lset1 is None or lset2 is None or len(lset1) == 0 or len(lset2) == 0:
+			if self.do_log:
+				reason = 'Null input Terms'
+				self.log.append(reason)
 			return None
 		temp_scores = []
 		for i in lset1:
 			for j in lset2:
-				temp_scores.append((i, j, TSS.SemSim(i,j)))
-		return self.int_SemSim(temp_scores)
+				newscore = TSS.SemSim(i,j)
+				if newscore == None:
+					if self.do_log:
+						reason = 'None score'
+						self.log.append(reason)
+					continue
+				temp_scores.append( (i, j, newscore) )
+		if len(temp_scores) == 0:
+			if self.do_log:
+				reason = 'No scores available'
+				self.log.append(reason)
+			return None
+		return self._SemSim(temp_scores)
+	#
 
-	def int_SemSim(self, scores):
+	def _SemSim(self, scores):
+		if self.do_log:
+			reason = 'Generic mixing strategy'
+			self.log.append(reason)
 		raise "No mixing strategy selected."
 		return None
+	#
+#

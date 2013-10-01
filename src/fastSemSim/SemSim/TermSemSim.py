@@ -53,6 +53,8 @@ class TermSemSim(object):
 	format_and_check_data = True
 	P_TSS = "Pairwise"
 	G_TSS = "Groupwise"
+	SS_type = None
+	IC_based = None
 	# SS_type # Type of Term Sem Sim: Can be P_TSS or G_TSS 
 	# IC_based # Tells whether te Term Sem Sim is based on Information Content
 
@@ -60,13 +62,20 @@ class TermSemSim(object):
 
 #### internal functions
 
-	def __init__(self, ontology, ac = None, util = None):
+	def __init__(self, ontology, ac = None, util = None, do_log = False):
 		# self.SS_type = None # Type of Term Sem Sim: Can be P_TSS or G_TSS
 		# self.IC_based = False # Tells whether te Term Sem Sim is based on Information Content
+		if self.SS_type == None: # Must be set
+			raise Exception
+		if self.IC_based == None: # Must be set
+			raise Exception
+
 		self.ontology = ontology
 		self.ac = ac
 		self.util = util
-		
+		# self.log = []
+		self.do_log = do_log
+
 		if self.IC_based and self.ac == None:
 			raise MissingAcException("The selected semantic measure is based on IC and requires an annotation corpus.")
 		if self.util == None:
@@ -75,67 +84,92 @@ class TermSemSim(object):
 			self.util.det_IC_table()
 	#
 
-	# def _validate_single_term_(self, term):
-	# # verifies whether a single Term is valid. It means it has not to be obsolete.
-	# # In addition, if the Term SS measure is based on IC, the GO Term should also possess an IC [which means it has to be annotated for at least one protein]
-	# 	# # if not type(term) is int:
-	# 	# # 	print "Invalid term format: " + str(type(term))
-	# 	# # 	return None
-	# 	if not self.ontology.is_valid(term):
-	# 		return None
-	# 	# if term not in self.ontology.nodes:
-	# 		# if term not in self.ontology.alt_ids:
-	# 			# return None
-	# 		# if self.ontology.alt_ids[term] == term:
-	# 				#print("Term " + str(term) + " is an obsolete id.")
-	# 			# return None
-	# 		# else:
-	# 			# term = self.ontology.alt_ids[term]
-	# 		# return None
-
-	# #
-
-	def _has_IC_(self, term):
+	def _has_IC(self, term):
 		# if self.util.IC == None:
 			# return None
 		if not term in self.util.IC:
-			return None
+			return False
 		if self.util.IC[term] == None:
-			return None
-		return term
+			return False
+		return True
 	#
 
-	def _format_data_(self, term1):
-	# 1) convert terms to proper ontology format
-	# 2) verify terms are in current ontology
+	def _format_data(self, term1):
+	# Format input query
+	# 1) convert Terms to proper ontology format
+	# 2) verify terms are valid (and have an IC)
 	# 3) verify terms have the same root. (this blocks cross-ontological Term SemSim measures)
 		id1 = self.ontology.name2id(term1, alt_check = True)
 
-		if self.SS_type == self.P_TSS:
-			if (not self.ontology.is_valid(id1)) or (id1 == None) or (self.IC_based and self._has_IC_(id1) == None):
+		if self.SS_type == self.P_TSS: # only single terms allowed
+			if id1 == None:
+				if self.do_log:
+					reason = 'Unmapped Term'
+					self.log.append(reason)
 				return None
-			return nid
+			if not self.ontology.is_valid(id1):
+				if self.do_log:
+					reason = 'Invalid Term'
+					self.log.append(reason)
+				return None
+			if self.IC_based and not self._has_IC(id1):
+				if self.do_log:
+					reason = 'No IC for Term'
+					self.log.append(reason)
+				return None
+			return id1
 
-		elif self.SS_type == self.G_TSS:
+		elif self.SS_type == self.G_TSS: # multiple terms allowed
 			temp_id1 = []
+			new_temp_id1 = []
 			if type(id1) is dict:
 				temp_id1 = id1.keys()
 			elif type(id1) is list:
 				temp_id1 = id1
 			else:
 				temp_id1 = [ id1 ]
+
 			current_onto = None
 			for i in temp_id1:
-				if (not self.ontology.is_valid(i)) or (i == None) or (self.IC_based and self._has_IC_(i) == None):
-					return None
-				if current_onto is None:
+				if i == None:
+					if self.do_log:
+						reason = 'Unmapped Term'
+						self.log.append(reason)
+					continue
+				if not self.ontology.is_valid(i):
+					if self.do_log:
+						reason = 'Invalid Term'
+						self.log.append(reason)
+					continue
+				if self.IC_based and not self._has_IC(i):
+					if self.do_log:
+						reason = 'No IC for Term'
+						self.log.append(reason)
+					continue
+
+				if current_onto is None: 
 					current_onto = self.util.lineage[i]
 				elif not current_onto == self.util.lineage[i]:
+					if self.do_log:
+						reason = 'Different namespaces'
+						self.log.append(reason)
 					return None
-			return temp_id1
+
+				new_temp_id1.append(i)
+
+			if len(new_temp_id1) == 0:
+				if self.do_log:
+					reason = 'No Terms'
+					self.log.append(reason)
+				return None
+
+			return new_temp_id1
 	#
 
-	def _SemSim_(self, term1, term2):
+	def _SemSim(self, term1, term2):
+		if self.do_log:
+			reason = 'Generic _SemSim_'
+			self.log.append(reason)
 		return None
 	#
 
@@ -153,21 +187,35 @@ class TermSemSim(object):
 	# This is the main function that should be called to evaluate the Term Sem Sim
 	# It takes care of verifying data, format them, and evaluate the Sem Sim.
 	# It might be necessary to Overload this function for cross-ontological Term Sem Sim measures 
+		if self.do_log:
+			self.log = []
+		# reason = 'Generic _SemSim_'
+		# self.log.append(reason)
+
 		if self.format_and_check_data:
 			if term1 is None or term2 is None:
+				if self.do_log:
+					reason = 'Null input Terms'
+					self.log.append(reason)
 				return None
-			id1 = self._format_data_(term1)
-			id2 = self._format_data_(term2)
+			id1 = self._format_data(term1)
+			id2 = self._format_data(term2)
 			#print "\""+term1+"\""
 			#print "\""+term2+"\""
 			#print id1
 			#print id2
 			if id1 is None or id2 is None or (self.SS_type == self.G_TSS and len(id1) == 0) or (self.SS_type == self.G_TSS and len(id2) == 0):
 				#print(str(term1) + " or " + str(term2) + "   not valid.")
+				# if self.do_log:
+					# reason = 'Invalid Terms'
+					# self.log.append(reason)
 				return None
 			if self.SS_type == self.P_TSS:
 				if not self.util.lineage[id1] == self.util.lineage[id2]:
 					#raise "Terms are not from the same ontology"
+					if self.do_log:
+						reason = 'Different namespaces between query terms'
+						self.log.append(reason)
 					return None
 			elif self.SS_type == self.G_TSS:
 				for i in id1:
@@ -178,10 +226,13 @@ class TermSemSim(object):
 					break
 				if not self.util.lineage[t1] == self.util.lineage[t2]:
 					#raise "Terms are not from the same ontology"
+					if self.do_log:
+						reason = 'Different namespaces between query terms'
+						self.log.append(reason)
 					return None
 		else:
 			id1 = term1
 			id2 = term2
-		return self._SemSim_(id1, id2)
+		return self._SemSim(id1, id2)
 	#
 #

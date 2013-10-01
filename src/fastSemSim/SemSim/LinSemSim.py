@@ -34,10 +34,10 @@ class LinSemSim(TermSemSim) :
 	SS_type = TermSemSim.P_TSS
 	IC_based = True
 
-	def __init__(self, go, ac, util = None):
-		super(LinSemSim, self).__init__(go, ac, util)
+	# def __init__(self, go, ac, util = None):
+		# super(LinSemSim, self).__init__(go, ac, util)
 		
-	def int_SemSim(self, term1, term2):
+	def _SemSim(self, term1, term2):
 		termid = self.util.det_MICA(term1, term2)
 		sim = (2 * self.util.IC[termid])/(self.util.IC[term1] + self.util.IC[term2])
 		return sim

@@ -30,36 +30,36 @@ import sys
 import os
 import math
 
-class GSESAMESemSim(TermSemSim) :
+class ICNDSemSim(TermSemSim) :
 	SS_type = TermSemSim.P_TSS
-	IC_based = False
-	is_a_score = 0.8
-	part_of_score = 0.6
-	regulates_score = 0.6
-	pos_regulates_score = regulates_score
-	neg_regulates_score = regulates_score
-	generic_score = 0.5
+	IC_based = True
 
 	# def __init__(self, go, ac, util = None):
-		# super(GSESAMESemSim, self).__init__(go, ac, util)
-		
+		# super(ICNDSemSim, self).__init__(go, ac, util)
+
+	is_a_score = 1.0
+	part_of_score = 1.0
+	regulates_score = 1.0
+	pos_regulates_score = regulates_score
+	neg_regulates_score = regulates_score
+	generic_score = 1.0
+
 	def score_ancestors(self, term):
 		processed = {}
 		queue = []
-		processed[term] = 1
+		processed[term] = 0
 		queue.append(term)
 		while len(queue) > 0:
 			t = queue.pop()
 			for tp in self.util.ontology.parents[t]:
 				if tp not in processed:
 					queue.append(tp)
-					processed[tp] = processed[t] * self.score_edge(tp, t)
+					processed[tp] = processed[t] + self.score_edge(tp, t)
 		return processed
 
 	def score_edge(self, tp, t): # t = child, tp = parent
-		# print str(tp) + " " + str(t)
+		#print str(tp) + " " + str(t)
 		for j in self.ontology.nodes[tp]:
-			# print self.ontology.edges['nodes'][j]
 			if self.ontology.edges['nodes'][j][1] == t:
 				if self.ontology.edges['type'][j] == Ontology.IS_A:
 					return self.is_a_score
@@ -75,19 +75,28 @@ class GSESAMESemSim(TermSemSim) :
 					return self.generic_score
 		print "Error"
 		raise Exception
+#
 
 	def _SemSim(self, term1, term2):
+		
 		ca = self.util.det_common_ancestors(term1, term2)
 
 		s1 = self.score_ancestors(term1)
 		s2 = self.score_ancestors(term2)
 
-		num = 0
+		curmin = None
 		for i in ca:
-			num += s1[i] + s2[i]
-		den = 0
-		for i in s1:
-			den += s1[i]
-		for i in s2:
-			den += s2[i]
-		return float(num)/float(den)
+			if curmin == None:
+				curmin = s1[i] + s2[i]
+				termid = i
+			elif (s1[i] + s2[i]) < curmin:
+				curmin = s1[i] + s2[i]
+				termid = i
+
+		if curmin == None:
+			return None
+		sim = (self.util.IC[termid])/(self.util.IC[term1] + self.util.IC[term2] - 2*self.util.IC[termid] + 1)
+		return sim
+#
+
+

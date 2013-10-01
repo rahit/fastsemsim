@@ -51,7 +51,6 @@ def parse_args():
 
 	param_go = parser.add_argument_group(title='Gene Ontology (GO)', description='Parameters relative to the Gene Ontology')
 	param_ac = parser.add_argument_group(title='Annotation Corpus (AC)', description='Parameters relative to Annotation Corpus')
-	param_ss = parser.add_argument_group(title='Semantic Similarity (SS)', description='Parameters relative to Semantic Similarity')
 
 	param_go.add_argument('-o','--ontology', '--ontology_file', action='store', nargs=1, default=None, help=None, metavar='ontology_file', dest='ontology_file')
 	param_go.add_argument('--ontology_file_format','--o_file_format', action='store', nargs=1, default=None, help=None, metavar='ontology_file_format', dest='ontology_file_format')
@@ -72,15 +71,6 @@ def parse_args():
 	param_ac.add_argument('--include_EC', action='append', nargs='+', default=None, help=None, metavar='Evidence Code', dest='include_EC')
 	param_ac.add_argument('--ignore_EC', action='append', nargs='+', default=None, help=None, metavar='Evidence Code', dest='ignore_EC')
 
-	param_ss.add_argument('--tss', '--ss', '-s', action='store', nargs=1, default=['Resnik'], help=None, metavar='tss_measure', dest='tss_measure')
-	param_ss.add_argument('--tmix', '--mix', '-m', action='store', nargs=1, default=['BMA'], help=None, metavar='tss_mix', dest='tss_mix')
-	param_ss.add_argument('--oss', action='store', nargs=1, default=['single'], help=None, metavar='oss_measure', dest='oss_measure')
-	param_ss.add_argument('--omix', action='store', nargs=1, default=[None], help=None, metavar='oss_mix', dest='oss_mix')
-
-	param_ss.add_argument('--root', '-ontology_root', action='store', nargs=1, default=None, help=None, metavar='ss_category', dest='ss_category')
-	param_ss.add_argument('--enhanced', action='store_const', const=True, default=False, help=None, metavar='ss_enhanced', dest='ss_enhanced')
-
-
 	args = parser.parse_args()
 	# print(args)
 	return args
@@ -89,7 +79,6 @@ def parse_args():
 def parse_parameters(args):
 	global ontology_file, ontology_type, ignore_is_a, ignore_part_of, ignore_has_part, ignore_regulates, ontology_file_format
 	global EC_include, EC_ignore, tax_include, tax_ignore, ac_file, ac_term_first, ac_separator, ac_type, ac_multiple
-	global ss_root, tss_mix, tss_measure, oss_mix, oss_measure, use_enhanced
 	global verbose
 
 	ontology_file = args.ontology_file
@@ -112,13 +101,6 @@ def parse_parameters(args):
 	ac_type = args.ac_type
 	ac_multiple = args.ac_multiple
 
-	ss_root = args.ss_category
-	use_enhanced = args.ss_enhanced
-	tss_mix = args.tss_mix
-	tss_measure = args.tss_measure
-	oss_mix = args.oss_mix
-	oss_measure = args.oss_measure
-
 	if not ontology_file == None:
 		ontology_file = ontology_file[0]
 	if not ontology_file_format == None:
@@ -133,16 +115,9 @@ def parse_parameters(args):
 	if not ac_type == None:
 		ac_type = ac_type[0]
 
-	if not ss_root == None:
-		ss_root = ss_root[0]
-	if not tss_mix == None:
-		tss_mix = tss_mix[0]
-	if not tss_measure == None:
-		tss_measure = tss_measure[0]
-
-#-#-#-#-#-#-#-#-#-#-#-#
-# Load Gene Ontology  #
-#-#-#-#-#-#-#-#-#-#-#-#
+	#-#-#-#-#-#-#-#-#-#-#-#
+	# Load Gene Ontology  #
+	#-#-#-#-#-#-#-#-#-#-#-#
 
 def load_ontology():
 	global ontology_file, ontology_type, ontology_file_format, ignore_is_a, ignore_part_of, ignore_has_part, ignore_regulates
@@ -176,8 +151,8 @@ def load_ontology():
 #
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#
-# load Annotation Corpus  #
-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+	# load Annotation Corpus  #
+	#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 def load_ac():
 	global EC_include, EC_ignore, tax_include, tax_ignore, ac_file, ac_term_first, ac_separator, ac_type, ac_multiple
@@ -256,17 +231,6 @@ def load_ac():
 	#ac.term_set # set of GO Terms involved in annotations
 #
 
-#-#-#-#-#-#-#-#-#
-# Init term SS  #
-#-#-#-#-#-#-#-#-#
-
-def init_term_ss():
-	global ontology, ac, tss_measure
-	tss_class = SemSimMeasures.select_term_SemSim(tss_measure)
-	tss = tss_class(ontology, ac, None, do_log=True)
-	return tss
-#
-
 def start():
 	global ontology_type, ontology_file, ontology_file_format
 	global ontology, ac
@@ -287,12 +251,10 @@ def start():
 	ac = load_ac()
 	# print ac.annotations
 	# print "-> Annotation Corpus correctly loaded: " + str(len(ac.obj_set)) + " objects and " +  str(len(ac.term_set)) + " GO Terms."
-	print("->Building Semantic Similarity object\t" + str(tss_measure))
-	ss = init_term_ss()
-
-
-	# mix_class =  SemSimMeasures.select_mix_SemSim('BMA')
-	# ss_mix = mix_class(ontology, ac, None)
+	ss_class = SemSimMeasures.select_term_SemSim('Resnik')
+	mix_class =  SemSimMeasures.select_mix_SemSim('BMA')
+	ss = ss_class(ontology, ac, None, do_log=True)
+	ss_mix = mix_class(ontology, ac, None)
 
 	testset = ac.reverse_annotations.keys()
 	count = 0
@@ -300,14 +262,18 @@ def start():
 		for j in testset:
 			score = ss.SemSim(i,j)
 			if score == None:
-				# print ss.log
-				pass
+				print ss.log
 			else:
 				count += 1
-				# print str(i) +  "\t" + str(j) + "\t" + str(score)
+				print str(i) +  "\t" + str(j) + "\t" + str(score)
 				if count > 1000:
 					sys.exit()
+				# print ss.log
 	#
+
+	# from fastSemSim.SemSim import ObjSemSim
+	# ss_obj = ObjSemSim.ObjSemSim(ontology, ac, TSS = 'Resnik', MSS = 'BMA', util = None)
+	# print ss_obj.SemSim(42787, 9791)
 	sys.exit()
 #
 
