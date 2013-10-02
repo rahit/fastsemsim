@@ -51,6 +51,7 @@ def parse_args():
 
 	param_go = parser.add_argument_group(title='Gene Ontology (GO)', description='Parameters relative to the Gene Ontology')
 	param_ac = parser.add_argument_group(title='Annotation Corpus (AC)', description='Parameters relative to Annotation Corpus')
+	param_query = parser.add_argument_group(title='Query (Q)', description='Parameters relative to Query')
 
 	param_go.add_argument('-o','--ontology', '--ontology_file', action='store', nargs=1, default=None, help=None, metavar='ontology_file', dest='ontology_file')
 	param_go.add_argument('--ontology_file_format','--o_file_format', action='store', nargs=1, default=None, help=None, metavar='ontology_file_format', dest='ontology_file_format')
@@ -71,6 +72,16 @@ def parse_args():
 	param_ac.add_argument('--include_EC', action='append', nargs='+', default=None, help=None, metavar='Evidence Code', dest='include_EC')
 	param_ac.add_argument('--ignore_EC', action='append', nargs='+', default=None, help=None, metavar='Evidence Code', dest='ignore_EC')
 
+	param_query.add_argument('--query_type', action='store', nargs=1, default=['SS'], choices=['SS', 'stats'], help=None, metavar='query_type', dest='query_type')
+	param_query.add_argument('--query_ss_type', action='store', nargs=1, default=['obj'], choices=['obj', 'term', 'termset', 'objset'], help=None, metavar='query_ss_type', dest='query_ss_type')
+	param_query.add_argument('--query_mode', action='store', nargs=1, default=['list'], choices=['list', 'pairs'], help=None, metavar='query_mode', dest='query_mode')
+	param_query.add_argument('--query_input', action='store', nargs=1, default=['ac'], choices=['ac', 'ontology', 'file', 'terminal'], help=None, metavar='query_input', dest='query_input')
+	param_query.add_argument('--query_file', action='store', nargs=1, default=None, help=None, metavar='query_file', dest='query_file')
+	param_query.add_argument('--query_file_sep', action='store', nargs=1, default=['\t'], help=None, metavar='query_file_sep', dest='query_file_sep')
+
+	# param_query.add_argument('--query_GOterm', action='store_const', const=['term'], help=params_help['query_GO'], metavar='query_GO', dest='query_type')
+
+
 	args = parser.parse_args()
 	# print(args)
 	return args
@@ -79,6 +90,7 @@ def parse_args():
 def parse_parameters(args):
 	global ontology_file, ontology_type, ignore_is_a, ignore_part_of, ignore_has_part, ignore_regulates, ontology_file_format
 	global EC_include, EC_ignore, tax_include, tax_ignore, ac_file, ac_term_first, ac_separator, ac_type, ac_multiple
+	global query_type, query_ss_type, query_mode, query_input, query_file, query_file_sep
 	global verbose
 
 	ontology_file = args.ontology_file
@@ -114,6 +126,27 @@ def parse_parameters(args):
 		ac_separator = ac_separator[0]
 	if not ac_type == None:
 		ac_type = ac_type[0]
+
+	query_type = args.query_type
+	query_ss_type = args.query_ss_type
+	query_mode = args.query_mode
+	query_input = args.query_input
+	query_file = args.query_file
+	query_file_sep = args.query_file_sep
+
+	if not query_type == None:
+		query_type = query_type[0]
+	if not query_ss_type == None:
+		query_ss_type = query_ss_type[0]
+	if not query_mode == None:
+		query_mode = query_mode[0]
+	if not query_input == None:
+		query_input = query_input[0]
+	if not query_file == None:
+		query_file = query_file[0]
+	if not query_file_sep == None:
+		query_file_sep = query_file_sep[0]
+	#
 
 	#-#-#-#-#-#-#-#-#-#-#-#
 	# Load Gene Ontology  #
@@ -231,9 +264,67 @@ def load_ac():
 	#ac.term_set # set of GO Terms involved in annotations
 #
 
+
+
+
+
+
+
+	#-#-#-#-#-#-#-#-#-#-#-#-#
+	# Load Query from File  #
+	#-#-#-#-#-#-#-#-#-#-#-#-#
+
+def load_query_from_file(query_file, query_ss_type, query_mode, query_file_sep):
+	print "Loading query from file " + str(query_file) + " [type: " + str(query_ss_type) + "] ..."
+	
+	h = open(query_file,'r')
+	query = []
+	for line in h:
+		line = line.rstrip('\n')
+		line = line.rstrip('\r')
+		line = line.split(query_file_sep)
+
+		if query_ss_type == 'obj' or query_ss_type == 'term':
+			if query_mode == 'pairs':
+				if len(line) < 2:
+					continue
+				for i in range(0,len(line)):
+					for j in range(i+1,len(line)):
+						query.append((line[i], line[j]))
+			elif query_mode == 'list':
+				for i in line:
+					query.append(i)
+			else:
+				raise Exception
+		elif query_ss_type == 'objset' or query_ss_type == 'termset':
+			if query_mode == 'pairs':
+				raise Exception
+			elif query_mode == 'list':
+				newline = []
+				for i in line:
+					newline.append(i)
+				query.append(newline)
+			else:
+				raise Exception
+		else:
+			raise Exception
+	
+	h.close()
+	print "-> Query loaded from file: " + str(len(query)) + " entries."
+	return query
+#
+
+
+
+
+
+
 def start():
-	global ontology_type, ontology_file, ontology_file_format
-	global ontology, ac
+	global ontology_file, ontology_type, ignore_is_a, ignore_part_of, ignore_has_part, ignore_regulates, ontology_file_format
+	global EC_include, EC_ignore, tax_include, tax_ignore, ac_file, ac_term_first, ac_separator, ac_type, ac_multiple
+	global query_type, query_ss_type, query_mode, query_input, query_file, query_file_sep
+	global ontology, ac, query
+	global verbose
 
 	program_dir = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
 	args = parse_args()
@@ -245,35 +336,55 @@ def start():
 		ontology_file_format = 'obo'
 
 	# print("->Loading ontology\t\t" + str(ontology_file))
-	ontology = load_ontology()
+	if not ontology_file == 'None':
+		ontology = load_ontology()
 	# print "-> Ontology correctly loaded: " + str(ontology.node_number()) + " nodes and " +  str(ontology.edge_number()) + " edges."
 	# print("->Loading AC\t\t" + str(ac_file))
-	ac = load_ac()
+		ac = load_ac()
 	# print ac.annotations
 	# print "-> Annotation Corpus correctly loaded: " + str(len(ac.obj_set)) + " objects and " +  str(len(ac.term_set)) + " GO Terms."
-	ss_class = SemSimMeasures.select_term_SemSim('Resnik')
-	mix_class =  SemSimMeasures.select_mix_SemSim('BMA')
-	ss = ss_class(ontology, ac, None, do_log=True)
-	ss_mix = mix_class(ontology, ac, None)
 
-	testset = ac.reverse_annotations.keys()
-	count = 0
-	for i in testset:
-		for j in testset:
-			score = ss.SemSim(i,j)
-			if score == None:
-				print ss.log
+# - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - 
+
+	if query_type == 'SS':
+
+		# if query_ss_type == ['obj', 'term', 'termset', 'objset']
+
+		if query_input == 'ac':
+			query = ac.annotations.keys()
+		#
+
+		elif query_input == 'ontology':
+			if query_ss_type == 'obj':
+				query = ac.reverse_annotations.keys()
+			elif query_ss_type == 'term':
+				query = ontology.nodes.keys()
 			else:
-				count += 1
-				print str(i) +  "\t" + str(j) + "\t" + str(score)
-				if count > 1000:
-					sys.exit()
-				# print ss.log
+				raise Exception
+			print "Take care of different ontology roots!"
+		#
+
+		elif query_input == 'file':
+			query = load_query_from_file(query_file, query_ss_type, query_mode, query_file_sep)
+		#
+
+		elif query_input == 'terminal':
+			pass
+		#
+
+		else:
+			raise Exception
+		#
+		print query
 	#
 
-	# from fastSemSim.SemSim import ObjSemSim
-	# ss_obj = ObjSemSim.ObjSemSim(ontology, ac, TSS = 'Resnik', MSS = 'BMA', util = None)
-	# print ss_obj.SemSim(42787, 9791)
+	elif query_type == 'stats':
+		pass
+	#
+
+	else:
+		raise Exception
+	#
 	sys.exit()
 #
 

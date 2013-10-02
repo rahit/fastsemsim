@@ -99,7 +99,7 @@ class TermSemSim(object):
 	# 1) convert Terms to proper ontology format
 	# 2) verify terms are valid (and have an IC)
 	# 3) verify terms have the same root. (this blocks cross-ontological Term SemSim measures)
-		id1 = self.ontology.name2id(term1, alt_check = True)
+		id1 = self.ontology.name2id(term1, alt_check = False)
 
 		if self.SS_type == self.P_TSS: # only single terms allowed
 			if id1 == None:
@@ -183,7 +183,7 @@ class TermSemSim(object):
 		self.format_and_check_data = en
 
 
-	def SemSim(self, term1, term2):
+	def SemSim(self, term1, term2, ontology = None):
 	# This is the main function that should be called to evaluate the Term Sem Sim
 	# It takes care of verifying data, format them, and evaluate the Sem Sim.
 	# It might be necessary to Overload this function for cross-ontological Term Sem Sim measures 

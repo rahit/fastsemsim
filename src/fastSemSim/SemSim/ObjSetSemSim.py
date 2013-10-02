@@ -49,8 +49,7 @@ class ObjSetSemSim:
 	# 		return MixingStrategies[self.mixSS](self.ac, self.ontology)
 
 	def __init__(self, ontology, ac, TSS = None, MSS = None, util = None, do_log = False):
-
-		raise Exception
+	# def __init__(self, ontology, ac, TSS = None, MSS = None, OMSS = None, util = None, do_log = False):
 		
 		self.ontology = ontology
 		self.ac = ac
@@ -69,6 +68,12 @@ class ObjSetSemSim:
 			self.mix_SS = self.mix_SS_class(self.ontology, self.ac, self.util)
 		else:
 			self.mix_SS = None
+
+		# if not OMSS == None:
+		# 	self.o_mix_SS_class = SemSimMeasures.select_mix_SemSim(OMSS)
+		# 	self.o_mix_SS = self.mix_SS_class(self.ontology, self.ac, self.util)
+		# else:
+		# 	self.o_mix_SS = None
 
 		# self.TSS = TSS
 		# self.mixSS = MSS
@@ -89,22 +94,26 @@ class ObjSetSemSim:
 	#
 
 	def _format_data(self, obj, onto):
-		if not obj in self.ac.annotations:
-			#print(str(obj) + " not found in Annotation Corpus.")
-			if self.do_log:
-				reason = 'Object not in annotation corpus'
-				self.log.append(reason)
-			return None
+		if not type(obj) == list:
+			obj = [obj,]
 		terms = []
-		for i in self.ac.annotations[obj]:
-			#if i in self.ontology.obsolete_ids: # not present in GO_root
-				#continue
-			# print i
-			# print self.util.lineage[i]
-			# print onto
-			# print "--"
-			if i in self.util.lineage and self.util.lineage[i] == onto:
-				terms.append(i)
+		for j in obj:
+			if not j in self.ac.annotations:
+				#print(str(obj) + " not found in Annotation Corpus.")
+				if self.do_log:
+					reason = 'Object not in annotation corpus'
+					self.log.append(reason)
+				continue
+			
+			for i in self.ac.annotations[j]:
+				#if i in self.ontology.obsolete_ids: # not present in GO_root
+					#continue
+				# print i
+				# print self.util.lineage[i]
+				# print onto
+				# print "--"
+				if i in self.util.lineage and self.util.lineage[i] == onto:
+					terms.append(i)
 		return terms
 
 	def _SemSim(self, term1, term2):
@@ -128,10 +137,13 @@ class ObjSetSemSim:
 	#
 
 	def SemSim(self, obj1, obj2, root = None):
+		self.log = []
+		print root
 		if root == None:
 			root = self.ontology.roots.keys()[0]
+			# print root
 		if not root in self.ontology.roots:
-			raise(str(root) + " is not an ontology root.")
+			raise Exception(str(root) + " is not an ontology root.")
 			if self.do_log:
 				reason = 'Selected root not in ontology.'
 				self.log.append(reason)

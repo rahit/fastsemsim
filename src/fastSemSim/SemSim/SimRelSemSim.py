@@ -47,3 +47,5 @@ class SimRelSemSim(TermSemSim) :
 		factor = self.util.int_det_p(termid)
 		sim *= (1 - factor)
 		return sim
+	#
+#

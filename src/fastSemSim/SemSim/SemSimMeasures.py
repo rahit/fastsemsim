@@ -52,7 +52,7 @@ term_SemSim_measures = {
 	'SimGIC': (SimGICSemSim, False),
 	'SimUI': (SimUISemSim, False),
 	'Lin' :(LinSemSim, True),
-	'Jiang and Conrath' :(JiangConrathSemSim, True),
+	'Jiang-Conrath' :(JiangConrathSemSim, True),
 	'SimRel' :(SimRelSemSim, True),
 	'SimIC' :(SimICSemSim, True),
 	'Dice' :(DiceSemSim, False),

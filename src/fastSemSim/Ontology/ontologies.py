@@ -35,6 +35,7 @@ import Ontology
 import DiseaseOntology
 import CellOntology
 import GeneOntology
+import FFOntology
 
 '''
 Struct ontologies.
@@ -46,6 +47,7 @@ ontologies = {
 	'GeneOntology' : (GeneOntology.GeneOntology, ),
 	'DiseaseOntology' : (DiseaseOntology.DiseaseOntology, ),
 	'CellOntology' : (CellOntology.CellOntology, ),
+	'FFOntology' : (FFOntology.FFOntology, ),
 	'GenericOntology' : (Ontology.Ontology, ),
 	'Ontology' : (Ontology.Ontology, )
 }
