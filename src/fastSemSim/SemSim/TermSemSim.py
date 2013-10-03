@@ -73,7 +73,7 @@ class TermSemSim(object):
 		self.ontology = ontology
 		self.ac = ac
 		self.util = util
-		# self.log = []
+		self.log = []
 		self.do_log = do_log
 
 		if self.IC_based and self.ac == None:

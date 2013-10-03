@@ -39,5 +39,10 @@ class LinSemSim(TermSemSim) :
 		
 	def _SemSim(self, term1, term2):
 		termid = self.util.det_MICA(term1, term2)
-		sim = (2 * self.util.IC[termid])/(self.util.IC[term1] + self.util.IC[term2])
+		if (self.util.IC[term1] + self.util.IC[term2]) == 0:
+			sim = 0
+		else:
+			sim = (2 * self.util.IC[termid])/(self.util.IC[term1] + self.util.IC[term2])
 		return sim
+	#
+#

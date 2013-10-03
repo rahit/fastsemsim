@@ -512,18 +512,22 @@ def init_ss():
 
 	# print "-> Initializing Semantic Similarity object. Mode: " + str(query_ss_type) + ". Term Sem Sim: " +  str(tss_mix) + ". Term mixing strategy: " + str(tss_measure) + ". Obj mixing strategy: " +  str(oss_mix)
 
+	do_log = False
+	if params['verbose'] >= 4:
+		do_log = True
+
 	if params['query_ss_type'] == 'term':
 		tss_class = SemSimMeasures.select_term_SemSim(params['tss_measure'])
-		tss = tss_class(ontology, ac, None, do_log=True)
+		tss = tss_class(ontology, ac, None, do_log=do_log)
 		ss = tss
 	elif params['query_ss_type'] == 'obj':
-		oss = ObjSemSim.ObjSemSim(ontology, ac, params['tss_measure'], params['tss_mix'], None, do_log = True)
+		oss = ObjSemSim.ObjSemSim(ontology, ac, params['tss_measure'], params['tss_mix'], None, do_log = do_log)
 		ss = oss
 	elif params['query_ss_type'] == 'termset':
-		oss = SetSemSim.SetSemSim(ontology, ac, params['tss_measure'], params['tss_mix'], None, do_log = True)
+		oss = SetSemSim.SetSemSim(ontology, ac, params['tss_measure'], params['tss_mix'], None, do_log = do_log)
 		ss = oss
 	elif params['query_ss_type'] == 'objset':
-		oss = ObjSetSemSim.ObjSetSemSim(ontology, ac, params['tss_measure'], params['tss_mix'], None, do_log = True)
+		oss = ObjSetSemSim.ObjSetSemSim(ontology, ac, params['tss_measure'], params['tss_mix'], None, do_log = do_log)
 		ss = oss
 	else:
 		raise Exception
@@ -591,7 +595,7 @@ def ss_pairwise(out):
 	print "Evluating pairwise semantic similarity between " + str(len(query)) + " entities (" + str(len(query)*(len(query)-1)/2) + " pairs)"
 	scores = {}
 	done = 0
-	total = len(query)*(len(query)-1)/2
+	total = len(query)*(len(query)+1)/2
 
 	if params['verbose'] >= 1:
 		prev_text = ""
@@ -602,7 +606,7 @@ def ss_pairwise(out):
 		# scores[pairs[i]] = {}
 		for j in range(i,len(query)):
 			temp = ss.SemSim(query[i],query[j],params['ss_root'])
-			if temp == None:
+			if temp == None and params['verbose'] >= 4:
 				print ss.log
 			#scores[pairs[i]][pairs[j]] = temp
 			done+=1

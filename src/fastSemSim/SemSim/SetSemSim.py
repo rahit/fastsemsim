@@ -39,6 +39,7 @@ class SetSemSim:
 		self.ontology = ontology
 		self.ac = ac
 		self.do_log = do_log
+		self.log = []
 
 		self.util = util
 		if self.util == None:
@@ -107,7 +108,8 @@ class SetSemSim:
 	#
 
 	def SemSim(self, obj1, obj2, root = None):
-		self.log = []
+		if self.do_log:
+			self.log = []
 		if (not root == None) and (not root in self.ontology.roots):
 			if self.do_log:
 				reason = 'Selected non-null root not in ontology.'
