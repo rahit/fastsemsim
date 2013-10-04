@@ -64,8 +64,8 @@ class SemSimUtils:
 		if self.ontology == None:
 			raise Exception
 		self.ac = ac
-		if self.ac == None:
-			raise Exception
+		# if self.ac == None:
+			# raise Exception
 
 		self.ancestors = None
 		self.offspring = None

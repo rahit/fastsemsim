@@ -44,7 +44,7 @@ class SetSemSim:
 		self.util = util
 		if self.util == None:
 			self.util = SemSimUtils(self.ontology, self.ac)
-			self.util.det_IC_table() # only if required by SS measure
+			# self.util.det_IC_table() # only if required by SS measure
 
 		self.term_SS_class = SemSimMeasures.select_term_SemSim(TSS)
 		self.term_SS = self.term_SS_class(self.ontology, self.ac, self.util)

@@ -57,7 +57,7 @@ class ObjSemSim:
 		self.util = util
 		if self.util == None:
 			self.util = SemSimUtils(self.ontology, self.ac)
-			self.util.det_IC_table()
+			# self.util.det_IC_table()
 
 		self.term_SS_class = SemSimMeasures.select_term_SemSim(TSS)
 		self.term_SS = self.term_SS_class(self.ontology, self.ac, self.util)

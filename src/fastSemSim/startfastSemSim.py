@@ -865,7 +865,7 @@ def check_parameters():
 				return False
 		if params['query_ss_type'] == 'termset':
 			if params['query_input'] == 'ontology' or params['query_input'] == 'ac':
-				print_err("Cannot read objset from ac or ontology.")
+				print_err("Cannot read termset from ac or ontology.")
 				return False
 			if params['query_input'] == 'file' and params['query_mode'] == 'pairs':
 				print_err("Cannot read query pairs from file in termset mode")
