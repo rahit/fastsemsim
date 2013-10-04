@@ -104,6 +104,8 @@ def prbool(string):
 #
 
 def parse_args():
+	global parser
+
 	parser = argparse.ArgumentParser(
 		description='FastSemSim commad line tool',
 		prog='FastSemSim', usage=None, epilog=None, 
@@ -159,12 +161,39 @@ def parse_args():
 	param_extended.add_argument('--save_params', nargs=1, default=None, help=params_help['save_params'], metavar='save_params', dest='save_params')
 	param_extended.add_argument('--load_params', nargs=1, default=None, help=params_help['load_params'], metavar='load_params', dest='load_params')
 
-	args = parser.parse_args()
+	args = parser.parse_args(sys.argv[1:])
+	# args = parser.parse_args()
 	# print(args)
 	return args
 #
 
+def load_params_from_file(list_file):
+	gstr = []
+	h = open(list_file,'r')
+	for line in h:
+		line = line.rstrip('\n')
+		line = line.rstrip('\r')
+		# line = line.rsplit("\t")
+		gstr.append(line)
+	h.close()
+	return gstr
+#
+
+def save_params_to_file(list_file, curstr):
+	global params
+	
+	h = open(list_file,'w')
+	gstr = ''
+	for i in curstr:
+		# gstr = gstr + " " + str(i)
+		h.write(str(i) + "\n")
+	# for i in params:
+		# h.write("#" + str(i) + "\t" + str(params[i]) + "\n")
+	h.close()
+#
+
 def parse_parameters(args):
+	global parser
 	global params
 	# global ontology_file, ontology_type, ontology_file_format, ignore_is_a, ignore_part_of, ignore_has_part, ignore_regulates
 	# global EC_include, EC_ignore, tax_include, tax_ignore, ac_file, ac_term_first, ac_separator, ac_type, ac_multiple
@@ -172,13 +201,21 @@ def parse_parameters(args):
 	# global ss_root, tss_mix, tss_measure, use_enhanced
 	# global cut_thres, out_file, cut_nan
 	# global verbose, ext_IC_table, load_params, save_params
+	curstr = sys.argv[1:]
+	params = dict()
+	save_params = args.save_params
+	params['save_params'] = save_params
+	load_params = args.load_params	
+	params['load_params'] = load_params
 
-	load_params = args.load_params
 	if not load_params == None:
 		load_params = load_params[0]
-	save_params = args.save_params
+		curstr = load_params_from_file(load_params)
+		args = parser.parse_args(curstr)
+
 	if not save_params == None:
 		save_params = save_params[0]
+		save_params_to_file(save_params, curstr)
 
 	ontology_file = args.ontology_file
 	ontology_type = args.ontology_type
@@ -262,7 +299,6 @@ def parse_parameters(args):
 	if not inject_IC == None:
 		inject_IC = inject_IC[0]
 
-	params = dict()
 
 	params['ontology_file'] = ontology_file
 	params['ontology_type'] = ontology_type
@@ -302,8 +338,6 @@ def parse_parameters(args):
 
 	params['verbose'] = verbose
 	params['inject_IC'] = inject_IC
-	params['save_params'] = save_params
-	params['load_params'] = load_params
 
 	return params
 #
