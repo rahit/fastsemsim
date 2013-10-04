@@ -1,8 +1,8 @@
 #!/bin/bash
 
 export TEST_DIR=$1
-export OLD_PP=$TEST_DIR
-export PYTHONPATH=$TEST_DIR:$1
+export OLD_PP=$PYTHONPATH
+export PYTHONPATH=$PYTHONPATH:$TEST_DIR
 export TEST_FILE=$TEST_DIR/startfastSemSim.py
 
 # Extensive test on
@@ -22,10 +22,10 @@ for mix in `echo max BMA avg`; do #
 	for measure in `echo SimRel G-SESAME Cosine SimICND SimICNP Resnik Lin SimGIC SimUI Jiang-Conrath SimIC Dice TO NTO Jaccard Czekanowski-Dice`; do
 		SSMEASURE="--tss "${measure}
 
-		for query_ss_type in `echo objset termset term obj`; do 
+		for query_ss_type in `echo obj term objset termset`; do 
 			SSTYPE="--query_ss_type "${query_ss_type}
 
-			for q_input in `echo ac ontology file`; do 
+			for q_input in `echo ontology file ac`; do 
 				QUERY_INPUT="--query_input "${q_input}
 
 				for q_mode in `echo pairs list`; do 

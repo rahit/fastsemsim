@@ -107,6 +107,11 @@ class TermSemSim(object):
 					reason = 'Unmapped Term'
 					self.log.append(reason)
 				return None
+			if type(id1) is dict or type(id1) is list:
+				if self.do_log:
+					reason = 'Mulitple Terms passed to Pairwise SS Measure. Perhaps the term has multiple alternative ids.'
+					self.log.append(reason)
+				return None
 			if not self.ontology.is_valid(id1):
 				if self.do_log:
 					reason = 'Invalid Term'
