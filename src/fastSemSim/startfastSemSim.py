@@ -145,11 +145,13 @@ def parse_args():
 	param_ss.add_argument('--tmix', '--mix', '-m', action='store', nargs=1, default=['BMA'], help=params_help['tss_mix'], metavar='tss_mix', dest='tss_mix')
 	# param_ss.add_argument('--oss', action='store', nargs=1, default=['single'], help=params_help['oss_measure'], metavar='oss_measure', dest='oss_measure')
 	# param_ss.add_argument('--omix', action='store', nargs=1, default=[None], help=params_help['oss_mix'], metavar='oss_mix', dest='oss_mix')
-	param_ss.add_argument('--root', '--ontology_root', action='store', nargs=1, default=None, help=params_help['ss_category'], metavar='ss_category', dest='ss_category')
+	param_ss.add_argument('--root', '--ontology_root', '--ss_root', action='store', nargs=1, default=None, help=params_help['ss_category'], metavar='ss_category', dest='ss_category')
 	param_ss.add_argument('--enhanced', action='store_const', const=True, default=False, help=params_help['ss_enhanced'], metavar='ss_enhanced', dest='ss_enhanced')
 
 	param_output.add_argument('--cut', action='store', nargs=1, default=None, type=float, help=params_help['output_cut'], metavar='output_cut', dest='output_cut')
-	param_output.add_argument('--remove_nan', action='store', nargs=1, default=False, type=prbool, help=params_help['output_remove_nan'], metavar='output_remove_nan', dest='output_remove_nan')
+	# param_output.add_argument('--remove_nan', action='store', nargs=1, default=False, type=prbool, help=params_help['output_remove_nan'], metavar='output_remove_nan', dest='output_remove_nan')
+	param_output.add_argument('--remove_nan', action='store_const', const=True, default=False, help=params_help['output_remove_nan'], metavar='output_remove_nan', dest='output_remove_nan')
+	
 	param_output.add_argument('--output_file', '--out_file', action='store', nargs=1, default=None, help=params_help['output_file'], metavar='output_file', dest='output_file')
 
 	param_extended.add_argument('--inject_IC', '--inject_IC_form_file', action='store', nargs=1, default=None, help=params_help['IC_table_form_file'], metavar='inject_IC', dest='inject_IC')
@@ -825,7 +827,7 @@ def check_parameters():
 	if params['ontology_file'] == None:
 		if params['ontology_type'] in default_ontologies:
 			params['ontology_file'] = program_dir + "/data/" + default_ontologies[params['ontology_type']][0]
-			params['ontology_type'] = default_ontologies[params['ontology_type']][1]
+			params['ontology_file_format'] = default_ontologies[params['ontology_type']][1]
 		else:
 			print "An ontology must be selected. See the help notes (ontology_file parameter)"
 			return False			
@@ -983,6 +985,8 @@ def start():
 	ontology = load_ontology()
 	if params['verbose'] >= 2:
 		print "-> Ontology correctly loaded: " + str(ontology.node_number()) + " nodes and " +  str(ontology.edge_number()) + " edges."
+		print "-> Ontology roots: " + str(ontology.roots.keys())
+
 
 # ----- Load annotation corpus
 
@@ -1001,6 +1005,8 @@ def start():
 		if params['verbose'] >= 2:
 			print "-> Initializing semantic similarity..."
 		ss = init_ss()
+		params['ss_root'] = ss.ontology.name2id(params['ss_root'], alt_check=False)
+
 		if params['verbose'] >= 2:
 			print "-> Semantic similarity initialized."
 
@@ -1025,12 +1031,14 @@ def start():
 				if params['verbose'] >= 2:
 					print "-> Loading query from annotation corpus..."
 				query = ac.reverse_annotations.keys()
+				# params['ss_root']
 				if params['verbose'] >= 2:
 					print "-> Query loaded from annotation corpus"
 			elif params['query_input'] == 'ontology':
 				if params['verbose'] >= 2:
 					print "-> Loading query from ontology..."
 				query = ontology.nodes.keys()
+				# params['ss_root']
 				if params['verbose'] >= 2:
 					print "-> Query loaded from ontology"
 			else:
