@@ -19,8 +19,7 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 """
-This class provides a template for using fastSemSim for evaluating protein Sem Sim.
-See TermSemSimExample.py for information regarding Term Sem Sim
+This interface script starts fastSemSim command line tool
 """
 
 from fastSemSim import startfastSemSim
