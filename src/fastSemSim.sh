@@ -23,11 +23,12 @@
 # LOCAL=1
 
 PYTHON_INTERPRETER=python
+DIR_CODE=`dirname $0`
 
-if [ -f startfastSemSim.py ]; then
+if [ -f ${DIR_CODE}/startfastSemSim.py ]; then
 # if [ ${LOCAL} = 1 ]; then
-	echo "Running the local version"
-	(export PYTHONPATH="."; ${PYTHON_INTERPRETER} startfastSemSim.py "$@")
+	# echo "Running the local version"
+	(export PYTHONPATH=${PYTHONPATH}:${DIR_CODE}; ${PYTHON_INTERPRETER} ${DIR_CODE}/startfastSemSim.py "$@")
 else
 # 	echo "Running the installed version"
 	${PYTHON_INTERPRETER} -c "from fastSemSim import startfastSemSim; startfastSemSim.start()" "$@"

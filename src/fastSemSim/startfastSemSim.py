@@ -141,9 +141,9 @@ def parse_args():
 	param_query.add_argument('--query_mode', action='store', nargs=1, default=['list'], choices=['list', 'pairs'], help=params_help['query_mode'], metavar='query_mode', dest='query_mode')
 	param_query.add_argument('--query_input', action='store', nargs=1, default=['ac'], choices=['ac', 'ontology', 'file', 'terminal'], help=params_help['query_input'], metavar='query_input', dest='query_input')
 	param_query.add_argument('--query_file', action='store', nargs=1, default=None, help=params_help['query_file'], metavar='query_file', dest='query_file')
-	param_query.add_argument('--query_file_sep', action='store', nargs=1, default=['\t'], help=params_help['query_file_sep'], metavar='query_file_sep', dest='query_file_sep')
+	param_query.add_argument('--query_file_sep', action='store', nargs=1, default=None, help=params_help['query_file_sep'], metavar='query_file_sep', dest='query_file_sep')
 
-	param_ss.add_argument('--tss', '--ss', '-s', action='store', nargs=1, default=['Resnik'], help=params_help['tss_measure'], metavar='tss_measure', dest='tss_measure')
+	param_ss.add_argument('--tss', '--ss', '-s', '--ss_measure', action='store', nargs=1, default=['Resnik'], help=params_help['tss_measure'], metavar='tss_measure', dest='tss_measure')
 	param_ss.add_argument('--tmix', '--mix', '-m', action='store', nargs=1, default=['BMA'], help=params_help['tss_mix'], metavar='tss_mix', dest='tss_mix')
 	# param_ss.add_argument('--oss', action='store', nargs=1, default=['single'], help=params_help['oss_measure'], metavar='oss_measure', dest='oss_measure')
 	# param_ss.add_argument('--omix', action='store', nargs=1, default=[None], help=params_help['oss_mix'], metavar='oss_mix', dest='oss_mix')
@@ -570,6 +570,8 @@ def init_ss():
 	#
 
 	if params['use_enhanced']:
+		print "Enhanced version of Resnik is currently not available in this release. It will be included as soon as possible."
+		sys.exit()
 		raise Exception
 	#
 
@@ -841,6 +843,7 @@ default_ontologies = {}
 default_ontologies['CellOntology'] = ('CellOntology_2013.09.10.obo', 'obo')
 default_ontologies['DiseaseOntology'] = ('DiseaseOntology_Human_2013.09.09.obo', 'obo')
 default_ontologies['GeneOntology'] = ('GeneOntology_full_2013.09.10.obo', 'obo')
+# default_ontologies['Ontology'] = ('GeneOntology_full_2013.09.10.obo', 'obo')
 # default_ontologies['FFOntology'] = # To be added in future
 
 def check_parameters():
@@ -853,12 +856,20 @@ def check_parameters():
 	# global cut_thres, out_file, cut_nan
 	# global verbose, ext_IC_table
 
+	if params['use_enhanced']:
+		print "Enhanced version of Resnik is currently not available in this release. It will be included as soon as possible."
+		sys.exit()
+		raise Exception
+	#
+	
 	if params['ontology_type'] == None:
 		params['ontology_type'] = "Ontology"
 	if params['ontology_file_format'] == None:
 		params['ontology_file_format'] = 'obo'
 
 	if params['ontology_file'] == None:
+		if params['ontology_type'] == "Ontology":
+			params['ontology_type'] = "GeneOntology"
 		if params['ontology_type'] in default_ontologies:
 			params['ontology_file'] = program_dir + "/data/" + default_ontologies[params['ontology_type']][0]
 			params['ontology_file_format'] = default_ontologies[params['ontology_type']][1]
