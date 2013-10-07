@@ -104,6 +104,8 @@ class Ontology:
 
 	def name2id(self, codes, alt_check = True):
 		nid = None
+		if codes == None:
+			return nid
 		if type(codes) is dict or type(codes) is list:
 			nid = []
 			for i in codes:
@@ -133,6 +135,8 @@ class Ontology:
 			if self.debug:
 				print "id2name - alt_check not yet implemented."
 		sid = None
+		if codes == None:
+			return sid
 		if type(codes) is dict or type(codes) is list:
 			sid= []
 			for i in codes:

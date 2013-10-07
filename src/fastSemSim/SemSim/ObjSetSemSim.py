@@ -145,9 +145,9 @@ class ObjSetSemSim:
 			root = self.ontology.roots.keys()[0]
 			# print root
 		if not root in self.ontology.roots:
-			raise Exception(str(root) + " is not an ontology root.")
+			# raise Exception(str(root) + " is not an ontology root.")
 			if self.do_log:
-				reason = 'Selected root not in ontology.'
+				reason = 'Selected root ' + str(root) + ' is not in the ontology.'
 				self.log.append(reason)
 			return None
 		# print obj1

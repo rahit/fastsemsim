@@ -82,6 +82,8 @@ class CellOntology(Ontology.Ontology):
 
 	def name2id(self, codes, alt_check = True):
 		nid = None
+		if codes == None:
+			return None
 		if type(codes) is str:
 			nid = CellOntology._name2id(codes)
 			nid = self.name2id(nid, alt_check)
@@ -107,6 +109,8 @@ class CellOntology(Ontology.Ontology):
 		if alt_check:
 			print "id2name - alt_check not yet implemented."
 		sid = None
+		if codes == None:
+			return None
 		if type(codes) is int:
 			sid = CellOntology._id2name(codes)
 		elif type(codes) is str:

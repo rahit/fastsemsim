@@ -101,6 +101,8 @@ class FFOntology(Ontology.Ontology):
 
 	def name2id(self, codes, alt_check = True):
 		nid = None
+		if codes == None:
+			return None
 		if type(codes) is str:
 			# nid = go_name2id(codes)
 			nid = FFOntology._name2id(codes,strict=True)
@@ -129,6 +131,8 @@ class FFOntology(Ontology.Ontology):
 		if alt_check:
 			print "id2name - alt_check not yet implemented."
 		sid = None
+		if codes == None:
+			return None
 		if type(codes) is int:
 			sid = FFOntology._id2name(codes)
 		elif type(codes) is str:

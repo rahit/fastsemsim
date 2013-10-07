@@ -112,8 +112,11 @@ class SetSemSim:
 			self.log = []
 		if (not root == None) and (not root in self.ontology.roots):
 			if self.do_log:
-				reason = 'Selected non-null root not in ontology.'
+				reason = 'Selected root ' + str(root) + ' is not in the ontology.'
 				self.log.append(reason)
+			# if self.do_log:
+			# 	reason = 'Selected non-null root not in ontology.'
+			# 	self.log.append(reason)
 			return None
 		# print obj1
 		# print obj2

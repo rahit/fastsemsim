@@ -1050,7 +1050,11 @@ def start():
 		if params['verbose'] >= 2:
 			print "-> Initializing semantic similarity..."
 		ss = init_ss()
-		params['ss_root'] = ss.ontology.name2id(params['ss_root'], alt_check=False)
+		if not params['ss_root'] == None:
+			params['ss_root'] = ss.ontology.name2id(params['ss_root'], alt_check=False)
+			if params['ss_root'] == None:
+				print_err("The ontology root required does not exists.")
+				sys.exit()
 
 		if params['verbose'] >= 2:
 			print "-> Semantic similarity initialized."
