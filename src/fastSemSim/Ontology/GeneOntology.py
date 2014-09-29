@@ -78,12 +78,12 @@ class GeneOntology(Ontology.Ontology):
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 
 	@staticmethod
-	def _id2name(code):
+	def _node2id(code):
 		return "GO:" + '0'*(7 - len(str(code))) + str(code)
 	#
 
 	@staticmethod
-	def _name2id(code, strict=True):
+	def _id2node(code, strict=True):
 		if code.startswith('GO:'):
 			try:
 				return int(code[3:])
@@ -91,57 +91,57 @@ class GeneOntology(Ontology.Ontology):
 				return None
 		if strict:
 			return None
-		return Ontology.Ontology._name2id(code)
+		return Ontology.Ontology._id2node(code, strict)
 	#
 
 
-	def name2id(self, codes, alt_check = True):
-		nid = None
-		if codes == None:
-			return nid
-		if type(codes) is str:
-			# nid = go_name2id(codes)
-			nid = GeneOntology._name2id(codes,strict=True)
-			nid = self.name2id(nid, alt_check)
-		elif type(codes) is int:
-			nid = codes
-			if alt_check:
-				if nid in self.alt_id:
-					nid = self.alt_id[nid]
-		elif type(codes) is dict or type(codes) is list:
-			nid = []
-			for i in codes:
-				if type(i) is str:
-					# tnid = go_name2id(i)
-					tnid = GeneOntology._name2id(i,strict=True)
-				else:
-					tnid = i
-				if alt_check:
-					if tnid in self.alt_id:
-						tnid = self.alt_id[tnid]
-				nid.append(tnid)
-		return nid
+	# def name2id(self, codes, alt_check = True):
+	# 	nid = None
+	# 	if codes == None:
+	# 		return nid
+	# 	if type(codes) is str:
+	# 		# nid = go_name2id(codes)
+	# 		nid = GeneOntology._name2id(codes,strict=True)
+	# 		nid = self.name2id(nid, alt_check)
+	# 	elif type(codes) is int:
+	# 		nid = codes
+	# 		if alt_check:
+	# 			if nid in self.alt_id:
+	# 				nid = self.alt_id[nid]
+	# 	elif type(codes) is dict or type(codes) is list:
+	# 		nid = []
+	# 		for i in codes:
+	# 			if type(i) is str:
+	# 				# tnid = go_name2id(i)
+	# 				tnid = GeneOntology._name2id(i,strict=True)
+	# 			else:
+	# 				tnid = i
+	# 			if alt_check:
+	# 				if tnid in self.alt_id:
+	# 					tnid = self.alt_id[tnid]
+	# 			nid.append(tnid)
+	# 	return nid
 
-	def id2name(self, codes, alt_check = False):
-		if alt_check:
-			print "id2name - alt_check not yet implemented."
-		sid = None
-		if codes == None:
-			return sid
-		if type(codes) is int:
-			sid = GeneOntology._id2name(codes)
-		elif type(codes) is str:
-			sid = codes
-		elif type(codes) is dict or type(codes) is list:
-			sid= []
-			for i in codes:
-				if type(i) is int:
-					tnid = GeneOntology._id2name(i)
-				else:
-					tnid = i
-				sid.append(tnid)
-		return sid
-	#
+	# def id2name(self, codes, alt_check = False):
+	# 	if alt_check:
+	# 		print "id2name - alt_check not yet implemented."
+	# 	sid = None
+	# 	if codes == None:
+	# 		return sid
+	# 	if type(codes) is int:
+	# 		sid = GeneOntology._id2name(codes)
+	# 	elif type(codes) is str:
+	# 		sid = codes
+	# 	elif type(codes) is dict or type(codes) is list:
+	# 		sid= []
+	# 		for i in codes:
+	# 			if type(i) is int:
+	# 				tnid = GeneOntology._id2name(i)
+	# 			else:
+	# 				tnid = i
+	# 			sid.append(tnid)
+	# 	return sid
+	# #
 
 	def __init__(self, terms, edges):
 		# terms['namespace'] = None

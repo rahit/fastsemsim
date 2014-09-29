@@ -99,18 +99,17 @@ class Ontology:
 	gen_error = False
 
 	@staticmethod
-	def _id2name(code, strict=True):
+	def _node2id(code, strict=True):
 		# return "generic:" + '0'*(7 - len(str(code))) + str(code)
 		return str(code) # watch out for Unicode strings
 	#
 
 	@staticmethod
-	def _name2id(code, strict=True):
-		# return int(code.split(":", 1)[1])
+	def _id2node(code, strict=True):
 		return str(code) # watch out for Unicode strings
 	#
 
-	def name2id(self, codes, alt_check = True):
+	def id2node(self, codes, alt_check = True):
 		nid = None
 		if codes == None:
 			return nid
@@ -118,8 +117,8 @@ class Ontology:
 			nid = []
 			for i in codes:
 				# if type(i) is str:
-					# tnid = go_name2id(i)
-					tnid = self._name2id(i, strict=True)
+					# tnid = go_id2node(i)
+					tnid = self._id2node(i, strict=True)
 				# else:
 					# tnid = i
 					if alt_check:
@@ -128,8 +127,8 @@ class Ontology:
 					nid.append(tnid)
 		else:
 		# if type(codes) is str:
-			# nid = go_name2id(codes)
-			nid = self._name2id(codes, strict=True)
+			# nid = go_id2node(codes)
+			nid = self._id2node(codes, strict=True)
 		# elif type(codes) is int:
 			# nid = codes
 			if alt_check:
@@ -138,7 +137,7 @@ class Ontology:
 		return nid
 	#
 
-	def id2name(self, codes, alt_check = False):
+	def node2id(self, codes, alt_check = False):
 		if alt_check:
 			if self.debug:
 				print "id2name - alt_check not yet implemented."
@@ -149,16 +148,16 @@ class Ontology:
 			sid= []
 			for i in codes:
 				# if type(i) is int:
-				tnid = self._id2name(i, strict = True)
+				tnid = self._node2id(i, strict = True)
 				# else:
 					# tnid = i
 				sid.append(tnid)
 		# if type(codes) is int:
-			# sid = Ontology._id2name(codes)
+			# sid = Ontology._node2id(codes)
 		else:
 		 # type(codes) is str:
 			# sid = codes
-			sid = self._id2name(codes, strict = True)
+			sid = self._node2id(codes, strict = True)
 		return sid
 	#
 
@@ -186,7 +185,7 @@ class Ontology:
 			for i in self.alt_id:
 				if i in self.nodes:
 					# if self.gen_error:
-					print "Warning: Inconsistent redefinition of valid term " + str(self._id2name(i)) + " as an alternative of " + str(self._id2name(self.alt_id[i]))
+					print "Warning: Inconsistent redefinition of valid term " + str(self._node2id(i)) + " as an alternative of " + str(self._node2id(self.alt_id[i]))
 					# raise Exception # it means there are inconsistencies!
 					# if self.debug:
 					# raise Exception # it means there are inconsistencies!
@@ -205,14 +204,14 @@ class Ontology:
 		for i in terms['id']:
 			if i == None:
 				continue
-			iid = self._name2id(i, strict = True)
+			iid = self._id2node(i, strict = True)
 			if iid == None: # not in ontology. Do not save data for now
 				continue
 			
 			# process alt_id and replaced_by
 			if i in terms['alt_id']:
 				for j in terms['alt_id'][i]:
-					jid = self._name2id(j, strict = True)
+					jid = self._id2node(j, strict = True)
 					if jid == None: 
 						pass
 					else:
@@ -229,7 +228,7 @@ class Ontology:
 					# print 
 					raise (Exception, "Inconsistent replaced_by id: " + i)
 				for j in terms['replaced_by'][i]:
-					jid = self._name2id(j, strict = True)
+					jid = self._id2node(j, strict = True)
 					if jid == None: 
 						pass
 					else:
@@ -263,8 +262,8 @@ class Ontology:
 
 	def _add_edges(self, edges): #input: list of edges to be added. Each item of the list is a list [child, parent, type]
 		for i in range(0,len(edges)):
-			childid = self._name2id(edges[i][0], strict = True)
-			parentid = self._name2id(edges[i][1], strict = True)
+			childid = self._id2node(edges[i][0], strict = True)
+			parentid = self._id2node(edges[i][1], strict = True)
 			inner = True
 			intra = True
 			if childid == None :

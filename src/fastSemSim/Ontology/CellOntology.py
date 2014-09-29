@@ -66,12 +66,12 @@ class CellOntology(Ontology.Ontology):
 	obsolete_ids = None
 
 	@staticmethod
-	def _id2name(code):
+	def _node2id(code):
 		return "CL:" + '0'*(7 - len(str(code))) + str(code)
 	#
 
 	@staticmethod
-	def _name2id(code, strict=True):
+	def _id2node(code, strict=True):
 		if code.startswith('CL:'):
 			try:
 				return int(code[3:])
@@ -80,54 +80,54 @@ class CellOntology(Ontology.Ontology):
 		if strict:
 			return None
 		print code
-		return Ontology.Ontology._name2id(code)
+		return Ontology.Ontology._id2node(code, strict)
 	#
 
-	def name2id(self, codes, alt_check = True):
-		nid = None
-		if codes == None:
-			return None
-		if type(codes) is str:
-			nid = CellOntology._name2id(codes)
-			nid = self.name2id(nid, alt_check)
-		elif type(codes) is int:
-			nid = codes
-			if alt_check:
-				if nid in self.alt_ids:
-					nid = self.alt_ids[nid]
-		elif type(codes) is dict or type(codes) is list:
-			nid = []
-			for i in codes:
-				if type(i) is str:
-					tnid = CellOntology._name2id(i)
-				else:
-					tnid = i
-				if alt_check:
-					if tnid in self.alt_ids:
-						tnid = self.alt_ids[tnid]
-				nid.append(tnid)
-		return nid
+	# def name2id(self, codes, alt_check = True):
+	# 	nid = None
+	# 	if codes == None:
+	# 		return None
+	# 	if type(codes) is str:
+	# 		nid = CellOntology._name2id(codes)
+	# 		nid = self.name2id(nid, alt_check)
+	# 	elif type(codes) is int:
+	# 		nid = codes
+	# 		if alt_check:
+	# 			if nid in self.alt_ids:
+	# 				nid = self.alt_ids[nid]
+	# 	elif type(codes) is dict or type(codes) is list:
+	# 		nid = []
+	# 		for i in codes:
+	# 			if type(i) is str:
+	# 				tnid = CellOntology._name2id(i)
+	# 			else:
+	# 				tnid = i
+	# 			if alt_check:
+	# 				if tnid in self.alt_ids:
+	# 					tnid = self.alt_ids[tnid]
+	# 			nid.append(tnid)
+	# 	return nid
 
-	def id2name(self, codes, alt_check = False):
-		if alt_check:
-			print "id2name - alt_check not yet implemented."
-		sid = None
-		if codes == None:
-			return None
-		if type(codes) is int:
-			sid = CellOntology._id2name(codes)
-		elif type(codes) is str:
-			sid = codes
-		elif type(codes) is dict or type(codes) is list:
-			sid= []
-			for i in codes:
-				if type(i) is int:
-					tnid = CellOntology._id2name(i)
-				else:
-					tnid = i
-				sid.append(tnid)
-		return sid
-	#
+	# def id2name(self, codes, alt_check = False):
+	# 	if alt_check:
+	# 		print "id2name - alt_check not yet implemented."
+	# 	sid = None
+	# 	if codes == None:
+	# 		return None
+	# 	if type(codes) is int:
+	# 		sid = CellOntology._id2name(codes)
+	# 	elif type(codes) is str:
+	# 		sid = codes
+	# 	elif type(codes) is dict or type(codes) is list:
+	# 		sid= []
+	# 		for i in codes:
+	# 			if type(i) is int:
+	# 				tnid = CellOntology._id2name(i)
+	# 			else:
+	# 				tnid = i
+	# 			sid.append(tnid)
+	# 	return sid
+	# #
 
 	def __init__(self, terms, edges):
 		terms['namespace'] = {} # impose this if current Ontology is faulty

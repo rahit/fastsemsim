@@ -44,10 +44,10 @@ import Ontology
 # NEG_REG = 4
 # HAS_PART = 5
 
-# def do_name2id(code):
+# def do_id2node(code):
 # 	return int(code[5:])
 
-# def do_id2name(code):
+# def do_node2id(code):
 # 	# assumption: GO terms are 5 + 7 characters long.
 # 	return "DOID:" + '0'*(7 - len(str(code))) + str(code)
 	
@@ -65,12 +65,12 @@ class DiseaseOntology(Ontology.Ontology):
 	obsolete_ids = None
 
 	@staticmethod
-	def _id2name(code):
+	def _node2id(code):
 		return "DOID:" + '0'*(7 - len(str(code))) + str(code)
 	#
 
 	@staticmethod
-	def _name2id(code, strict=True):
+	def _id2node(code, strict=True):
 		if code.startswith('DOID:'):
 			try:
 				return int(code[5:])
@@ -78,57 +78,57 @@ class DiseaseOntology(Ontology.Ontology):
 				return None
 		if strict:
 			return None
-		return Ontology.Ontology._name2id(code)
+		return Ontology.Ontology._id2node(code)
 	#
 
 	# DO_root_str = "DOID:0000004"
-	# DO_root = _name2id(DO_root_str)
+	# DO_root = _id2node(DO_root_str)
 
-	def name2id(self, codes, alt_check = True):
-		nid = None
-		if codes == None:
-			return None
-		if type(codes) is str:
-			nid = DiseaseOntology._name2id(codes)
-			nid = self.name2id(nid, alt_check)
-		elif type(codes) is int:
-			nid = codes
-			if alt_check:
-				if nid in self.alt_ids:
-					nid = self.alt_ids[nid]
-		elif type(codes) is dict or type(codes) is list:
-			nid = []
-			for i in codes:
-				if type(i) is str:
-					tnid = DiseaseOntology._name2id(i)
-				else:
-					tnid = i
-				if alt_check:
-					if tnid in self.alt_ids:
-						tnid = self.alt_ids[tnid]
-				nid.append(tnid)
-		return nid
+	# def name2id(self, codes, alt_check = True):
+	# 	nid = None
+	# 	if codes == None:
+	# 		return None
+	# 	if type(codes) is str:
+	# 		nid = DiseaseOntology._id2node(codes)
+	# 		nid = self.name2id(nid, alt_check)
+	# 	elif type(codes) is int:
+	# 		nid = codes
+	# 		if alt_check:
+	# 			if nid in self.alt_ids:
+	# 				nid = self.alt_ids[nid]
+	# 	elif type(codes) is dict or type(codes) is list:
+	# 		nid = []
+	# 		for i in codes:
+	# 			if type(i) is str:
+	# 				tnid = DiseaseOntology._id2node(i)
+	# 			else:
+	# 				tnid = i
+	# 			if alt_check:
+	# 				if tnid in self.alt_ids:
+	# 					tnid = self.alt_ids[tnid]
+	# 			nid.append(tnid)
+	# 	return nid
 
-	def id2name(self, codes, alt_check = False):
-		if codes == None:
-			return None
-		if alt_check:
-			print "id2name - alt_check not yet implemented."
-		sid = None
-		if type(codes) is int:
-			sid = DiseaseOntology._id2name(codes)
-		elif type(codes) is str:
-			sid = codes
-		elif type(codes) is dict or type(codes) is list:
-			sid= []
-			for i in codes:
-				if type(i) is int:
-					tnid = DiseaseOntology._id2name(i)
-				else:
-					tnid = i
-				sid.append(tnid)
-		return sid
-	#
+	# def id2name(self, codes, alt_check = False):
+	# 	if codes == None:
+	# 		return None
+	# 	if alt_check:
+	# 		print "id2name - alt_check not yet implemented."
+	# 	sid = None
+	# 	if type(codes) is int:
+	# 		sid = DiseaseOntology._node2id(codes)
+	# 	elif type(codes) is str:
+	# 		sid = codes
+	# 	elif type(codes) is dict or type(codes) is list:
+	# 		sid= []
+	# 		for i in codes:
+	# 			if type(i) is int:
+	# 				tnid = DiseaseOntology._node2id(i)
+	# 			else:
+	# 				tnid = i
+	# 			sid.append(tnid)
+	# 	return sid
+	# #
 
 	def __init__(self, terms, edges):
 		Ontology.Ontology.__init__(self, terms = terms, edges = edges)
