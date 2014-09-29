@@ -18,6 +18,9 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
+__author__ = "Marco Mina"
+
+
 """
 This interface script starts fastSemSim command line tool
 """

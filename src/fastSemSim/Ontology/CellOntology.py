@@ -73,7 +73,10 @@ class CellOntology(Ontology.Ontology):
 	@staticmethod
 	def _name2id(code, strict=True):
 		if code.startswith('CL:'):
-			return int(code[3:])
+			try:
+				return int(code[3:])
+			except Exception:
+				return None
 		if strict:
 			return None
 		print code
@@ -126,8 +129,8 @@ class CellOntology(Ontology.Ontology):
 		return sid
 	#
 
-	def __init__(self, terms, edges, alt_ids = None, namespace = None, extra_edges = None):
-		namespace = None # impose this if current Ontology is faulty
-		Ontology.Ontology.__init__(self, terms = terms, edges = edges, alt_ids = alt_ids, namespace = namespace, extra_edges = extra_edges)
+	def __init__(self, terms, edges):
+		terms['namespace'] = {} # impose this if current Ontology is faulty
+		Ontology.Ontology.__init__(self, terms = terms, edges = edges)
 	#
 #

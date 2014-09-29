@@ -30,13 +30,6 @@ Different datastructures can be used to represent ontologies. The section Variab
 Superclasses can extend the basic datastructure with additional layers of information. 
 """
 
-IS_A = 0
-PART_OF = 1
-REGULATES = 2
-POS_REG = 3
-NEG_REG = 4
-HAS_PART = 5
-
 '''
 	_use_parent_children_ = True
 	_use_node_edges_ = True
@@ -84,6 +77,22 @@ HAS_PART = 5
 	# obsolete_ids = None
 '''
 
+
+import pandas as pd
+import numpy as np
+
+	# id_tag = "id"
+	# name_tag = "name"
+	# def_tag = "def"
+	# alt_id_tag = "alt_id"
+	# replaced_by_tag = "replaced_by"
+	# consider_tag = "consider"
+
+	# namespace_tag = "namespace"
+	# is_obsolete_tag = "is_obsolete"
+	# is_a_tag = "is_a"
+	# relationship_tag = "relationship"
+
 class Ontology:
 
 	debug = False
@@ -101,7 +110,6 @@ class Ontology:
 		return str(code) # watch out for Unicode strings
 	#
 
-
 	def name2id(self, codes, alt_check = True):
 		nid = None
 		if codes == None:
@@ -111,7 +119,7 @@ class Ontology:
 			for i in codes:
 				# if type(i) is str:
 					# tnid = go_name2id(i)
-					tnid = Ontology._name2id(i, strict=True)
+					tnid = self._name2id(i, strict=True)
 				# else:
 					# tnid = i
 					if alt_check:
@@ -121,7 +129,7 @@ class Ontology:
 		else:
 		# if type(codes) is str:
 			# nid = go_name2id(codes)
-			nid = Ontology._name2id(codes, strict=True)
+			nid = self._name2id(codes, strict=True)
 		# elif type(codes) is int:
 			# nid = codes
 			if alt_check:
@@ -141,7 +149,7 @@ class Ontology:
 			sid= []
 			for i in codes:
 				# if type(i) is int:
-				tnid = Ontology._id2name(i, strict = True)
+				tnid = self._id2name(i, strict = True)
 				# else:
 					# tnid = i
 				sid.append(tnid)
@@ -150,7 +158,7 @@ class Ontology:
 		else:
 		 # type(codes) is str:
 			# sid = codes
-			sid = Ontology._id2name(codes, strict = True)
+			sid = self._id2name(codes, strict = True)
 		return sid
 	#
 
@@ -158,43 +166,34 @@ class Ontology:
 		return len(self.nodes)
 
 	def edge_number(self):
-		return self.next_edge
+		return len(self.edges)
 
-	def __init__(self, terms, edges, alt_ids = None, namespace = None, extra_edges = None):
+	def __init__(self, terms, edges):
 		self.nodes = {}
-		self.edges = {}
-		self.edges['inter'] = {}
-		self.edges['nodes'] = []
+		self.alt_id = {}
+		self.obsolete = {}
+		self.namespace = {}
+		self.node_attributes = {} # ['subset', 'comment', 'xref', 'synonym', 'intersection_of'] # Ignored attributes
 		self.parents = {}
 		self.children = {}
-		self.next_edge = 0
 
-		self.alt_ids = alt_ids
-		self.obsolete_ids = {}
-		self.edges['type'] = []
-		self.extra_edges = {}
-		self.extra_edges = extra_edges # ! does not respect the structure of normal edges
-
-		for i in edges:
-			if i == None:
-				continue
-			(child,parent,z) = i
-			ce = self._add_edge(parent, child, False)
-			self.edges['type'].append(z)
-			if (not namespace == None) and (child in namespace) and (parent in namespace) and (not namespace[parent] == namespace[child]):
-				self.edges['inter'][ce] = True
-		if not self.alt_ids == None:
-			for i in self.alt_ids:
-				if i in self.nodes:
-					if self.gen_error:
-						raise Exception # it means there are inconsistencies!
-					if self.debug:
-						print "Warning: Ignoring inconsistent redefinition of valid term " + str(self._id2name(i)) + " as an alternative of " + str(self._id2name(self.alt_ids[i]))
-					# raise Exception # it means there are inconsistencies!
+		self._add_nodes(terms)
+		self._add_edges(edges)
 		self.det_roots()
+
+		# Check consistency of alt_names
+		if not self.alt_id == None:
+			for i in self.alt_id:
+				if i in self.nodes:
+					# if self.gen_error:
+					print "Warning: Inconsistent redefinition of valid term " + str(self._id2name(i)) + " as an alternative of " + str(self._id2name(self.alt_id[i]))
+					# raise Exception # it means there are inconsistencies!
+					# if self.debug:
+					# raise Exception # it means there are inconsistencies!
+		#
 	#
 
-# populate data struct 1
+
 	def _add_node(self,n):
 		if n not in self.nodes:
 			self.nodes[n] = []
@@ -202,25 +201,105 @@ class Ontology:
 			raise(Exception, 'Node ' + str(n) + ' already in the ontology')
 	#
 
-	def _add_edge(self, parent, child, inter=False):
-		# while self.next_edge in self.edges_nodes:
-		# 	self.next_edge += 1
-		e = self.next_edge
-		self.next_edge += 1
-		if e >= len(self.edges['nodes']):
-			self.edges['nodes'].append(None)
-		if parent not in self.nodes:
-			self._add_node(parent)
-		if child not in self.nodes:
-			self._add_node(child)
+	def _add_nodes(self, terms): #input: disctionary of terms to be added.
+		for i in terms['id']:
+			if i == None:
+				continue
+			iid = self._name2id(i, strict = True)
+			if iid == None: # not in ontology. Do not save data for now
+				continue
+			
+			# process alt_id and replaced_by
+			if i in terms['alt_id']:
+				for j in terms['alt_id'][i]:
+					jid = self._name2id(j, strict = True)
+					if jid == None: 
+						pass
+					else:
+						if jid in self.nodes:
+							print "Warning: ignoring inconsistent alt id: " + j
+							# raise Exception
+						else:
+							if jid not in self.alt_id:
+								self.alt_id[jid] = []
+							self.alt_id[jid].append(iid)
+			#
+			if i in terms['replaced_by']:
+				if iid in self.nodes:
+					# print 
+					raise (Exception, "Inconsistent replaced_by id: " + i)
+				for j in terms['replaced_by'][i]:
+					jid = self._name2id(j, strict = True)
+					if jid == None: 
+						pass
+					else:
+						if iid not in self.alt_id:
+							self.alt_id[iid] = []
+						self.alt_id[iid].append(jid)
+			#
 
-		self.edges['nodes'][e] = (parent, child)
-		if inter:
-			self.edges['inter'][e] = True
-		self.nodes[parent].append(e)
-		if parent != child:
-			self.nodes[child].append(e)
-		return e
+			if i in terms['is_obsolete']: # do not save data for now
+				# idata = {}
+				if iid not in self.obsolete:
+					self.obsolete[iid] = terms['is_obsolete'][i]
+			else:
+				if iid not in self.nodes:
+					self.nodes[iid] = []
+				else:
+					print "Duplicated term: " + i
+					raise Exception
+
+				if i in terms['namespace']:
+					self.namespace[iid] = terms['namespace'][i]
+
+				idata = {}
+				for j in { 'name', 'def'}:
+					if i in terms[j]:
+						idata[j] = terms[j][i]
+				self.node_attributes[iid] = idata
+			#
+		#
+	#
+
+	def _add_edges(self, edges): #input: list of edges to be added. Each item of the list is a list [child, parent, type]
+		for i in range(0,len(edges)):
+			childid = self._name2id(edges[i][0], strict = True)
+			parentid = self._name2id(edges[i][1], strict = True)
+			inner = True
+			intra = True
+			if childid == None :
+				inner = False
+				childid = edges[i][0]
+			if parentid == None :
+				inner = False
+				parentid = edges[i][1]
+			if inner and (childid in self.namespace) and (parentid in self.namespace) and (not self.namespace[parentid] == self.namespace[childid]):
+				intra = False
+			edges[i][0] = childid
+			edges[i][1] = parentid
+			edges[i].append(inner)
+			edges[i].append(intra)
+
+			if inner:
+				if parentid not in self.nodes:
+					if parentid in self.obsolete:
+						print "Skipping relationship " + str(edges[i]) + ": parent node is obsolete: " + str(parentid)
+						continue
+					else:
+						print "Adding ghost node " + str(parentid)
+						self._add_node(parentid)
+				if childid not in self.nodes:
+					if childid in self.obsolete:
+						print "Skipping relationship " + str(edges[i]) + ": child node is obsolete: " + str(childid)
+						continue
+					else:
+						print "Adding ghost node " + str(childid)
+						self._add_node(childid)
+				self.nodes[parentid].append(i)
+				if parentid != childid:
+					self.nodes[childid].append(i)
+
+		self.edges = pd.DataFrame(edges, columns=['child','parent', 'type', 'inner', 'intra'])
 	#
 
 	def _s1_to_s2(self): # given data struct 1, generates data struct 2
@@ -229,9 +308,10 @@ class Ontology:
 		for j in self.nodes:
 			self.parents[j] = {}
 			self.children[j] = {}
-		for i in range(0, len(self.edges['nodes'])):
-			self.parents[self.edges['nodes'][i][1]][self.edges['nodes'][i][0]] = i
-			self.children[self.edges['nodes'][i][0]][self.edges['nodes'][i][1]] = i
+		for count, row in self.edges.iterrows():
+			if row['child'] in self.nodes and row['parent'] in self.nodes:
+				self.parents[row['child']][row['parent']] = count
+				self.children[row['parent']][row['child']] = count
 	#
 
 	def det_roots(self): # determines roots (nodes without parents)

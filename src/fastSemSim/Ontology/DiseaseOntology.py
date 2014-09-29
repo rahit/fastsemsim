@@ -72,7 +72,10 @@ class DiseaseOntology(Ontology.Ontology):
 	@staticmethod
 	def _name2id(code, strict=True):
 		if code.startswith('DOID:'):
-			return int(code[5:])
+			try:
+				return int(code[5:])
+			except Exception:
+				return None
 		if strict:
 			return None
 		return Ontology.Ontology._name2id(code)
@@ -127,8 +130,7 @@ class DiseaseOntology(Ontology.Ontology):
 		return sid
 	#
 
-	def __init__(self, terms, edges, alt_ids = None, namespace = None, extra_edges = None):
-		# namespace = None # impose this if current Ontology is faulty
-		Ontology.Ontology.__init__(self, terms = terms, edges = edges, alt_ids = alt_ids, namespace = namespace, extra_edges = extra_edges)
+	def __init__(self, terms, edges):
+		Ontology.Ontology.__init__(self, terms = terms, edges = edges)
 	#
 #

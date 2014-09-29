@@ -18,6 +18,9 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
+__author__ = "Marco Mina"
+
+
 from fastSemSim.Ontology import AnnotationCorpus
 from fastSemSim.Ontology import ontologies
 from fastSemSim.SemSim import SemSimMeasures

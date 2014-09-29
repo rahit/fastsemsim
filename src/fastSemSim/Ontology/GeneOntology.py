@@ -77,14 +77,6 @@ class GeneOntology(Ontology.Ontology):
 # public functions and variables that should be used 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 
-	# nodes_edges = None
-	# edges_nodes = None
-	# parents = None
-	# children = None
-	alt_ids = None
-	obsolete_ids = None
-
-
 	@staticmethod
 	def _id2name(code):
 		return "GO:" + '0'*(7 - len(str(code))) + str(code)
@@ -93,7 +85,10 @@ class GeneOntology(Ontology.Ontology):
 	@staticmethod
 	def _name2id(code, strict=True):
 		if code.startswith('GO:'):
-			return int(code[3:])
+			try:
+				return int(code[3:])
+			except Exception:
+				return None
 		if strict:
 			return None
 		return Ontology.Ontology._name2id(code)
@@ -111,8 +106,8 @@ class GeneOntology(Ontology.Ontology):
 		elif type(codes) is int:
 			nid = codes
 			if alt_check:
-				if nid in self.alt_ids:
-					nid = self.alt_ids[nid]
+				if nid in self.alt_id:
+					nid = self.alt_id[nid]
 		elif type(codes) is dict or type(codes) is list:
 			nid = []
 			for i in codes:
@@ -122,8 +117,8 @@ class GeneOntology(Ontology.Ontology):
 				else:
 					tnid = i
 				if alt_check:
-					if tnid in self.alt_ids:
-						tnid = self.alt_ids[tnid]
+					if tnid in self.alt_id:
+						tnid = self.alt_id[tnid]
 				nid.append(tnid)
 		return nid
 
@@ -148,8 +143,9 @@ class GeneOntology(Ontology.Ontology):
 		return sid
 	#
 
-	def __init__(self, terms, edges, alt_ids = None, namespace = None, extra_edges = None):
+	def __init__(self, terms, edges):
+		# terms['namespace'] = None
 		# namespace = None # impose this if current Ontology is faulty
-		Ontology.Ontology.__init__(self, terms = terms, edges = edges, alt_ids = alt_ids, namespace = namespace, extra_edges = extra_edges)
+		Ontology.Ontology.__init__(self, terms = terms, edges = edges)
 	#
 #

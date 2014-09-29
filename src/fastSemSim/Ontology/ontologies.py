@@ -68,7 +68,7 @@ def load(source, source_type = 'obo', ontology_type = 'GeneOntology', parameters
 		if fe == '.gz':
 			source_handle = gzip.open(source, 'rb')
 		else:
-			source_handle = open(source, 'r')
+			source_handle = open(source, 'rU')
 	else: # assume that the passed object is a file stream
 		source_handle = source
 
@@ -87,7 +87,9 @@ def load(source, source_type = 'obo', ontology_type = 'GeneOntology', parameters
 		parser = make_parser()
 		handler = OboXmlParser(ontology_class, parameters)
 		parser.setContentHandler(handler)
+		print "A"
 		parser.parse(source_handle)
+		print "B"
 	elif source_type == 'obo':
 		handler = OboParser(ontology_class, parameters)
 		handler.parse(source_handle)
@@ -95,6 +97,9 @@ def load(source, source_type = 'obo', ontology_type = 'GeneOntology', parameters
 	else:
 		# print "GeneOntology load: Unknown file format: " + str(parameters['type'])
 		raise Exception
+
+	if type(source) == str: # if original source was a handle, close input file
+		source_handle.close()
 
 	# # postprocess data, if required
 	# if 'ignore' in parameters and 'inter' in parameters['ignore'] and parameters['ignore']['inter']:
@@ -111,17 +116,22 @@ def load(source, source_type = 'obo', ontology_type = 'GeneOntology', parameters
 	# 				handler.edges[i] = None	
 	
 	# build ontology
-	ontology = ontology_class(handler.terms, handler.edges, handler.alt_ids, handler.namespace, handler.extra_edges)
+	print(handler.terms.keys())
+	# print(handler.edges)
+	# return(handler.terms, handler.edges)
 
-	for i in handler.terms:
-		if not i in ontology.nodes:
-			print i
-	for i in ontology.nodes:
-		if not i in handler.terms:
-			print i
+	ontology = ontology_class(handler.terms, handler.edges)
+	print "LOADED"
+	print len(handler.terms['id'])
+	print len(ontology.nodes)
+	# for i in handler.terms:
+		# if not i in ontology.nodes:
+			# print i
+	# for i in ontology.nodes:
+		# if not i in handler.terms['id']:
+			# print i
 
-	if type(source) == str: # if original source was a handle, close input file
-		source_handle.close()
+
 	return ontology
 #
 
@@ -135,41 +145,69 @@ class OboParser:
 
 	term_tag = '[Term]'
 	typedef_tag = '[Typedef]'
+	comment_tag = '!'
+	delimiter_tag = ":"
+	relationship_delimiter_tag = " "
 
-	id_tag = "id:"
-	alt_id_tag = "alt_id:"
-	replaced_by_tag = "replaced_by:"
-	namespace_tag = "namespace:"
-	is_obsolete_tag = "is_obsolete:"
-	is_a_tag = "is_a:"
-	part_of_tag = "part_of:"
-	relationship_tag = "relationship:"
+	id_tag = "id"
+	name_tag = "name"
+	def_tag = "def"
+	alt_id_tag = "alt_id"
+	replaced_by_tag = "replaced_by"
+	consider_tag = "consider"
+
+	namespace_tag = "namespace"
+	is_obsolete_tag = "is_obsolete"
+	is_a_tag = "is_a"
+	relationship_tag = "relationship"
 
 	def __init__(self, ontology_class, parameters = {}):
 		self.ontology_class = ontology_class
 
-		self.ignore_part_of = False
-		self.ignore_regulates = False
-		self.ignore_has_part = True ### NOTE has part ignored by default!
-		self.ignore_is_a = False
+		# self.ignore_part_of = False
+		# self.ignore_regulates = True ### NOTE regulates ignored by default!
+		# self.ignore_has_part = True ### NOTE has part ignored by default!
+		# self.ignore_is_a = False
 		
-		if 'ignore' in parameters and type(parameters['ignore']) == dict:
-			ignore = parameters['ignore']
-			if 'part_of' in ignore:
-				self.ignore_part_of = bool(ignore['part_of'])
-			if 'regulates' in ignore:
-				self.ignore_regulates = bool(ignore['regulates'])
-			if 'has_part' in ignore:
-				self.ignore_has_part = bool(ignore['has_part'])
-			if 'is_a' in ignore:
-				self.ignore_is_a = bool(ignore['is_a'])
+		# if 'ignore' in parameters and type(parameters['ignore']) == dict:
+		# 	ignore = parameters['ignore']
+		# 	if 'part_of' in ignore:
+		# 		self.ignore_part_of = bool(ignore['part_of'])
+		# 	if 'regulates' in ignore:
+		# 		self.ignore_regulates = bool(ignore['regulates'])
+		# 	if 'has_part' in ignore:
+		# 		self.ignore_has_part = bool(ignore['has_part'])
+		# 	if 'is_a' in ignore:
+		# 		self.ignore_is_a = bool(ignore['is_a'])
 	
 		# Initialize structures
-		self.edges = [] # set of relationships between terms. Only primary terms from current ontology are allowed here, and should be present in terms
-		self.extra_edges = [] # set of relationships between terms. Only primary terms from current ontology are allowed here, and should be present in terms
-		self.terms = {} # ids of primary terms contained in the ontology. Only terms from current ontology are allowed here
-		self.alt_ids = {}
-		self.namespace = {}
+
+		self.tags = {}
+		self.tags[self.id_tag] = True
+		self.tags[self.namespace_tag] = True
+		self.tags[self.alt_id_tag] = True
+		self.tags[self.name_tag] = True
+		self.tags[self.def_tag] = True
+		self.tags[self.replaced_by_tag] = True
+		self.tags[self.is_obsolete_tag] = True
+		self.tags[self.consider_tag] = False
+		self.tags[self.is_a_tag] = True
+		self.tags[self.relationship_tag] = True
+		
+		self.relationship_tags = {}
+		self.relationship_tags[self.is_a_tag] = True
+
+		self.terms = {} # ids of terms contained in the ontology
+		self.terms[self.namespace_tag] = {}
+		self.terms[self.id_tag] = {}
+		self.terms[self.alt_id_tag] = {}
+		self.terms[self.is_obsolete_tag] = {}
+		self.terms[self.replaced_by_tag] = {}
+		self.terms[self.name_tag] = {}
+		self.terms[self.def_tag] = {}
+
+		self.edges = [] # set of relationships between terms
+
 
 	#
 
@@ -191,18 +229,52 @@ class OboParser:
 	#
 
 	'''
-	Strip tag from line; strip trailing and ending spaces and return characters
+	Split tag and value line; strip trailing and ending spaces and return characters
 	'''
-	def strip_tag(self, st):
-		return st.split(":", 1)[1].strip()
+	def split_tag(self, st):
+		st = st.split(self.comment_tag, 1)[0].strip() # remove comments 
+		st = st.split(self.delimiter_tag, 1)
+		# print st
+		for i in range(0,len(st)):
+			st[i] = st[i].strip()
 
+		return(st)
+	#
 
+	'''
+	Split relationship tag; strip trailing and ending spaces and return characters
+	'''
+	def split_rel_tag(self, st):
+		st = st.split(self.relationship_tag, 1)[0].strip() # remove comments 
+		st = st.split(self.relationship_delimiter_tag, 1)
+		# print st
+		for i in range(0,len(st)):
+			st[i] = st[i].strip()
+
+		return(st)
+	#
+	
+	'''
+	Check if lines have a key:value structure
+	'''
+	def has_tag_structure(self, st):
+		if st == None:
+			return False
+		if st.startswith(self.comment_tag):
+			return False
+		st2 = st.split(self.delimiter_tag, 1)
+		if(len(st2)) < 2:
+			return False
+		return True
+	#
+
+	'''
+	Parse the file
+	'''
 	def parse(self, _handle):
 		self.handle = _handle
 		while True:
-
-			# go to next [Term]
-			if not self.find_next_term():
+			if not self.find_next_term(): # go to next [Term]
 				break
 
 			# collect lines from current block. Stop when find another block
@@ -218,183 +290,115 @@ class OboParser:
 				lines.append(line)
 
 			# process info in captured block
-			# block variables
 			got_term = False
-			inner_term = False
-			term_id = None
-			obsolete_term = False
-			term_namespace = None
-			term_alt_ids = {}			
 			got_rel = False
-			term_rel = []
-			term_extra_rel = []
+
+			temp_data = {}
+			for i in self.terms.keys():
+				temp_data[i] = None
+			#
+
+			temp_rel = []
 
 			for line in lines:
+				if not self.has_tag_structure(line):
+					continue
+				key, value = self.split_tag(line)
 
-				if line.startswith(self.id_tag):
+				if not key in self.tags:
+					print "New tag found: " + str(key)
+					self.tags[key] = True
+					self.terms[key] = {}
+					temp_data[key] = None
+				#
+				if not self.tags[key]:
+					# print "Ignoring tag: " + str(key)
+					continue
+				#
+
+				if key == self.id_tag:
 					if got_term:
 						raise Exception
-					curid = self.strip_tag(line)
-					term_id = self.ontology_class._name2id(curid)
-					if term_id == None:
-						term_id = curid
-						inner_term = False
-					else:
-						inner_term = True
+					term_id = value
+					temp_data[self.id_tag] = value
 					got_term = True
 				#
 
-				elif line.startswith(self.alt_id_tag):
-					if not got_term:
-						raise Exception
-					if not inner_term:
-						continue
-					curaltname = self.strip_tag(line)
-					curaltid = self.ontology_class._name2id(curaltname, strict = True) # modify strict to allow refs to external ontologies
-					if not curaltid == None:
-						if curaltid not in term_alt_ids:
-							term_alt_ids[curaltid] = []
-						term_alt_ids[curaltid].append(term_id)
-						# elif self.alt_ids[curaltid] == curaltid:
-							# pass # if a term is present and is not obsolete (is already in alt_ids and references to itself, then DO NOT overwrite it)
-						# else:
-							# print "Warning: Ignoring inconsistent redefinition of alternative term " + str(self.ontology_class._id2name(curaltid)) + ", already defined as " + str(self.ontology_class._id2name(self.alt_ids[curaltid])) + ", to " + str(self.ontology_class._id2name(curid))
-							# raise Exception
-					else:
-						print "Warning: Ignoring alternative id " + str(curaltname) + " of term " + str(self.ontology_class._id2name(term_id)) + ", since it belongs to a different ontology."
+				elif key == self.alt_id_tag:
+					# term_alt_ids.append(value)
+					if temp_data[self.alt_id_tag] == None:
+						temp_data[self.alt_id_tag] = []
+					temp_data[self.alt_id_tag].append(value)
 				#
 
-				elif line.startswith(self.replaced_by_tag):
-					if not got_term:
-						raise Exception
-					if not inner_term:
-						continue
-					curaltname = self.strip_tag(line)
-					curaltid = self.ontology_class._name2id(curaltname, strict = True) # modify strict to allow refs to external ontologies
-					if not curaltid == None:
-						if term_id not in term_alt_ids:
-							term_alt_ids[term_id] = []
-						term_alt_ids[term_id].append(curaltid)
-						# if curid not in self.alt_ids:
-						# 	self.alt_ids[curid] = curaltid
-						# else:
-							# print "Warning: Multiple alternative ids not supported yet. Term " + str(self.ontology_class._id2name(curid)) + ", already remapped to " + str(self.ontology_class._id2name(self.alt_ids[curid])) + ", will not be mapped to " + str(self.ontology_class._id2name(curaltid))
+				elif key == self.replaced_by_tag:
+					if temp_data[self.replaced_by_tag] == None:
+						temp_data[self.replaced_by_tag] = []
+					temp_data[self.replaced_by_tag].append(value)
+					# term_replaced_ids.append(value)
 				#			
 
-				elif line.startswith(self.namespace_tag):
-					if not got_term:
-						raise Exception
-					namespace = self.strip_tag(line)
-					self.namespace[term_id] = namespace
-	            # elif line.startswith("name:"):
-	            #     rec.name = after_colon(line)
-	            # elif line.startswith("namespace:"):
-	            #     rec.namespace = after_colon(line)
-	            #
+				elif key == self.namespace_tag:
+					temp_data[self.namespace_tag] = value
 
-				elif line.startswith(self.is_obsolete_tag) and self.strip_tag(line)=="true":
+				elif key == self.is_obsolete_tag and value=="true":
 					if not got_term:
 						raise Exception
 					if got_rel:
-						raise Exception
-					obsolete_term = True
+						# print "Obsolete with edges!"
+						# raise Exception
+						pass
+					temp_data[self.is_obsolete_tag] = True
 				#
 
-				elif line.startswith(self.is_a_tag):
-					if not got_term:
-						raise Exception
-					if obsolete_term:
-						raise Exception
-					if not inner_term:
-						continue
-					if not self.ignore_is_a:
-						isaname = self.strip_tag(line).split()[0]
-						isa = self.ontology_class._name2id(isaname)
-						if not isa == None:
-							got_rel = True
-							term_rel.append( (term_id, isa, Ontology.IS_A ) )
-						else:
-							term_extra_rel.append( (term_id, isaname, Ontology.IS_A ) )
-							# self.edges.append( (curid, isa, Ontology.IS_A ) )
+				elif key == self.is_a_tag:
+					# if not got_term:
+						# raise Exception
+					if temp_data[self.is_obsolete_tag]:
+						# print "Obsolete with edges!"
+						# raise Exception
+						pass
+					isa = value
+					temp_rel.append( (isa, self.is_a_tag ) )
+					got_rel = True
 				#
 
-				elif line.startswith(self.part_of_tag):
-					if not got_term:
-						raise Exception
-					if obsolete_term:
-						raise Exception
-					if not inner_term:
-						continue
-					if not self.ignore_part_of:
-						pofname = self.strip_tag(line).split()[0]
-						pof = self.ontology_class._name2id(pofname)
-						if not pof == None:
-							got_rel = True
-							term_rel.append( (term_id, pof, Ontology.PART_OF ) )
-						else:
-							term_extra_rel.append( (term_id, pofname, Ontology.PART_OF ) )
-				#
-
-				elif line.startswith(self.relationship_tag):
-					if not got_term:
-						raise Exception
-					if obsolete_term:
-						raise Exception
-					if not inner_term:
-						continue
-					cline = self.strip_tag(line).split()
+				elif key == self.relationship_tag:
+					# if not got_term:
+						# raise Exception
+					if temp_data[self.is_obsolete_tag]:
+						# print "Obsolete with edges!"
+						# raise Exception
+						pass
+					cline = self.split_rel_tag(value)
 					ctype = cline[0]
-					ctoname = cline[1]
-					cto = self.ontology_class._name2id(ctoname)
-					if not cto == None:
+					cto = cline[1]
+					if not ctype in self.relationship_tags:
+						print "Found new relationship: " + ctype
+						self.relationship_tags[ctype] = True
+					if self.relationship_tags[ctype]:
+						temp_rel.append( (cto, ctype ) )
 						got_rel = True
-						if str(ctype) == 'part_of' and not self.ignore_part_of:
-							term_rel.append( (term_id, cto, Ontology.PART_OF ) )
-						elif str(ctype) == 'regulates' and not self.ignore_regulates:
-							term_rel.append( (term_id, cto, Ontology.REGULATES ) )
-						elif str(ctype) == 'positively_regulates' and not self.ignore_regulates:
-							term_rel.append( (term_id, cto, Ontology.POS_REG ) )
-						elif str(ctype) == 'negatively_regulates' and not self.ignore_regulates:
-							term_rel.append( (term_id, cto, Ontology.NEG_REG ) )
-						elif str(ctype) == 'is_a' and not self.ignore_is_a:
-							term_rel.append( (term_id, cto, Ontology.IS_A ) )
-						elif str(ctype) == 'has_part' and not self.ignore_has_part:
-							term_rel.append( (term_id, cto, Ontology.HAS_PART ) )
-					else:
-						if str(ctype) == 'part_of' and not self.ignore_part_of:
-							term_extra_rel.append( (term_id, ctoname, Ontology.PART_OF ) )
-						elif str(ctype) == 'regulates' and not self.ignore_regulates:
-							term_extra_rel.append( (term_id, ctoname, Ontology.REGULATES ) )
-						elif str(ctype) == 'positively_regulates' and not self.ignore_regulates:
-							term_extra_rel.append( (term_id, ctoname, Ontology.POS_REG ) )
-						elif str(ctype) == 'negatively_regulates' and not self.ignore_regulates:
-							term_extra_rel.append( (term_id, ctoname, Ontology.NEG_REG ) )
-						elif str(ctype) == 'is_a' and not self.ignore_is_a:
-							term_extra_rel.append( (term_id, ctoname, Ontology.IS_A ) )
-						elif str(ctype) == 'has_part' and not self.ignore_has_part:
-							term_extra_rel.append( (term_id, ctoname, Ontology.HAS_PART ) )
 				#
+
+				else: # it already passed the True/False check
+					if temp_data[key]==None:
+						temp_data[key] = []
+					temp_data[key].append(value) # treat as unique value.
 
 			# commit Term info
 			if not got_term:
-				raise Exception
-			if not inner_term:
+				print "Missing term - skipping block"
+				# raise Exception
 				continue
-				self.namespace[term_id] = term_namespace
-			if not obsolete_term:
-				if term_id in self.terms:
-					raise Exception
-				self.terms[term_id] = None
-				for i in term_rel:
-					self.edges.append( i )
-				for i in term_extra_rel:
-					self.extra_edges.append( i )
-			for i in term_alt_ids:
-				if not i in self.alt_ids:
-					self.alt_ids[i] = term_alt_ids[i] # if a term is present and is not obsolete, then overwrite any previous alt_ids mapping
-				else:
-					for j in term_alt_ids[i]:
-						self.alt_ids[i].append(j)
+			if term_id in self.terms[self.id_tag]: # add term
+				print "Duplicated term: " + str(term_id)
+			for k in temp_data:
+				if not temp_data[k] == None:
+					self.terms[k][term_id] = temp_data[k]
+			for i in temp_rel:
+				self.edges.append( [ term_id, i[0], i[1] ] )
+
 		#
 	#
 #
@@ -407,256 +411,229 @@ class OboParser:
 
 class OboXmlParser(ContentHandler):
 	
+	term_tag = 'term'
+	comment_tag = '!'
+	delimiter_tag = ":"
+	relationship_delimiter_tag = " "
+
+	id_tag = "id"
+	name_tag = "name"
+	def_tag = "def"
+	alt_id_tag = "alt_id"
+	replaced_by_tag = "replaced_by"
+	consider_tag = "consider"
+
+	namespace_tag = "namespace"
+	is_obsolete_tag = "is_obsolete"
+	is_a_tag = "is_a"
+	part_of_tag = "part_of"
+	relationship_tag = "relationship"
+	relationship_type_tag = "type"
+	relationship_to_tag = "to"
+
 	def __init__(self, ontology_class, parameters = {}):
 		self.ontology_class = ontology_class # type of ontology to load
 
-		self.edges = [] # set of relationships between terms. Only primary terms from current ontology are allowed here, and should be present in terms
-		self.extra_edges = [] # set of relationships between terms. Only primary terms from current ontology are allowed here, and should be present in terms
-		self.terms = {} # ids of primary terms contained in the ontology. Only terms from current ontology are allowed here
-		self.alt_ids = {}
-		self.namespace = {}
-
-		# self.terms['id'] = {}
-		# self.terms['alt_id'] = {}
-		# self.terms['obsolete'] = {}
-		# self.terms['namespace'] = {}
-
-		self.ignore_part_of = False
-		self.ignore_regulates = False
-		self.ignore_has_part = True ### NOTE has part ignored by default!
-		self.ignore_is_a = False
+		self.tags = {}
+		self.tags[self.id_tag] = True
+		self.tags[self.namespace_tag] = True
+		self.tags[self.alt_id_tag] = True
+		self.tags[self.name_tag] = True
+		self.tags[self.def_tag] = True
+		self.tags[self.replaced_by_tag] = True
+		self.tags[self.is_obsolete_tag] = True
+		self.tags[self.consider_tag] = False
+		self.tags[self.is_a_tag] = True
+		self.tags[self.relationship_tag] = True
 		
-		if 'ignore' in parameters and type(parameters['ignore']) == dict:
-			ignore = parameters['ignore']
-			if 'part_of' in ignore:
-				self.ignore_part_of = bool(ignore['part_of'])
-			if 'regulates' in ignore:
-				self.ignore_regulates = bool(ignore['regulates'])
-			if 'has_part' in ignore:
-				self.ignore_has_part = bool(ignore['has_part'])
-			if 'is_a' in ignore:
-				self.ignore_is_a = bool(ignore['is_a'])
+		self.relationship_tags = {}
+		self.relationship_tags[self.is_a_tag] = True
+
+		self.terms = {} # ids of terms contained in the ontology
+		self.terms[self.namespace_tag] = {}
+		self.terms[self.id_tag] = {}
+		self.terms[self.alt_id_tag] = {}
+		self.terms[self.is_obsolete_tag] = {}
+		self.terms[self.replaced_by_tag] = {}
+		self.terms[self.name_tag] = {}
+		self.terms[self.def_tag] = {}
+
+		self.edges = [] # set of relationships between terms
+
 #
 
 		self.isId, self.isIsA, self.isPartOf, self.isaltId, self.isRelationship = 0,0,0,0,0
 		self.isObsolete, self.isReplacedBy, self.isConsider = 0,0,0
+		self.isName, self.isDef = 0,0
 		self.isRelationshipTo, self.isRelationshipType = 0,0
+		self.isNamespace = 0
 		self.inTerm = 0
-
-		self.curobsolete = False
-		self.id = None
 		self.got_term = False
-		self.inner_term = False
-		self.term_namespace = None
-		self.term_alt_ids = {}
 		self.got_rel = False
-		self.term_rel = []
-		self.term_extra_rel = []
+		self.temp_data = {}
+		for i in self.terms.keys():
+			self.temp_data[i] = None
+		#
+		self.temp_rel = []
 
 
 	def startElement(self, name, attrs):
-		if name == 'term':
+		if name == self.term_tag:
 			self.inTerm = 1
 		elif self.inTerm == 1:
-			if name == 'id':
+			if name == self.id_tag:
 				self.isId = 1
 				self.id = ''
-			elif name == 'is_a':
+			elif name == self.is_a_tag:
 				self.isIsA = 1
 				self.isa = ''
-			elif name == 'part_of':
+			elif name == self.part_of_tag:
 				self.isPartOf = 1
 				self.partof = ''
-			elif name == 'alt_id':
+			elif name == self.alt_id_tag:
 				self.isaltId = 1
 				self.curaltid = ''
-			elif name == 'relationship':
+			elif name == self.relationship_tag:
 				self.isRelationship = 1
-			elif name == 'type':
+			elif name == self.relationship_type_tag:
 				if self.isRelationship:
 					self.isRelationshipType = 1
 					self.parent_type = ''
-			elif name == 'to':
+			elif name == self.relationship_to_tag:
 				if self.isRelationship:
 					self.isRelationshipTo = 1
 					self.parent = ''
-			elif name == 'is_obsolete':
+			elif name == self.is_obsolete_tag:
 				self.isObsolete = 1
-			elif name == 'replaced_by':
+			elif name == self.replaced_by_tag:
 				self.isReplacedBy = 1
 				self.currepid = ''
-				#print "replaced_by"
-			elif name == 'consider':
+			elif name == self.consider_tag:
 				self.isConsider = 1
-				#print "consider"
+			elif name == self.namespace_tag:
+				self.isNamespace = 1
+				self.namespace = ''
+			elif name == self.name_tag:
+				self.isName = 1
+				self.name = ''
+			elif name == self.def_tag:
+				self.isDef = 1
+				self.defi = ''
+			else:
+				# print "Unknown tag: " + name 
+				pass
 #
 
 
 	def endElement(self, name):
 		if self.inTerm == 1:
-			if name == 'term':
+
+			if name == self.term_tag:
 				if not self.got_term:
 					raise Exception
-				if self.inner_term:
-					self.namespace[self.id] = self.term_namespace
-					if not self.curobsolete:
-						if self.id in self.terms:
-							raise Exception
-						self.terms[self.id] = None
-						for i in self.term_rel:
-							self.edges.append( i )
-						for i in self.term_extra_rel:
-							self.extra_edges.append( i )
-					for i in self.term_alt_ids:
-						if not i in self.alt_ids:
-							self.alt_ids[i] = self.term_alt_ids[i] # if a term is present and is not obsolete, then overwrite any previous alt_ids mapping
-						else:
-							for j in self.term_alt_ids[i]:
-								self.alt_ids[i].append(j)
+				self.terms[self.id_tag][self.id] = {}
 
-				self.curobsolete = False
-				self.id = None
-				self.got_term = False
-				self.inner_term = False
-				self.term_namespace = None
-				self.term_alt_ids = {}
-				self.got_rel = False
-				self.term_rel = []
-				self.term_extra_rel = []
+				for k in self.temp_data:
+					if not self.temp_data[k] == None:
+						self.terms[k][self.id] = self.temp_data[k]
+				for i in self.temp_rel:
+					self.edges.append( [ self.id, i[0], i[1] ] )
+				
+				self.isId, self.isIsA, self.isPartOf, self.isaltId, self.isRelationship = 0,0,0,0,0
+				self.isObsolete, self.isReplacedBy, self.isConsider = 0,0,0
+				self.isRelationshipTo, self.isRelationshipType = 0,0
 				self.inTerm = 0
+				self.got_term = False
+				self.got_rel = False
+				self.temp_data = {}
+				for i in self.terms.keys():
+					self.temp_data[i] = None
+				#
+				self.temp_rel = []
 			#
 
-			elif name == 'id':
+			elif name == self.id_tag:
 				self.isId = 0
 				self.got_term = True
-				self.id = self.ontology_class._name2id(self.id)
-				if not self.id == None:
-					self.inner_term = True
+				self.temp_data[self.id_tag] = self.id
 			#
-
-			elif name == 'alt_id':
+			elif name == self.namespace_tag:
+				self.isNamespace = 0
+				self.temp_data[self.namespace_tag] = self.namespace
+			#
+			elif name == self.name_tag:
+				self.isName = 0
+				self.temp_data[self.name_tag] = self.name
+			#
+			elif name == self.def_tag:
+				self.isDef = 0
+				self.temp_data[self.def_tag] = self.defi
+			#
+			elif name == self.alt_id_tag:
 				self.isaltId = 0
 				if not self.got_term:
 					raise Exception
-				if not self.inner_term:
-					return
-				curaltid = self.ontology_class._name2id(self.curaltid, strict = True) # modify strict to allow refs to external ontologies
-				if not curaltid == None:
-					if curaltid not in self.term_alt_ids:
-						self.term_alt_ids[curaltid] = []
-					self.term_alt_ids[curaltid].append(self.id)
-				#
-
-			elif name == 'is_obsolete':
-				if self.isObsolete:
-					self.isObsolete = 0
+				if self.temp_data[self.alt_id_tag] == None:
+					self.temp_data[self.alt_id_tag] = []
+				self.temp_data[self.alt_id_tag].append(self.curaltid)
 			#
-
-			elif name == 'replaced_by':
+			elif name == self.is_obsolete_tag:
+				self.isObsolete = 0
+				self.temp_data[self.is_obsolete_tag] = True
+			#
+			elif name == self.replaced_by_tag:
 				self.isReplacedBy = 0
 				if not self.got_term:
 					raise Exception
-				if not self.inner_term:
-					return
-				currepid = self.ontology_class._name2id(self.currepid, strict = True) # modify strict to allow refs to external ontologies
-				if not currepid == None:
-					if self.id not in self.term_alt_ids:
-						self.term_alt_ids[self.id] = []
-					self.term_alt_ids[self.id].append(currepid)
+				if self.temp_data[self.replaced_by_tag] == None:
+					self.temp_data[self.replaced_by_tag] = []
+				self.temp_data[self.replaced_by_tag].append(self.currepid)
 			#
-
-			elif name == 'consider':
-				if self.isConsider:
-					self.isConsider = 0
+			elif name == self.consider_tag:
+				self.isConsider = 0
 			#
-
-			elif name == 'is_a':
+			elif name == self.is_a_tag:
 				self.isIsA = 0
-				if self.curobsolete:
-					#print "Inconsistent"
-					raise Exception
-				if not self.inner_term:
-					return
-				if not self.ignore_is_a:
-					isaid = self.ontology_class._name2id(self.isa)
-					if not isaid == None:
-						self.got_rel = True
-						self.term_rel.append( (self.id, isaid, Ontology.IS_A ) )
-					else:
-						self.term_extra_rel.append( (self.id, self.isa, Ontology.IS_A ) )
+				# if self.curobsolete:
+					# raise Exception
+				isaid = self.isa
+				self.got_rel = True
+				self.temp_rel.append( (isaid, self.is_a_tag ) )
 			#
-
-			elif name == 'part_of':
+			elif name == self.part_of_tag:
 				self.isPartOf = 0
-				if self.curobsolete:
-					#print "Inconsistent"
-					raise Exception
-				if not self.inner_term:
-					return
-				if not self.ignore_part_of:
-					partofid = self.ontology_class._name2id(self.partof)
-					if not partofid == None:
-						self.got_rel = True
-						self.term_rel.append( (self.id, partofid, Ontology.PART_OF ) )
-					else:
-						self.term_extra_rel.append( (self.id, self.partof, Ontology.PART_OF ) )
+				# if self.curobsolete:
+					# raise Exception
+				partofid = self.partof
+				self.got_rel = True
+				self.temp_rel.append( (partofid, self.part_of_tag ) )
 			#
-
-			elif name == 'relationship':
-				if self.curobsolete:
-					raise Exception
+			elif name == self.relationship_tag:
+				# if self.curobsolete:
+					# raise Exception
 				self.isRelationship = 0
 			#
-
-			elif name == 'type':
-				if self.isRelationship:
-					self.isRelationshipType = 0
-					#self.parent_type = ''
+			elif name == self.relationship_type_tag:
+				self.isRelationshipType = 0
 			#
-
-			elif name == 'to':
+			elif name == self.relationship_to_tag:
 				if self.isRelationshipTo:
 					self.isRelationshipTo = 0
 					if not self.got_term:
 						raise Exception
-					if self.curobsolete:
-						raise Exception
-					if not self.inner_term:
-						return
-					cto = self.ontology_class._name2id(self.parent)
-					if not cto == None:
-						self.got_rel = True
-						if str(self.parent_type) == 'part_of' and not self.ignore_part_of:
-							self.term_rel.append( (self.id, cto, Ontology.PART_OF ) )
-						elif str(self.parent_type) == 'regulates' and not self.ignore_regulates:
-							self.term_rel.append( (self.id, cto, Ontology.REGULATES ) )
-						elif str(self.parent_type) == 'positively_regulates' and not self.ignore_regulates:
-							self.term_rel.append( (self.id, cto, Ontology.POS_REG ) )
-						elif str(self.parent_type) == 'negatively_regulates' and not self.ignore_regulates:
-							self.term_rel.append( (self.id, cto, Ontology.NEG_REG ) )
-						elif self.parent_type == 'is_a' and not self.ignore_is_a:
-							self.term_rel.append( (self.id, cto, Ontology.IS_A ) )
-						elif self.parent_type == 'has_part' and not self.ignore_has_part:
-							self.term_rel.append( (self.id, cto, Ontology.HAS_PART ) )
-					else:
-						if str(self.parent_type) == 'part_of' and not self.ignore_part_of:
-							self.term_extra_rel.append( (self.id, self.parent, Ontology.PART_OF ) )
-						elif str(self.parent_type) == 'regulates' and not self.ignore_regulates:
-							self.term_extra_rel.append( (self.id, self.parent, Ontology.REGULATES ) )
-						elif str(self.parent_type) == 'positively_regulates' and not self.ignore_regulates:
-							self.term_extra_rel.append( (self.id, self.parent, Ontology.POS_REG ) )
-						elif str(self.parent_type) == 'negatively_regulates' and not self.ignore_regulates:
-							self.term_extra_rel.append( (self.id, self.parent, Ontology.NEG_REG ) )
-						elif self.parent_type == 'is_a' and not self.ignore_is_a:
-							self.term_extra_rel.append( (self.id, self.parent, Ontology.IS_A ) )
-						elif self.parent_type == 'has_part' and not self.ignore_has_part:
-							self.term_extra_rel.append( (self.id, self.parent, Ontology.HAS_PART ) )
+					# if self.curobsolete:
+						# raise Exception
+					cto = self.parent
+					self.got_rel = True
+					self.temp_rel.append( (cto, self.parent_type ) )
 			#
 	#
 
 	def characters(self, ch):
 		if self.isId == 1:
 			self.id += ch
+		if self.isNamespace == 1:
+			self.namespace += ch
 		elif self.isIsA == 1:
 			self.isa += ch
 		elif self.isPartOf == 1:
@@ -671,6 +648,10 @@ class OboXmlParser(ContentHandler):
 			self.curobsolete = bool(ch)
 		elif self.isReplacedBy == 1:
 			self.currepid += ch
+		elif self.isName == 1:
+			self.name += ch
+		elif self.isDef == 1:
+			self.defi += ch
 		elif self.isConsider == 1:
 			pass
 	#
