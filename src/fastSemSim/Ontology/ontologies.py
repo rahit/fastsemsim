@@ -365,7 +365,7 @@ class OboParser:
 
 				elif key == self.relationship_tag:
 					# if not got_term:
-						# raise Exception
+						# pass
 					if temp_data[self.is_obsolete_tag]:
 						# print "Obsolete with edges!"
 						# raise Exception
