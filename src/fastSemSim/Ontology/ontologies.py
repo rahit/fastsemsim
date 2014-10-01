@@ -87,9 +87,9 @@ def load(source, source_type = 'obo', ontology_type = 'GeneOntology', parameters
 		parser = make_parser()
 		handler = OboXmlParser(ontology_class, parameters)
 		parser.setContentHandler(handler)
-		print "A"
+		# print "A"
 		parser.parse(source_handle)
-		print "B"
+		# print "B"
 	elif source_type == 'obo':
 		handler = OboParser(ontology_class, parameters)
 		handler.parse(source_handle)
@@ -116,14 +116,14 @@ def load(source, source_type = 'obo', ontology_type = 'GeneOntology', parameters
 	# 				handler.edges[i] = None	
 	
 	# build ontology
-	print(handler.terms.keys())
+	# print(handler.terms.keys())
 	# print(handler.edges)
 	# return(handler.terms, handler.edges)
 
 	ontology = ontology_class(handler.terms, handler.edges)
-	print "LOADED"
-	print len(handler.terms['id'])
-	print len(ontology.nodes)
+	# print "LOADED"
+	# print len(handler.terms['id'])
+	# print len(ontology.nodes)
 	# for i in handler.terms:
 		# if not i in ontology.nodes:
 			# print i
@@ -306,7 +306,7 @@ class OboParser:
 				key, value = self.split_tag(line)
 
 				if not key in self.tags:
-					print "New tag found: " + str(key)
+					# print "New tag found: " + str(key)
 					self.tags[key] = True
 					self.terms[key] = {}
 					temp_data[key] = None
@@ -374,7 +374,7 @@ class OboParser:
 					ctype = cline[0]
 					cto = cline[1]
 					if not ctype in self.relationship_tags:
-						print "Found new relationship: " + ctype
+						# print "Found new relationship: " + ctype
 						self.relationship_tags[ctype] = True
 					if self.relationship_tags[ctype]:
 						temp_rel.append( (cto, ctype ) )
