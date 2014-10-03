@@ -57,6 +57,7 @@ Requires:
 
 import sys
 import copy
+import pandas
 
 # from Ontology import *
 from PlainAnnotationCorpus import PlainAnnotationCorpus

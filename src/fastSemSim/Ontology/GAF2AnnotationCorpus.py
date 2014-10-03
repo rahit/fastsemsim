@@ -129,7 +129,7 @@ class GAF2AnnotationCorpus():
 			self.temp_GO = line[8]
 
 
-			self.temp_term_ar = self.ac.go.name2id(self.temp_term, alt_check = True)
+			self.temp_term_ar = self.ac.go.id2node(self.temp_term, alt_check = True)
 			if not type(self.temp_term_ar) == list:
 				self.temp_term_ar = [self.temp_term_ar]
 

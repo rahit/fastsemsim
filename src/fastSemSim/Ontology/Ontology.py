@@ -73,7 +73,7 @@ Superclasses can extend the basic datastructure with additional layers of inform
 # ? node names are int and sequential? We assume they are NOT. It implies variant 3(1b) requires a mapping structure as well. It implies a potential overhead?
 
 # data struct 3: ??
-	# alt_ids = None
+	# alt_id = None
 	# obsolete_ids = None
 '''
 
@@ -122,8 +122,8 @@ class Ontology:
 				# else:
 					# tnid = i
 					if alt_check:
-						if tnid in self.alt_ids:
-							tnid = self.alt_ids[tnid]
+						if tnid in self.alt_id:
+							tnid = self.alt_id[tnid]
 					nid.append(tnid)
 		else:
 		# if type(codes) is str:
@@ -132,8 +132,8 @@ class Ontology:
 		# elif type(codes) is int:
 			# nid = codes
 			if alt_check:
-				if nid in self.alt_ids:
-					nid = self.alt_ids[nid]
+				if nid in self.alt_id:
+					nid = self.alt_id[nid]
 		return nid
 	#
 
