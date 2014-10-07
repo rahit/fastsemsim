@@ -42,6 +42,7 @@ TODO:
 import sys
 import os
 import math
+import numpy as np
 
 class SemSimUtils:
 
@@ -59,22 +60,19 @@ class SemSimUtils:
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 #internal functions
 
-	def __init__(self, ontology, ac):
+	def __init__(self, ontology, ac=None):
 		self.ontology = ontology
 		if self.ontology == None:
 			raise Exception
-		self.ac = ac
-		# if self.ac == None:
-			# raise Exception
+		# self.ontology._s1_to_s2() # already done when loading the go. no need here?
 
+		self.ac = ac
+		
 		self.ancestors = None
 		self.offspring = None
 		self.IC = None
 		self.freq = None
 		self.p = None
-
-		self.ontology._s1_to_s2()
-		self.roots = self.ontology.roots
 		self.lineage = None
 
 		self.int_det_offspring_table()
@@ -86,15 +84,20 @@ class SemSimUtils:
 
 	def int_det_offspring_table(self):
 		self.offspring = {}
+		# conta  = 0
+		temp_intra = set(np.where(self.ontology.edges['intra'])[0])
 		for i in self.ontology.nodes:
-			self.offspring[i] = self.int_det_offspring(i)
+			# conta += 1
+			# print str(conta) + "on " + str(len(self.ontology.nodes)) 
+			self.offspring[i] = self.int_det_offspring(i, temp_intra)
 
 	def int_det_ancestors_table(self):
 		self.ancestors = {}
+		temp_intra = set(np.where(self.ontology.edges['intra'])[0])
 		for i in self.ontology.nodes:
-			self.ancestors[i] = self.int_det_ancestors(i)
+			self.ancestors[i] = self.int_det_ancestors(i, temp_intra)
 
-	def int_det_offspring(self, goid):
+	def int_det_offspring(self, goid, temp_intra):
 		if goid not in self.ontology.children:
 			return set()
 		anc = set()
@@ -106,17 +109,20 @@ class SemSimUtils:
 				# continue
 			# queue.append(i)
 		while len(queue) > 0:
+			# print queue
 			t = queue.pop()
 			anc.add(t)
 			for tp in self.ontology.children[t]:
-				if self.ontology.children[t][tp] in self.ontology.edges['inter'] and self.ontology.edges['inter'][self.ontology.children[t][tp]]:
+				edid = self.ontology.children[t][tp]
+				if not edid in temp_intra:
+				# if self.ontology.children[t][tp] in self.ontology.edges['inter'] and self.ontology.edges['inter'][self.ontology.children[t][tp]]:
 					continue
 				if tp not in processed:
 					queue.append(tp)
 			processed[t] = None
 		return anc
 
-	def int_det_ancestors(self, goid):
+	def int_det_ancestors(self, goid, temp_intra):
 		if goid not in self.ontology.parents:
 			return set()
 		anc = set()
@@ -131,7 +137,9 @@ class SemSimUtils:
 			anc.add(t)
 			#print(parent_going[t]
 			for tp in self.ontology.parents[t]:
-				if self.ontology.parents[t][tp] in self.ontology.edges['inter'] and self.ontology.edges['inter'][self.ontology.parents[t][tp]]:
+				edid = self.ontology.parents[t][tp]
+				if not edid in temp_intra:
+				# if self.ontology.parents[t][tp] in self.ontology.edges['inter'] and self.ontology.edges['inter'][self.ontology.parents[t][tp]]:
 					continue
 				if tp not in processed:
 					queue.append(tp)

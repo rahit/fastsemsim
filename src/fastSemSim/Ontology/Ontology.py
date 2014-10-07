@@ -110,31 +110,59 @@ class Ontology:
 	#
 
 	def id2node(self, codes, alt_check = True):
-		nid = None
-		if codes == None:
-			return nid
-		if type(codes) is dict or type(codes) is list:
-			nid = []
-			for i in codes:
-				# if type(i) is str:
-					# tnid = go_id2node(i)
-					tnid = self._id2node(i, strict=True)
-				# else:
-					# tnid = i
+			nid = None
+			if codes == None:
+				return nid
+			if type(codes) is str:
+				# nid = go_name2id(codes)
+				nid = self._id2node(codes,strict=True)
+				nid = self.id2node(nid, alt_check)
+			elif type(codes) is int:
+				nid = codes
+				if alt_check:
+					if nid in self.alt_id:
+						nid = self.alt_id[nid]
+			elif type(codes) is dict or type(codes) is list:
+				nid = []
+				for i in codes:
+					if type(i) is str:
+						# tnid = go_name2id(i)
+						tnid = self._id2node(i,strict=True)
+					else:
+						tnid = i
 					if alt_check:
 						if tnid in self.alt_id:
 							tnid = self.alt_id[tnid]
 					nid.append(tnid)
-		else:
-		# if type(codes) is str:
-			# nid = go_id2node(codes)
-			nid = self._id2node(codes, strict=True)
-		# elif type(codes) is int:
-			# nid = codes
-			if alt_check:
-				if nid in self.alt_id:
-					nid = self.alt_id[nid]
-		return nid
+			return nid
+	# def id2node(self, codes, alt_check = True):
+	# 	nid = None
+	# 	if codes == None:
+	# 		return nid
+	# 	if type(codes) is dict or type(codes) is list:
+	# 		nid = []
+	# 		for i in codes:
+	# 			# if type(i) is str:
+	# 				# tnid = go_id2node(i)
+	# 				tnid = self._id2node(i, strict=True)
+	# 			# else:
+	# 				# tnid = i
+	# 				if alt_check:
+	# 					if tnid in self.alt_id:
+	# 						tnid = self.alt_id[tnid]
+	# 				nid.append(tnid)
+	# 	elif type(codes) is str:
+	# 		# nid = go_id2node(codes)
+	# 		nid = self._id2node(codes, strict=True)
+	# 		if alt_check:
+	# 			if nid in self.alt_id:
+	# 				nid = self.alt_id[nid]
+	# 	elif type(codes) is int:
+	# 		nid = codes
+	# 		if alt_check:
+	# 			if nid in self.alt_id:
+	# 				nid = self.alt_id[nid]
+	# 	return nid
 	#
 
 	def node2id(self, codes, alt_check = False):

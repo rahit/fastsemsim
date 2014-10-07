@@ -28,6 +28,7 @@ import sys
 import os
 import gzip
 # import GeneOntology
+# import pandas as pd
 
 SIMPLIFY = 'simplify'
 
@@ -105,6 +106,7 @@ class GAF2AnnotationCorpus():
 		else:
 			stream = fname
 		lines_counter = 0
+
 		#ignored = 0
 		for line in stream:
 			lines_counter += 1

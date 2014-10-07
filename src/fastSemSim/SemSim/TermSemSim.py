@@ -99,7 +99,7 @@ class TermSemSim(object):
 	# 1) convert Terms to proper ontology format
 	# 2) verify terms are valid (and have an IC)
 	# 3) verify terms have the same root. (this blocks cross-ontological Term SemSim measures)
-		id1 = self.ontology.name2id(term1, alt_check = False)
+		id1 = self.ontology.id2node(term1, alt_check = False)
 
 		if self.SS_type == self.P_TSS: # only single terms allowed
 			if id1 == None:
