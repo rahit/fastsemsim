@@ -1,0 +1,18 @@
+Thanks for downloading FastSemSim.
+
+To install it, make sure you have Python>=2.5.
+WxWidgets library is required to run the graphical user interface.
+
+Then run this command from the command prompt:
+
+    python setup.py install
+
+
+To run the graphical user interface:
+	- Linux and OS X users: run fastSemSimGui.sh, located in the main folder. It should work either you installed the library or not
+	- Windows users: run fastSemSimGui.bat, located in the main folder. It should work either you installed the library or not
+
+	Note for Linux and OS X users: in some systems the Python interpreter has to be invoked using the command 'python2' instead of 'python'. You might need to modify the fastSemSimGui.sh script accordingly.
+
+For more detailed instructions, see the documentation available online.
+

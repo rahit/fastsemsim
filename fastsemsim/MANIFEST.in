@@ -1,0 +1,8 @@
+include INSTALL
+include README
+include LICENSE
+include CHANGELOG
+include version
+
+recursive-include fastsemsim *.png
+recursive-include docs/*
