@@ -60,12 +60,13 @@ setup(
     ],
     package_dir={'fastsemsim':'fastsemsim'},
     package_data={'fastsemsim.data':['*']},
-    packages=['fastsemsim', 'fastsemsim.data', 'fastsemsim.Ontology', 'fastsemsim.SemSim'],
+    packages=['fastsemsim', 'fastsemsim.Ontology', 'fastsemsim.SemSim'],
     install_requires=[
           'pandas',
       ],
     scripts=[
-        'bin/fastsemsim.sh'
+        'fastsemsim/bin/fastsemsim.sh',
+        'fastsemsim/bin/fastsemsim',
     ],
     include_package_data=True,
 )

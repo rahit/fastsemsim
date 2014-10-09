@@ -22,4 +22,4 @@
 PYTHON_INTERPRETER=python
 # DIR_CODE=`dirname $0`
 
-${PYTHON_INTERPRETER} -c "from fastsemsim import fastsemsim; fastsemsim.start()" "$@"
+${PYTHON_INTERPRETER} -c "from fastsemsim import fastsemsim_cmdline; fastsemsim_cmdline.start()" "$@"
