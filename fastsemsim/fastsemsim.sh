@@ -22,14 +22,8 @@
 # set LOCAL to 0 to run the installed version of the GUI
 # LOCAL=1
 
-PYTHON_INTERPRETER=python
 DIR_CODE=`dirname $0`
+# echo $DIR_CODE
 
-if [ -f ${DIR_CODE}/fastsemsim.py ]; then
-# if [ ${LOCAL} = 1 ]; then
-	# echo "Running the local version"
-	(export PYTHONPATH=${PYTHONPATH}:${DIR_CODE}; ${PYTHON_INTERPRETER} ${DIR_CODE}/fastsemsim.py "$@")
-else
-# 	echo "Running the installed version"
-	${PYTHON_INTERPRETER} -c "from fastsemsim import fastsemsim; fastsemsim.start()" "$@"
-fi
+# Running the local version
+python -c "from fastsemsim import fastsemsim_cmdline; fastsemsim_cmdline.start()" "$@"
