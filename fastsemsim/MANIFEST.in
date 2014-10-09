@@ -4,5 +4,6 @@ include LICENSE
 include CHANGELOG
 include version
 
-recursive-include fastsemsim *.png
-recursive-include docs/*
+recursive-include fastsemsim/docs *
+recursive-include fastsemsim/data *
+

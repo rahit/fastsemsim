@@ -22,3 +22,4 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 __author__="Marco Mina"
 __email__="marco.mina.85@gmail.com"
 
+from . import Ontology
