@@ -18,9 +18,12 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-from distutils.core import setup # standard package
-# from setuptools import setup # improved package
 import os
+
+try:
+    from setuptools import setup # improved package
+except ImportError:
+    from distutils.core import setup # standard package
 
 ## Package path
 pkg_path = os.path.dirname(__file__)
@@ -62,6 +65,9 @@ setup(
     package_data={'fastsemsim.data':['*']},
     packages=['fastsemsim', 'fastsemsim.Ontology', 'fastsemsim.SemSim'],
     install_requires=[
+          'pandas',
+      ],
+    requires=[
           'pandas',
       ],
     scripts=[
