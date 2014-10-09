@@ -18,27 +18,27 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-from fastSemSim.SemSim.ResnikSemSim import *
-from fastSemSim.SemSim.LinSemSim import *
-from fastSemSim.SemSim.JiangConrathSemSim import *
-from fastSemSim.SemSim.SimGICSemSim import *
-from fastSemSim.SemSim.SimUISemSim import *
-from fastSemSim.SemSim.SimICSemSim import *
-from fastSemSim.SemSim.SimRelSemSim import *
-from fastSemSim.SemSim.avgSemSim import *
-from fastSemSim.SemSim.maxSemSim import *
-from fastSemSim.SemSim.BMASemSim import *
-from fastSemSim.SemSim.DiceSemSim import *
-from fastSemSim.SemSim.SimTOSemSim import *
-from fastSemSim.SemSim.SimNTOSemSim import *
-from fastSemSim.SemSim.JaccardSemSim import *
-from fastSemSim.SemSim.CzekanowskiDiceSemSim import *
-from fastSemSim.SemSim.CosineSemSim import *
-from fastSemSim.SemSim.GSESAMESemSim import *
-from fastSemSim.SemSim.SimICNDSemSim import *
-from fastSemSim.SemSim.SimICNPSemSim import *
-# from fastSemSim.SemSim.ObjSemSim import *
-# from fastSemSim.SemSim.TermSemSim import *
+from .ResnikSemSim import *
+from .LinSemSim import *
+from .JiangConrathSemSim import *
+from .SimGICSemSim import *
+from .SimUISemSim import *
+from .SimICSemSim import *
+from .SimRelSemSim import *
+from .avgSemSim import *
+from .maxSemSim import *
+from .BMASemSim import *
+from .DiceSemSim import *
+from .SimTOSemSim import *
+from .SimNTOSemSim import *
+from .JaccardSemSim import *
+from .CzekanowskiDiceSemSim import *
+from .CosineSemSim import *
+from .GSESAMESemSim import *
+from .SimICNDSemSim import *
+from .SimICNPSemSim import *
+# from .ObjSemSim import *
+# from .TermSemSim import *
 
 '''
 Struct term_SemSim_measures.

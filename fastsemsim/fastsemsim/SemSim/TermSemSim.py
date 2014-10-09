@@ -29,8 +29,8 @@ TermSemSim relies on SemSimUtils to perform a lot of tasks (such as evaluating T
 a SemSimUtils object can be passed to the constructor as input data. Otherwise, a new instance will be created. Using only one copy of SemSimUtils helps reducing time and spece requirements and is strongly adviced.
 """
 
-from fastSemSim.Ontology import AnnotationCorpus
-from fastSemSim.Ontology import Ontology
+from ..Ontology import AnnotationCorpus
+from ..Ontology import Ontology
 from SemSimUtils import *
 import sys
 import os

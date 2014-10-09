@@ -22,8 +22,8 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 This class provides the prototype for a generic Protein (or more in general, an Object) Semantic Similarity measure (PSS)
 """
 
-from fastSemSim.Ontology import AnnotationCorpus
-from fastSemSim.Ontology import Ontology
+# from fastSemSim.Ontology import AnnotationCorpus
+# from fastSemSim.Ontology import Ontology
 from SemSimUtils import SemSimUtils
 # from TermSemSim import *
 # from MixSemSim import *

@@ -24,8 +24,8 @@ This class implements Resnik Term Semantic Similarity Measure
 
 from SemSimUtils import *
 from TermSemSim import * 
-import sys
-import os
+# import sys
+# import os
 import math
 
 class CosineSemSim(TermSemSim):

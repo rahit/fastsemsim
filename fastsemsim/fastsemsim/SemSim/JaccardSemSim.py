@@ -22,12 +22,12 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 This class implements Resnik Term Semantic Similarity Measure
 """
 
-from fastSemSim.Ontology import AnnotationCorpus
-from fastSemSim.Ontology import Ontology
-from SemSimUtils import *
+# from fastSemSim.Ontology import AnnotationCorpus
+# from fastSemSim.Ontology import Ontology
+# from SemSimUtils import *
 from TermSemSim import * 
-import sys
-import os
+# import sys
+# import os
 import math
 
 class JaccardSemSim(TermSemSim):

@@ -25,8 +25,8 @@ __author__ = "Marco Mina"
 This interface script starts fastSemSim command line tool
 """
 
-from fastSemSim import startfastSemSim
+from fastsemsim import fastsemsim
 
 if __name__ == "__main__":
-	startfastSemSim.start()
+	fastsemsim.start()
 #

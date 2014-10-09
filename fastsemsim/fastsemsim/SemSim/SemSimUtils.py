@@ -39,8 +39,8 @@ TODO:
 
 # from fastSemSim.Ontology import AnnotationCorpus
 # from fastSemSim.Ontology import Ontology
-import sys
-import os
+# import sys
+# import os
 import math
 import numpy as np
 

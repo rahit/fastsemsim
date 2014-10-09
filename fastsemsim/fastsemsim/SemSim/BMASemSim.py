@@ -23,8 +23,8 @@ This class provides the prototype for BMA mixing strategy for pairwise Terms Pro
 """
 
 from MixSemSim import *
-import sys
-import os
+# import sys
+# import os
 import math
 
 class BMASemSim(MixSemSim):

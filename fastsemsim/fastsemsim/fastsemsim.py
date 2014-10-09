@@ -21,15 +21,15 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 __author__ = "Marco Mina"
 
 
-from fastSemSim.Ontology import AnnotationCorpus
-from fastSemSim.Ontology import ontologies
-from fastSemSim.SemSim import SemSimMeasures
-from fastSemSim.SemSim import ObjSemSim
-from fastSemSim.SemSim import ObjSetSemSim
-from fastSemSim.SemSim import SetSemSim
+from Ontology import AnnotationCorpus
+from Ontology import ontologies
+from SemSim import SemSimMeasures
+from SemSim import ObjSemSim
+from SemSim import ObjSetSemSim
+from SemSim import SetSemSim
 
-from fastSemSim.fastResnik import fastResnikSemSim
-from fastSemSim.SemSim import SemSimUtils
+# from fastSemSim.fastResnik import fastResnikSemSim
+from SemSim import SemSimUtils
 
 import sys
 import os
