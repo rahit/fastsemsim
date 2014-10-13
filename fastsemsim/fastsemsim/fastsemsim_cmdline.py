@@ -37,7 +37,12 @@ import gzip
 
 import argparse
 
-# - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # - # 
+
+
+######################
+Help notes 
+######################
+
 params_help = dict()
 
 params_help['ontology'] = 'Ontology. DAG of terms linked in a semantic hierarchy.'
@@ -88,9 +93,11 @@ params_help['save_params'] = 'Save parameters to the specified file.'
 params_help['verbose'] = 'Verbosity level. Repeat multiple time to increase verbosity level (i.e. -vvv)'
 
 
-	#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
-	# Cmd line parameter parsing  #
-	#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+
+
+#####################
+# Cmd line parameter parsing  #
+#####################
 
 def print_err(*args):
     sys.stderr.write(' '.join(map(str,args)) + '\n')
@@ -356,10 +363,9 @@ def parse_parameters(args):
 
 
 
-
-	#-#-#-#-#-#-#-#-#-#
+#####################
 	# Load Ontology   #
-	#-#-#-#-#-#-#-#-#-#
+#####################
 
 def load_ontology():
 	global params
@@ -400,10 +406,9 @@ def load_ontology():
 
 
 
-
-	#-#-#-#-#-#-#-#-#-#-#-#-#-#
+#####################
 	# load Annotation Corpus  #
-	#-#-#-#-#-#-#-#-#-#-#-#-#-#
+#####################
 
 def load_ac():
 	# global EC_include, EC_ignore, tax_include, tax_ignore, ac_file, ac_term_first, ac_separator, ac_type, ac_multiple
@@ -486,9 +491,14 @@ def load_ac():
 #
 
 
-	#-#-#-#-#-#-#-#-#-#-#-#-#
+
+
+
+
+
+#####################
 	# Load Query from File  #
-	#-#-#-#-#-#-#-#-#-#-#-#-#
+#####################
 
 def load_query_from_file():
 	global params
@@ -538,9 +548,14 @@ def load_query_from_file():
 
 
 
-	#-#-#-#-#-#-#-#-#-#-#-#
+
+
+
+
+
+#####################
 	# Semantic Similarity #
-	#-#-#-#-#-#-#-#-#-#-#-#
+#####################
 
 def init_ss():
 	global ontology, ac
@@ -582,9 +597,16 @@ def init_ss():
 
 
 
-	#-#-#-#-#-#-#-#-#
+
+
+
+
+
+
+
+#####################
 	# Pairs Sem Sim #
-	#-#-#-#-#-#-#-#-#
+#####################
 
 def ss_pairs(out):
 	global params
