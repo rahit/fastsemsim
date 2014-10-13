@@ -22,7 +22,28 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 #@desc
 Class to parse Annotation Corporus files in GAF-2.0 format [i.e. Gene Ontology Annotation files]
 tab separated file. 
+Format as defined in http://geneontology.org/page/go-annotation-file-gaf-format-20
 '''
+
+# The gaf-2 file format is documented here: ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/UNIPROT/README
+# code for pandas reading
+# import pandas as pd
+# import gzip
+# def gaf2_import():
+# 	Bh = open('./input_dataset_processing/gene_association.goa_human_2014.10.12', 'r')
+# 	B = pd.read_csv(Bh, comment="!", header=-1, sep="\t", dtype=str)
+# 	Bh.close()
+# 	B.columns = ['DB', 'DB_Object_ID', 'DB_Object_Symbol', 'Qualifier', 'GO_ID', 'DB:Reference', 'Evidence Code', 'With (or) From', 'Aspect', 'DB_Object_Name', 'DB_Object_Synonym', 'DB_Object_Type', 'Taxon', 'Date', 'Assigned_By', 'Annotation_Extension', 'Gene_Product_Form_ID']
+# 	return B
+# #
+
+# def gaf2_gzip_import():
+# 	Bhz = gzip.open('./input_dataset_processing/gene_association.goa_human_2014.10.12.gz', 'r')
+# 	Bz = pd.read_csv(Bhz, comment="!", header=-1, sep="\t", dtype=str)
+# 	Bhz.close()
+# 	Bz.columns = ['DB', 'DB_Object_ID', 'DB_Object_Symbol', 'Qualifier', 'GO_ID', 'DB:Reference', 'Evidence Code', 'With (or) From', 'Aspect', 'DB_Object_Name', 'DB_Object_Synonym', 'DB_Object_Type', 'Taxon', 'Date', 'Assigned_By', 'Annotation_Extension', 'Gene_Product_Form_ID']
+# 	return Bz
+# #
 
 import sys
 import os
