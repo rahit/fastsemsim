@@ -27,10 +27,8 @@ from SemSim import SemSimMeasures
 from SemSim import ObjSemSim
 from SemSim import ObjSetSemSim
 from SemSim import SetSemSim
-from data import dataset
-
-# from fastSemSim.fastResnik import fastResnikSemSim
 from SemSim import SemSimUtils
+from data import dataset
 
 import sys
 import os
