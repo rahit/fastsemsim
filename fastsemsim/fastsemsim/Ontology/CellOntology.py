@@ -129,8 +129,12 @@ class CellOntology(Ontology.Ontology):
 	# 	return sid
 	# #
 
-	def __init__(self, terms, edges):
+	def __init__(self, terms, edges, parameters):
 		terms['namespace'] = {} # impose this if current Ontology is faulty
-		Ontology.Ontology.__init__(self, terms = terms, edges = edges)
+		# if parameters == None:
+			# parameters = {}
+		# if not 'ignore' in parameters:
+			# parameters['ignore'] = {'regulates':True}
+		Ontology.Ontology.__init__(self, terms = terms, edges = edges, parameters = parameters)
 	#
 #

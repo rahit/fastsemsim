@@ -52,13 +52,13 @@ ontologies = {
 	'Ontology' : (Ontology.Ontology, )
 }
 
-def parse(source, parameters={}):
-	return load(source, parameters)
+def parse(source, source_type = 'obo', ontology_type = 'GeneOntology', parameters={}):
+	return load(source, source_type, ontology_type, parameters)
 #
 
 def load(source, source_type = 'obo', ontology_type = 'GeneOntology', parameters={}):
 	ontology = None
-	namespace = None
+	# namespace = None
 
 	# generate source file handle
 	if type(source) == unicode:
@@ -120,7 +120,7 @@ def load(source, source_type = 'obo', ontology_type = 'GeneOntology', parameters
 	# print(handler.edges)
 	# return(handler.terms, handler.edges)
 
-	ontology = ontology_class(handler.terms, handler.edges)
+	ontology = ontology_class(handler.terms, handler.edges, parameters)
 	# print "LOADED"
 	# print len(handler.terms['id'])
 	# print len(ontology.nodes)
@@ -207,7 +207,6 @@ class OboParser:
 		self.terms[self.def_tag] = {}
 
 		self.edges = [] # set of relationships between terms
-
 
 	#
 

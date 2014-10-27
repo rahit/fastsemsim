@@ -130,7 +130,7 @@ class DiseaseOntology(Ontology.Ontology):
 	# 	return sid
 	# #
 
-	def __init__(self, terms, edges):
-		Ontology.Ontology.__init__(self, terms = terms, edges = edges)
+	# def __init__(self, terms, edges):
+		# Ontology.Ontology.__init__(self, terms = terms, edges = edges)
 	#
 #

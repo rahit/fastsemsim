@@ -11,6 +11,6 @@ AC_GO_uniprot_worm	AC	ACs/GO_gene_association.goa_worm_2014.10.12.gz	GeneOntolog
 AC_GO_uniprot_zebrafish	AC	ACs/GO_gene_association.goa_zebrafish_2014.10.12.gz	GeneOntology	gaf-2.0	2014.10.12	zebrafish	Annotation of zebrafish genes with the Gene Ontology terms. Retrieved from Uniprot http://www.ebi.ac.uk/GOA/downloads
 CO	O	Os/CellOntology_2014.10.13.obo	CellOntology	obo	2014.10.13		Retrieved from http://www.obofoundry.org/cgi-bin/detail.cgi?id=cell, or https://cell-ontology.googlecode.com/svn/trunk/src/ontology/cl-basic.obo. This is the filtered version.
 DO	O	Os/DiseaseOntology_2014.10.13.obo	DiseaseOntology	obo	2014.10.13		Retrieved from http://www.obofoundry.org/cgi-bin/detail.cgi?id=disease_ontology
-GO	O	Os/GeneOntology_2014.10.13.obo	GeneOntology	obo	2014.10.13		Retrieved from http://purl.obolibrary.org/obo/go.obo
+GO	O	Os/GeneOntology_2014.10.27.obo	GeneOntology	obo	2014.10.13		Retrieved from http://purl.obolibrary.org/obo/go.obo
 GO_oboxml	O	GeneOntology_2014.10.13.obo-xml.gz	GeneOntology	obo-xml	2014.10.13		Retrieved from http://archive.geneontology.org/latest-termdb/go_daily-termdb.obo-xml.gz
 #pato	O	Os/pato_2014.09.09.obo	Ontology	obo	2014.09.09		Retrieved from 

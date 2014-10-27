@@ -135,34 +135,6 @@ class Ontology:
 							tnid = self.alt_id[tnid]
 					nid.append(tnid)
 			return nid
-	# def id2node(self, codes, alt_check = True):
-	# 	nid = None
-	# 	if codes == None:
-	# 		return nid
-	# 	if type(codes) is dict or type(codes) is list:
-	# 		nid = []
-	# 		for i in codes:
-	# 			# if type(i) is str:
-	# 				# tnid = go_id2node(i)
-	# 				tnid = self._id2node(i, strict=True)
-	# 			# else:
-	# 				# tnid = i
-	# 				if alt_check:
-	# 					if tnid in self.alt_id:
-	# 						tnid = self.alt_id[tnid]
-	# 				nid.append(tnid)
-	# 	elif type(codes) is str:
-	# 		# nid = go_id2node(codes)
-	# 		nid = self._id2node(codes, strict=True)
-	# 		if alt_check:
-	# 			if nid in self.alt_id:
-	# 				nid = self.alt_id[nid]
-	# 	elif type(codes) is int:
-	# 		nid = codes
-	# 		if alt_check:
-	# 			if nid in self.alt_id:
-	# 				nid = self.alt_id[nid]
-	# 	return nid
 	#
 
 	def node2id(self, codes, alt_check = False):
@@ -193,9 +165,9 @@ class Ontology:
 		return len(self.nodes)
 
 	def edge_number(self):
-		return len(self.edges)
+		return(self.edges.shape[0])
 
-	def __init__(self, terms, edges):
+	def __init__(self, terms, edges, parameters=None):
 		self.nodes = {}
 		self.alt_id = {}
 		self.obsolete = {}
@@ -203,6 +175,10 @@ class Ontology:
 		self.node_attributes = {} # ['subset', 'comment', 'xref', 'synonym', 'intersection_of'] # Ignored attributes
 		self.parents = {}
 		self.children = {}
+
+		self.ignore = None
+		if not parameters == None and 'ignore' in parameters:
+			self.ignore = parameters['ignore']
 
 		self._add_nodes(terms)
 		self._add_edges(edges)
@@ -289,6 +265,14 @@ class Ontology:
 	#
 
 	def _add_edges(self, edges): #input: list of edges to be added. Each item of the list is a list [child, parent, type]
+		if not self.ignore == None:
+			newedges = []
+			for i in range(0,len(edges)):
+				# print edges[i][2]
+				if not edges[i][2] in self.ignore:
+					newedges.append(edges[i])
+			edges = newedges
+		#
 		for i in range(0,len(edges)):
 			childid = self._id2node(edges[i][0], strict = True)
 			parentid = self._id2node(edges[i][1], strict = True)

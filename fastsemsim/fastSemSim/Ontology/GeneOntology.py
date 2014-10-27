@@ -143,9 +143,12 @@ class GeneOntology(Ontology.Ontology):
 	# 	return sid
 	# #
 
-	def __init__(self, terms, edges):
-		# terms['namespace'] = None
-		# namespace = None # impose this if current Ontology is faulty
-		Ontology.Ontology.__init__(self, terms = terms, edges = edges)
+	def __init__(self, terms, edges, parameters):
+		# terms['namespace'] = {} # impose this if current Ontology is faulty
+		if parameters == None:
+			parameters = {}
+		if not 'ignore' in parameters:
+			parameters['ignore'] = {'has_part':True, 'happens_during':True, 'occurs_in':True}
+		Ontology.Ontology.__init__(self, terms = terms, edges = edges, parameters = parameters)
 	#
 #
