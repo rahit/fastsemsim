@@ -11,3 +11,4 @@ Example: if fastSemSim has been downloaded in a folder with path 'path-to-x', th
 before executing any fastSemSim test. Under Windows, set the python library path variable from Control Panel.
 
 If you installed fastSemSim, you should be able to run any test script.
+
