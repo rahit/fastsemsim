@@ -168,6 +168,7 @@ class Ontology:
 		return(self.edges.shape[0])
 
 	def __init__(self, terms, edges, parameters=None):
+		self.name = 'Ontology'
 		self.nodes = {}
 		self.alt_id = {}
 		self.obsolete = {}

@@ -150,5 +150,6 @@ class GeneOntology(Ontology.Ontology):
 		if not 'ignore' in parameters:
 			parameters['ignore'] = {'has_part':True, 'happens_during':True, 'occurs_in':True}
 		Ontology.Ontology.__init__(self, terms = terms, edges = edges, parameters = parameters)
+		self.name = 'GeneOntology'
 	#
 #

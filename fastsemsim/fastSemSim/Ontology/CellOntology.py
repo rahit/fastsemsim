@@ -136,5 +136,6 @@ class CellOntology(Ontology.Ontology):
 		if not 'ignore' in parameters:
 			parameters['ignore'] = {'lacks_plasma_membrane_part':True} #, 'develops_from':True}
 		Ontology.Ontology.__init__(self, terms = terms, edges = edges, parameters = parameters)
+		self.name = 'CellOntology'
 	#
 #

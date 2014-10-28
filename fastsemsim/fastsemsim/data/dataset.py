@@ -97,4 +97,12 @@ class Dataset(object):
 			selected = self.dataset.loc[(self.dataset['type'] == 'AC') & (self.dataset['ontology'] == ontology) & (self.dataset['species'] == species)]
 		return selected
 	#
+
+	def get_default_annotation_corpus(self, ontology=None, species=None):
+		selected = self.get_annotation_corpus_by_species(ontology, species)
+		if selected.shape[0] == 0:
+			return None
+		return selected.iloc[0] # return the first (preferred) ontology
+		pass
+	#
 #

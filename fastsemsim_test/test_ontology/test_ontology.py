@@ -46,7 +46,7 @@ def test_Os():
 	parameters_set = [
 		{'ignore':{}},
 		{'ignore':{'has_part':True, 'occurs_in':True, 'happens_during':True}},
-		{'useless':{}},
+		{},
 		{'ignore':{'regulates':True, 'has_part':True, 'negatively_regulates':True, 'positively_regulates':True, 'occurs_in':True, 'happens_during':True}},
 		]
 
