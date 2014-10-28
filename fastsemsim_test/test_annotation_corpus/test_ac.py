@@ -28,6 +28,7 @@ import math
 import gzip
 
 def load_ontology(i,j):
+	# print "LOAD ONTOLOGY" + str(i)
 	ontology = ontologies.load(i[0], i[1], i[2], j)
 	return ontology
 #
@@ -63,12 +64,34 @@ def test_AC():
 		# {'ignore':{'regulates':True, 'has_part':True, 'negatively_regulates':True, 'positively_regulates':True, 'occurs_in':True, 'happens_during':True}},
 		]
 
+	basic_ac_parameters = {}
+# gaf-2.0 ac
+	basic_ac_parameters['filter'] = {} # filter section is useful to remove undesired annotations
+	basic_ac_parameters['filter']['EC'] = {} # EC filtering: select annotations depending on their EC
+	basic_ac_parameters['filter']['taxonomy'] = {}
+	# basic_ac_parameters['filter']['EC']['EC'] = EC_include # select which EC accept or reject
+	# basic_ac_parameters['filter']['EC']['inclusive'] = True # select which EC accept or reject
+	# basic_ac_parameters['filter']['EC'] = {} # EC filtering: select annotations depending on their EC
+	# basic_ac_parameters['filter']['EC']['EC'] = EC_ignore # select which EC accept or reject
+	# basic_ac_parameters['filter']['EC']['inclusive'] = False # select which EC accept or reject
+	# basic_ac_parameters['filter']['taxonomy']['taxonomy'] = tax_include # set properly this field to load only annotations involving proteins/genes of a specific species
+	# basic_ac_parameters['filter']['taxonomy']['inclusive'] = True # select which EC accept or reject
+	# basic_ac_parameters['filter']['taxonomy'] = {}
+	# basic_ac_parameters['filter']['taxonomy']['taxonomy'] = tax_ignore
+	# basic_ac_parameters['filter']['taxonomy']['inclusive'] = False # select which EC accept or reject
+
+# Plain ac
+	basic_ac_parameters['multiple'] = True # Set to True if there are many associations per line (the object in the first field is associated to all the objects in the other fields within the same line)
+	basic_ac_parameters['term first'] = False # set to True if the first field of each row is a GO term. Set to False if the first field represents a 
+	basic_ac_parameters['separator'] = "\t" # select the separtor used to divide fields
+	# basic_ac_parameters['simplify'] = True # after parsing and filtering, removes additional information such as taxonomy or EC. Useful if you have a huge amount of annotations and not enough memory
+
 	ac_parameters_set = [
-		# {'ignore':{}},
-		# {'ignore':{'has_part':True, 'occurs_in':True, 'happens_during':True}},
 		{},
-		# {'ignore':{'regulates':True, 'has_part':True, 'negatively_regulates':True, 'positively_regulates':True, 'occurs_in':True, 'happens_during':True}},
+		basic_ac_parameters,
 		]
+
+	ac_params = {}
 
 	print "\n#################################"
 	print "\n# Testing annotation corpus parsing... #\n"
@@ -77,18 +100,19 @@ def test_AC():
 	acs = []
 	for i in input_ac_set:
 		print("\n---------------------------------------------\n")
-		tempac = []
-		ontology = load_ontology(i,{})
-		for j in i[3]:
-			for k in ac_parameters_set:
-				print("Loading ac: " + str(i)+'\nParameters: ' + str(j))
-				tempk = k
-				# tempj = j.copy()
-				tempac.append((i, j, tempk, ontology, load_ac(ontology, j, k)))
-				# print j
-				# print "-> Ontology loaded: " + str(ontology.node_number()) + " nodes and " +  str(ontology.edge_number()) + " edges."
-				print("----------------")
-		acs.append(tempac)
+		for k1 in ontology_parameters_set:
+			ontology = load_ontology(i,k1)
+			tempac = []
+			for j in i[3]:
+				for k in ac_parameters_set:
+					print("Loading ac: " + str(i)+'\nParameters: ' + str(j))
+					tempk = k
+					# tempj = j.copy()
+					tempac.append((i, j, k1, tempk, ontology, load_ac(ontology, j, k)))
+					# print j
+					# print "-> Ontology loaded: " + str(ontology.node_number()) + " nodes and " +  str(ontology.edge_number()) + " edges."
+					print("----------------")
+			acs.append(tempac)
 
 	print "\n#############################################################"
 	print "\n# Successfully loaded " + str(len(acs)) + " ontologies"
@@ -98,8 +122,8 @@ def test_AC():
 		print("\n---------------------------------------------\n")
 		for i in j:
 			print str(i)
-			if not i[4] is None:
-				print "-> " + str(len(i[4].reverse_annotations)) + " reverse_annotations, " +  str(len(i[4].annotations)) + " annotations."
+			if not i[5] is None:
+				print "-> " + str(len(i[5].reverse_annotations)) + " reverse_annotations, " +  str(len(i[5].annotations)) + " annotations."
 			else:
 				print "-> None!"
 			print("--------------------")
@@ -107,59 +131,4 @@ def test_AC():
 
 if __name__ == "__main__":
 	test_AC()
-#
-
-
-
-
-	
-	# #-#-#-#-#-#-#-#-#-#-#-#-#-#
-	# # Second step: set parsing parameters
-	# # You should fill a dictionary with the proper information. Friendly routines will be provided in future to set parsing parameters easily
-	# # If you specify incorrect or not pertinent parameters they'll be ignored.
-	
-	# #### For gaf-2 / GOA files:
-	# if not is_plain:
-	# 	params = {}
-	
-	# 	params['filter'] = {} # filter section is useful to remove undesired annotations
-
-	# 	if not EC_include == None:
-	# 		params['filter']['EC'] = {} # EC filtering: select annotations depending on their EC
-	# 		params['filter']['EC']['EC'] = EC_include # select which EC accept or reject
-	# 		params['filter']['EC']['inclusive'] = True # select which EC accept or reject
-	# 	if not EC_ignore == None:
-	# 		params['filter']['EC'] = {} # EC filtering: select annotations depending on their EC
-	# 		params['filter']['EC']['EC'] = EC_ignore # select which EC accept or reject
-	# 		params['filter']['EC']['inclusive'] = False # select which EC accept or reject
-
-	# 	if not tax_include == None:
-	# 		params['filter']['taxonomy'] = {}
-	# 		params['filter']['taxonomy']['taxonomy'] = tax_include # set properly this field to load only annotations involving proteins/genes of a specific species
-	# 		params['filter']['taxonomy']['inclusive'] = True # select which EC accept or reject
-	# 	if not tax_ignore == None:
-	# 		params['filter']['taxonomy'] = {}
-	# 		params['filter']['taxonomy']['taxonomy'] = tax_ignore
-	# 		params['filter']['taxonomy']['inclusive'] = False # select which EC accept or reject
-		
-	# 	params['simplify'] = True # after parsing and filtering, removes additional information such as taxonomy or EC. Useful if you have a huge amount of annotations and not enough memory
-	
-	# #### For plain files:
-	# if is_plain:
-	# 	params = {}
-
-	# 	if ac_multiple:
-	# 		params['multiple'] = True # Set to True if there are many associations per line (the object in the first field is associated to all the objects in the other fields within the same line)
-	# 	if ac_term_first:
-	# 		params['term first'] = True # set to True if the first field of each row is a GO term. Set to False if the first field represents a protein/gene
-		
-	# 	if not ac_separator == None:
-	# 		params['separator'] = ac_separator # select the separtor used to divide fields
-	
-
-	#-#-#-#-#-#-#-#-#-#-#-#-#-#
-	#### additional useful annotation corpus routines
-	# ac.isConsistent() # check whether the annotations are consistent with the current gene ontology. Useful to check if everything is fine
-	# ac.sanitize() # removes annotations not consistent with the current gene ontology. USeful if you loaded an annotation corpus BEFORE loading a gene ontology
-	# return ac
 #
