@@ -131,10 +131,10 @@ class CellOntology(Ontology.Ontology):
 
 	def __init__(self, terms, edges, parameters):
 		terms['namespace'] = {} # impose this if current Ontology is faulty
-		# if parameters == None:
-			# parameters = {}
-		# if not 'ignore' in parameters:
-			# parameters['ignore'] = {'regulates':True}
+		if parameters == None:
+			parameters = {}
+		if not 'ignore' in parameters:
+			parameters['ignore'] = {'lacks_plasma_membrane_part':True} #, 'develops_from':True}
 		Ontology.Ontology.__init__(self, terms = terms, edges = edges, parameters = parameters)
 	#
 #

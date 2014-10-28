@@ -286,6 +286,8 @@ class Ontology:
 				parentid = edges[i][1]
 			if inner and (childid in self.namespace) and (parentid in self.namespace) and (not self.namespace[parentid] == self.namespace[childid]):
 				intra = False
+			elif not inner:
+				intra = False
 			edges[i][0] = childid
 			edges[i][1] = parentid
 			edges[i].append(inner)
