@@ -24,27 +24,39 @@ Class to parse the dataset included in fastSemSim.
 The file data/dataset.txt is read to collect the list of ACs and Os included in fastSemSim. 
 '''
 
+# print "fastsemsim/data/dataset.py"
+
 import pandas as pd
 # import sys
 import os
 
 class Dataset(object):
 
-	def __init__(self):
-		pass
+	def __init__(self, descriptor=None):
+		# program_dir = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
+		# print "dataset.py: " + program_dir
+		self.populate(descriptor)
+		# print self.dataset
 	#
 
 	def populate(self, descriptor=None):
+		descriptor_null = False
 		if descriptor == None:
+			descriptor_null = True
+		if descriptor_null:
 			program_dir = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
 			# print program_dir
 			descriptor = program_dir + '/dataset.txt'
 		self.dataset = pd.read_csv(descriptor, sep="\t", comment="#", header=0).dropna(how='all')
 		self.dataset.index = self.dataset['name']
+		if descriptor_null:
+			program_dir = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")  + "/"
+			self.dataset['file'] = program_dir + self.dataset['file']
+			# print self.dataset
 	#
 
 	def get_default_ontology(self, ontology_type):
-		selected = self.dataset.loc[(self.dataset['type'] == 'O') & (self.dataset['ontology'] == 'GeneOntology')]
+		selected = self.dataset.loc[(self.dataset['type'] == 'O') & (self.dataset['ontology'] == ontology_type)]
 		if selected.shape[0] == 0:
 			return None
 		return selected.iloc[0] # return the first (preferred) ontology
