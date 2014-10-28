@@ -37,10 +37,10 @@ def test_Os():
 		(None, None, 'CellOntology'),
 		(None, None, 'DiseaseOntology'),
 		(None, None, 'GeneOntology'),
-		# ('../data/Os/CellOntology_2014.10.13.obo', 'obo', 'CellOntology'),
-		# ('../data/Os/DiseaseOntology_2014.10.13.obo', 'obo', 'DiseaseOntology'),
-		# ('../data/Os/GeneOntology_2014.10.13.obo-xml.gz', 'obo-xml', 'GeneOntology'),
-		# ('../data/Os/GeneOntology_2014.10.27.obo', 'obo', 'GeneOntology'),
+		('../data/Os/CellOntology_2014.10.13.obo', 'obo', 'CellOntology'),
+		('../data/Os/DiseaseOntology_2014.10.13.obo', 'obo', 'DiseaseOntology'),
+		('../data/Os/GeneOntology_2014.10.13.obo-xml.gz', 'obo-xml', 'GeneOntology'),
+		('../data/Os/GeneOntology_2014.10.27.obo', 'obo', 'GeneOntology'),
 		]
 
 	parameters_set = [
