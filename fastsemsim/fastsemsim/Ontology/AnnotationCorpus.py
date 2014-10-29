@@ -168,6 +168,17 @@ class AnnotationCorpus:
 		if not params == None and FILTER_PARAM in params:
 			self.setCommonfilters(params[FILTER_PARAM])
 
+		# if fname == None:
+		# 	# program_dir = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
+		# 	# print "ontologies.py: " + program_dir
+		# 	builtin_dataset = data.dataset.Dataset()
+		# 	selected_source = builtin_dataset.get_default_ontology(ontology_type)
+		# 	# print selected_source
+		# 	if selected_source is None:
+		# 		return None
+		# 	source = selected_source['file']
+		# 	source_type = selected_source['filetype']
+
 		if ftype in AnnotationCorpusFormat:
 			temp = AnnotationCorpusFormat[ftype](self, params)
 

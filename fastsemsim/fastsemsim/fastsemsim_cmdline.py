@@ -385,16 +385,16 @@ def load_ontology():
 	if params['ignore_part_of']:
 		ontology_ignore['part_of'] = True
 
-	fn,fe = os.path.splitext(params['ontology_file'])
-	if fe == '.gz':
-		ontology_handle = gzip.open(params['ontology_file'], 'rb')
-	else:
-		ontology_handle = open(params['ontology_file'], 'r')
+	# fn,fe = os.path.splitext(params['ontology_file'])
+	# if fe == '.gz':
+		# ontology_handle = gzip.open(params['ontology_file'], 'rb')
+	# else:
+		# ontology_handle = open(params['ontology_file'], 'r')
 	# print ontology_file
 	# print ontology_ignore
 	# print ontology_type
 	# print ontology_file_format
-	ontology = ontologies.load(ontology_handle, source_type = params['ontology_file_format'], ontology_type = params['ontology_type'], parameters={'ignore':ontology_ignore})
+	ontology = ontologies.load(params['ontology_file'], source_type = params['ontology_file_format'], ontology_type = params['ontology_type'], parameters={'ignore':ontology_ignore})
 	ontology_handle.close()
 	return ontology
 #

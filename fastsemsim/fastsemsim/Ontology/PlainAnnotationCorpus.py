@@ -150,7 +150,7 @@ class PlainAnnotationCorpus():
 				if obj_id not in self.ac.obj_set:
 					self.ac.obj_set[obj_id] = {}
 
-				self.temp_term_ar = self.ac.go.name2id(term, alt_check = True)
+				self.temp_term_ar = self.ac.go.id2node(term, alt_check = True)
 				if not type(self.temp_term_ar) == list:
 					self.temp_term_ar = [self.temp_term_ar]
 
