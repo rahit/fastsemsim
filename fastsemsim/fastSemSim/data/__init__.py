@@ -24,5 +24,5 @@ __email__="marco.mina.85@gmail.com"
 
 # __all__ = ["AnnotationCorpus", "Ontology", "PlainAnnotationCorpus", "GAF2AnnotationCorpus", "ontologies"]
 
-# print "fastsemsim/data/__init__.py"
+
 from . import dataset
