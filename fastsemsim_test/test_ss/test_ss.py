@@ -21,8 +21,9 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 from fastsemsim.Ontology import ontologies
 from fastsemsim.Ontology import AnnotationCorpus
 from fastsemsim import data
-from fastsemsim.SemSim import SemSimMeasures
-
+from fastsemsim.SemSim import SemSimMeasures, SemSimUtils
+import random
+import pandas as pd
 import sys
 import os
 import math
@@ -51,7 +52,7 @@ def load_ac(ontology,j,k):
 	return ac
 #
 
-def test_AC():
+def test_SS():
 
 	input_ac_set = [ 
 		(None, None, 'DiseaseOntology', ('human',)),
@@ -66,22 +67,11 @@ def test_AC():
 		]
 
 	basic_ac_parameters = {}
-# gaf-2.0 ac
+	# gaf-2.0 ac
 	basic_ac_parameters['filter'] = {} # filter section is useful to remove undesired annotations
 	basic_ac_parameters['filter']['EC'] = {} # EC filtering: select annotations depending on their EC
 	basic_ac_parameters['filter']['taxonomy'] = {}
-	# basic_ac_parameters['filter']['EC']['EC'] = EC_include # select which EC accept or reject
-	# basic_ac_parameters['filter']['EC']['inclusive'] = True # select which EC accept or reject
-	# basic_ac_parameters['filter']['EC'] = {} # EC filtering: select annotations depending on their EC
-	# basic_ac_parameters['filter']['EC']['EC'] = EC_ignore # select which EC accept or reject
-	# basic_ac_parameters['filter']['EC']['inclusive'] = False # select which EC accept or reject
-	# basic_ac_parameters['filter']['taxonomy']['taxonomy'] = tax_include # set properly this field to load only annotations involving proteins/genes of a specific species
-	# basic_ac_parameters['filter']['taxonomy']['inclusive'] = True # select which EC accept or reject
-	# basic_ac_parameters['filter']['taxonomy'] = {}
-	# basic_ac_parameters['filter']['taxonomy']['taxonomy'] = tax_ignore
-	# basic_ac_parameters['filter']['taxonomy']['inclusive'] = False # select which EC accept or reject
-
-# Plain ac
+	# Plain ac
 	basic_ac_parameters['multiple'] = True # Set to True if there are many associations per line (the object in the first field is associated to all the objects in the other fields within the same line)
 	basic_ac_parameters['term first'] = False # set to True if the first field of each row is a GO term. Set to False if the first field represents a 
 	basic_ac_parameters['separator'] = "\t" # select the separtor used to divide fields
@@ -89,49 +79,68 @@ def test_AC():
 
 	ac_parameters_set = [
 		{},
-		basic_ac_parameters,
+		# basic_ac_parameters,
 		]
 
 	ac_params = {}
 
+	term_ss_measures = SemSimMeasures.term_SemSim_measures.keys()
+	pair_ss_measures =  SemSimMeasures.mix_strategies.keys()
+
 	print "\n#################################"
-	print "\n# Testing annotation corpus parsing... #\n"
+	print "\n# Testing SS measures... #\n"
 	print "#################################\n"
 
 	acs = []
 	for i in input_ac_set:
 		print("\n---------------------------------------------\n")
 		for k1 in ontology_parameters_set:
+			print('-> Loading ontology ', str(i), '...')
 			ontology = load_ontology(i,k1)
-			tempac = []
+			print "Ontology loaded: " + str(ontology.node_number()) + " nodes and " +  str(ontology.edge_number()) + " edges."
 			for j in i[3]:
 				for k in ac_parameters_set:
-					print("Loading ac: " + str(i)+'\nParameters: ' + str(j))
-					tempk = k
-					# tempj = j.copy()
-					tempac.append((i, j, k1, tempk, ontology, load_ac(ontology, j, k)))
-					# print j
-					# print "-> Ontology loaded: " + str(ontology.node_number()) + " nodes and " +  str(ontology.edge_number()) + " edges."
-					print("----------------")
-			acs.append(tempac)
+					print("-> Loading ac: " + str(i)+'\nParameters: ' + str(j))
+					ac = load_ac(ontology, j, k)
+					print "Annotation Corpus loaded: " + str(len(ac.reverse_annotations)) + " terms, " +  str(len(ac.annotations)) + " objects."
+					print('-> Setting up SemSimUtils...')
+					ssutil = SemSimUtils.SemSimUtils(ontology, ac)
+					print('-> Testing term SemSim Measures...')
+					for s in term_ss_measures:
+						print("Initializing: " + str(s) + '...')
+						tss_class = SemSimMeasures.select_term_SemSim(s)
+						ss = tss_class(ontology, ac, ssutil, do_log=False)
+						print(str(s) + " initialized. Testing with 100 random pairs [only the first 5 are shown]...")
+						query = ac.reverse_annotations
+						for root in ontology.roots.keys():
+							offspring = ssutil.offspring[root]
+							query2 = []
+							for qp in offspring:
+								if qp in query:
+									query2.append(qp)
+							limit = 100
+							t1 = random.sample(query2, limit)
+							t2 = random.sample(query2, limit)
+							temp = []
+							for conta in range(0,len(t1)):
+								temp.append((t1[conta], t2[conta], ss.SemSim(t1[conta], t2[conta], root)))
+							temp = pd.DataFrame(temp)
+							print("Ontology root: " + str(root))
+							print(temp.ix[0:5,:])
+							print("----------------")
 
 	print "\n#############################################################"
 	print "\n# Successfully loaded " + str(len(acs)) + " ontologies"
 	print "#############################################################\n"
 
-	for j in acs:
-		print("\n---------------------------------------------\n")
-		for i in j:
-			print str(i)
-			if not i[5] is None:
-				print "-> " + str(len(i[5].reverse_annotations)) + " reverse_annotations, " +  str(len(i[5].annotations)) + " annotations."
-			else:
-				print "-> None!"
-			print("--------------------")
-	#
+
+
+
+	# oss = ObjSemSim.ObjSemSim(ontology, ac, tss_measure, tss_mix, None, do_log = False)
+	# oss = SetSemSim.SetSemSim(ontology, ac, tss_measure, tss_mix, None, do_log = False)
+	# oss = ObjSetSemSim.ObjSetSemSim(ontology, ac, tss_measure, tss_mix, None, do_log = False)
+
 
 if __name__ == "__main__":
-	print SemSimMeasures.term_SemSim_measures.keys()
-	print SemSimMeasures.mix_strategies.keys()
-	test_AC()
+	test_SS()
 #

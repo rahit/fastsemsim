@@ -33,7 +33,7 @@ import sys
 import os
 import math
 
-class ObjSemSim:
+class ObjSemSim(object):
 	# def pick_TSS(self):
 	# 	if not self.TSS in SemSimMeasures:
 	# 		raise "Semantic Similarity Measure not available."

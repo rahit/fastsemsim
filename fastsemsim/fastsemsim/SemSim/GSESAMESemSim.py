@@ -60,16 +60,17 @@ class GSESAMESemSim(TermSemSim) :
 		# print str(tp) + " " + str(t)
 		for j in self.ontology.nodes[tp]:
 			# print self.ontology.edges['nodes'][j]
-			if self.ontology.edges['nodes'][j][1] == t:
-				if self.ontology.edges['type'][j] == Ontology.IS_A:
+			if self.ontology.edges.ix[j,'child'] == t: # can replace with find. Way faster!
+				# print self.ontology.edges.ix[j,'type']
+				if self.ontology.edges.ix[j,'type'] == 'is_a':
 					return self.is_a_score
-				elif self.ontology.edges['type'][j] == Ontology.PART_OF:
+				elif self.ontology.edges.ix[j,'type'] == 'part_of':
 					return self.part_of_score
-				elif self.ontology.edges['type'][j] == Ontology.REGULATES:
+				elif self.ontology.edges.ix[j,'type'] == 'regulates':
 					return self.regulates_score
-				elif self.ontology.edges['type'][j] == Ontology.POS_REG:
+				elif self.ontology.edges.ix[j,'type'] == 'positively_regulates':
 					return self.pos_regulates_score
-				elif self.ontology.edges['type'][j] == Ontology.NEG_REG:
+				elif self.ontology.edges.ix[j,'type'] == 'negatively_regulates':
 					return self.neg_regulates_score
 				else:
 					return self.generic_score

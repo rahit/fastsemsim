@@ -73,7 +73,7 @@ AnnotationCorpusFormat = {	'gaf-2.0':GAF2AnnotationCorpus,
 							'plain':PlainAnnotationCorpus
 							}
 
-class AnnotationCorpus:
+class AnnotationCorpus(object):
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 # variables 

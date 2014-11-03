@@ -53,7 +53,7 @@ import gzip
 
 SIMPLIFY = 'simplify'
 
-class GAF2AnnotationCorpus():
+class GAF2AnnotationCorpus(object):
 
 #------------------------------------------------------
 # Inizialization routines

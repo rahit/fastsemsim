@@ -44,7 +44,7 @@ TODO:
 import math
 import numpy as np
 
-class SemSimUtils:
+class SemSimUtils(object):
 
 # variables
 

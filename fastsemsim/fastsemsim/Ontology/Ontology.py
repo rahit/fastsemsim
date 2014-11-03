@@ -93,7 +93,7 @@ import numpy as np
 	# is_a_tag = "is_a"
 	# relationship_tag = "relationship"
 
-class Ontology:
+class Ontology(object):
 
 	debug = False
 	gen_error = False
