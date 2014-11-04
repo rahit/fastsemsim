@@ -28,6 +28,9 @@ import sys
 import os
 import math
 import gzip
+from fastsemsim.SemSim.SetSemSim import SetSemSim
+from fastsemsim.SemSim.ObjSemSim import ObjSemSim
+from fastsemsim.SemSim.ObjSetSemSim import ObjSetSemSim
 
 def load_ontology(i,j):
 	# print "LOAD ONTOLOGY" + str(i)
@@ -103,43 +106,104 @@ def test_SS():
 					print("-> Loading ac: " + str(i)+'\nParameters: ' + str(j))
 					ac = load_ac(ontology, j, k)
 					print "Annotation Corpus loaded: " + str(len(ac.reverse_annotations)) + " terms, " +  str(len(ac.annotations)) + " objects."
+					
 					print('-> Setting up SemSimUtils...')
 					ssutil = SemSimUtils.SemSimUtils(ontology, ac)
+
+					print("\n---------------------------------\n")
+					print('-> Testing ObjSetSemSim Measures...')
+					for s in term_ss_measures:
+						for mix in pair_ss_measures:
+							print("Initializing: " + str(s) + ' + ' + str(mix) + '...')
+							ss = ObjSetSemSim(ontology, ac, s, mix, ssutil, do_log = False)
+							print(str(s) + ' + ' + str(mix) + " initialized. Testing with 200 random pairs [showing only a selection of 4 pairs]...")
+							query2 = ac.annotations.keys()
+							for root in ontology.roots.keys():
+								print("Ontology root: " + str(root))
+								limit = 10
+								setsize = 5
+								t1 = []
+								for setn in range(0,limit):
+									t1.append([random.sample(query2, setsize), random.sample(query2, setsize)])
+								temp = []
+								for conta in range(0,len(t1)):
+									temp.append((t1[conta][0], t1[conta][1], ss.SemSim(t1[conta][0], t1[conta][1], root)))
+								temp = pd.DataFrame(temp)
+								print(temp.ix[0:4,:])
+								print("----------------")
+
+					print("\n---------------------------------\n")
+					print('-> Testing ObjSemSim Measures...')
+					for s in term_ss_measures:
+						for mix in pair_ss_measures:
+							print("Initializing: " + str(s) + ' + ' + str(mix) + '...')
+							ss = ObjSemSim(ontology, ac, s, mix, ssutil, do_log = False) 
+							print(str(s) + ' + ' + str(mix) + " initialized. Testing with 200 random pairs [showing only a selection of 4 pairs]...")
+							query2 = ac.annotations.keys()
+							for root in ontology.roots.keys():
+								print("Ontology root: " + str(root))
+								limit = 200
+								t1 = random.sample(query2, limit)
+								t2 = random.sample(query2, limit)
+								temp = []
+								for conta in range(0,len(t1)):
+									temp.append((t1[conta], t2[conta], ss.SemSim(t1[conta], t2[conta], root)))
+								temp = pd.DataFrame(temp)
+								print(temp.ix[0:4,:])
+								print("----------------")
+
+					print("\n---------------------------------\n")
+					print('-> Testing TermSet SemSim Measures...')
+					for s in term_ss_measures:
+						for mix in pair_ss_measures:
+							print("Initializing: " + str(s) + ' + ' + str(mix) + '...')
+							ss = SetSemSim(ontology, ac, s, mix, ssutil, do_log = False)
+							print(str(s) + ' + ' + str(mix) + " initialized. Testing with 200 random pairs [showing only a selection of 4 pairs]...")
+							query = ac.reverse_annotations
+							for root in ontology.roots.keys():
+								print("Ontology root: " + str(root))
+								offspring = ssutil.offspring[root]
+								query2 = []
+								for qp in offspring:
+									if qp in query:
+										query2.append(qp)
+								limit = 200
+								setsize = 5
+								t1 = []
+								for setn in range(0,limit):
+									t1.append([random.sample(query2, setsize), random.sample(query2, setsize)])
+								temp = []
+								for conta in range(0,len(t1)):
+									temp.append((t1[conta][0], t1[conta][1], ss.SemSim(t1[conta][0], t1[conta][1], root)))
+								temp = pd.DataFrame(temp)
+								print(temp.ix[0:4,:])
+								print("----------------")
+
+					print("\n---------------------------------\n")
 					print('-> Testing term SemSim Measures...')
 					for s in term_ss_measures:
 						print("Initializing: " + str(s) + '...')
 						tss_class = SemSimMeasures.select_term_SemSim(s)
 						ss = tss_class(ontology, ac, ssutil, do_log=False)
-						print(str(s) + " initialized. Testing with 100 random pairs [only the first 5 are shown]...")
+						print(str(s) + " initialized. Testing with 200 random pairs [showing only a selection of 4 pairs]...")
 						query = ac.reverse_annotations
 						for root in ontology.roots.keys():
+							print("Ontology root: " + str(root))
 							offspring = ssutil.offspring[root]
 							query2 = []
 							for qp in offspring:
 								if qp in query:
 									query2.append(qp)
-							limit = 100
+							limit = 200
 							t1 = random.sample(query2, limit)
 							t2 = random.sample(query2, limit)
 							temp = []
 							for conta in range(0,len(t1)):
 								temp.append((t1[conta], t2[conta], ss.SemSim(t1[conta], t2[conta], root)))
 							temp = pd.DataFrame(temp)
-							print("Ontology root: " + str(root))
-							print(temp.ix[0:5,:])
+							print(temp.ix[0:4,:])
 							print("----------------")
-
-	print "\n#############################################################"
-	print "\n# Successfully loaded " + str(len(acs)) + " ontologies"
-	print "#############################################################\n"
-
-
-
-
-	# oss = ObjSemSim.ObjSemSim(ontology, ac, tss_measure, tss_mix, None, do_log = False)
-	# oss = SetSemSim.SetSemSim(ontology, ac, tss_measure, tss_mix, None, do_log = False)
-	# oss = ObjSetSemSim.ObjSetSemSim(ontology, ac, tss_measure, tss_mix, None, do_log = False)
-
+	#
 
 if __name__ == "__main__":
 	test_SS()
