@@ -30,7 +30,7 @@ import sys
 import os
 import math
 
-class ResnikSemSim(TermSemSim) :
+class ResnikSemSim(TermSemSim):
 	SS_type = TermSemSim.P_TSS
 	IC_based = True
 
@@ -42,3 +42,5 @@ class ResnikSemSim(TermSemSim) :
 	def _SemSim(self, term1, term2):
 		termid = self.util.det_MICA(term1, term2)
 		return self.util.IC[termid]
+	#
+#

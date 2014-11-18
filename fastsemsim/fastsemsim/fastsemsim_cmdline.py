@@ -28,7 +28,8 @@ from SemSim import ObjSemSim
 from SemSim import ObjSetSemSim
 from SemSim import SetSemSim
 from SemSim import SemSimUtils
-from data import dataset
+# from data import dataset
+from fastsemsim import data
 
 import sys
 import os
@@ -56,6 +57,7 @@ params_help['ignore_regulates'] = 'Whether consider or ignore regulates relation
 
 params_help['ac'] = 'Annotation Corpus. Associations between objects and terms in the ontology.'
 params_help['ac_file'] = 'File containing the Annotation Corpus (AC). g/bzip compressed files are supported, and the file extension must be .tar.bz2 or tar.gz.'
+params_help['ac_species'] = 'Load an ac embedded in fastSemSim. Specify the species to be loaded. E.g. human'
 params_help['ac_type'] = 'Format of AC file. Currently supported formats are "plain" and "gaf2". [default: gaf2]'
 params_help['ac_sep'] = 'Separator used in plain AC files. Use "s" or " " (with quotes) for space, and "t" or \\t for tab. [Default: tab] (plain AC files only)'
 params_help['ac_multiple'] = 'If specified, each line of AC file can contain more than a Term or Entry. (plain AC files only)'
@@ -136,6 +138,7 @@ def parse_args():
 	param_ontology.add_argument('--ignore_regulates', action='store', nargs='?', default=False, type=prbool, help=params_help['ignore_regulates'], metavar='ignore_regulates', dest='ignore_regulates')
 
 	param_ac.add_argument('-a','--ac', '--ac_file', action='store', nargs=1, default=None, help=params_help['ac_file'], metavar='ac_file', dest='ac_file')
+	param_ac.add_argument('--ac_species', action='store', nargs=1, default=None, help=params_help['ac_species'], metavar='ac_species', dest='ac_species')
 	param_ac.add_argument('--ac_type', action='store', nargs=1, default=['gaf2'], help=params_help['ac_type'], metavar='ac_type', dest='ac_type', choices=['gaf2','plain'])
 	param_ac.add_argument('--ac_sep', action='store', nargs=1, default=['\t'], help=params_help['ac_sep'], metavar='ac_sep', dest='ac_sep')
 	param_ac.add_argument('--ac_termfirst', action='store_const', const=True, default=False, help=params_help['ac_termfirst'], metavar='ac_termfirst', dest='ac_termfirst')
@@ -239,6 +242,7 @@ def parse_parameters(args):
 	tax_include = args.include_tax
 	tax_ignore = args.ignore_tax
 	ac_file = args.ac_file
+	ac_species = args.ac_species
 	ac_term_first = args.ac_termfirst
 	ac_separator = args.ac_sep
 	ac_type = args.ac_type
@@ -280,6 +284,8 @@ def parse_parameters(args):
 
 	if not ac_file == None:
 		ac_file = ac_file[0]
+	if not ac_species == None:
+		ac_species = ac_species[0]
 	if not ac_separator == None:
 		ac_separator = ac_separator[0]
 	if not ac_type == None:
@@ -321,6 +327,7 @@ def parse_parameters(args):
 	params['EC_ignore'] = EC_ignore
 	params['ac_multiple'] = ac_multiple
 	params['ac_type'] = ac_type
+	params['ac_species'] = ac_species
 	params['ac_separator'] = ac_separator
 	params['ac_term_first'] = ac_term_first
 	params['ac_file'] = ac_file
@@ -372,35 +379,29 @@ def load_ontology():
 	# global ontology_file, ontology_type, ontology_file_format, ignore_is_a, ignore_part_of, ignore_has_part, ignore_regulates
 
 	ontology_ignore = {}
-	ontology_ignore['has_part'] = True
-	ontology_ignore['is_a'] = False
-	ontology_ignore['regulates'] = False
-	ontology_ignore['part_of'] = False
-	if params['ignore_regulates']:
-		ontology_ignore['regulates'] = True
-	if not params['ignore_has_part']:
-		ontology_ignore['has_part'] = False
-	if params['ignore_is_a']:
-		ontology_ignore['is_a'] = True
-	if params['ignore_part_of']:
-		ontology_ignore['part_of'] = True
+	# ontology_ignore['has_part'] = True
+	# ontology_ignore['is_a'] = False
+	# ontology_ignore['regulates'] = False
+	# ontology_ignore['part_of'] = False
+	# if params['ignore_regulates']:
+	# 	ontology_ignore['regulates'] = True
+	# if not params['ignore_has_part']:
+	# 	ontology_ignore['has_part'] = False
+	# if params['ignore_is_a']:
+	# 	ontology_ignore['is_a'] = True
+	# if params['ignore_part_of']:
+	# 	ontology_ignore['part_of'] = True
 
-	# fn,fe = os.path.splitext(params['ontology_file'])
-	# if fe == '.gz':
-		# ontology_handle = gzip.open(params['ontology_file'], 'rb')
-	# else:
-		# ontology_handle = open(params['ontology_file'], 'r')
 	# print ontology_file
 	# print ontology_ignore
 	# print ontology_type
 	# print ontology_file_format
-	ontology = ontologies.load(params['ontology_file'], source_type = params['ontology_file_format'], ontology_type = params['ontology_type'], parameters={'ignore':ontology_ignore})
-	ontology_handle.close()
+	# print params['ontology_file']
+	# print params['ontology_file_format']
+	# print params['ontology_type']
+	ontology = ontologies.load(params['ontology_file'], source_type = params['ontology_file_format'], ontology_type = params['ontology_type'], parameters=ontology_ignore)
 	return ontology
 #
-
-
-
 
 
 
@@ -418,6 +419,18 @@ def load_ac():
 
 	ac = AnnotationCorpus.AnnotationCorpus(ontology)
 	
+	if not params['ac_species'] == None:
+		builtin_dataset = data.dataset.Dataset()
+		selected_source = builtin_dataset.get_default_annotation_corpus(ontology.name, params['ac_species'])
+		if selected_source is None:
+			return None
+
+		params['ac_file'] = selected_source['file']
+		# source = selected_source['file']
+		params['ac_type'] = selected_source['filetype']
+		# source_type = selected_source['filetype']
+		# ac.parse(source, source_type, k)
+
 	is_plain = False
 	if params['ac_type'] == 'plain':
 		is_plain = True
@@ -863,10 +876,10 @@ def ss_pairwise_enhanced(SS, pairs = None, ontology = 'BP', out = None, cut_thre
 
 ####----####----####----####----####----####----####----####----####----####----####----####----####----####----####----####----
 
-default_ontologies = {}
-default_ontologies['CellOntology'] = ('CellOntology_2013.09.10.obo', 'obo')
-default_ontologies['DiseaseOntology'] = ('DiseaseOntology_Human_2013.09.09.obo', 'obo')
-default_ontologies['GeneOntology'] = ('GeneOntology_full_2013.09.10.obo', 'obo')
+# default_ontologies = {}
+# default_ontologies['CellOntology'] = ('CellOntology_2013.09.10.obo', 'obo')
+# default_ontologies['DiseaseOntology'] = ('DiseaseOntology_Human_2013.09.09.obo', 'obo')
+# default_ontologies['GeneOntology'] = ('GeneOntology_full_2013.09.10.obo', 'obo')
 # default_ontologies['Ontology'] = ('GeneOntology_full_2013.09.10.obo', 'obo')
 # default_ontologies['FFOntology'] = # To be added in future
 
@@ -888,18 +901,18 @@ def check_parameters():
 	
 	if params['ontology_type'] == None:
 		params['ontology_type'] = "Ontology"
-	if params['ontology_file_format'] == None:
-		params['ontology_file_format'] = 'obo'
+	# if params['ontology_file_format'] == None:
+		# params['ontology_file_format'] = 'obo'
 
-	if params['ontology_file'] == None:
-		if params['ontology_type'] == "Ontology":
-			params['ontology_type'] = "GeneOntology"
-		if params['ontology_type'] in default_ontologies:
-			params['ontology_file'] = program_dir + "/data/" + default_ontologies[params['ontology_type']][0]
-			params['ontology_file_format'] = default_ontologies[params['ontology_type']][1]
-		else:
-			print "An ontology must be selected. See the help notes (ontology_file parameter)"
-			return False			
+	# if params['ontology_file'] == None:
+		# if params['ontology_type'] == "Ontology":
+			# params['ontology_type'] = "GeneOntology"
+		# if params['ontology_type'] in default_ontologies:
+		# 	params['ontology_file'] = program_dir + "/data/" + default_ontologies[params['ontology_type']][0]
+		# 	params['ontology_file_format'] = default_ontologies[params['ontology_type']][1]
+		# else:
+			# print "An ontology must be selected. See the help notes (ontology_file parameter)"
+			# return False			
 
 	if params['query_type'] == 'SS':		
 		if params['use_enhanced']:
@@ -907,16 +920,17 @@ def check_parameters():
 			params['tss_mix'] = 'max'
 
 		if params['query_ss_type'] == 'obj' or params['query_ss_type'] == 'objset':
-			if params['ac_file'] == None:
+			if params['ac_file'] == None and params['ac_species'] == None:
 				print "An annotation corpus is required in " + str(params['query_ss_type']) + "mode. See the help notes (ac_file parameter)"
 				return False
-			if params['ontology_file'] == None:
-				print "An ontology_type must be selected. See the help notes (ontology_file parameter)"
-				return False
+			# if params['ontology_file'] == None:
+				# print "An ontology_type must be selected. See the help notes (ontology_file parameter)"
+				# return False
 		elif params['query_ss_type'] == 'term' or  params['query_ss_type'] == 'termset':
-			if params['ontology_file'] == None:
-				print "An ontology_type must be selected. See the help notes (ontology_file parameter)"
-				return False
+			# if params['ontology_file'] == None:
+				# print "An ontology_type must be selected. See the help notes (ontology_file parameter)"
+				# return False
+			pass
 		else:
 			print "Unrecognized query_type " + params['query_ss_type']
 			return False
@@ -1060,7 +1074,7 @@ def start():
 # ----- Load annotation corpus
 
 	ac = None
-	if not params['ac_file'] == None:
+	if not params['ac_file'] == None or not params['ac_species'] == None:
 		if params['verbose'] >= 2:
 			print "-> Loading annotation corpus from " + str(params['ac_file']) + "..."
 		ac = load_ac()

@@ -326,4 +326,15 @@ class SemSimUtils(object):
 		for i in gene2anc:
 			ca[i] = None
 		return ca
+	#
+
+	def _has_IC(self, term):
+		if self.IC == None:
+			return False
+		if not term in self.IC:
+			return False
+		if self.IC[term] == None:
+			return False
+		return True
+	#
 #

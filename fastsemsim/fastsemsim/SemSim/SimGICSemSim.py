@@ -53,3 +53,5 @@ class SimGICSemSim(TermSemSim) :
 		if uniIC == 0 and intIC == 0:
 			return 0
 		return intIC/uniIC
+	#
+#

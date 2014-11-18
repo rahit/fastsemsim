@@ -113,16 +113,16 @@ class Ontology(object):
 			nid = None
 			if codes == None:
 				return nid
-			if type(codes) is str:
+			if isinstance(codes,str):
 				# nid = go_name2id(codes)
 				nid = self._id2node(codes,strict=True)
 				nid = self.id2node(nid, alt_check)
-			elif type(codes) is int:
+			elif isinstance(codes,int):
 				nid = codes
 				if alt_check:
 					if nid in self.alt_id:
 						nid = self.alt_id[nid]
-			elif type(codes) is dict or type(codes) is list:
+			elif isinstance(codes,(dict,list,tuple)):
 				nid = []
 				for i in codes:
 					if type(i) is str:
