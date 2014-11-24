@@ -35,7 +35,7 @@ description = ''.join(lines[:3])
 long_description = ''.join(lines[:4])
 
 ## Get package Version
-vh = open('version','r')
+vh = open('fastsemsim/version','r')
 lines = vh.readlines()
 version = lines[0].rstrip('\n').rstrip('\r')
 vh.close()
@@ -43,7 +43,7 @@ vh.close()
 setup(
     name='fastsemsim',
     version=version,
-    url='https://sites.google.com/site/fastsemsim/home',
+    url='https://sites.google.com/site/fastsemsim/',
     description=description,
     long_description=long_description,
     keywords='semantic similarity, Ontology, Gene Ontology',

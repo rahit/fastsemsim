@@ -2,7 +2,7 @@ include INSTALL
 include README
 include LICENSE
 include CHANGELOG
-include version
+include fastsemsim/version
 
 recursive-include fastsemsim/docs *
 recursive-include fastsemsim/data *
