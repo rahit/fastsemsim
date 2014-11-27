@@ -68,7 +68,6 @@ FILTER_PARAM = 'filter'
 RESET_PARAM = 'reset'
 
 AnnotationCorpusFormat = {	'gaf-2.0':GAF2AnnotationCorpus,
-							'gaf-1.0':None,
 							'GOA':GAF2AnnotationCorpus,
 							'plain':PlainAnnotationCorpus
 							}

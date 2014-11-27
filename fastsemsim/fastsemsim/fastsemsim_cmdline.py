@@ -23,13 +23,14 @@ __author__ = "Marco Mina"
 
 from Ontology import AnnotationCorpus
 from Ontology import ontologies
-from SemSim import SemSimMeasures
+import SemSim
 from SemSim import ObjSemSim
 from SemSim import ObjSetSemSim
 from SemSim import SetSemSim
 from SemSim import SemSimUtils
 # from data import dataset
 from fastsemsim import data
+import fastsemsim
 
 import sys
 import os
@@ -47,9 +48,7 @@ def start():
 	'''
 	main routine
 	'''
-	global params
-	global ontology, ac, query, ss
-	global program_dir
+	global params, ontology, ac, query, ss, ssutil
 	
 	params = dict()
 	params['core'] = dict()
@@ -68,197 +67,101 @@ def start():
 	if params['core']['verbose'] >= 2:
 		print "fastSemSim started"
 
-	if params['core']['verbose'] >= 3:
-		print "- Raw parameters -"
-		print str(params)
-
-	if not check_parameters():
+	check_ack = check_parameters()
+	if not check_ack:
+		print "Invalid parameters"
 		if params['core']['verbose'] >= 3:
-			print "Invalid parameters"
+			print_parameters()
 		sys.exit()
+	else:
+		if params['core']['verbose'] >= 1:
+			print_parameters()
 
-	if params['core']['verbose'] >= 3:
-		print "Valid parameters"
-
-	if params['core']['verbose'] >= 3:
-		print "- Valid input parameters -"
-		print str(params)
-
-	if params['core']['verbose'] >= 1:
-		print("-----------------------------------------------")
-		print("FastSemSim " + str(fastsemsim.__version__) + " - Copyright 2011-2013 Marco Mina")
-		print("-----------------------------------------------")
-		print("Ontology: \t" + str(params['ontology']['ontology_file']))
-		print("Ontology type: \t" + str(params['ontology']['ontology_type']))
-		print("Ontology file format: \t" + str(params['ontology']['ontology_file_format']))
-
-		print("Annotation Corpus: \t" + str(params['ac']['ac_file']))
-		print("Annotation Corpus file type: \t" + str(params['ac']['ac_type']))
-		if params['ac']['ac_type'] == 'gaf2':
-			print("Consider EC: \t" + str(params['ac']['EC_include']))
-			print("Ignore EC: \t" + str(params['ac']['EC_ignore']))
-			print("Consider Taxonomy: \t" + str(params['ac']['tax_include']))
-			print("Ignore Taxonomy: \t" + str(params['ac']['tax_ignore']))
-		elif params['ac']['ac_type'] == 'plain':
-			if params['ac']['ac_term_first']:
-				print("AC file row format: \tontology term -> object")
-			else:
-				print("AC file row format: \tobject -> ontology term")
-			print("Multiple associations per line: \t" + str(params['ac']['ac_multiple']))
-
-		print("Query type: \t" + str(params['query']['query_type']))
-		if params['query']['query_type'] == 'SS':
-			print("SS query type: \t" + str(params['query']['query_ss_type']))
-			print("SS query mode: \t" + str(params['query']['query_mode']))
-			print("SS query input: \t" + str(params['query']['query_input']))
-		if params['query']['query_input'] == 'file':
-			print("SS query file: \t" + str(params['query']['query_file']))
-			print("SS query file separator: \t\'" + str(params['query']['query_file_sep']) + "\'")
-
-		if not params['output']['out_file'] == None:
-			print("Output file: \t" + str(params['output']['out_file']))
-		else:
-			print("Output: \tconsole")
-		print("Cut-off threshold: \t" + str(params['output']['cut_thres']))
-		print("Remove NaN: \t" + str(params['output']['cut_nan']))
-
-		if params['ss']['query_type'] == 'SS':
-			print("SS measure: \t" + str(params['ss']['tss_measure']) + ". Mix strategy: \t" + str(params['ss']['tss_mix']))
-			print("Ontology category: \t" + str(params['ss']['ss_root']))
-			print("Use enhanced Resnik: \t" + str(params['ss']['use_enhanced']))
-
-		print("Verbosity: \t" + str(params['core']['verbose']))
-		if not params['save_params'] == None:
-			print("Save params to file: \t" + str(params['core']['save_params']))
-		if not params['load_params'] == None:
-			print("Load params from file: \t" + str(params['core']['load_params']))
-		if not params['inject_IC'] == None:
-			print("Injecting IC from file: \t" + str(params['core']['inject_IC']))
-
-		print("-----------------------------------------------")
-
-
-# ----- Load ontology
-	if params['verbose'] >= 2:
-		print "-> Loading ontology from " + str(params['ontology_file']) + "..."
+	# ----- Load ontology and (optionally) ac
 	ontology = load_ontology()
-	if params['verbose'] >= 2:
-		print "-> Ontology correctly loaded: " + str(ontology.node_number()) + " nodes and " +  str(ontology.edge_number()) + " edges."
-		print "-> Ontology roots: " + str(ontology.roots.keys())
-
-
-# ----- Load annotation corpus
-
-	ac = None
-	if not params['ac_file'] == None or not params['ac_species'] == None:
-		if params['verbose'] >= 2:
-			print "-> Loading annotation corpus from " + str(params['ac_file']) + "..."
-		ac = load_ac()
-		if params['verbose'] >= 2:
-			print "-> Annotation Corpus correctly loaded: " + str(len(ac.annotations)) + " objects and " +  str(len(ac.reverse_annotations)) + " terms."
-
-# ----- SS mode
-
-	if params['query_type'] == 'SS':
-		# ----- Generate SS
-		if params['verbose'] >= 2:
-			print "-> Initializing semantic similarity..."
+	ac = load_ac()
+	# ----- SS mode
+	if params['core']['task'] == 'SS':
+		ssutil = SemSimUtils(ontology, ac)
 		ss = init_ss()
-		if not params['ss_root'] == None:
-			params['ss_root'] = ss.ontology.name2id(params['ss_root'], alt_check=False)
-			if params['ss_root'] == None:
-				print_err("The ontology root required does not exists.")
-				sys.exit()
 
-		if params['verbose'] >= 2:
-			print "-> Semantic similarity initialized."
-
-		if params['query_input'] == 'file':
-			if params['verbose'] >= 2:
+		if params['query']['query_input'] == 'file':
+			if params['core']['verbose'] >= 2:
 				print "-> Loading query from file..."
 			query = load_query_from_file()
-			if params['verbose'] >= 2:
+			if params['core']['verbose'] >= 2:
 				print "-> Query loaded from file."
-
-		elif params['query_ss_type'] == 'obj':
-			if params['query_input'] == 'ac':
-				if params['verbose'] >= 2:
+		#
+		elif params['query']['query_ss_type'] == 'obj':
+			if params['query']['query_input'] == 'ac':
+				if params['core']['verbose'] >= 2:
 					print "-> Loading query from annotation corpus..."
 				query = ac.annotations.keys()
-				if params['verbose'] >= 2:
+				if params['core']['verbose'] >= 2:
 					print "-> Query loaded from annotation corpus"
 		#
-
-		elif params['query_ss_type'] == 'term':
-			if params['query_input'] == 'ac':
-				if params['verbose'] >= 2:
+		elif params['query']['query_ss_type'] == 'term':
+			if params['query']['query_input'] == 'ac':
+				if params['core']['verbose'] >= 2:
 					print "-> Loading query from annotation corpus..."
 				query = ac.reverse_annotations.keys()
 				# params['ss_root']
-				if params['verbose'] >= 2:
+				if params['core']['verbose'] >= 2:
 					print "-> Query loaded from annotation corpus"
-			elif params['query_input'] == 'ontology':
-				if params['verbose'] >= 2:
+			elif params['query']['query_input'] == 'ontology':
+				if params['core']['verbose'] >= 2:
 					print "-> Loading query from ontology..."
 				query = ontology.nodes.keys()
 				# params['ss_root']
-				if params['verbose'] >= 2:
+				if params['core']['verbose'] >= 2:
 					print "-> Query loaded from ontology"
 			else:
 				pass
-			# print "Take care of different ontology roots!"
-
-		# elif params['query_input'] == 'terminal':
-			# pass
 		#
-
 		else:
 			raise Exception
 
-		if params['verbose'] >= 2:
+		if params['core']['verbose'] >= 2:
 			print "Query length: " + str(len(query))
-		if params['verbose'] >= 3:
+		if params['core']['verbose'] >= 3:
 			print str(query)
 
 		# ----- Inject IC
 
-		if not params['inject_IC'] == None:
-			if params['verbose'] >= 2:
-				print "-> Injecting IC from file " + str(params['inject_IC']) + "..."
-			ext_IC = load_IC_from_file(params['inject_IC'])
+		if not params['core']['inject_IC'] == None:
+			if params['core']['verbose'] >= 2:
+				print "-> Injecting IC from file " + str(params['core']['inject_IC']) + "..."
+			ext_IC = load_IC_from_file(params['core']['inject_IC'])
 			ss.util.IC = ext_IC
-			if params['verbose'] >= 2:
+			if params['core']['verbose'] >= 2:
 				print "IC injected."
 
 		# ----- Process query
 
-		if params['verbose'] >= 2:
+		if params['core']['verbose'] >= 2:
 			print '-> Evaluating Semantic Similarity...'
 
 		h = None
-		if not params['out_file'] == None:
-			if params['verbose'] >= 2:
-				print 'Saving SS in file ' + str(params['out_file'])
-			h = open(params['out_file'], 'w')
+		if not params['output']['out_file'] == None:
+			if params['core']['verbose'] >= 2:
+				print 'Saving SS in file ' + str(params['output']['out_file'])
+			h = open(params['output']['out_file'], 'w')
 			
-		if params['use_enhanced']:
-			raise Exception
+		# if params['ss']['use_enhanced']:
+			# raise Exception
 			# ss_pairwise_enhanced(SS, query, ontology, h, cut_thres, cut_nan)
-		elif params['query_mode'] == 'pairs':
+		elif params['query']['query_mode'] == 'pairs':
 			ss_pairs(h)
-		elif params['query_mode'] == 'list':
+		elif params['query']['query_mode'] == 'list':
 			ss_pairwise(h)
 		else:
 			raise Exception
 		if not h == None:
 			h.close()
-	#
+	# ----- Stats mode
+	elif params['core']['task'] == 'stats':
 
-# ----- Stats mode
-
-	elif params['query_type'] == 'stats':
-
-		if params['verbose'] >= 2:
+		if params['core']['verbose'] >= 2:
 			print "-> Extracting statistics..."
 
 		util = SemSimUtils.SemSimUtils(ontology, ac)
@@ -267,22 +170,22 @@ def start():
 		# ----- Inject IC
 
 		if not params['inject_IC'] == None:
-			if params['verbose'] >= 2:
+			if params['core']['verbose'] >= 2:
 				print "-> Injecting IC from file " + str(params['inject_IC']) + "..."
 			ext_IC = load_IC_from_file(params['inject_IC'])
 			util.IC = ext_IC
-			if params['verbose'] >= 2:
+			if params['core']['verbose'] >= 2:
 				print "IC injected."
 
 		h = None
 		if not params['out_file'] == None:
-			if params['verbose'] >= 2:
+			if params['core']['verbose'] >= 2:
 				print "-> Writing IC to file " + str(params['out_file']) + "..."
 			h = open(params['out_file'], 'w')
 		print_IC(util.IC, h, params['cut_thres'], params['cut_nan'])
 		if not h == None:
 			h.close()
-		if params['verbose'] >= 2:
+		if params['core']['verbose'] >= 2:
 			print "-> IC extracted."
 	#
 
@@ -290,7 +193,7 @@ def start():
 		raise Exception
 	#
 
-	if params['verbose'] >= 2:
+	if params['core']['verbose'] >= 2:
 		print '-> Process completed. Quitting.'
 	sys.exit()
 #
@@ -322,6 +225,7 @@ params_help['ignore_regulates'] = 'Whether consider or ignore regulates relation
 params_help['ontology_ignore'] = 'Instruct fastSemSim to ignore the following ontological relationships [default:None]'
 
 params_help['ac'] = 'Annotation Corpus. Associations between objects and terms in the ontology.'
+params_help['ac_name'] = 'Annotation Corpus name. The same of ac_file. Will be modified in the future.'
 params_help['ac_file'] = 'File containing the Annotation Corpus (AC). g/bzip compressed files are supported, and the file extension must be .tar.bz2 or tar.gz.'
 params_help['ac_species'] = 'Load an ac embedded in fastSemSim. Specify the species to be loaded. E.g. human'
 params_help['ac_type'] = 'Format of AC file. Currently supported formats are "plain" and "gaf2". [default: gaf2]'
@@ -334,7 +238,6 @@ params_help['include_EC'] = 'Defines the Evidence Codes (EC) that will be accept
 params_help['ignore_EC'] = 'Specifies which types of annotation will be ignored. (i.e.: --ignore_EC IEA means that IEA annotations will be ignored). This parameter is ignored if --include_EC is specified. (gaf2 AC files only)'
 
 params_help['query'] = 'Query. Parameters and data defining the task that fastSemSim should perform.'
-params_help['query_type'] = 'Instruct fastSemSim on the task to accomplish. Current supported tasks are: \'SS\', evaluation of Semantic Similarity (SS), and \'stats\', that is extraction of statistics. [default: \'SS\']'
 params_help['query_ss_type'] = 'Current supported query types for SS are: evaluation of Semantic Similarity (SS) between pairs of ontology terms (\'term\'), sets of ontology terms (\'termset\'), pairs of objects annotated with ontology terms (\'obj\'), and sets of objects annotated with ontology terms (\'objset\'). [default: \'term\']'
 params_help['query_mode'] = 'Whether input query is supplied as pairs of entries or a list of entries. \'pair\': input query should be considered as a set of pairs. \'list\': consier input as a list of entries. In the former case fastSemSim evaluates semantic similarity scores of each pair; in the latter, instead, each entry is compared to each other. [default: \'list\']'
 params_help['query_input'] = 'Query input mode. Can be \'ontology\', \'ac\', or \'file\'. [default: \'ac\']'
@@ -359,6 +262,7 @@ params_help['IC_table_form_file'] = 'Load Information Content values of GO Terms
 params_help['load_params'] = 'Load parameters from the specified file. Additional  parameters specified in the command line overwrite those loaded from the file.'
 params_help['save_params'] = 'Save parameters to the specified file.'
 params_help['verbose'] = 'Verbosity level. Repeat multiple time to increase verbosity level (i.e. -vvv)'
+params_help['task'] = 'Instruct fastSemSim on the task to accomplish. Current supported tasks are: \'SS\', evaluation of Semantic Similarity (SS), and \'stats\', that is extraction of statistics. [default: \'SS\']'
 
 
 
@@ -397,36 +301,38 @@ def build_cmdline_args_parser():
 	param_core.add_argument('--verbose', '-v', action='count', default=0, help=params_help['verbose'], dest='verbose')
 	param_core.add_argument('--save_params', default=None, help=params_help['save_params'], metavar='save_params', dest='save_params')
 	param_core.add_argument('--load_params', default=None, help=params_help['load_params'], metavar='load_params', dest='load_params')
+	param_core.add_argument('--task', action='store', default=None, choices=['SS', 'stats'], help=params_help['task'], metavar='task', dest='task')
 
-	param_ontology.add_argument('--ontology', '--ontology_file', '-o', action='store', default=None, help=params_help['ontology_file'], metavar='ontology_file', dest='ontology_file')
-	param_ontology.add_argument('--ontology_file_format','--o_file_format', action='store', default=None, help=params_help['ontology_file_format'], metavar='ontology_file_format', dest='ontology_file_format')
-	param_ontology.add_argument('--ontology_type', '--o_type', action='store', default='GeneOntology', help=params_help['ontology_type'], metavar='ontology_type', dest='ontology_type')
-	param_ontology.add_argument('--ontology_ignore', action='append', default=None, help=params_help['ontology_ignore'], metavar='ontology_ignore', dest='ontology_ignore')
+	param_ontology.add_argument('--ontology_file', action='store', default=None, help=params_help['ontology_file'], metavar='ontology_file', dest='ontology_file')
+	param_ontology.add_argument('--ontology_file_format','--o_file_format', action='store', default=None, choices=ontologies.ontology_source_types, help=params_help['ontology_file_format'], metavar='ontology_file_format', dest='ontology_file_format')
+	param_ontology.add_argument('--ontology', '--ontology_type', '-o', action='store', default=None, choices=ontologies.ontologies.keys(), help=params_help['ontology_type'], metavar='ontology_type', dest='ontology_type')
+	param_ontology.add_argument('--ontology_ignore', action='append', default=[], help=params_help['ontology_ignore'], metavar='ontology_ignore', dest='ontology_ignore')
 	param_ontology.add_argument('--ignore_is_a', action='append_const', const='is_a', help=params_help['ignore_is_a'], metavar='ontology_ignore', dest='ontology_ignore')
 	param_ontology.add_argument('--ignore_part_of', action='append_const', const='part_of', help=params_help['ignore_part_of'], metavar='ontology_ignore', dest='ontology_ignore')
 	param_ontology.add_argument('--ignore_has_part', action='append_const', const='has_part', help=params_help['ignore_has_part'], metavar='ontology_ignore', dest='ontology_ignore')
 	param_ontology.add_argument('--ignore_regulates', action='append_const', const='regulates', help=params_help['ignore_regulates'], metavar='ontology_ignore', dest='ontology_ignore')
 
-	param_ac.add_argument('-a','--ac', '--ac_file', action='store', default=None, help=params_help['ac_file'], metavar='ac_file', dest='ac_file')
-	param_ac.add_argument('--ac_type', action='store', default='gaf2', help=params_help['ac_type'], metavar='ac_type', dest='ac_type', choices=['gaf2','plain'])
+	param_ac.add_argument('-a','--ac', '--ac_name', action='store', default=None, help=params_help['ac_name'], metavar='ac', dest='ac')
 	param_ac.add_argument('--ac_species', action='store', default=None, help=params_help['ac_species'], metavar='ac_species', dest='ac_species')
-	param_ac.add_argument('--ac_sep', action='store', default='\t', help=params_help['ac_sep'], metavar='ac_sep', dest='ac_sep')
+	param_ac.add_argument('--ac_file', action='store', default=None, help=params_help['ac_file'], metavar='ac_file', dest='ac_file')
+	param_ac.add_argument('--ac_type', action='store', default=None, help=params_help['ac_type'], metavar='ac_type', dest='ac_type', choices=AnnotationCorpus.AnnotationCorpusFormat.keys())
+	param_ac.add_argument('--ac_sep', action='store', default=None, help=params_help['ac_sep'], metavar='ac_sep', dest='ac_sep')
 	param_ac.add_argument('--ac_termfirst', action='store_const', const=True, default=False, help=params_help['ac_termfirst'], metavar='ac_termfirst', dest='ac_termfirst')
 	param_ac.add_argument('--ac_multiple', action='store_const', const=True, default=False, help=params_help['ac_multiple'], metavar='ac_multiple', dest='ac_multiple')
-	param_ac.add_argument('--include_tax', action='append', nargs='+', default=None, type=int, help=params_help['include_tax'], metavar='tax', dest='include_tax')
-	param_ac.add_argument('--ignore_tax', action='append', nargs='+', default=None, type=int, help=params_help['ignore_tax'], metavar='tax', dest='ignore_tax')
-	param_ac.add_argument('--include_EC', action='append', nargs='+', default=None, help=params_help['include_EC'], metavar='Evidence Code', dest='include_EC')
-	param_ac.add_argument('--ignore_EC', action='append', nargs='+', default=None, help=params_help['ignore_EC'], metavar='Evidence Code', dest='ignore_EC')
+	param_ac.add_argument('--include_tax', action='append', default=[], type=int, help=params_help['include_tax'], metavar='tax', dest='include_tax')
+	param_ac.add_argument('--ignore_tax', action='append', default=[], type=int, help=params_help['ignore_tax'], metavar='tax', dest='ignore_tax')
+	param_ac.add_argument('--include_EC', action='append', default=[], help=params_help['include_EC'], metavar='Evidence Code', dest='include_EC')
+	param_ac.add_argument('--ignore_EC', action='append', default=[], help=params_help['ignore_EC'], metavar='Evidence Code', dest='ignore_EC')
 
-	param_query.add_argument('--query_type', action='store', default='SS', choices=['SS', 'stats'], help=params_help['query_type'], metavar='query_type', dest='query_type')
-	param_query.add_argument('--query_ss_type', action='store', default='obj', choices=['obj', 'term', 'termset', 'objset'], help=params_help['query_ss_type'], metavar='query_ss_type', dest='query_ss_type')
-	param_query.add_argument('--query_mode', action='store', default='list', choices=['list', 'pairs'], help=params_help['query_mode'], metavar='query_mode', dest='query_mode')
-	param_query.add_argument('--query_input', action='store', default='ac', choices=['ac', 'ontology', 'file', 'terminal'], help=params_help['query_input'], metavar='query_input', dest='query_input')
+	# param_query.add_argument('--query_type', action='store', default='SS', choices=['SS', 'stats'], help=params_help['query_type'], metavar='query_type', dest='query_type')
+	param_query.add_argument('--query_ss_type', action='store', default=None, choices=['obj', 'term', 'termset', 'objset'], help=params_help['query_ss_type'], metavar='query_ss_type', dest='query_ss_type')
+	param_query.add_argument('--query_mode', action='store', default=None, choices=['list', 'pairs'], help=params_help['query_mode'], metavar='query_mode', dest='query_mode')
+	param_query.add_argument('--query_input', action='store', default=None, choices=['ac', 'ontology', 'file'], help=params_help['query_input'], metavar='query_input', dest='query_input')
 	param_query.add_argument('--query_file', action='store', default=None, help=params_help['query_file'], metavar='query_file', dest='query_file')
 	param_query.add_argument('--query_file_sep', action='store', default=None, help=params_help['query_file_sep'], metavar='query_file_sep', dest='query_file_sep')
 
-	param_ss.add_argument('--tss', '--ss', '-s', '--ss_measure', action='store', default='Resnik', help=params_help['tss_measure'], metavar='tss_measure', dest='tss_measure')
-	param_ss.add_argument('--tmix', '--mix', '-m', action='store', default='BMA', help=params_help['tss_mix'], metavar='tss_mix', dest='tss_mix')
+	param_ss.add_argument('--tss', '--ss', '-s', '--ss_measure', action='store', default=None, help=params_help['tss_measure'], metavar='tss_measure', dest='tss_measure')
+	param_ss.add_argument('--tmix', '--mix', '-m', action='store', default=None, help=params_help['tss_mix'], metavar='tss_mix', dest='tss_mix')
 	# param_ss.add_argument('--oss', action='store', nargs=1, default=['single'], help=params_help['oss_measure'], metavar='oss_measure', dest='oss_measure')
 	# param_ss.add_argument('--omix', action='store', nargs=1, default=[None], help=params_help['oss_mix'], metavar='oss_mix', dest='oss_mix')
 	param_ss.add_argument('--root', '--ontology_root', '--ss_root', action='store', default=None, help=params_help['ss_category'], metavar='ss_category', dest='ss_category')
@@ -489,6 +395,9 @@ def set_parameters(args):
 	# if not ontology_file == None:
 		# ontology_file = ontology_file[0]
 	# params['ontology']['ontology_file'] = ontology_file
+	# params['ontology']['ontology_file_format'] = None
+	# if not isinstance(args.ontology_ignore, None.__class__):
+		# params['ontology']['ignore'] = list(set(args.ontology_ignore))
 
 	# load parameters from file, if specified
 	load_params = args.load_params
@@ -503,26 +412,28 @@ def set_parameters(args):
 	# set core parameters
 	params['core']['verbose'] = args.verbose
 	params['core']['inject_IC'] = args.inject_IC
+	params['core']['task'] = args.task
+
 	# set ontology parameters
 	params['ontology']['ontology_file'] = args.ontology_file
 	params['ontology']['ontology_type'] = args.ontology_type
 	params['ontology']['ontology_file_format'] = args.ontology_file_format
-	params['ontology']['ignore'] = args.ontology_ignore
+	params['ontology']['ignore'] = list(set(args.ontology_ignore))
 
 	# set ac parameters
-	params['ac']['EC_include'] = args.include_EC
-	params['ac']['EC_ignore'] = args.ignore_EC
-	params['ac']['ac_multiple'] = args.ac_multiple
+	params['ac']['ac'] = args.ac
 	params['ac']['ac_type'] = args.ac_type
 	params['ac']['ac_species'] = args.ac_species
+	params['ac']['ac_file'] = args.ac_file
+	params['ac']['EC_include'] = list(set(args.include_EC))
+	params['ac']['EC_ignore'] = list(set(args.ignore_EC))
+	params['ac']['tax_include'] = list(set(args.include_tax))
+	params['ac']['tax_ignore'] = list(set(args.ignore_tax))
+	params['ac']['ac_multiple'] = args.ac_multiple
 	params['ac']['ac_separator'] = args.ac_sep
 	params['ac']['ac_term_first'] = args.ac_termfirst
-	params['ac']['ac_file'] = args.ac_file
-	params['ac']['tax_ignore'] = args.ignore_tax
-	params['ac']['tax_include'] = args.include_tax
 
 	# set query parameters
-	params['query']['query_type'] = args.query_type
 	params['query']['query_ss_type'] = args.query_ss_type
 	params['query']['query_mode'] = args.query_mode
 	params['query']['query_input'] = args.query_input
@@ -558,201 +469,310 @@ def check_parameters():
 	'''
 	global params
 
-	# print params
-	if params['ss']['use_enhanced']:
-		print "Enhanced version of Resnik is not available in this release. It will be included as soon as possible in a future release."
-		raise Exception
-	#
-	
-	if params['ontology']['ontology_type'] == None:
+	if params['core']['verbose'] >= 3:
+		print "# Raw parameters"
+		print str(params)
+		print "# \n"
+
+	# Check core parameters
+	if isinstance(params['core']['task'], None.__class__):
+		params['core']['task'] = 'SS'
+
+	# Check ontology parameters
+	if isinstance(params['ontology']['ontology_type'], None.__class__):
+		if isinstance(params['ontology']['ontology_file'], None.__class__):
+			raise Exception('An ontology must be defined. Either specify a valid ontology type, or provide a filename. See the ontology_file parameter in the help.')
 		params['ontology']['ontology_type'] = "Ontology"
-	# if params['ontology_file_format'] == None:
-		# params['ontology_file_format'] = 'obo'
+	if not isinstance(params['ontology']['ontology_file'], None.__class__):
+		if isinstance(params['ontology']['ontology_file_format'], None.__class__):
+			params['ontology']['ontology_file_format'] = 'obo'
 
-	# if params['ontology_file'] == None:
-		# if params['ontology_type'] == "Ontology":
-			# params['ontology_type'] = "GeneOntology"
-		# if params['ontology_type'] in default_ontologies:
-		# 	params['ontology_file'] = program_dir + "/data/" + default_ontologies[params['ontology_type']][0]
-		# 	params['ontology_file_format'] = default_ontologies[params['ontology_type']][1]
-		# else:
-			# print "An ontology must be selected. See the help notes (ontology_file parameter)"
-			# return False			
+	# Check annotation corpus parameters
+	params['ac']['is_defined'] = True
+	if isinstance(params['ac']['ac'], None.__class__) and isinstance(params['ac']['ac_species'], None.__class__) and isinstance(params['ac']['ac_file'], None.__class__):
+		params['ac']['is_defined'] = False
+	elif not isinstance(params['ac']['ac_file'], None.__class__):
+		params['ac']['ac'] = None
+		params['ac']['ac_species'] = None
+		if isinstance(params['ac']['ac_type'], None.__class__):
+			params['ac']['ac_type'] = 'GOA'
+	elif not isinstance(params['ac']['ac'], None.__class__):
+		params['ac']['ac_species'] = None
+	if not isinstance(params['ac']['EC_include'], None.__class__):
+		params['ac']['EC_ignore'] = None
+	if not isinstance(params['ac']['tax_include'], None.__class__):
+		params['ac']['tax_ignore'] = None
 
-	if params['query_type'] == 'SS':
-		if params['use_enhanced']:
-			params['tss_measure'] = 'Resnik'
-			params['tss_mix'] = 'max'
-
-		if params['query_ss_type'] == 'obj' or params['query_ss_type'] == 'objset':
-			if params['ac_file'] == None and params['ac_species'] == None:
-				print "An annotation corpus is required in " + str(params['query_ss_type']) + "mode. See the help notes (ac_file parameter)"
-				return False
-			# if params['ontology_file'] == None:
-				# print "An ontology_type must be selected. See the help notes (ontology_file parameter)"
-				# return False
-		elif params['query_ss_type'] == 'term' or  params['query_ss_type'] == 'termset':
-			# if params['ontology_file'] == None:
-				# print "An ontology_type must be selected. See the help notes (ontology_file parameter)"
-				# return False
-			pass
+	# Check query parameters
+	if params['core']['task'] == 'SS':
+		if isinstance(params['query']['query_file'], None.__class__):
+			if isinstance(params['query']['query_input'], None.__class__):
+				pass
+			elif params['query']['query_input'] == 'file':
+				raise Exception("The selected query input is file, but no query file has been specified.")
 		else:
-			print "Unrecognized query_type " + params['query_ss_type']
-			return False
+			params['query']['query_input'] = 'file'
 
-		if params['query_ss_type'] == 'objset':
-			if params['query_input'] == 'ontology' or params['query_input'] == 'ac':
-				print_err("Cannot read objset from ac or ontology.")
-				return False
-			if params['query_input'] == 'file' and params['query_mode'] == 'pairs':
-				print_err("Cannot read query pairs from file in objset mode")
-				return False
-		if params['query_ss_type'] == 'obj':
-			if params['query_input'] == 'ontology':
-				print_err("Cannot read obj from ontology.")
-				return False
-		if params['query_ss_type'] == 'termset':
-			if params['query_input'] == 'ontology' or params['query_input'] == 'ac':
-				print_err("Cannot read termset from ac or ontology.")
-				return False
-			if params['query_input'] == 'file' and params['query_mode'] == 'pairs':
-				print_err("Cannot read query pairs from file in termset mode")
-				return False
+		if isinstance(params['query']['query_ss_type'], None.__class__):
+			if params['ac']['is_defined']:
+				params['query']['query_ss_type'] = 'obj'
+			else:
+				params['query']['query_ss_type'] = 'term'
 
-		if params['query_input'] == 'ontology' and params['query_mode'] == 'pairs':
-			print_err("Incompatible query input (ontology) and query mode (pairs).")
-			return False
-		if params['query_input'] == 'ac' and params['query_mode'] == 'pairs':
-			print_err("Incompatible query input (ac) and query mode (pairs).")
-			return False
+		if params['query']['query_ss_type'] == 'obj' or params['query']['query_ss_type'] == 'objset':
+			if not params['ac']['is_defined']:
+				raise Exception("An annotation corpus is required for the query_type: " + str(params['query']['query_ss_type']) + ". See the help notes (ac_file parameter)")
+			if isinstance(params['query']['query_input'], None.__class__):
+				params['query_input'] = 'ac'
+		elif params['query']['query_ss_type'] == 'term' or params['query']['query_ss_type'] == 'termset':
+			if isinstance(params['query']['query_input'], None.__class__):
+				params['query_input'] = 'ontology'		
+		if params['query']['query_input'] == 'ac':
+			if not params['ac']['is_defined']:
+				raise Exception("An annotation corpus is required for the query_input: " + str(params['query']['query_input']))
 
+		if isinstance(params['query']['query_mode'], None.__class__):
+			if params['query']['query_input'] == 'ac':
+				params['query_mode'] = 'list'
+			if params['query']['query_input'] == 'ontology':
+				params['query_mode'] = 'list'
+			if params['query']['query_input'] == 'file':
+				raise Exception("The query_mode parameter must be specified if a query file is provided.")
 
-	if not params['EC_include'] == None:
-		params['EC_ignore'] = None
-	if not params['tax_include'] == None:
-		params['tax_ignore'] = None
+		if params['query']['query_ss_type'] == 'objset' or params['query']['query_ss_type'] == 'termset':
+			if params['query']['query_input'] == 'ac' or params['query']['query_input'] == 'ontology':
+				raise Exception("The query_type cannot be set to sets if the query source is ac or ontology.")
+
+		if params['query']['query_mode'] == 'pairs':
+			if params['query']['query_input'] == 'ac' or params['query']['query_input'] == 'ontology':
+				raise Exception("The query_mode cannot be set to pairs if the query is ac or ontology.")
+			elif params['query']['query_ss_type'] == 'termset' or params['query']['query_ss_type'] == 'objset':
+				raise Exception("The query_mode cannot be set to pairs if the query is file and the type is a set.")
+
+	# Check SS parameters
+	if params['core']['task'] == 'SS':
+		if isinstance(params['ss']['tss_measure'], None.__class__):
+			params['ss']['tss_measure'] = 'SimGIC'
+		if isinstance(params['ss']['tss_mix'], None.__class__):
+			params['ss']['tss_mix'] = 'BMA'
+		if params['ss']['use_enhanced']:
+			raise Exception("Enhanced version of Resnik is not available in this release.")
 
 	return True
 #
 
 
-'''
-#####################################################################
-Load data routines
-'''
+def print_parameters():
+	'''
+	Print the parameters selected
+	'''
 
-def load_ontology():
 	global params
 
-	ontology_ignore = {}
-	# ontology_ignore['has_part'] = True
-	# ontology_ignore['is_a'] = False
-	# ontology_ignore['regulates'] = False
-	# ontology_ignore['part_of'] = False
-	# if params['ignore_regulates']:
-	# 	ontology_ignore['regulates'] = True
-	# if not params['ignore_has_part']:
-	# 	ontology_ignore['has_part'] = False
-	# if params['ignore_is_a']:
-	# 	ontology_ignore['is_a'] = True
-	# if params['ignore_part_of']:
-	# 	ontology_ignore['part_of'] = True
+	print("\n-----------------------------------------------")
+	print("FastSemSim " + str(fastsemsim.__version__) + " - Copyright 2011-2014")
+	print("-----------------------------------------------")
+	print("-> [Core]")
+	print("Task: \t" + str(params['core']['task']))
+	if not isinstance(params['core']['save_params'], None.__class__):
+		print("Saving params to file: \t" + str(params['core']['save_params']))
+	if not isinstance(params['core']['load_params'], None.__class__):
+		print("Loading params from file: \t" + str(params['core']['load_params']))
+	if not isinstance(params['core']['inject_IC'], None.__class__):
+		print("Injecting IC from file: \t" + str(params['core']['inject_IC']))
+	print("Verbosity: \t" + str(params['core']['verbose']))
 
-	# print ontology_file
-	# print ontology_ignore
-	# print ontology_type
-	# print ontology_file_format
-	# print params['ontology_file']
-	# print params['ontology_file_format']
-	# print params['ontology_type']
-	ontology = ontologies.load(params['ontology_file'], source_type = params['ontology_file_format'], ontology_type = params['ontology_type'], parameters=ontology_ignore)
+	print("\n-> [Ontology]")
+	if not isinstance(params['ontology']['ontology_file'], None.__class__):
+		print("Ontology type: \t" + str(params['ontology']['ontology_type']))
+		print("Ontology file: \t" + str(params['ontology']['ontology_file']))
+		print("Ontology file format: \t" + str(params['ontology']['ontology_file_format']))
+	else:
+		print("Ontology: \t" + str(params['ontology']['ontology_type']))
+	print("Ontological relationships ignored: \t" + str(params['ontology']['ignore']))
+	
+	print("\n-> [Annotation Corpus]")
+	if not params['ac']['is_defined']:
+		print("No Annotation Corpus specified.")
+	else:
+		if not isinstance(params['ac']['ac_file'], None.__class__):
+			print("Annotation Corpus file: \t" + str(params['ac']['ac_file']))
+			print("Annotation Corpus file type: \t" + str(params['ac']['ac_type']))
+			if params['ac']['ac_type'] == 'plain':
+				print("Annotation Corpus file - multiple assocaitions per line: \t" + str(params['ac']['multiple']))
+				print("Annotation Corpus file - separator: \t" + str(params['ac']['separator']))
+				print("Annotation Corpus file - ontological term first: \t" + str(params['ac']['ac_term_first']))
+				# if params['ac']['ac_term_first']:
+				# 	print("AC file row format: \tontology term -> object")
+				# else:
+				# 	print("AC file row format: \tobject -> ontology term")
+				# print("Multiple associations per line: \t" + str(params['ac']['ac_multiple']))
+			else:
+				print("AC relationships ignored: \t" + str(params['ac']['EC_ignore']))
+				print("AC relationships considered: \t" + str(params['ac']['EC_include']))
+				print("AC taxa ignored: \t" + str(params['ac']['tax_ignore']))
+				print("AC taxa considered: \t" + str(params['ac']['tax_include']))
+		else:
+			print("Annotation Corpus: \t" + str(params['ac']['ac']))
+			print("Annotation Corpus: \t" + str(params['ac']['ac_species']))
+			print("AC relationships ignored: \t" + str(params['ac']['EC_ignore']))
+			print("AC relationships considered: \t" + str(params['ac']['EC_include']))
+			print("AC taxa ignored: \t" + str(params['ac']['tax_ignore']))
+			print("AC taxa considered: \t" + str(params['ac']['tax_include']))
+
+	if params['core']['task'] == 'SS':
+		print("\n-> [SS]")
+		print("SS measure: \t" + str(params['ss']['tss_measure']) + "\nMix strategy: \t" + str(params['ss']['tss_mix']))
+		print("Ontology category: \t" + str(params['ss']['ss_root']))
+		print("Use enhanced Resnik: \t" + str(params['ss']['use_enhanced']))		
+	elif params['core']['task'] == 'stats':
+		pass
+
+	print("\n-> [Query]")
+	print("SS query type: \t" + str(params['query']['query_ss_type']))
+	print("SS query mode: \t" + str(params['query']['query_mode']))
+	print("SS query input: \t" + str(params['query']['query_input']))
+	if params['query']['query_input'] == 'file':
+		print("SS query file: \t" + str(params['query']['query_file']))
+		print("SS query file separator: \t\'" + str(params['query']['query_file_sep']) + "\'")
+
+	print("\n-> [Output]")
+	if not params['output']['out_file'] == None:
+		print("Output file: \t" + str(params['output']['out_file']))
+	else:
+		print("Output: \tconsole")
+	print("Cut-off threshold: \t" + str(params['output']['cut_thres']))
+	print("Remove NaN: \t" + str(params['output']['cut_nan']))
+	print("-----------------------------------------------")
+#
+
+
+
+
+def load_ontology():
+	'''
+	Load ontology
+	'''
+	global params
+
+	if params['core']['verbose'] >= 2:
+		print("-----------------------------------------------")
+		print "-> Loading ontology ..."
+
+	ontology_ignore = params['ontology']['ignore']
+	ontology = ontologies.load(params['ontology']['ontology_file'], source_type = params['ontology']['ontology_file_format'], ontology_type = params['ontology']['ontology_type'], parameters={'ignore':ontology_ignore})
+	if isinstance(ontology, None.__class__):
+		raise Exception("Ontology not correctly loaded: ")
+
+	if params['core']['verbose'] >= 2:
+		# print "source: " + str(source)
+		# print "source_type: " + str(source_type)
+		# print "ontology_type: " + str(ontology_type)
+		# print "ignore_parameters: " + str(ontology_ignore)
+		print "Ontology roots: " + str(ontology.roots.keys())
+		print "Number of nodes: " + str(ontology.node_number())
+		print "Number of edges: " + str(ontology.edge_number())
+		print "\nType and number of edges:\n-------------\n" + str(ontology.edges['type'].value_counts())
+		print "-------------"
+		print "Outer edges (link to other ontologies): " + str(ontology.edges.loc[ontology.edges['inner'] == False].shape[0])
+		print "Inter edges (link between different namespaces - within the same ontology): " + str(ontology.edges.loc[(ontology.edges['intra'] == False) & (ontology.edges['inner'] == True)].shape[0])
+		# print "-------------"
+	print("-----------------------------------------------")
+	
 	return ontology
 #
 
 
+
+
+
+
+
 def load_ac():
+	'''
+	Load the Annotation Corpus
+	'''
 	global params
 	global ontology
 
-
-	ac = AnnotationCorpus.AnnotationCorpus(ontology)
+	ac = None
+	if params['ac']['is_defined']:
+		if params['core']['verbose'] >= 2:
+			print("-----------------------------------------------")
+			print "-> Loading annotation corpus..."
 	
-	if not params['ac_species'] == None:
-		builtin_dataset = data.dataset.Dataset()
-		selected_source = builtin_dataset.get_default_annotation_corpus(ontology.name, params['ac_species'])
-		if selected_source is None:
-			return None
+		ac = AnnotationCorpus.AnnotationCorpus(ontology)
+		if not isinstance(params['ac']['ac_file'], None.__class__): # should not be necessary!!!
+			params['ac']['ac'] = None
+			params['ac']['ac_species'] = None
 
-		params['ac_file'] = selected_source['file']
-		# source = selected_source['file']
-		params['ac_type'] = selected_source['filetype']
-		# source_type = selected_source['filetype']
-		# ac.parse(source, source_type, k)
+		if not isinstance(params['ac']['ac'], None.__class__):
+			builtin_dataset = data.dataset.Dataset()
+			selected_source = builtin_dataset.get_default_annotation_corpus(ontology.name, params['ac']['ac_species'])
+			if selected_source is None:
+				return None
 
-	is_plain = False
-	if params['ac_type'] == 'plain':
-		is_plain = True
+			params['ac']['ac_file'] = selected_source['file']
+			params['ac']['ac_type'] = selected_source['filetype']
 
-	#-#-#-#-#-#-#-#-#-#-#-#-#-#
-	# Second step: set parsing parameters
-	# You should fill a dictionary with the proper information. Friendly routines will be provided in future to set parsing parameters easily
-	# If you specify incorrect or not pertinent parameters they'll be ignored.
-	
-	#### For gaf-2 / GOA files:
-	if not is_plain:
-		ac_params = {}
-	
-		ac_params['filter'] = {} # filter section is useful to remove undesired annotations
-
-		if not params['EC_include'] == None:
-			ac_params['filter']['EC'] = {} # EC filtering: select annotations depending on their EC
-			ac_params['filter']['EC']['EC'] = params['EC_include'] # select which EC accept or reject
-			ac_params['filter']['EC']['inclusive'] = True # select which EC accept or reject
-		if not params['EC_ignore'] == None:
-			ac_params['filter']['EC'] = {} # EC filtering: select annotations depending on their EC
-			ac_params['filter']['EC']['EC'] = params['EC_ignore'] # select which EC accept or reject
-			ac_params['filter']['EC']['inclusive'] = False # select which EC accept or reject
-
-		if not params['tax_include'] == None:
-			ac_params['filter']['taxonomy'] = {}
-			ac_params['filter']['taxonomy']['taxonomy'] = params['tax_include'] # set properly this field to load only annotations involving proteins/genes of a specific species
-			ac_params['filter']['taxonomy']['inclusive'] = True # select which EC accept or reject
-		if not params['tax_ignore'] == None:
-			ac_params['filter']['taxonomy'] = {}
-			ac_params['filter']['taxonomy']['taxonomy'] = params['tax_ignore']
-			ac_params['filter']['taxonomy']['inclusive'] = False # select which EC accept or reject
+		#-#-#-#-#-#-#-#-#-#-#-#-#-#
+		# Second step: set parsing parameters
+		# You should fill a dictionary with the proper information. Friendly routines will be provided in future to set parsing parameters easily
+		# If you specify incorrect or not pertinent parameters they'll be ignored.
 		
-		ac_params['simplify'] = True # after parsing and filtering, removes additional information such as taxonomy or EC. Useful if you have a huge amount of annotations and not enough memory
-	
-	#### For plain files:
-	if is_plain:
-		ac_params = {}
+		#### For gaf-2 / GOA files:
+		if not params['ac']['ac_type'] == 'plain':
+			ac_params = {}
+			ac_params['filter'] = {} # filter section is useful to remove undesired annotations
+			if not params['ac']['EC_include'] == None:
+				ac_params['filter']['EC'] = {} # EC filtering: select annotations depending on their EC
+				ac_params['filter']['EC']['EC'] = params['ac']['EC_include'] # select which EC accept or reject
+				ac_params['filter']['EC']['inclusive'] = True # select which EC accept or reject
+			if not params['ac']['EC_ignore'] == None:
+				ac_params['filter']['EC'] = {} # EC filtering: select annotations depending on their EC
+				ac_params['filter']['EC']['EC'] = params['ac']['EC_ignore'] # select which EC accept or reject
+				ac_params['filter']['EC']['inclusive'] = False # select which EC accept or reject
 
-		if params['ac_multiple']:
-			ac_params['multiple'] = True # Set to True if there are many associations per line (the object in the first field is associated to all the objects in the other fields within the same line)
-		if params['ac_term_first']:
-			ac_params['term first'] = True # set to True if the first field of each row is a GO term. Set to False if the first field represents a protein/gene
+			if not params['ac']['tax_include'] == None:
+				ac_params['filter']['taxonomy'] = {}
+				ac_params['filter']['taxonomy']['taxonomy'] = params['ac']['tax_include'] # set properly this field to load only annotations involving proteins/genes of a specific species
+				ac_params['filter']['taxonomy']['inclusive'] = True # select which EC accept or reject
+			if not params['ac']['tax_ignore'] == None:
+				ac_params['filter']['taxonomy'] = {}
+				ac_params['filter']['taxonomy']['taxonomy'] = params['ac']['tax_ignore']
+				ac_params['filter']['taxonomy']['inclusive'] = False # select which EC accept or reject
+			
+			ac_params['simplify'] = True # after parsing and filtering, removes additional information such as taxonomy or EC. Useful if you have a huge amount of annotations and not enough memory
 		
-		if not params['ac_separator'] == None:
-			ac_params['separator'] = params['ac_separator'] # select the separtor used to divide fields
-	
-	#-#-#-#-#-#-#-#-#-#-#-#-#-#
-	# Third Step: parsing
-	# just use parse routine. You have to specify the file to parse, the type of file and (optional) the parameters
-	if is_plain:
-		# print "Loading annotation corpus from plain file " + str(ac_file) + "..."
-		ac.parse(params['ac_file'], 'plain', ac_params) # to parse plain files
-	else:
-		# print "Loading annotation corpus from gaf-2 file " + str(ac_file) + "..."
-		ac.parse(params['ac_file'], 'GOA', ac_params) # to parse gaf-2 / GOA files
+		#### For plain files:
+		elif params['ac']['ac_type'] == 'plain':
+			ac_params = {}
 
-	#-#-#-#-#-#-#-#-#-#-#-#-#-#
-	#### additional useful annotation corpus routines
-	ac.isConsistent() # check whether the annotations are consistent with the current gene ontology. Useful to check if everything is fine
-	# ac.sanitize() # removes annotations not consistent with the current gene ontology. USeful if you loaded an annotation corpus BEFORE loading a gene ontology
-	# print "-> Annotation Corpus correctly loaded: " + str(len(ac.obj_set)) + " objects and " +  str(len(ac.term_set)) + " GO Terms."
+			if params['ac']['ac_multiple']:
+				ac_params['multiple'] = True # Set to True if there are many associations per line (the object in the first field is associated to all the objects in the other fields within the same line)
+			if params['ac']['ac_term_first']:
+				ac_params['term first'] = True # set to True if the first field of each row is a GO term. Set to False if the first field represents a protein/gene
+			
+			if not params['ac']['ac_separator'] == None:
+				ac_params['separator'] = params['ac']['ac_separator'] # select the separtor used to divide fields
+		
+		#-#-#-#-#-#-#-#-#-#-#-#-#-#
+		# Third Step: parsing
+		# just use parse routine. You have to specify the file to parse, the type of file and (optional) the parameters
+		ac.parse(params['ac']['ac_file'], params['ac']['ac_type'], ac_params) # to parse plain files
+
+		#-#-#-#-#-#-#-#-#-#-#-#-#-#
+		#### additional useful annotation corpus routines
+		ac.isConsistent() # check whether the annotations are consistent with the current gene ontology. Useful to check if everything is fine
+		# ac.sanitize() # removes annotations not consistent with the current gene ontology. USeful if you loaded an annotation corpus BEFORE loading a gene ontology
+		# print "-> Annotation Corpus correctly loaded: " + str(len(ac.obj_set)) + " objects and " +  str(len(ac.term_set)) + " GO Terms."
+
+		if params['core']['verbose'] >= 2:
+			print "ac - Number of annotated proteins: " + str(len(ac.annotations))
+			print "ac - Number of annotated terms: " + str(len(ac.reverse_annotations))
+			print("-----------------------------------------------")
+	#
 	return ac
-#
 
 	# these 4 variables contain all the useful data:
 	#ac.annotations # set of annotations -> it's a dictionary with genes/proteins as keys. The value for each key is a dictionary with GO Terms annotated for that protein as keys
@@ -760,6 +780,75 @@ def load_ac():
 	#ac.obj_set # set of proteins/genes involved in annotations
 	#ac.term_set # set of GO Terms involved in annotations
 #
+
+
+
+
+
+
+
+
+
+def init_ss():
+	'''
+	Initialize SS class
+	'''
+	global ontology, ac, ssutil
+	global params
+
+	if params['core']['verbose'] >= 2:
+		print("-----------------------------------------------")
+		print "-> Initializing semantic similarity..."
+
+	if not isinstance(params['ss']['ss_root'], None.__class__):
+		params['ss']['ss_root'] = ss.ontology.name2id(params['ss']['ss_root'], alt_check=False)
+	else:
+		params['ss']['ss_root'] = ontology.roots.keys()[0]
+	if isinstance(params['ss']['ss_root'], None.__class__):
+		print_err("The ontology root required does not exists.")
+		return None
+
+
+	do_log = False
+	if params['core']['verbose'] >= 4:
+		do_log = True
+
+	if params['query']['query_ss_type'] == 'term':
+		tss_class = SemSimMeasures.select_term_SemSim(params['ss']['tss_measure'])
+		tss = tss_class(ontology, ac, ssutil, do_log=do_log)
+		ss = tss
+	elif params['query']['query_ss_type'] == 'obj':
+		oss = ObjSemSim.ObjSemSim(ontology, ac, params['ss']['tss_measure'], params['ss']['tss_mix'], ssutil, do_log = do_log)
+		ss = oss
+	elif params['query']['query_ss_type'] == 'termset':
+		oss = SetSemSim.SetSemSim(ontology, ac, params['ss']['tss_measure'], params['ss']['tss_mix'], ssutil, do_log = do_log)
+		ss = oss
+	elif params['query']['query_ss_type'] == 'objset':
+		oss = ObjSetSemSim.ObjSetSemSim(ontology, ac, params['ss']['tss_measure'], params['ss']['tss_mix'], ssutil, do_log = do_log)
+		ss = oss
+	else:
+		raise Exception
+	#
+	# if params['use_enhanced']:
+	# 	print "Enhanced version of Resnik is currently not available in this release. It will be included as soon as possible."
+	# 	sys.exit()
+	# 	raise Exception
+	# #
+
+	if params['core']['verbose'] >= 2:
+		print "-> Semantic similarity initialized."
+		print "-> Ontology root: " + str(params['ss']['ss_root'])
+		print("-----------------------------------------------")
+
+	return ss
+#
+
+
+
+
+
+
+
 
 
 def load_query_from_file():
@@ -807,53 +896,6 @@ def load_query_from_file():
 
 
 
-'''
-# Semantic similarity routines
-'''
-
-def init_ss():
-	global ontology, ac
-	global params
-	# global ss_root, tss_mix, tss_measure, use_enhanced
-	# global query_ss_type
-
-	# print "-> Initializing Semantic Similarity object. Mode: " + str(query_ss_type) + ". Term Sem Sim: " +  str(tss_mix) + ". Term mixing strategy: " + str(tss_measure) + ". Obj mixing strategy: " +  str(oss_mix)
-
-	do_log = False
-	if params['verbose'] >= 4:
-		do_log = True
-
-	if params['query_ss_type'] == 'term':
-		tss_class = SemSimMeasures.select_term_SemSim(params['tss_measure'])
-		tss = tss_class(ontology, ac, None, do_log=do_log)
-		ss = tss
-	elif params['query_ss_type'] == 'obj':
-		oss = ObjSemSim.ObjSemSim(ontology, ac, params['tss_measure'], params['tss_mix'], None, do_log = do_log)
-		ss = oss
-	elif params['query_ss_type'] == 'termset':
-		oss = SetSemSim.SetSemSim(ontology, ac, params['tss_measure'], params['tss_mix'], None, do_log = do_log)
-		ss = oss
-	elif params['query_ss_type'] == 'objset':
-		oss = ObjSetSemSim.ObjSetSemSim(ontology, ac, params['tss_measure'], params['tss_mix'], None, do_log = do_log)
-		ss = oss
-	else:
-		raise Exception
-	#
-
-	if params['use_enhanced']:
-		print "Enhanced version of Resnik is currently not available in this release. It will be included as soon as possible."
-		sys.exit()
-		raise Exception
-	#
-
-	return ss
-#
-
-
-
-
-
-
 
 
 
@@ -870,28 +912,28 @@ def ss_pairs(out):
 	done = 0
 	total = len(query)
 	if not out == None:
-		if params['verbose'] >= 0:
+		if params['core']['verbose'] >= 0:
 			print "Evluating semantic similarity between " + str(len(query)) + " pairs."
 			prev_text = ""
 			sys.stdout.write("Done: ")
 	sys.stdout.flush()
 	for i in range(0,len(query)):
-		temp = ss.SemSim(query[i][0], query[i][1], params['ss_root'])
-		if temp == None and params['verbose'] >= 4:
+		temp = ss.SemSim(query[i][0], query[i][1], params['ss']['ss_root'])
+		if temp == None and params['core']['verbose'] >= 4:
 			print ss.log
 		#scores.append((pairs[i][0],pairs[i][1],temp))
 		done+=1
-		if not params['cut_thres'] == None:
-			if temp == None or temp <= params['cut_thres']:
+		if not params['output']['cut_thres'] == None:
+			if temp == None or temp <= params['output']['cut_thres']:
 				continue
-			if params['cut_nan']:
+			if params['output']['cut_nan']:
 				if temp == None:
 					continue
 		if out == None:
 			print str(query[i][0]) + "\t" + str(query[i][1]) + "\t" + str(temp)
 		else:
 			out.write(str(query[i][0]) + "\t" + str(query[i][1]) + "\t" + str(temp) + "\n")
-			if params['verbose'] >= 0:
+			if params['core']['verbose'] >= 0:
 				sys.stdout.write("\b"*len(prev_text))
 				prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
 				sys.stdout.write(prev_text)
@@ -915,7 +957,7 @@ def ss_pairwise(out):
 	total = len(query)*(len(query)+1)/2
 
 	if not out == None:
-		if params['verbose'] >= 0:
+		if params['core']['verbose'] >= 0:
 			print "Evluating pairwise semantic similarity between " + str(len(query)) + " entities (" + str(len(query)*(len(query)+1)/2) + " pairs)"
 			prev_text = ""
 			sys.stdout.write("Done: ")
@@ -924,22 +966,22 @@ def ss_pairwise(out):
 		# if params['query_ss_type'] == 'obj':
 		# scores[pairs[i]] = {}
 		for j in range(i,len(query)):
-			temp = ss.SemSim(query[i],query[j],params['ss_root'])
-			if temp == None and params['verbose'] >= 4:
+			temp = ss.SemSim(query[i],query[j],params['ss']['ss_root'])
+			if temp == None and params['core']['verbose'] >= 4:
 				print ss.log
 			#scores[pairs[i]][pairs[j]] = temp
 			done+=1
-			if not params['cut_thres'] == None:
-				if temp == None or temp <= params['cut_thres']:
+			if not params['output']['cut_thres'] == None:
+				if temp == None or temp <= params['output']['cut_thres']:
 					continue
-			if params['cut_nan']:
+			if params['output']['cut_nan']:
 				if temp == None:
 					continue
 			if out == None:
 				print str(query[i]) + "\t" + str(query[j]) + "\t" + str(temp)
 			else:
 				out.write(str(query[i]) + "\t" + str(query[j]) + "\t" + str(temp) + "\n")
-				if params['verbose'] >= 0:
+				if params['core']['verbose'] >= 0:
 					sys.stdout.write("\b"*len(prev_text))
 					prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
 					sys.stdout.write(prev_text)
@@ -1092,27 +1134,28 @@ def load_IC_from_file(list_file, separator = '\t'):
 	# Enhaced version   #
 	#-#-#-#-#-#-#-#-#-#-#
 
-def init_enhanced_ss(go, ac, termss='Resnik', mixp="BMA", params = None):
+# def init_enhanced_ss(go, ac, termss='Resnik', mixp="BMA", params = None):
 
-	print "Initializing Semantic Similarity class..."
-	SS = fastResnikSemSim.fastResnikSemSim(ac, go, termss, mixp, params)
-	print "-> Semantic Similarity class ready"
-	return SS
-#
+# 	print "Initializing Semantic Similarity class..."
+# 	SS = fastResnikSemSim.fastResnikSemSim(ac, go, termss, mixp, params)
+# 	print "-> Semantic Similarity class ready"
+# 	return SS
+# #
 
 
 
-def ss_pairwise_enhanced(SS, pairs = None, ontology = 'BP', out = None, cut_thres = None, cut_none = False):
-	#print "Evluating pairwise semantic similarity between " + str(len(pairs)) + " entities (" + str(len(pairs)*(len(pairs)-1)/2) + " pairs)"
-	out_h = out
-	if out==None:
-		out_h = sys.stdout
-	tct = cut_thres
-	if cut_none and cut_thres == None:
-		tct = -1
-	SS.SemSim(ontology, out, tct)
-#
+# def ss_pairwise_enhanced(SS, pairs = None, ontology = 'BP', out = None, cut_thres = None, cut_none = False):
+# 	#print "Evluating pairwise semantic similarity between " + str(len(pairs)) + " entities (" + str(len(pairs)*(len(pairs)-1)/2) + " pairs)"
+# 	out_h = out
+# 	if out==None:
+# 		out_h = sys.stdout
+# 	tct = cut_thres
+# 	if cut_none and cut_thres == None:
+# 		tct = -1
+# 	SS.SemSim(ontology, out, tct)
+# #
 
 if __name__ == "__main__":
 	start()
 #
+# 

@@ -27,7 +27,8 @@ This class provides the prototype for a generic Protein (or more in general, an 
 from SemSimUtils import SemSimUtils
 # from TermSemSim import *
 # from MixSemSim import *
-import SemSimMeasures
+from . import select_mix_SemSim
+from . import select_term_SemSim
 
 # import sys
 # import os
@@ -61,17 +62,17 @@ class ObjSetSemSim:
 			self.util = SemSimUtils(self.ontology, self.ac)
 			# self.util.det_IC_table()
 
-		self.term_SS_class = SemSimMeasures.select_term_SemSim(TSS)
+		self.term_SS_class = select_term_SemSim(TSS)
 		self.term_SS = self.term_SS_class(self.ontology, self.ac, self.util)
 
 		if not MSS == None:
-			self.mix_SS_class = SemSimMeasures.select_mix_SemSim(MSS)
+			self.mix_SS_class = select_mix_SemSim(MSS)
 			self.mix_SS = self.mix_SS_class(self.ontology, self.ac, self.util)
 		else:
 			self.mix_SS = None
 
 		# if not OMSS == None:
-		# 	self.o_mix_SS_class = SemSimMeasures.select_mix_SemSim(OMSS)
+		# 	self.o_mix_SS_class = select_mix_SemSim(OMSS)
 		# 	self.o_mix_SS = self.mix_SS_class(self.ontology, self.ac, self.util)
 		# else:
 		# 	self.o_mix_SS = None

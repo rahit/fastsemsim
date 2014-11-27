@@ -27,7 +27,8 @@ This class provides the prototype for a generic Protein (or more in general, an 
 from SemSimUtils import SemSimUtils
 # from TermSemSim import *
 # from MixSemSim import *
-import SemSimMeasures
+# import SemSimMeasures
+from . import *
 
 # import sys
 # import os

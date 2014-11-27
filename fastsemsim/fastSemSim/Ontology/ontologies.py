@@ -53,6 +53,8 @@ ontologies = {
 	'Ontology' : (Ontology.Ontology, )
 }
 
+ontology_source_types = ['obo-xml', 'obo']
+
 def parse(source = None, source_type = 'obo', ontology_type = 'GeneOntology', parameters={}):
 	return load(source, source_type, ontology_type, parameters)
 #
