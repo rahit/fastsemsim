@@ -159,6 +159,7 @@ class AnnotationCorpus(object):
 
 	def parse(self, fname, ftype, params={}):
 		#print "AnnotationCorpus: parse"
+		# print params
 		if params == None:
 			self.reset()
 		elif RESET_PARAM in params and params[RESET_PARAM]:

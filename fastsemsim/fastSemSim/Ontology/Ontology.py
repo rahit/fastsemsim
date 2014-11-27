@@ -161,6 +161,18 @@ class Ontology(object):
 		return sid
 	#
 
+	def name2node(self, codes):
+		match = []
+		for i in self.node_attributes:
+			if 'name' in self.node_attributes[i]:
+				for j in self.node_attributes[i]['name']:
+					if j == codes:
+						match.append(i)
+						return i
+		return  None
+	#
+
+
 	def node_number(self):
 		return len(self.nodes)
 

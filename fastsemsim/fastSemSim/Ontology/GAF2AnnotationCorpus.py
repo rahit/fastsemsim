@@ -95,6 +95,7 @@ class GAF2AnnotationCorpus(object):
 		self.ac.reverse_annotations_field2pos= {'EC':0}
 
 	def isOk(self):
+		# print "A"
 		if not self.ac.isOk('taxonomy', self.temp_taxonomy): return False
 		if not self.ac.isOk('EC', self.temp_EC): return False
 

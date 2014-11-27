@@ -152,8 +152,8 @@ class SemSimUtils(object):
 			temp = self.offspring[j]
 			for i in temp:
 				if i in self.lineage:
-					print i
-					print self.lineage[i]
+					# print i
+					# print self.lineage[i]
 					raise Exception
 				self.lineage[i] = j
 		return self.lineage

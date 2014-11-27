@@ -141,7 +141,7 @@ class ObjSetSemSim:
 	def SemSim(self, obj1, obj2, root = None):
 		if self.do_log:
 			self.log = []
-		print root
+		# print root
 		if root == None:
 			root = self.ontology.roots.keys()[0]
 			# print root

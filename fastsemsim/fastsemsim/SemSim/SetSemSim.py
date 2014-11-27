@@ -28,7 +28,7 @@ from SemSimUtils import SemSimUtils
 # from TermSemSim import *
 # from MixSemSim import *
 # import SemSimMeasures
-from . import *
+from . import select_term_SemSim, select_mix_SemSim
 
 # import sys
 # import os
@@ -47,11 +47,11 @@ class SetSemSim:
 			self.util = SemSimUtils(self.ontology, self.ac)
 			# self.util.det_IC_table() # only if required by SS measure
 
-		self.term_SS_class = SemSimMeasures.select_term_SemSim(TSS)
+		self.term_SS_class = select_term_SemSim(TSS)
 		self.term_SS = self.term_SS_class(self.ontology, self.ac, self.util)
 
 		if not MSS == None:
-			self.mix_SS_class = SemSimMeasures.select_mix_SemSim(MSS)
+			self.mix_SS_class = select_mix_SemSim(MSS)
 			self.mix_SS = self.mix_SS_class(self.ontology, self.ac, self.util)
 		else:
 			self.mix_SS = None
