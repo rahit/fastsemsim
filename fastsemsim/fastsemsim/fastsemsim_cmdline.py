@@ -59,6 +59,7 @@ def start():
 	params['ac'] = dict()
 	params['query'] = dict()
 	params['ss'] = dict()
+	params['stats'] = dict()
 	params['output'] = dict()
 
 	params['core']['program_dir'] = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
@@ -100,27 +101,26 @@ def start():
 		if params['core']['verbose'] >= 2:
 			print "-> Extracting statistics..."
 
-		util = SemSimUtils.SemSimUtils(ontology, ac)
-		util.det_IC_table()
-		# ----- Inject IC
-		if not params['inject_IC'] == None:
-			util.IC = load_IC_from_file(params['inject_IC'])
-
-		h = None
-		if not params['out_file'] == None:
+		if params['stats']['IC']:
+			util = SemSimUtils(ontology, ac)
+			util.det_IC_table()
+			# ----- Inject IC
+			if not params['core']['inject_IC'] == None:
+				util.IC = load_IC_from_file(params['core']['inject_IC'])
+			# ----- evaluate SS
+			h = None
+			if not params['output']['out_file'] == None:
+				if params['core']['verbose'] >= 2:
+					print "-> Writing IC to file " + str(params['output']['out_file']) + "..."
+				h = open(params['output']['out_file'], 'w')
+			print_IC(util.IC, h, params['output']['cut_thres'], params['output']['cut_nan'])
+			if not h == None:
+				h.close()
 			if params['core']['verbose'] >= 2:
-				print "-> Writing IC to file " + str(params['out_file']) + "..."
-			h = open(params['out_file'], 'w')
-		print_IC(util.IC, h, params['cut_thres'], params['cut_nan'])
-		if not h == None:
-			h.close()
-		if params['core']['verbose'] >= 2:
-			print "-> IC extracted."
-	#
-
+				print "-> IC extracted."
+	# ----- Otherwise, raise Exception
 	else:
-		raise Exception
-	#
+		raise Exception("Unknown task")
 
 	if params['core']['verbose'] >= 2:
 		print '-> Process completed. Quitting.'
@@ -193,6 +193,8 @@ params_help['save_params'] = 'Save parameters to the specified file.'
 params_help['verbose'] = 'Verbosity level. Repeat multiple time to increase verbosity level (i.e. -vvv)'
 params_help['task'] = 'Instruct fastSemSim on the task to accomplish. Current supported tasks are: \'SS\', evaluation of Semantic Similarity (SS), and \'stats\', that is extraction of statistics. [default: \'SS\']'
 
+params_help['stats'] = 'Stats parameters'
+params_help['stats_IC'] = 'Export the IC table'
 
 
 def prbool(string):
@@ -225,6 +227,7 @@ def build_cmdline_args_parser():
 	param_query = parser.add_argument_group(title='Query', description=params_help['query'])
 	param_output = parser.add_argument_group(title='Output parameters', description=params_help['output'])
 	param_core = parser.add_argument_group(title='Core parameters', description=params_help['core'])
+	param_stats = parser.add_argument_group(title='Stats parameters', description=params_help['stats'])
 
 	param_core.add_argument('--inject_IC', '--inject_IC_form_file', action='store', default=None, help=params_help['IC_table_form_file'], metavar='inject_IC', dest='inject_IC')
 	param_core.add_argument('--verbose', '-v', action='count', default=0, help=params_help['verbose'], dest='verbose')
@@ -266,6 +269,8 @@ def build_cmdline_args_parser():
 	# param_ss.add_argument('--omix', action='store', nargs=1, default=[None], help=params_help['oss_mix'], metavar='oss_mix', dest='oss_mix')
 	param_ss.add_argument('--root', '--ontology_root', '--ss_root', action='store', default=None, help=params_help['ss_category'], metavar='ss_category', dest='ss_category')
 	param_ss.add_argument('--enhanced', action='store_const', const=True, default=False, help=params_help['ss_enhanced'], metavar='ss_enhanced', dest='ss_enhanced')
+
+	param_stats.add_argument('--stats_IC', action='store_const', const=True, default=False, help=params_help['stats_IC'], metavar='stats_IC', dest='stats_IC')
 
 	param_output.add_argument('--cut', action='store', default=None, type=float, help=params_help['output_cut'], metavar='output_cut', dest='output_cut')
 	param_output.add_argument('--remove_nan', action='store_const', const=True, default=False, help=params_help['output_remove_nan'], metavar='output_remove_nan', dest='output_remove_nan')
@@ -381,6 +386,9 @@ def set_parameters(args):
 	params['output']['cut_thres'] = args.output_cut
 	params['output']['out_file'] = args.output_file
 	params['output']['cut_nan'] = args.output_remove_nan
+
+	# set output parameters
+	params['stats']['IC'] = args.stats_IC
 
 	# Load/write configuration to/from file	
 	save_params = args.save_params
@@ -563,7 +571,8 @@ def print_parameters():
 		print("Ontology category: \t" + str(params['ss']['ss_root']))
 		print("Use enhanced Resnik: \t" + str(params['ss']['use_enhanced']))		
 	elif params['core']['task'] == 'stats':
-		pass
+		print("\n-> [stats]")
+		if params['stats']['IC']: print("IC")		
 
 	print("\n-> [Query]")
 	print("SS query type: \t" + str(params['query']['query_ss_type']))
@@ -1054,9 +1063,9 @@ def print_IC(IC, out, cut_thres=None, cut_nan=False):
 			if temp == None:
 				continue
 		if out == None:
-			print str(ontology.id2name(i)) + "\t" + str(temp)
+			print str(ontology.node2id(i)) + "\t" + str(temp)
 		else:
-			out.write(str(ontology.id2name(i)) + "\t" + str(temp) + "\n")
+			out.write(str(ontology.node2id(i)) + "\t" + str(temp) + "\n")
 			# if verbose:
 			# 	sys.stdout.write("\b"*len(prev_text))
 			# 	prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"

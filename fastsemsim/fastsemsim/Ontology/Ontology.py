@@ -148,7 +148,7 @@ class Ontology(object):
 			sid= []
 			for i in codes:
 				# if type(i) is int:
-				tnid = self._node2id(i, strict = True)
+				tnid = self._node2id(i)
 				# else:
 					# tnid = i
 				sid.append(tnid)
@@ -157,7 +157,7 @@ class Ontology(object):
 		else:
 		 # type(codes) is str:
 			# sid = codes
-			sid = self._node2id(codes, strict = True)
+			sid = self._node2id(codes)
 		return sid
 	#
 
