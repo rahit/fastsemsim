@@ -52,25 +52,14 @@ def start():
 	main routine
 	'''
 	global params, ontology, ac, query, ss, ssutil
-	
-	params = dict()
-	params['core'] = dict()
-	params['ontology'] = dict()
-	params['ac'] = dict()
-	params['query'] = dict()
-	params['ss'] = dict()
-	params['stats'] = dict()
-	params['output'] = dict()
 
+	# ----- Set parameters
+	init_parameters()
+	parser = build_cmdline_args_parser()
+	args = parser.parse_args(sys.argv[1:])
+	set_parameters(args)
 	params['core']['program_dir'] = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
 	# params['program_dir'] = '.' # use this with py2exe to build a working binary
-
-	args = parse_cmdline_args()
-	set_parameters(args)
-
-	if params['core']['verbose'] >= 2:
-		print "fastSemSim started"
-
 	check_ack = check_parameters()
 	if not check_ack:
 		print "Invalid parameters"
@@ -84,6 +73,7 @@ def start():
 	# ----- Load ontology and (optionally) ac
 	ontology = load_ontology()
 	ac = load_ac()
+
 	# ----- SS mode
 	if params['core']['task'] == 'SS':
 		ssutil = SemSimUtils(ontology, ac)
@@ -279,43 +269,148 @@ def build_cmdline_args_parser():
 	return(parser)
 #
 
-def parse_cmdline_args():
-	'''
-	Parse cmdline parameters
-	'''
-	parser = build_cmdline_args_parser()
-	args = parser.parse_args(sys.argv[1:])
-	# print(args)
-	return args
-#
-
 def load_params_from_file(list_file):
 	'''
 	Load parameters from file
 	'''
+	global params
+
+	if params['core']['verbose'] >= 2:
+		print "-> Loading parameters from " + str(list_file)
 	gstr = []
 	h = open(list_file,'r')
 	for line in h:
 		line = line.rstrip('\n')
 		line = line.rstrip('\r')
-		# line = line.rsplit("\t")
+		line = line.rsplit('\t')
 		gstr.append(line)
+		if len(line) < 3:
+			raise Exception("Malformatted configuration file. Line: " + str(line))
+		k1 = line[0].rstrip("'").lstrip("'")
+		k2 = line[1].rstrip("'").lstrip("'")
+		value = line[2]
+		if value.startswith("'") and value.endswith("'"): # text
+			value = value[1:(len(value)-1)]
+		elif value.startswith("[") and value.endswith("]"): # text
+			value = value[1:(len(value)-1)]
+			value = value.rsplit(',')
+			values = list()
+			for i in value:
+				values.append(i.strip(" ").strip("'"))
+			value = values
+		elif value == 'None':
+			value = None
+		elif value == 'True':
+			value = True
+		elif value == 'False':
+			value = False
+		else:
+			ok = False
+			if not ok:
+				try:
+					value = int(value)
+					ok = True
+				except Exception as e:
+					pass
+			if not ok:
+				try:
+					value = float(value)
+					ok = True
+				except Exception as e:
+					pass
+			if not ok:
+				raise Exception("Unrecognized line in the parameter file: " + str(line))
+		params[k1][k2] = value
 	h.close()
+	if params['core']['verbose'] >= 3:
+		print params
 	return gstr
 #
 
-def save_params_to_file(list_file, curstr):
+def save_params_to_file(list_file):
 	'''
 	Save parameters to file
 	'''
+	global params
+	
+	if params['core']['verbose'] >= 2:
+		print "-> Saving parameters to " + str(list_file)
+
 	h = open(list_file,'w')
 	gstr = ''
-	for i in curstr:
-		# gstr = gstr + " " + str(i)
-		h.write(str(i) + "\n")
-	# for i in params:
-		# h.write("#" + str(i) + "\t" + str(params[i]) + "\n")
+	for i in params:
+		for j in params[i]:
+			if isinstance(params[i][j], None.__class__):
+				value = 'None'
+			elif isinstance(params[i][j], True.__class__):
+				value = 'True'
+			elif isinstance(params[i][j], False.__class__):
+				value = 'False'
+			elif isinstance(params[i][j], list):
+				value = str(params[i][j])
+			elif isinstance(params[i][j], float) or isinstance(params[i][j], int):
+				value = str(params[i][j])
+			elif isinstance(params[i][j], str):
+				value = "'"+str(params[i][j])+"'"
+			else:
+				raise Exception("Error while saving parameters to file. Storing of parameter " + str(value) + " not supported. Please report this to the developer.")
+			line = "'"+str(i)+"'" + "\t" + "'"+str(j)+"'" + "\t" + value + "\n"
+			h.write(line)
 	h.close()
+#
+
+
+def init_parameters():
+	'''
+	Initialize parameters
+	'''
+	global params
+
+	params = dict()
+
+	params['core'] = dict()
+	params['ontology'] = dict()
+	params['ac'] = dict()
+	params['query'] = dict()
+	params['ss'] = dict()
+	params['stats'] = dict()
+	params['output'] = dict()
+
+	params['core']['program_dir'] = None
+	params['core']['load_params'] = None
+	params['core']['save_params'] = None
+	params['core']['verbose'] = 0
+	params['core']['inject_IC'] = None
+	params['core']['task'] = None
+	params['ontology']['ontology_file'] = None
+	params['ontology']['ontology_type'] = None
+	params['ontology']['ontology_file_format'] = None
+	params['ontology']['ignore'] = list()
+	params['ac']['ac'] = None
+	params['ac']['ac_type'] = None
+	params['ac']['ac_species'] = None
+	params['ac']['ac_file'] = None
+	params['ac']['EC_include'] = list()
+	params['ac']['EC_ignore'] = list()
+	params['ac']['tax_include'] = list()
+	params['ac']['tax_ignore'] = list()
+	params['ac']['ac_multiple'] = None
+	params['ac']['ac_separator'] = None
+	params['ac']['ac_term_first'] = None
+	params['query']['query_ss_type'] = None
+	params['query']['query_mode'] = None
+	params['query']['query_input'] = None
+	params['query']['query_file_sep'] = None
+	params['query']['query_file'] = None
+	params['ss']['ss_root'] = None
+	params['ss']['use_enhanced'] = None
+	params['ss']['tss_measure'] = None
+	params['ss']['tss_mix'] = None
+	params['output']['cut_thres'] = None
+	params['output']['out_file'] = None
+	params['output']['cut_nan'] = None
+	params['stats']['IC'] = None
+	return(params)
 #
 
 def set_parameters(args):
@@ -324,7 +419,7 @@ def set_parameters(args):
 	'''
 	global params
 
-	# Example in case of multipel list
+	# Example in case of multiple list
 	# ontology_file = args.ontology_file
 	# if not ontology_file == None:
 		# ontology_file = ontology_file[0]
@@ -333,70 +428,94 @@ def set_parameters(args):
 	# if not isinstance(args.ontology_ignore, None.__class__):
 		# params['ontology']['ignore'] = list(set(args.ontology_ignore))
 
+	params['core']['verbose'] = args.verbose
+
 	# load parameters from file, if specified
 	load_params = args.load_params
 	if not load_params == None:
-		# load_params = load_params[0]
 		curstr = load_params_from_file(load_params)
-		parser = build_cmdline_args_parser()
-		curpars = parser.parse_args(curstr)
-		set_parameters(curpars)
-	params['core']['load_params'] = load_params
+		params['core']['load_params'] = load_params
 
 	# set core parameters
 	params['core']['verbose'] = args.verbose
-	params['core']['inject_IC'] = args.inject_IC
-	params['core']['task'] = args.task
+	if not isinstance(args.inject_IC, None.__class__):
+		params['core']['inject_IC'] = args.inject_IC
+	if not isinstance(args.task, None.__class__):
+		params['core']['task'] = args.task
 
 	# set ontology parameters
-	params['ontology']['ontology_file'] = args.ontology_file
-	params['ontology']['ontology_type'] = args.ontology_type
-	params['ontology']['ontology_file_format'] = args.ontology_file_format
-	params['ontology']['ignore'] = list(set(args.ontology_ignore))
+	if not isinstance(args.ontology_file, None.__class__):
+		params['ontology']['ontology_file'] = args.ontology_file
+	if not isinstance(args.ontology_type, None.__class__):
+		params['ontology']['ontology_type'] = args.ontology_type
+	if not isinstance(args.ontology_file_format, None.__class__):
+		params['ontology']['ontology_file_format'] = args.ontology_file_format
+	if not isinstance(args.ontology_ignore, None.__class__):
+		params['ontology']['ignore'] = list(set(args.ontology_ignore))
 
 	# set ac parameters
-	params['ac']['ac'] = args.ac
-	params['ac']['ac_type'] = args.ac_type
-	params['ac']['ac_species'] = args.ac_species
-	params['ac']['ac_file'] = args.ac_file
-	params['ac']['EC_include'] = list(set(args.include_EC))
-	params['ac']['EC_ignore'] = list(set(args.ignore_EC))
-	params['ac']['tax_include'] = list(set(args.include_tax))
-	params['ac']['tax_ignore'] = list(set(args.ignore_tax))
-	params['ac']['ac_multiple'] = args.ac_multiple
-	params['ac']['ac_separator'] = args.ac_sep
-	params['ac']['ac_term_first'] = args.ac_termfirst
+	if not isinstance(args.ac, None.__class__):
+		params['ac']['ac'] = args.ac
+	if not isinstance(args.ac_type, None.__class__):
+		params['ac']['ac_type'] = args.ac_type
+	if not isinstance(args.ac_species, None.__class__):
+		params['ac']['ac_species'] = args.ac_species
+	if not isinstance(args.ac_file, None.__class__):
+		params['ac']['ac_file'] = args.ac_file
+	if not isinstance(args.include_EC, None.__class__):
+		params['ac']['EC_include'] = list(set(args.include_EC))
+	if not isinstance(args.ignore_EC, None.__class__):
+		params['ac']['EC_ignore'] = list(set(args.ignore_EC))
+	if not isinstance(args.include_tax, None.__class__):
+		params['ac']['tax_include'] = list(set(args.include_tax))
+	if not isinstance(args.ignore_tax, None.__class__):
+		params['ac']['tax_ignore'] = list(set(args.ignore_tax))
+	if not isinstance(args.ac_multiple, None.__class__):
+		params['ac']['ac_multiple'] = args.ac_multiple
+	if not isinstance(args.ac_sep, None.__class__):
+		params['ac']['ac_separator'] = args.ac_sep
+	if not isinstance(args.ac_termfirst, None.__class__):
+		params['ac']['ac_term_first'] = args.ac_termfirst
 
 	# set query parameters
-	params['query']['query_ss_type'] = args.query_ss_type
-	params['query']['query_mode'] = args.query_mode
-	params['query']['query_input'] = args.query_input
-	params['query']['query_file_sep'] = args.query_file_sep
-	params['query']['query_file'] = args.query_file
+	if not isinstance(args.query_ss_type, None.__class__):
+		params['query']['query_ss_type'] = args.query_ss_type
+	if not isinstance(args.query_mode, None.__class__):
+		params['query']['query_mode'] = args.query_mode
+	if not isinstance(args.query_input, None.__class__):
+		params['query']['query_input'] = args.query_input
+	if not isinstance(args.query_file_sep, None.__class__):
+		params['query']['query_file_sep'] = args.query_file_sep
+	if not isinstance(args.query_file, None.__class__):
+		params['query']['query_file'] = args.query_file
 
 	# set ss parameters
-	params['ss']['ss_root'] = args.ss_category
-	params['ss']['use_enhanced'] = args.ss_enhanced
-	params['ss']['tss_measure'] = args.tss_measure
-	params['ss']['tss_mix'] = args.tss_mix
-	# params['oss_measure'] = oss_measure
-	# params['oss_mix'] = oss_mix
+	if not isinstance(args.ss_category, None.__class__):
+		params['ss']['ss_root'] = args.ss_category
+	if not isinstance(args.ss_enhanced, None.__class__):
+		params['ss']['use_enhanced'] = args.ss_enhanced
+	if not isinstance(args.tss_measure, None.__class__):
+		params['ss']['tss_measure'] = args.tss_measure
+	if not isinstance(args.tss_mix, None.__class__):
+		params['ss']['tss_mix'] = args.tss_mix
 
 	# set output parameters
-	params['output']['cut_thres'] = args.output_cut
-	params['output']['out_file'] = args.output_file
-	params['output']['cut_nan'] = args.output_remove_nan
+	if not isinstance(args.output_cut, None.__class__):
+		params['output']['cut_thres'] = args.output_cut
+	if not isinstance(args.output_file, None.__class__):
+		params['output']['out_file'] = args.output_file
+	if not isinstance(args.output_remove_nan, None.__class__):
+		params['output']['cut_nan'] = args.output_remove_nan
 
 	# set output parameters
-	params['stats']['IC'] = args.stats_IC
+	if not isinstance(args.stats_IC, None.__class__):
+		params['stats']['IC'] = args.stats_IC
 
 	# Load/write configuration to/from file	
 	save_params = args.save_params
 	if not save_params == None:
-		# save_params = save_params[0]
-		save_params_to_file(save_params, args)
-	params['core']['save_params'] = save_params
-
+		save_params_to_file(save_params)
+		params['core']['save_params'] = save_params
 	return params
 #
 
@@ -1095,7 +1214,7 @@ def load_IC_from_file(list_file, separator = '\t'):
 		# if not str(line[1]) == 'None': 
 			# line[1] = float(line[1])
 		# IC[line[0]] = line[1]
-		temo = ontology.name2id(line[0])
+		temo = ontology.id2node(line[0])
 		if type(temo) == list:
 			if len(temo) == 1:
 				temo = temo[0]

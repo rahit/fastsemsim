@@ -71,8 +71,11 @@ setup(
           'pandas',
       ],
     scripts=[
-        'fastsemsim/bin/fastsemsim.sh',
-        'fastsemsim/bin/fastsemsim',
+        # 'fastsemsim/bin/fastsemsim.sh',
+        # 'fastsemsim/bin/fastsemsim',
     ],
+    entry_points = {
+        'console_scripts': ['fastsemsim = fastsemsim.fastsemsim_cmdline:start']
+    },
     include_package_data=True,
 )
