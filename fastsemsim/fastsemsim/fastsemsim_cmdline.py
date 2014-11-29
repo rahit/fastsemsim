@@ -282,7 +282,7 @@ def load_params_from_file(list_file):
 	for line in h:
 		line = line.rstrip('\n')
 		line = line.rstrip('\r')
-		line = line.rsplit('\t')
+		line = line.split('\t', 2)
 		gstr.append(line)
 		if len(line) < 3:
 			raise Exception("Malformatted configuration file. Line: " + str(line))
