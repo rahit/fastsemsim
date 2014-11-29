@@ -220,7 +220,7 @@ def build_cmdline_args_parser():
 	param_stats = parser.add_argument_group(title='Stats parameters', description=params_help['stats'])
 
 	param_core.add_argument('--inject_IC', '--inject_IC_form_file', action='store', default=None, help=params_help['IC_table_form_file'], metavar='inject_IC', dest='inject_IC')
-	param_core.add_argument('--verbose', '-v', action='count', default=0, help=params_help['verbose'], dest='verbose')
+	param_core.add_argument('--verbose', '-v', action='count', default=None, help=params_help['verbose'], dest='verbose')
 	param_core.add_argument('--save_params', default=None, help=params_help['save_params'], metavar='save_params', dest='save_params')
 	param_core.add_argument('--load_params', default=None, help=params_help['load_params'], metavar='load_params', dest='load_params')
 	param_core.add_argument('--task', action='store', default=None, choices=['SS', 'stats'], help=params_help['task'], metavar='task', dest='task')
@@ -293,10 +293,11 @@ def load_params_from_file(list_file):
 			value = value[1:(len(value)-1)]
 		elif value.startswith("[") and value.endswith("]"): # text
 			value = value[1:(len(value)-1)]
-			value = value.rsplit(',')
 			values = list()
-			for i in value:
-				values.append(i.strip(" ").strip("'"))
+			if len(value) > 0:
+				value = value.rsplit(',')
+				for i in value:
+					values.append(i.strip(" ").strip("'"))
 			value = values
 		elif value == 'None':
 			value = None
@@ -427,8 +428,8 @@ def set_parameters(args):
 	# params['ontology']['ontology_file_format'] = None
 	# if not isinstance(args.ontology_ignore, None.__class__):
 		# params['ontology']['ignore'] = list(set(args.ontology_ignore))
-
-	params['core']['verbose'] = args.verbose
+	if not isinstance(args.verbose, None.__class__):
+		params['core']['verbose'] = args.verbose
 
 	# load parameters from file, if specified
 	load_params = args.load_params
@@ -437,7 +438,8 @@ def set_parameters(args):
 		params['core']['load_params'] = load_params
 
 	# set core parameters
-	params['core']['verbose'] = args.verbose
+	if not isinstance(args.verbose, None.__class__):
+		params['core']['verbose'] = args.verbose
 	if not isinstance(args.inject_IC, None.__class__):
 		params['core']['inject_IC'] = args.inject_IC
 	if not isinstance(args.task, None.__class__):
@@ -1091,7 +1093,8 @@ def ss_pairs(out):
 				prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
 				sys.stdout.write(prev_text)
 				sys.stdout.flush()
-	temptab.to_csv(out, sep="\t", header=False, index=False)
+	if not out is None:
+		temptab.to_csv(out, sep="\t", header=False, index=False)
 	#return scores
 #
 
@@ -1148,7 +1151,8 @@ def ss_pairwise(out):
 					prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
 					sys.stdout.write(prev_text)
 					sys.stdout.flush()
-	temptab.to_csv(out, sep="\t", header=False, index=False)
+	if not out is None:
+		temptab.to_csv(out, sep="\t", header=False, index=False)
 	#return scores
 #
 
