@@ -9,5 +9,7 @@ Example: if fastSemSim has been downloaded in a folder with path 'path-to-x', th
 	export PYTHONPATH=$PYTHONPATH:'path-to-x'
 
 before executing any fastSemSim test. Under Windows, set the python library path variable from Control Panel.
+Please note that you still need to install the Python packages required by fastSemSim (e.g. pandas).
 
-If you installed fastSemSim, you should be able to run any test script.
+Instead, if you installed fastSemSim correctly, you should be able to run any test script without setting any additional environment variable.
+

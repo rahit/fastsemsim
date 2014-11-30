@@ -280,6 +280,8 @@ def load_params_from_file(list_file):
 	gstr = []
 	h = open(list_file,'r')
 	for line in h:
+		if line.startswith("#"):
+			continue
 		line = line.rstrip('\n')
 		line = line.rstrip('\r')
 		line = line.split('\t', 2)
@@ -420,14 +422,6 @@ def set_parameters(args):
 	'''
 	global params
 
-	# Example in case of multiple list
-	# ontology_file = args.ontology_file
-	# if not ontology_file == None:
-		# ontology_file = ontology_file[0]
-	# params['ontology']['ontology_file'] = ontology_file
-	# params['ontology']['ontology_file_format'] = None
-	# if not isinstance(args.ontology_ignore, None.__class__):
-		# params['ontology']['ignore'] = list(set(args.ontology_ignore))
 	if not isinstance(args.verbose, None.__class__):
 		params['core']['verbose'] = args.verbose
 
