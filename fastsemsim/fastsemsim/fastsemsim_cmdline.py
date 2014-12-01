@@ -55,20 +55,20 @@ def start():
 
 	# ----- Set parameters
 	init_parameters()
+	cmdline = sys.argv[1:]
+	if len(cmdline) == 0:
+		cmdline = ['-h']
 	parser = build_cmdline_args_parser()
-	args = parser.parse_args(sys.argv[1:])
+	args = parser.parse_args(cmdline)
 	set_parameters(args)
 	params['core']['program_dir'] = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
 	# params['program_dir'] = '.' # use this with py2exe to build a working binary
 	check_ack = check_parameters()
+	if params['core']['verbose'] >= 2:
+		print_parameters()
 	if not check_ack:
-		print "Invalid parameters"
-		if params['core']['verbose'] >= 3:
-			print_parameters()
+		print "Invalid input parameters"
 		sys.exit()
-	else:
-		if params['core']['verbose'] >= 1:
-			print_parameters()
 
 	# ----- Load ontology and (optionally) ac
 	ontology = load_ontology()
@@ -382,7 +382,7 @@ def init_parameters():
 	params['core']['program_dir'] = None
 	params['core']['load_params'] = None
 	params['core']['save_params'] = None
-	params['core']['verbose'] = 0
+	params['core']['verbose'] = 1
 	params['core']['inject_IC'] = None
 	params['core']['task'] = None
 	params['ontology']['ontology_file'] = None
@@ -423,7 +423,7 @@ def set_parameters(args):
 	global params
 
 	if not isinstance(args.verbose, None.__class__):
-		params['core']['verbose'] = args.verbose
+		params['core']['verbose'] = args.verbose + 1
 
 	# load parameters from file, if specified
 	load_params = args.load_params
@@ -433,7 +433,7 @@ def set_parameters(args):
 
 	# set core parameters
 	if not isinstance(args.verbose, None.__class__):
-		params['core']['verbose'] = args.verbose
+		params['core']['verbose'] = args.verbose + 1
 	if not isinstance(args.inject_IC, None.__class__):
 		params['core']['inject_IC'] = args.inject_IC
 	if not isinstance(args.task, None.__class__):
@@ -521,8 +521,8 @@ def check_parameters():
 	'''
 	global params
 
-	if params['core']['verbose'] >= 3:
-		print "# Raw parameters"
+	if params['core']['verbose'] >= 4:
+		print "# Raw parameters before parameters check"
 		print str(params)
 		print "# \n"
 
@@ -976,7 +976,7 @@ def load_query_from_file():
 	global params
 
 	if params['core']['verbose'] >= 3:
-		print "Loading query from " + str(params['query']['query_file'])
+		print "Loading query from file " + str(params['query']['query_file'])
 	
 	h = open(params['query']['query_file'],'r')
 	query = []
