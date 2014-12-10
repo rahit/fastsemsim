@@ -1,81 +1,81 @@
 # -*- coding: iso-8859-1 -*-
+
+# Copyright 2011-2013 Marco Mina. All rights reserved.
+
+# This file is part of fastSemSim
+
+# fastSemSim is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# fastSemSim is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
+
+# @mail marco.mina.85@gmail.com
+# @version 2.0
+# @desc Ontology is the basic class representing ontologies representable with multirooted connected DAGs.
+
+
 '''
-Copyright 2011-2013 Marco Mina. All rights reserved.
-
-This file is part of fastSemSim
-
-fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
-
-@mail marco.mina.85@gmail.com
-@version 2.0
-@desc Ontology is the basic class representing ontologies representable with multirooted connected DAGs.
-'''
-
-"""
 Supported ontologies are those representable as multirooted DAGs. It is not required DAGs to be disconnected, but 'inter-DAG' edges are required to be specified. Class Ontology provides a function is_consistent that checks whether this contraints is satisfied. Inconsistent DAGs are NOT currently usable.
 
 Different datastructures can be used to represent ontologies. The section Variables lists a set of different alternatives. Currently Ontology is tuned for using a parent-children and a node-edge representation.
 
 Superclasses can extend the basic datastructure with additional layers of information. 
-"""
-
 '''
-	_use_parent_children_ = True
-	_use_node_edges_ = True
 
-	# available_data_structs = ('dicts', '')
-	roots = {} # ids of roots 
-	# data_structs = []
 
-# data struct 1: nodes and edges
-	nodes = {} # each node is a list of edge ids
-	edges = {} # dict. Each key is an attrib of the edge
+# 	_use_parent_children_ = True
+# 	_use_node_edges_ = True
 
-	# variant 1(1a)
-	# edges['inter'] = [] # list. Whether the edge is inter-category or not
-	# variant 1(1b)
-	edges['inter'] = {} # list. Whether the edge is inter-category or not
+# 	# available_data_structs = ('dicts', '')
+# 	roots = {} # ids of roots 
+# 	# data_structs = []
 
-	# variant 1(2a)
-	# edges['parent'] = [] # list. Parent node id
-	# edges['child'] = [] # list. Child node id
-	# variant 1(2b)
-	edges['nodes'] = [] # list. (parent, child) node ids
+# # data struct 1: nodes and edges
+# 	nodes = {} # each node is a list of edge ids
+# 	edges = {} # dict. Each key is an attrib of the edge
 
-	# additional 1(3a)
-	# edges['attrib'] = [] # list. Additional attributes
+# 	# variant 1(1a)
+# 	# edges['inter'] = [] # list. Whether the edge is inter-category or not
+# 	# variant 1(1b)
+# 	edges['inter'] = {} # list. Whether the edge is inter-category or not
+
+# 	# variant 1(2a)
+# 	# edges['parent'] = [] # list. Parent node id
+# 	# edges['child'] = [] # list. Child node id
+# 	# variant 1(2b)
+# 	edges['nodes'] = [] # list. (parent, child) node ids
+
+# 	# additional 1(3a)
+# 	# edges['attrib'] = [] # list. Additional attributes
 	
-# data struct 2: nodes and edges, edges handled as table using numpy
-	# import numpy as np
-	# nodes = {} # each node is a list of edge ids
-	# edges = np.zeros(shape=(0,3)) # numpy array. column 1: parent, column 2: child, column 3: inter-category, column 4: attribs
-	# FIX PROBLEM OF ONLY INT IN MATRIX
+# # data struct 2: nodes and edges, edges handled as table using numpy
+# 	# import numpy as np
+# 	# nodes = {} # each node is a list of edge ids
+# 	# edges = np.zeros(shape=(0,3)) # numpy array. column 1: parent, column 2: child, column 3: inter-category, column 4: attribs
+# 	# FIX PROBLEM OF ONLY INT IN MATRIX
 
-# data struct 3: parents and children
-	#variant 3(1a)
-	parents = {} # dict. key: node id, value: dict of parents {}
-	children = {} # dict. key: node id, value: dict of children {}
-	#variant 3(1b)
-	# parents = [] # list. pos: node id, value: dict of parents {}
-	# children = [] # list. pos: node id, value: dict of children {}
+# # data struct 3: parents and children
+# 	#variant 3(1a)
+# 	parents = {} # dict. key: node id, value: dict of parents {}
+# 	children = {} # dict. key: node id, value: dict of children {}
+# 	#variant 3(1b)
+# 	# parents = [] # list. pos: node id, value: dict of parents {}
+# 	# children = [] # list. pos: node id, value: dict of children {}
 
-# ? node names are int and sequential? We assume they are NOT. It implies variant 3(1b) requires a mapping structure as well. It implies a potential overhead?
+# # ? node names are int and sequential? We assume they are NOT. It implies variant 3(1b) requires a mapping structure as well. It implies a potential overhead?
 
-# data struct 3: ??
-	# alt_id = None
-	# obsolete_ids = None
-'''
+# # data struct 3: ??
+# 	# alt_id = None
+# 	# obsolete_ids = None
+
 
 
 import pandas as pd
@@ -94,7 +94,9 @@ import numpy as np
 	# relationship_tag = "relationship"
 
 class Ontology(object):
-
+	'''
+	Base class for the representation of an ontology. It currently supports any multi-rooted DAG (Directed Acyclic Graph).
+	'''
 	debug = False
 	gen_error = False
 
