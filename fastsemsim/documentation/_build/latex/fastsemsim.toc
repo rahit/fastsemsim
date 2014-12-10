@@ -1,0 +1,60 @@
+\select@language {english}
+\contentsline {chapter}{\numberline {1}Code}{3}{chapter.1}
+\contentsline {chapter}{\numberline {2}fastsemsim package}{5}{chapter.2}
+\contentsline {section}{\numberline {2.1}Subpackages}{5}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}fastsemsim.Ontology package}{5}{subsection.2.1.1}
+\contentsline {subsubsection}{Submodules}{5}{subsubsection*.5}
+\contentsline {subsubsection}{fastsemsim.Ontology.AnnotationCorpus module}{5}{subsubsection*.6}
+\contentsline {subsubsection}{fastsemsim.Ontology.CellOntology module}{7}{subsubsection*.51}
+\contentsline {subsubsection}{fastsemsim.Ontology.DiseaseOntology module}{7}{subsubsection*.55}
+\contentsline {subsubsection}{fastsemsim.Ontology.FFOntology module}{7}{subsubsection*.59}
+\contentsline {subsubsection}{fastsemsim.Ontology.GAF2AnnotationCorpus module}{8}{subsubsection*.65}
+\contentsline {subsubsection}{fastsemsim.Ontology.GOAnnotationCorpus module}{8}{subsubsection*.73}
+\contentsline {subsubsection}{fastsemsim.Ontology.GeneOntology module}{10}{subsubsection*.107}
+\contentsline {subsubsection}{fastsemsim.Ontology.Ontology module}{10}{subsubsection*.109}
+\contentsline {subsubsection}{fastsemsim.Ontology.PlainAnnotationCorpus module}{11}{subsubsection*.121}
+\contentsline {subsubsection}{fastsemsim.Ontology.ontologies module}{11}{subsubsection*.127}
+\contentsline {subsubsection}{Module contents}{12}{subsubsection*.172}
+\contentsline {subsection}{\numberline {2.1.2}fastsemsim.SemSim package}{13}{subsection.2.1.2}
+\contentsline {subsubsection}{Submodules}{13}{subsubsection*.173}
+\contentsline {subsubsection}{fastsemsim.SemSim.BMASemSim module}{13}{subsubsection*.174}
+\contentsline {subsubsection}{fastsemsim.SemSim.CosineSemSim module}{13}{subsubsection*.177}
+\contentsline {subsubsection}{fastsemsim.SemSim.CzekanowskiDiceSemSim module}{14}{subsubsection*.183}
+\contentsline {subsubsection}{fastsemsim.SemSim.DiceSemSim module}{14}{subsubsection*.188}
+\contentsline {subsubsection}{fastsemsim.SemSim.GSESAMESemSim module}{15}{subsubsection*.193}
+\contentsline {subsubsection}{fastsemsim.SemSim.JaccardSemSim module}{15}{subsubsection*.205}
+\contentsline {subsubsection}{fastsemsim.SemSim.JiangConrathSemSim module}{16}{subsubsection*.210}
+\contentsline {subsubsection}{fastsemsim.SemSim.LinSemSim module}{16}{subsubsection*.214}
+\contentsline {subsubsection}{fastsemsim.SemSim.MixSemSim module}{16}{subsubsection*.218}
+\contentsline {subsubsection}{fastsemsim.SemSim.ObjSemSim module}{17}{subsubsection*.221}
+\contentsline {subsubsection}{fastsemsim.SemSim.ObjSetSemSim module}{17}{subsubsection*.224}
+\contentsline {subsubsection}{fastsemsim.SemSim.ResnikSemSim module}{18}{subsubsection*.227}
+\contentsline {subsubsection}{fastsemsim.SemSim.SemSimUtils module}{18}{subsubsection*.231}
+\contentsline {subsubsection}{fastsemsim.SemSim.SetSemSim module}{19}{subsubsection*.253}
+\contentsline {subsubsection}{fastsemsim.SemSim.SimGICSemSim module}{19}{subsubsection*.256}
+\contentsline {subsubsection}{fastsemsim.SemSim.SimICNDSemSim module}{20}{subsubsection*.260}
+\contentsline {subsubsection}{fastsemsim.SemSim.SimICNPSemSim module}{20}{subsubsection*.272}
+\contentsline {subsubsection}{fastsemsim.SemSim.SimICSemSim module}{21}{subsubsection*.284}
+\contentsline {subsubsection}{fastsemsim.SemSim.SimNTOSemSim module}{21}{subsubsection*.289}
+\contentsline {subsubsection}{fastsemsim.SemSim.SimRelSemSim module}{22}{subsubsection*.294}
+\contentsline {subsubsection}{fastsemsim.SemSim.SimTOSemSim module}{22}{subsubsection*.299}
+\contentsline {subsubsection}{fastsemsim.SemSim.SimUISemSim module}{23}{subsubsection*.303}
+\contentsline {subsubsection}{fastsemsim.SemSim.TermSemSim module}{23}{subsubsection*.307}
+\contentsline {subsubsection}{fastsemsim.SemSim.avgSemSim module}{24}{subsubsection*.317}
+\contentsline {subsubsection}{fastsemsim.SemSim.maxSemSim module}{24}{subsubsection*.319}
+\contentsline {subsubsection}{Module contents}{24}{subsubsection*.321}
+\contentsline {subsection}{\numberline {2.1.3}fastsemsim.data package}{25}{subsection.2.1.3}
+\contentsline {subsubsection}{Submodules}{25}{subsubsection*.325}
+\contentsline {subsubsection}{fastsemsim.data.dataset module}{25}{subsubsection*.326}
+\contentsline {subsubsection}{Module contents}{25}{subsubsection*.335}
+\contentsline {subsection}{\numberline {2.1.4}fastsemsim.examples package}{26}{subsection.2.1.4}
+\contentsline {subsubsection}{Submodules}{26}{subsubsection*.336}
+\contentsline {subsubsection}{fastsemsim.examples.load\_annotation\_corpus module}{26}{subsubsection*.337}
+\contentsline {subsubsection}{fastsemsim.examples.load\_ontology module}{26}{subsubsection*.338}
+\contentsline {subsubsection}{Module contents}{26}{subsubsection*.339}
+\contentsline {section}{\numberline {2.2}Submodules}{27}{section.2.2}
+\contentsline {section}{\numberline {2.3}fastsemsim.fastsemsim\_cmdline module}{27}{section.2.3}
+\contentsline {section}{\numberline {2.4}Module contents}{28}{section.2.4}
+\contentsline {chapter}{\numberline {3}Indices and tables}{29}{chapter.3}
+\contentsline {chapter}{Python Module Index}{31}{section*.360}
+\contentsline {chapter}{Index}{33}{section*.361}

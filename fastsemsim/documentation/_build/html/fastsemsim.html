@@ -1,0 +1,341 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>fastsemsim package &mdash; fastsemsim 0.9 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="fastsemsim 0.9 documentation" href="index.html" />
+    <link rel="next" title="fastsemsim.Ontology package" href="fastsemsim.Ontology.html" />
+    <link rel="prev" title="Code" href="code.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fastsemsim.Ontology.html" title="fastsemsim.Ontology package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="code.html" title="Code"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">fastsemsim 0.9 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="fastsemsim-package">
+<h1>fastsemsim package<a class="headerlink" href="#fastsemsim-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="fastsemsim.Ontology.html">fastsemsim.Ontology package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.Ontology.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.Ontology.html#module-fastsemsim.Ontology.AnnotationCorpus">fastsemsim.Ontology.AnnotationCorpus module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.Ontology.html#module-fastsemsim.Ontology.CellOntology">fastsemsim.Ontology.CellOntology module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.Ontology.html#module-fastsemsim.Ontology.DiseaseOntology">fastsemsim.Ontology.DiseaseOntology module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.Ontology.html#module-fastsemsim.Ontology.FFOntology">fastsemsim.Ontology.FFOntology module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.Ontology.html#module-fastsemsim.Ontology.GAF2AnnotationCorpus">fastsemsim.Ontology.GAF2AnnotationCorpus module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.Ontology.html#module-fastsemsim.Ontology.GOAnnotationCorpus">fastsemsim.Ontology.GOAnnotationCorpus module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.Ontology.html#module-fastsemsim.Ontology.GeneOntology">fastsemsim.Ontology.GeneOntology module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.Ontology.html#module-fastsemsim.Ontology.Ontology">fastsemsim.Ontology.Ontology module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.Ontology.html#module-fastsemsim.Ontology.PlainAnnotationCorpus">fastsemsim.Ontology.PlainAnnotationCorpus module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.Ontology.html#module-fastsemsim.Ontology.ontologies">fastsemsim.Ontology.ontologies module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.Ontology.html#module-fastsemsim.Ontology">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fastsemsim.SemSim.html">fastsemsim.SemSim package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.BMASemSim">fastsemsim.SemSim.BMASemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.CosineSemSim">fastsemsim.SemSim.CosineSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.CzekanowskiDiceSemSim">fastsemsim.SemSim.CzekanowskiDiceSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.DiceSemSim">fastsemsim.SemSim.DiceSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.GSESAMESemSim">fastsemsim.SemSim.GSESAMESemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.JaccardSemSim">fastsemsim.SemSim.JaccardSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.JiangConrathSemSim">fastsemsim.SemSim.JiangConrathSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.LinSemSim">fastsemsim.SemSim.LinSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.MixSemSim">fastsemsim.SemSim.MixSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.ObjSemSim">fastsemsim.SemSim.ObjSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.ObjSetSemSim">fastsemsim.SemSim.ObjSetSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.ResnikSemSim">fastsemsim.SemSim.ResnikSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.SemSimUtils">fastsemsim.SemSim.SemSimUtils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.SetSemSim">fastsemsim.SemSim.SetSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.SimGICSemSim">fastsemsim.SemSim.SimGICSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.SimICNDSemSim">fastsemsim.SemSim.SimICNDSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.SimICNPSemSim">fastsemsim.SemSim.SimICNPSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.SimICSemSim">fastsemsim.SemSim.SimICSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.SimNTOSemSim">fastsemsim.SemSim.SimNTOSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.SimRelSemSim">fastsemsim.SemSim.SimRelSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.SimTOSemSim">fastsemsim.SemSim.SimTOSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.SimUISemSim">fastsemsim.SemSim.SimUISemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.TermSemSim">fastsemsim.SemSim.TermSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.avgSemSim">fastsemsim.SemSim.avgSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim.maxSemSim">fastsemsim.SemSim.maxSemSim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#module-fastsemsim.SemSim">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fastsemsim.data.html">fastsemsim.data package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.data.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.data.html#module-fastsemsim.data.dataset">fastsemsim.data.dataset module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.data.html#module-fastsemsim.data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fastsemsim.examples.html">fastsemsim.examples package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.examples.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.examples.html#module-fastsemsim.examples.load_annotation_corpus">fastsemsim.examples.load_annotation_corpus module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.examples.html#module-fastsemsim.examples.load_ontology">fastsemsim.examples.load_ontology module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.examples.html#module-fastsemsim.examples">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-fastsemsim.fastsemsim_cmdline">
+<span id="fastsemsim-fastsemsim-cmdline-module"></span><h2>fastsemsim.fastsemsim_cmdline module<a class="headerlink" href="#module-fastsemsim.fastsemsim_cmdline" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2011 Marco Mina. All rights reserved.</p>
+<p>This file is part of fastSemSim</p>
+<p>fastSemSim is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>fastSemSim is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License
+along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.build_cmdline_args_parser">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">build_cmdline_args_parser</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.build_cmdline_args_parser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a cmdline arg parser</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.check_parameters">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">check_parameters</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.check_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether the set of parameters is formally correct to run a query</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.det_ss">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">det_ss</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.det_ss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine SS</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.init_parameters">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">init_parameters</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.init_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize parameters</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.init_ss">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">init_ss</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.init_ss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize SS class</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.load_IC_from_file">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">load_IC_from_file</tt><big>(</big><em>list_file</em>, <em>separator='\t'</em><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.load_IC_from_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.load_ac">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">load_ac</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.load_ac" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the Annotation Corpus</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.load_ontology">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">load_ontology</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.load_ontology" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load ontology</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.load_params_from_file">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">load_params_from_file</tt><big>(</big><em>list_file</em><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.load_params_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load parameters from file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.load_query">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">load_query</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.load_query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the query</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.load_query_from_file">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">load_query_from_file</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.load_query_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load query from a file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.prbool">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">prbool</tt><big>(</big><em>string</em><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.prbool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse boolean parameters</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.print_IC">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">print_IC</tt><big>(</big><em>IC</em>, <em>out</em>, <em>cut_thres=None</em>, <em>cut_nan=False</em><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.print_IC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.print_err">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">print_err</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.print_err" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.print_parameters">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">print_parameters</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.print_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the parameters selected</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.save_params_to_file">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">save_params_to_file</tt><big>(</big><em>list_file</em><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.save_params_to_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save parameters to file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.set_parameters">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">set_parameters</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.set_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>fill the parameter dictionary with the proper parameters</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.ss_pairs">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">ss_pairs</tt><big>(</big><em>out</em><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.ss_pairs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pairwise Semantic Similarity</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.ss_pairwise">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">ss_pairwise</tt><big>(</big><em>out</em><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.ss_pairwise" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fastsemsim.fastsemsim_cmdline.start">
+<tt class="descclassname">fastsemsim.fastsemsim_cmdline.</tt><tt class="descname">start</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.fastsemsim_cmdline.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>main routine</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-fastsemsim">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-fastsemsim" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2011 Marco Mina. All rights reserved.</p>
+<p>This file is part of fastSemSim</p>
+<p>fastSemSim is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>fastSemSim is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License
+along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">fastsemsim package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.fastsemsim_cmdline">fastsemsim.fastsemsim_cmdline module</a></li>
+<li><a class="reference internal" href="#module-fastsemsim">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="code.html"
+                        title="previous chapter">Code</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="fastsemsim.Ontology.html"
+                        title="next chapter">fastsemsim.Ontology package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/fastsemsim.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fastsemsim.Ontology.html" title="fastsemsim.Ontology package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="code.html" title="Code"
+             >previous</a> |</li>
+        <li><a href="index.html">fastsemsim 0.9 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Marco Mina.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
