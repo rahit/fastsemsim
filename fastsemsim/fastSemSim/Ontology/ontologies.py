@@ -23,7 +23,7 @@
 
 
 """
-Current implementation can only handle single-scope ontologies.
+Set of functions to parse and handle ontologies.
 """
 
 import types

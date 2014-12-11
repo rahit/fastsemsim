@@ -19,14 +19,12 @@
 
 
 '''
-TermSemSim class
+This class provides the prototype for Term semantic similarity measures (TSS)
 
-This class provides the prototype for a generic Term Semantic Similarity measure (TSS)
+There are two types of Term semantic similarity: a first group that can evaluate the semantic similarity between two sets of terms (groupwise - G_TSS), and a second group that can only evaluate the similarity between pairs of GO terms (pairwise - P_TSS). Each class extending TermSemSim should declare whether it is groupwise or pairwise.
 
-There are two types of Term Sem Sim: those which evaluate the semantic similarity between two sets of terms (groupwise - G_TSS), and those which can only evaluate the similarity between pairs of GO terms (pairwise - P_TSS). Each class extending TermSemSim should declare whether it is groupwise or pairwise.
-
-TermSemSim relies on SemSimUtils to perform a lot of tasks (such as evaluating Term IC or common ancestors)
-a SemSimUtils object can be passed to the constructor as input data. Otherwise, a new instance will be created. Using only one copy of SemSimUtils helps reducing time and spece requirements and is strongly adviced.
+TermSemSim relies on SemSimUtils to perform a lot of tasks (e.g. evaluating Term IC or common ancestors).
+A SemSimUtils object can be passed to the constructor as input data. Otherwise, a new instance will be created. Using only one copy of SemSimUtils helps reducing time and space requirements and is strongly recommended.
 '''
 
 from fastsemsim.Ontology import AnnotationCorpus

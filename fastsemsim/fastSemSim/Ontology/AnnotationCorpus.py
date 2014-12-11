@@ -1,22 +1,21 @@
 # -*- coding: iso-8859-1 -*-
-'''
-Copyright 2011 Marco Mina. All rights reserved.
 
-This file is part of fastSemSim
+# Copyright 2011 Marco Mina. All rights reserved.
 
-fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+# This file is part of fastSemSim
 
-fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+# fastSemSim is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
-'''
+# fastSemSim is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 
 '''
 This class provides a unified interface to handle Annotation Corpora.
@@ -37,23 +36,24 @@ specific_parameters: parameter that should be used to load a particular file for
 
 Each type of file carries different types of information. How to deal with that? Every operation is rerouted to the original file parser, that will take care of it. This is good since it avoids to duplicate data. 
 
+**Constraint**: an Ontology MUST be loaded and provided as an AnnotationCorpus object is istantiated.
 '''
 
-'''
-Tentative class for loading generic Annotation Corpora.
-Constraint: an Ontology MUST be loaded and provided as an AnnotationCorpus object is istantiated.
-AnnotationCorpus relies on the functions and datastructures of the Ontology to map the IDS properly.
 
-Requires:
-	GO:
-		roots
-		name2id
-		id2name
-		nodes
-		edges
-		alt_ids
-		?obsolete?
-'''
+# Tentative class for loading generic Annotation Corpora.
+# Constraint: an Ontology MUST be loaded and provided as an AnnotationCorpus object is istantiated.
+# AnnotationCorpus relies on the functions and datastructures of the Ontology to map the IDS properly.
+
+# Requires:
+# 	GO:
+# 		roots
+# 		name2id
+# 		id2name
+# 		nodes
+# 		edges
+# 		alt_ids
+# 		?obsolete?
+
 
 import sys
 import copy

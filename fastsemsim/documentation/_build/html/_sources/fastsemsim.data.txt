@@ -1,10 +1,12 @@
-fastsemsim.data package
-=======================
+fastsemsim.data module
+======================
 
-Submodules
-----------
+.. automodule:: fastsemsim.data
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
-fastsemsim.data.dataset module
+fastsemsim.data.dataset submodule
 ------------------------------
 
 .. automodule:: fastsemsim.data.dataset
@@ -12,11 +14,3 @@ fastsemsim.data.dataset module
     :undoc-members:
     :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: fastsemsim.data
-    :members:
-    :undoc-members:
-    :show-inheritance:

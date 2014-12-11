@@ -1,19 +1,84 @@
-\indexentry{Ontology (module)|hyperpage}{3}
-\indexentry{Ontology (in module Ontology)|hyperpage}{3}
-\indexentry{SemSim (module)|hyperpage}{3}
+\indexentry{fastsemsim.Ontology (module)|hyperpage}{3}
+\indexentry{fastsemsim.Ontology.ontologies (module)|hyperpage}{3}
+\indexentry{OboParser (class in fastsemsim.Ontology.ontologies)|hyperpage}{3}
+\indexentry{alt\_id\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{3}
+\indexentry{comment\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{3}
+\indexentry{consider\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{3}
+\indexentry{def\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{3}
+\indexentry{delimiter\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{3}
+\indexentry{find\_next\_term() (fastsemsim.Ontology.ontologies.OboParser method)|hyperpage}{3}
+\indexentry{has\_tag\_structure() (fastsemsim.Ontology.ontologies.OboParser method)|hyperpage}{3}
+\indexentry{id\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{3}
+\indexentry{is\_a\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{3}
+\indexentry{is\_obsolete\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{3}
+\indexentry{name\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{3}
+\indexentry{namespace\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{3}
+\indexentry{parse() (fastsemsim.Ontology.ontologies.OboParser method)|hyperpage}{3}
+\indexentry{relationship\_delimiter\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{3}
+\indexentry{relationship\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{3}
+\indexentry{replaced\_by\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{3}
+\indexentry{split\_rel\_tag() (fastsemsim.Ontology.ontologies.OboParser method)|hyperpage}{3}
+\indexentry{split\_tag() (fastsemsim.Ontology.ontologies.OboParser method)|hyperpage}{3}
+\indexentry{term\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{3}
+\indexentry{typedef\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{3}
+\indexentry{OboXmlParser (class in fastsemsim.Ontology.ontologies)|hyperpage}{4}
+\indexentry{alt\_id\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{4}
+\indexentry{characters() (fastsemsim.Ontology.ontologies.OboXmlParser method)|hyperpage}{4}
+\indexentry{comment\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{4}
+\indexentry{consider\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{4}
+\indexentry{def\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{4}
+\indexentry{delimiter\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{4}
+\indexentry{endElement() (fastsemsim.Ontology.ontologies.OboXmlParser method)|hyperpage}{4}
+\indexentry{id\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{4}
+\indexentry{is\_a\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{4}
+\indexentry{is\_obsolete\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{4}
+\indexentry{name\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{4}
+\indexentry{namespace\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{4}
+\indexentry{part\_of\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{4}
+\indexentry{relationship\_delimiter\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{4}
+\indexentry{relationship\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{4}
+\indexentry{relationship\_to\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{4}
+\indexentry{relationship\_type\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{4}
+\indexentry{replaced\_by\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{4}
+\indexentry{startElement() (fastsemsim.Ontology.ontologies.OboXmlParser method)|hyperpage}{4}
+\indexentry{term\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{4}
+\indexentry{load() (in module fastsemsim.Ontology.ontologies)|hyperpage}{4}
+\indexentry{parse() (in module fastsemsim.Ontology.ontologies)|hyperpage}{4}
+\indexentry{fastsemsim.Ontology.Ontology (module)|hyperpage}{4}
+\indexentry{Ontology (class in fastsemsim.Ontology.Ontology)|hyperpage}{4}
+\indexentry{debug (fastsemsim.Ontology.Ontology.Ontology attribute)|hyperpage}{4}
+\indexentry{det\_roots() (fastsemsim.Ontology.Ontology.Ontology method)|hyperpage}{5}
+\indexentry{edge\_number() (fastsemsim.Ontology.Ontology.Ontology method)|hyperpage}{5}
+\indexentry{gen\_error (fastsemsim.Ontology.Ontology.Ontology attribute)|hyperpage}{5}
+\indexentry{id2node() (fastsemsim.Ontology.Ontology.Ontology method)|hyperpage}{5}
+\indexentry{is\_consistent() (fastsemsim.Ontology.Ontology.Ontology method)|hyperpage}{5}
+\indexentry{is\_valid() (fastsemsim.Ontology.Ontology.Ontology method)|hyperpage}{5}
+\indexentry{name2node() (fastsemsim.Ontology.Ontology.Ontology method)|hyperpage}{5}
+\indexentry{node2id() (fastsemsim.Ontology.Ontology.Ontology method)|hyperpage}{5}
+\indexentry{node\_number() (fastsemsim.Ontology.Ontology.Ontology method)|hyperpage}{5}
+\indexentry{fastsemsim.Ontology.GeneOntology (module)|hyperpage}{5}
+\indexentry{GeneOntology (class in fastsemsim.Ontology.GeneOntology)|hyperpage}{5}
+\indexentry{fastsemsim.Ontology.CellOntology (module)|hyperpage}{5}
+\indexentry{CellOntology (class in fastsemsim.Ontology.CellOntology)|hyperpage}{5}
+\indexentry{alt\_ids (fastsemsim.Ontology.CellOntology.CellOntology attribute)|hyperpage}{5}
+\indexentry{obsolete\_ids (fastsemsim.Ontology.CellOntology.CellOntology attribute)|hyperpage}{5}
+\indexentry{fastsemsim.Ontology.DiseaseOntology (module)|hyperpage}{5}
+\indexentry{DiseaseOntology (class in fastsemsim.Ontology.DiseaseOntology)|hyperpage}{5}
+\indexentry{alt\_ids (fastsemsim.Ontology.DiseaseOntology.DiseaseOntology attribute)|hyperpage}{5}
+\indexentry{obsolete\_ids (fastsemsim.Ontology.DiseaseOntology.DiseaseOntology attribute)|hyperpage}{5}
 \indexentry{fastsemsim.Ontology.AnnotationCorpus (module)|hyperpage}{5}
-\indexentry{AnnotationCorpus (class in fastsemsim.Ontology.AnnotationCorpus)|hyperpage}{5}
-\indexentry{AnnotationCorpus.ECFilter (class in fastsemsim.Ontology.AnnotationCorpus)|hyperpage}{5}
-\indexentry{EC (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.ECFilter attribute)|hyperpage}{5}
-\indexentry{filter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.ECFilter method)|hyperpage}{5}
-\indexentry{inclusive (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.ECFilter attribute)|hyperpage}{5}
-\indexentry{name (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.ECFilter attribute)|hyperpage}{5}
-\indexentry{AnnotationCorpus.GOFilter (class in fastsemsim.Ontology.AnnotationCorpus)|hyperpage}{5}
-\indexentry{GO (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.GOFilter attribute)|hyperpage}{5}
-\indexentry{filter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.GOFilter method)|hyperpage}{5}
-\indexentry{inclusive (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.GOFilter attribute)|hyperpage}{5}
-\indexentry{int\_go (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.GOFilter attribute)|hyperpage}{5}
-\indexentry{name (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.GOFilter attribute)|hyperpage}{5}
+\indexentry{AnnotationCorpus (class in fastsemsim.Ontology.AnnotationCorpus)|hyperpage}{6}
+\indexentry{AnnotationCorpus.ECFilter (class in fastsemsim.Ontology.AnnotationCorpus)|hyperpage}{6}
+\indexentry{EC (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.ECFilter attribute)|hyperpage}{6}
+\indexentry{filter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.ECFilter method)|hyperpage}{6}
+\indexentry{inclusive (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.ECFilter attribute)|hyperpage}{6}
+\indexentry{name (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.ECFilter attribute)|hyperpage}{6}
+\indexentry{AnnotationCorpus.GOFilter (class in fastsemsim.Ontology.AnnotationCorpus)|hyperpage}{6}
+\indexentry{GO (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.GOFilter attribute)|hyperpage}{6}
+\indexentry{filter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.GOFilter method)|hyperpage}{6}
+\indexentry{inclusive (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.GOFilter attribute)|hyperpage}{6}
+\indexentry{int\_go (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.GOFilter attribute)|hyperpage}{6}
+\indexentry{name (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.GOFilter attribute)|hyperpage}{6}
 \indexentry{set() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.GOFilter method)|hyperpage}{6}
 \indexentry{AnnotationCorpus.TaxonomyFilter (class in fastsemsim.Ontology.AnnotationCorpus)|hyperpage}{6}
 \indexentry{filter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.TaxonomyFilter method)|hyperpage}{6}
@@ -26,331 +91,196 @@
 \indexentry{constrain() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{6}
 \indexentry{initCommonFilter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{6}
 \indexentry{int\_checkConsistency() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{6}
-\indexentry{int\_resetFields() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{6}
-\indexentry{isConsistent() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{6}
-\indexentry{isOk() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{6}
-\indexentry{load() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{6}
-\indexentry{obj\_field2pos (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute)|hyperpage}{6}
-\indexentry{obj\_fields (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute)|hyperpage}{6}
-\indexentry{obj\_set (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute)|hyperpage}{6}
-\indexentry{parse() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{6}
-\indexentry{reset() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{6}
-\indexentry{resetCommonfilter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{6}
-\indexentry{resetFilter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{6}
-\indexentry{reverse\_annotations (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute)|hyperpage}{6}
-\indexentry{reverse\_annotations\_field2pos (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute)|hyperpage}{6}
-\indexentry{reverse\_annotations\_fields (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute)|hyperpage}{6}
-\indexentry{sanitize() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{6}
-\indexentry{setCommonfilters() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{6}
-\indexentry{setFilter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{6}
-\indexentry{term\_field2pos (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute)|hyperpage}{6}
-\indexentry{term\_fields (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute)|hyperpage}{6}
-\indexentry{term\_set (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute)|hyperpage}{6}
-\indexentry{fastsemsim.Ontology.CellOntology (module)|hyperpage}{7}
-\indexentry{CellOntology (class in fastsemsim.Ontology.CellOntology)|hyperpage}{7}
-\indexentry{alt\_ids (fastsemsim.Ontology.CellOntology.CellOntology attribute)|hyperpage}{7}
-\indexentry{obsolete\_ids (fastsemsim.Ontology.CellOntology.CellOntology attribute)|hyperpage}{7}
-\indexentry{fastsemsim.Ontology.DiseaseOntology (module)|hyperpage}{7}
-\indexentry{DiseaseOntology (class in fastsemsim.Ontology.DiseaseOntology)|hyperpage}{7}
-\indexentry{alt\_ids (fastsemsim.Ontology.DiseaseOntology.DiseaseOntology attribute)|hyperpage}{7}
-\indexentry{obsolete\_ids (fastsemsim.Ontology.DiseaseOntology.DiseaseOntology attribute)|hyperpage}{7}
-\indexentry{fastsemsim.Ontology.FFOntology (module)|hyperpage}{7}
-\indexentry{FFOntology (class in fastsemsim.Ontology.FFOntology)|hyperpage}{8}
-\indexentry{alt\_ids (fastsemsim.Ontology.FFOntology.FFOntology attribute)|hyperpage}{8}
-\indexentry{id2name() (fastsemsim.Ontology.FFOntology.FFOntology method)|hyperpage}{8}
-\indexentry{name2id() (fastsemsim.Ontology.FFOntology.FFOntology method)|hyperpage}{8}
-\indexentry{obsolete\_ids (fastsemsim.Ontology.FFOntology.FFOntology attribute)|hyperpage}{8}
-\indexentry{fastsemsim.Ontology.GAF2AnnotationCorpus (module)|hyperpage}{8}
-\indexentry{GAF2AnnotationCorpus (class in fastsemsim.Ontology.GAF2AnnotationCorpus)|hyperpage}{8}
-\indexentry{int\_comment (fastsemsim.Ontology.GAF2AnnotationCorpus.GAF2AnnotationCorpus attribute)|hyperpage}{8}
-\indexentry{int\_interpretParameters() (fastsemsim.Ontology.GAF2AnnotationCorpus.GAF2AnnotationCorpus method)|hyperpage}{8}
-\indexentry{int\_separator (fastsemsim.Ontology.GAF2AnnotationCorpus.GAF2AnnotationCorpus attribute)|hyperpage}{8}
-\indexentry{isOk() (fastsemsim.Ontology.GAF2AnnotationCorpus.GAF2AnnotationCorpus method)|hyperpage}{8}
-\indexentry{parse() (fastsemsim.Ontology.GAF2AnnotationCorpus.GAF2AnnotationCorpus method)|hyperpage}{8}
-\indexentry{setFields() (fastsemsim.Ontology.GAF2AnnotationCorpus.GAF2AnnotationCorpus method)|hyperpage}{8}
-\indexentry{fastsemsim.Ontology.GOAnnotationCorpus (module)|hyperpage}{8}
-\indexentry{GOAnnotationCorpus (class in fastsemsim.Ontology.GOAnnotationCorpus)|hyperpage}{9}
-\indexentry{GOAnnotationCorpus.ECFilter (class in fastsemsim.Ontology.GOAnnotationCorpus)|hyperpage}{9}
-\indexentry{EC (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.ECFilter attribute)|hyperpage}{9}
-\indexentry{filter() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.ECFilter method)|hyperpage}{9}
-\indexentry{inclusive (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.ECFilter attribute)|hyperpage}{9}
-\indexentry{name (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.ECFilter attribute)|hyperpage}{9}
-\indexentry{GOAnnotationCorpus.GOFilter (class in fastsemsim.Ontology.GOAnnotationCorpus)|hyperpage}{9}
-\indexentry{GO (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.GOFilter attribute)|hyperpage}{9}
-\indexentry{filter() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.GOFilter method)|hyperpage}{9}
-\indexentry{inclusive (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.GOFilter attribute)|hyperpage}{9}
-\indexentry{int\_go (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.GOFilter attribute)|hyperpage}{9}
-\indexentry{name (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.GOFilter attribute)|hyperpage}{9}
-\indexentry{set() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.GOFilter method)|hyperpage}{9}
-\indexentry{GOAnnotationCorpus.TaxonomyFilter (class in fastsemsim.Ontology.GOAnnotationCorpus)|hyperpage}{9}
-\indexentry{filter() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.TaxonomyFilter method)|hyperpage}{9}
-\indexentry{inclusive (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.TaxonomyFilter attribute)|hyperpage}{9}
-\indexentry{name (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.TaxonomyFilter attribute)|hyperpage}{9}
-\indexentry{taxonomy (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.TaxonomyFilter attribute)|hyperpage}{9}
-\indexentry{constrain() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method)|hyperpage}{9}
-\indexentry{initCommonFilter() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method)|hyperpage}{9}
-\indexentry{int\_checkConsistency() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method)|hyperpage}{9}
-\indexentry{int\_exclude\_GO\_root (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus attribute)|hyperpage}{9}
-\indexentry{int\_resetFields() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method)|hyperpage}{9}
-\indexentry{isConsistent() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method)|hyperpage}{9}
-\indexentry{isOk() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method)|hyperpage}{9}
-\indexentry{load() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method)|hyperpage}{9}
-\indexentry{parse() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method)|hyperpage}{9}
-\indexentry{reset() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method)|hyperpage}{9}
-\indexentry{resetCommonfilter() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method)|hyperpage}{9}
-\indexentry{resetFilter() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method)|hyperpage}{9}
-\indexentry{sanitize() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method)|hyperpage}{9}
-\indexentry{setCommonfilters() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method)|hyperpage}{9}
-\indexentry{setFilter() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method)|hyperpage}{9}
-\indexentry{fastsemsim.Ontology.GeneOntology (module)|hyperpage}{10}
-\indexentry{GeneOntology (class in fastsemsim.Ontology.GeneOntology)|hyperpage}{10}
-\indexentry{fastsemsim.Ontology.Ontology (module)|hyperpage}{10}
-\indexentry{Ontology (class in fastsemsim.Ontology.Ontology)|hyperpage}{10}
-\indexentry{debug (fastsemsim.Ontology.Ontology.Ontology attribute)|hyperpage}{10}
-\indexentry{det\_roots() (fastsemsim.Ontology.Ontology.Ontology method)|hyperpage}{10}
-\indexentry{edge\_number() (fastsemsim.Ontology.Ontology.Ontology method)|hyperpage}{10}
-\indexentry{gen\_error (fastsemsim.Ontology.Ontology.Ontology attribute)|hyperpage}{10}
-\indexentry{id2node() (fastsemsim.Ontology.Ontology.Ontology method)|hyperpage}{10}
-\indexentry{is\_consistent() (fastsemsim.Ontology.Ontology.Ontology method)|hyperpage}{10}
-\indexentry{is\_valid() (fastsemsim.Ontology.Ontology.Ontology method)|hyperpage}{10}
-\indexentry{name2node() (fastsemsim.Ontology.Ontology.Ontology method)|hyperpage}{10}
-\indexentry{node2id() (fastsemsim.Ontology.Ontology.Ontology method)|hyperpage}{10}
-\indexentry{node\_number() (fastsemsim.Ontology.Ontology.Ontology method)|hyperpage}{10}
-\indexentry{fastsemsim.Ontology.PlainAnnotationCorpus (module)|hyperpage}{11}
-\indexentry{PlainAnnotationCorpus (class in fastsemsim.Ontology.PlainAnnotationCorpus)|hyperpage}{11}
-\indexentry{int\_interpretParameters() (fastsemsim.Ontology.PlainAnnotationCorpus.PlainAnnotationCorpus method)|hyperpage}{11}
-\indexentry{isOk() (fastsemsim.Ontology.PlainAnnotationCorpus.PlainAnnotationCorpus method)|hyperpage}{11}
-\indexentry{parse() (fastsemsim.Ontology.PlainAnnotationCorpus.PlainAnnotationCorpus method)|hyperpage}{11}
-\indexentry{setFields() (fastsemsim.Ontology.PlainAnnotationCorpus.PlainAnnotationCorpus method)|hyperpage}{11}
-\indexentry{fastsemsim.Ontology.ontologies (module)|hyperpage}{11}
-\indexentry{OboParser (class in fastsemsim.Ontology.ontologies)|hyperpage}{11}
-\indexentry{alt\_id\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{11}
-\indexentry{comment\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{11}
-\indexentry{consider\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{11}
-\indexentry{def\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{11}
-\indexentry{delimiter\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{11}
-\indexentry{find\_next\_term() (fastsemsim.Ontology.ontologies.OboParser method)|hyperpage}{11}
-\indexentry{has\_tag\_structure() (fastsemsim.Ontology.ontologies.OboParser method)|hyperpage}{11}
-\indexentry{id\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{11}
-\indexentry{is\_a\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{11}
-\indexentry{is\_obsolete\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{11}
-\indexentry{name\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{11}
-\indexentry{namespace\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{11}
-\indexentry{parse() (fastsemsim.Ontology.ontologies.OboParser method)|hyperpage}{11}
-\indexentry{relationship\_delimiter\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{11}
-\indexentry{relationship\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{11}
-\indexentry{replaced\_by\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{11}
-\indexentry{split\_rel\_tag() (fastsemsim.Ontology.ontologies.OboParser method)|hyperpage}{12}
-\indexentry{split\_tag() (fastsemsim.Ontology.ontologies.OboParser method)|hyperpage}{12}
-\indexentry{term\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{12}
-\indexentry{typedef\_tag (fastsemsim.Ontology.ontologies.OboParser attribute)|hyperpage}{12}
-\indexentry{OboXmlParser (class in fastsemsim.Ontology.ontologies)|hyperpage}{12}
-\indexentry{alt\_id\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{12}
-\indexentry{characters() (fastsemsim.Ontology.ontologies.OboXmlParser method)|hyperpage}{12}
-\indexentry{comment\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{12}
-\indexentry{consider\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{12}
-\indexentry{def\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{12}
-\indexentry{delimiter\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{12}
-\indexentry{endElement() (fastsemsim.Ontology.ontologies.OboXmlParser method)|hyperpage}{12}
-\indexentry{id\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{12}
-\indexentry{is\_a\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{12}
-\indexentry{is\_obsolete\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{12}
-\indexentry{name\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{12}
-\indexentry{namespace\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{12}
-\indexentry{part\_of\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{12}
-\indexentry{relationship\_delimiter\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{12}
-\indexentry{relationship\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{12}
-\indexentry{relationship\_to\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{12}
-\indexentry{relationship\_type\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{12}
-\indexentry{replaced\_by\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{12}
-\indexentry{startElement() (fastsemsim.Ontology.ontologies.OboXmlParser method)|hyperpage}{12}
-\indexentry{term\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute)|hyperpage}{12}
-\indexentry{load() (in module fastsemsim.Ontology.ontologies)|hyperpage}{12}
-\indexentry{parse() (in module fastsemsim.Ontology.ontologies)|hyperpage}{12}
-\indexentry{fastsemsim.Ontology (module)|hyperpage}{12}
-\indexentry{fastsemsim.SemSim.BMASemSim (module)|hyperpage}{13}
-\indexentry{BMASemSim (class in fastsemsim.SemSim.BMASemSim)|hyperpage}{13}
-\indexentry{fair (fastsemsim.SemSim.BMASemSim.BMASemSim attribute)|hyperpage}{13}
-\indexentry{fastsemsim.SemSim.CosineSemSim (module)|hyperpage}{13}
-\indexentry{CosineSemSim (class in fastsemsim.SemSim.CosineSemSim)|hyperpage}{13}
-\indexentry{IC\_based (fastsemsim.SemSim.CosineSemSim.CosineSemSim attribute)|hyperpage}{13}
-\indexentry{SS\_type (fastsemsim.SemSim.CosineSemSim.CosineSemSim attribute)|hyperpage}{13}
-\indexentry{dotprod() (fastsemsim.SemSim.CosineSemSim.CosineSemSim method)|hyperpage}{13}
-\indexentry{extend\_annotations (fastsemsim.SemSim.CosineSemSim.CosineSemSim attribute)|hyperpage}{13}
-\indexentry{fastsemsim.SemSim.CzekanowskiDiceSemSim (module)|hyperpage}{14}
-\indexentry{CzekanowskiDiceSemSim (class in fastsemsim.SemSim.CzekanowskiDiceSemSim)|hyperpage}{14}
-\indexentry{IC\_based (fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim attribute)|hyperpage}{14}
-\indexentry{SS\_type (fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim attribute)|hyperpage}{14}
-\indexentry{extend\_annotations (fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim attribute)|hyperpage}{14}
-\indexentry{fastsemsim.SemSim.DiceSemSim (module)|hyperpage}{14}
-\indexentry{DiceSemSim (class in fastsemsim.SemSim.DiceSemSim)|hyperpage}{14}
-\indexentry{IC\_based (fastsemsim.SemSim.DiceSemSim.DiceSemSim attribute)|hyperpage}{14}
-\indexentry{SS\_type (fastsemsim.SemSim.DiceSemSim.DiceSemSim attribute)|hyperpage}{14}
-\indexentry{extend\_annotations (fastsemsim.SemSim.DiceSemSim.DiceSemSim attribute)|hyperpage}{14}
-\indexentry{fastsemsim.SemSim.GSESAMESemSim (module)|hyperpage}{15}
-\indexentry{GSESAMESemSim (class in fastsemsim.SemSim.GSESAMESemSim)|hyperpage}{15}
-\indexentry{IC\_based (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute)|hyperpage}{15}
-\indexentry{SS\_type (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute)|hyperpage}{15}
-\indexentry{generic\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute)|hyperpage}{15}
-\indexentry{is\_a\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute)|hyperpage}{15}
-\indexentry{neg\_regulates\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute)|hyperpage}{15}
-\indexentry{part\_of\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute)|hyperpage}{15}
-\indexentry{pos\_regulates\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute)|hyperpage}{15}
-\indexentry{regulates\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute)|hyperpage}{15}
-\indexentry{score\_ancestors() (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim method)|hyperpage}{15}
-\indexentry{score\_edge() (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim method)|hyperpage}{15}
-\indexentry{fastsemsim.SemSim.JaccardSemSim (module)|hyperpage}{15}
-\indexentry{JaccardSemSim (class in fastsemsim.SemSim.JaccardSemSim)|hyperpage}{15}
-\indexentry{IC\_based (fastsemsim.SemSim.JaccardSemSim.JaccardSemSim attribute)|hyperpage}{15}
-\indexentry{SS\_type (fastsemsim.SemSim.JaccardSemSim.JaccardSemSim attribute)|hyperpage}{15}
-\indexentry{extend\_annotations (fastsemsim.SemSim.JaccardSemSim.JaccardSemSim attribute)|hyperpage}{16}
-\indexentry{fastsemsim.SemSim.JiangConrathSemSim (module)|hyperpage}{16}
-\indexentry{JiangConrathSemSim (class in fastsemsim.SemSim.JiangConrathSemSim)|hyperpage}{16}
-\indexentry{IC\_based (fastsemsim.SemSim.JiangConrathSemSim.JiangConrathSemSim attribute)|hyperpage}{16}
-\indexentry{SS\_type (fastsemsim.SemSim.JiangConrathSemSim.JiangConrathSemSim attribute)|hyperpage}{16}
-\indexentry{fastsemsim.SemSim.LinSemSim (module)|hyperpage}{16}
-\indexentry{LinSemSim (class in fastsemsim.SemSim.LinSemSim)|hyperpage}{16}
-\indexentry{IC\_based (fastsemsim.SemSim.LinSemSim.LinSemSim attribute)|hyperpage}{16}
-\indexentry{SS\_type (fastsemsim.SemSim.LinSemSim.LinSemSim attribute)|hyperpage}{16}
-\indexentry{fastsemsim.SemSim.MixSemSim (module)|hyperpage}{16}
-\indexentry{MixSemSim (class in fastsemsim.SemSim.MixSemSim)|hyperpage}{17}
-\indexentry{SemSim() (fastsemsim.SemSim.MixSemSim.MixSemSim method)|hyperpage}{17}
-\indexentry{fastsemsim.SemSim.ObjSemSim (module)|hyperpage}{17}
-\indexentry{ObjSemSim (class in fastsemsim.SemSim.ObjSemSim)|hyperpage}{17}
-\indexentry{SemSim() (fastsemsim.SemSim.ObjSemSim.ObjSemSim method)|hyperpage}{17}
-\indexentry{fastsemsim.SemSim.ObjSetSemSim (module)|hyperpage}{17}
-\indexentry{ObjSetSemSim (class in fastsemsim.SemSim.ObjSetSemSim)|hyperpage}{17}
-\indexentry{SemSim() (fastsemsim.SemSim.ObjSetSemSim.ObjSetSemSim method)|hyperpage}{17}
-\indexentry{fastsemsim.SemSim.ResnikSemSim (module)|hyperpage}{18}
-\indexentry{ResnikSemSim (class in fastsemsim.SemSim.ResnikSemSim)|hyperpage}{18}
-\indexentry{IC\_based (fastsemsim.SemSim.ResnikSemSim.ResnikSemSim attribute)|hyperpage}{18}
-\indexentry{SS\_type (fastsemsim.SemSim.ResnikSemSim.ResnikSemSim attribute)|hyperpage}{18}
-\indexentry{fastsemsim.SemSim.SemSimUtils (module)|hyperpage}{18}
-\indexentry{SemSimUtils (class in fastsemsim.SemSim.SemSimUtils)|hyperpage}{18}
-\indexentry{det\_IC() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{18}
-\indexentry{det\_IC\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{18}
-\indexentry{det\_MICA() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{18}
-\indexentry{det\_ancestors\_union() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{18}
-\indexentry{det\_common\_ancestors() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{18}
-\indexentry{difference() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{18}
-\indexentry{get\_ancestors() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{18}
-\indexentry{int\_det\_IC() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{18}
-\indexentry{int\_det\_IC\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{18}
-\indexentry{int\_det\_ancestors() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{18}
-\indexentry{int\_det\_ancestors\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{18}
-\indexentry{int\_det\_freq() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{19}
-\indexentry{int\_det\_freq\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{19}
-\indexentry{int\_det\_lineage() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{19}
-\indexentry{int\_det\_offspring() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{19}
-\indexentry{int\_det\_offspring\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{19}
-\indexentry{int\_det\_p() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{19}
-\indexentry{int\_det\_p\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{19}
-\indexentry{int\_merge\_sets() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{19}
-\indexentry{intersection() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{19}
-\indexentry{fastsemsim.SemSim.SetSemSim (module)|hyperpage}{19}
-\indexentry{SetSemSim (class in fastsemsim.SemSim.SetSemSim)|hyperpage}{19}
-\indexentry{SemSim() (fastsemsim.SemSim.SetSemSim.SetSemSim method)|hyperpage}{19}
-\indexentry{fastsemsim.SemSim.SimGICSemSim (module)|hyperpage}{19}
-\indexentry{SimGICSemSim (class in fastsemsim.SemSim.SimGICSemSim)|hyperpage}{19}
-\indexentry{IC\_based (fastsemsim.SemSim.SimGICSemSim.SimGICSemSim attribute)|hyperpage}{19}
-\indexentry{SS\_type (fastsemsim.SemSim.SimGICSemSim.SimGICSemSim attribute)|hyperpage}{20}
-\indexentry{fastsemsim.SemSim.SimICNDSemSim (module)|hyperpage}{20}
-\indexentry{ICNDSemSim (class in fastsemsim.SemSim.SimICNDSemSim)|hyperpage}{20}
-\indexentry{IC\_based (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute)|hyperpage}{20}
-\indexentry{SS\_type (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute)|hyperpage}{20}
-\indexentry{generic\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute)|hyperpage}{20}
-\indexentry{is\_a\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute)|hyperpage}{20}
-\indexentry{neg\_regulates\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute)|hyperpage}{20}
-\indexentry{part\_of\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute)|hyperpage}{20}
-\indexentry{pos\_regulates\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute)|hyperpage}{20}
-\indexentry{regulates\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute)|hyperpage}{20}
-\indexentry{score\_ancestors() (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim method)|hyperpage}{20}
-\indexentry{score\_edge() (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim method)|hyperpage}{20}
-\indexentry{fastsemsim.SemSim.SimICNPSemSim (module)|hyperpage}{20}
-\indexentry{ICNPSemSim (class in fastsemsim.SemSim.SimICNPSemSim)|hyperpage}{20}
-\indexentry{IC\_based (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute)|hyperpage}{21}
-\indexentry{SS\_type (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute)|hyperpage}{21}
-\indexentry{generic\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute)|hyperpage}{21}
-\indexentry{is\_a\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute)|hyperpage}{21}
-\indexentry{neg\_regulates\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute)|hyperpage}{21}
-\indexentry{part\_of\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute)|hyperpage}{21}
-\indexentry{pos\_regulates\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute)|hyperpage}{21}
-\indexentry{regulates\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute)|hyperpage}{21}
-\indexentry{score\_ancestors() (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim method)|hyperpage}{21}
-\indexentry{score\_edge() (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim method)|hyperpage}{21}
-\indexentry{fastsemsim.SemSim.SimICSemSim (module)|hyperpage}{21}
-\indexentry{SimICSemSim (class in fastsemsim.SemSim.SimICSemSim)|hyperpage}{21}
-\indexentry{IC\_based (fastsemsim.SemSim.SimICSemSim.SimICSemSim attribute)|hyperpage}{21}
-\indexentry{SS\_type (fastsemsim.SemSim.SimICSemSim.SimICSemSim attribute)|hyperpage}{21}
-\indexentry{use\_Lin (fastsemsim.SemSim.SimICSemSim.SimICSemSim attribute)|hyperpage}{21}
-\indexentry{fastsemsim.SemSim.SimNTOSemSim (module)|hyperpage}{21}
-\indexentry{SimNTOSemSim (class in fastsemsim.SemSim.SimNTOSemSim)|hyperpage}{22}
-\indexentry{IC\_based (fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim attribute)|hyperpage}{22}
-\indexentry{SS\_type (fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim attribute)|hyperpage}{22}
-\indexentry{extend\_annotations (fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim attribute)|hyperpage}{22}
-\indexentry{fastsemsim.SemSim.SimRelSemSim (module)|hyperpage}{22}
-\indexentry{SimRelSemSim (class in fastsemsim.SemSim.SimRelSemSim)|hyperpage}{22}
-\indexentry{IC\_based (fastsemsim.SemSim.SimRelSemSim.SimRelSemSim attribute)|hyperpage}{22}
-\indexentry{SS\_type (fastsemsim.SemSim.SimRelSemSim.SimRelSemSim attribute)|hyperpage}{22}
-\indexentry{use\_Lin (fastsemsim.SemSim.SimRelSemSim.SimRelSemSim attribute)|hyperpage}{22}
-\indexentry{fastsemsim.SemSim.SimTOSemSim (module)|hyperpage}{22}
-\indexentry{SimTOSemSim (class in fastsemsim.SemSim.SimTOSemSim)|hyperpage}{22}
-\indexentry{IC\_based (fastsemsim.SemSim.SimTOSemSim.SimTOSemSim attribute)|hyperpage}{23}
-\indexentry{SS\_type (fastsemsim.SemSim.SimTOSemSim.SimTOSemSim attribute)|hyperpage}{23}
-\indexentry{fastsemsim.SemSim.SimUISemSim (module)|hyperpage}{23}
-\indexentry{SimUISemSim (class in fastsemsim.SemSim.SimUISemSim)|hyperpage}{23}
-\indexentry{IC\_based (fastsemsim.SemSim.SimUISemSim.SimUISemSim attribute)|hyperpage}{23}
-\indexentry{SS\_type (fastsemsim.SemSim.SimUISemSim.SimUISemSim attribute)|hyperpage}{23}
-\indexentry{fastsemsim.SemSim.TermSemSim (module)|hyperpage}{23}
-\indexentry{MissingAcException|hyperpage}{23}
-\indexentry{TermSemSim (class in fastsemsim.SemSim.TermSemSim)|hyperpage}{23}
-\indexentry{G\_TSS (fastsemsim.SemSim.TermSemSim.TermSemSim attribute)|hyperpage}{23}
-\indexentry{IC\_based (fastsemsim.SemSim.TermSemSim.TermSemSim attribute)|hyperpage}{23}
-\indexentry{P\_TSS (fastsemsim.SemSim.TermSemSim.TermSemSim attribute)|hyperpage}{23}
-\indexentry{SS\_type (fastsemsim.SemSim.TermSemSim.TermSemSim attribute)|hyperpage}{23}
-\indexentry{SemSim() (fastsemsim.SemSim.TermSemSim.TermSemSim method)|hyperpage}{23}
-\indexentry{format\_and\_check\_data (fastsemsim.SemSim.TermSemSim.TermSemSim attribute)|hyperpage}{24}
-\indexentry{setSanityCheck() (fastsemsim.SemSim.TermSemSim.TermSemSim method)|hyperpage}{24}
-\indexentry{fastsemsim.SemSim.avgSemSim (module)|hyperpage}{24}
-\indexentry{avgSemSim (class in fastsemsim.SemSim.avgSemSim)|hyperpage}{24}
-\indexentry{fastsemsim.SemSim.maxSemSim (module)|hyperpage}{24}
-\indexentry{maxSemSim (class in fastsemsim.SemSim.maxSemSim)|hyperpage}{24}
-\indexentry{fastsemsim.SemSim (module)|hyperpage}{24}
-\indexentry{select\_mix\_SemSim() (in module fastsemsim.SemSim)|hyperpage}{25}
-\indexentry{select\_term\_SemSim() (in module fastsemsim.SemSim)|hyperpage}{25}
-\indexentry{term\_SemSim\_measures (in module fastsemsim.SemSim)|hyperpage}{25}
-\indexentry{fastsemsim.data.dataset (module)|hyperpage}{25}
-\indexentry{Dataset (class in fastsemsim.data.dataset)|hyperpage}{25}
-\indexentry{get\_annotation\_corpus() (fastsemsim.data.dataset.Dataset method)|hyperpage}{25}
-\indexentry{get\_annotation\_corpus\_by\_species() (fastsemsim.data.dataset.Dataset method)|hyperpage}{25}
-\indexentry{get\_dataset() (fastsemsim.data.dataset.Dataset method)|hyperpage}{25}
-\indexentry{get\_default\_annotation\_corpus() (fastsemsim.data.dataset.Dataset method)|hyperpage}{25}
-\indexentry{get\_default\_ontology() (fastsemsim.data.dataset.Dataset method)|hyperpage}{25}
-\indexentry{get\_ontology() (fastsemsim.data.dataset.Dataset method)|hyperpage}{25}
-\indexentry{populate() (fastsemsim.data.dataset.Dataset method)|hyperpage}{25}
-\indexentry{fastsemsim.data (module)|hyperpage}{25}
-\indexentry{fastsemsim.examples.load\_annotation\_corpus (module)|hyperpage}{26}
-\indexentry{fastsemsim.examples.load\_ontology (module)|hyperpage}{26}
-\indexentry{fastsemsim.examples (module)|hyperpage}{26}
-\indexentry{fastsemsim.fastsemsim\_cmdline (module)|hyperpage}{27}
-\indexentry{build\_cmdline\_args\_parser() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{27}
-\indexentry{check\_parameters() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{27}
-\indexentry{det\_ss() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{27}
-\indexentry{init\_parameters() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{27}
-\indexentry{init\_ss() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{27}
-\indexentry{load\_IC\_from\_file() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{27}
-\indexentry{load\_ac() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{27}
-\indexentry{load\_ontology() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{27}
-\indexentry{load\_params\_from\_file() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{27}
-\indexentry{load\_query() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{27}
-\indexentry{load\_query\_from\_file() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{27}
-\indexentry{prbool() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{27}
-\indexentry{print\_IC() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{27}
-\indexentry{print\_err() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{27}
-\indexentry{print\_parameters() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{27}
-\indexentry{save\_params\_to\_file() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{28}
-\indexentry{set\_parameters() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{28}
-\indexentry{ss\_pairs() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{28}
-\indexentry{ss\_pairwise() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{28}
-\indexentry{start() (in module fastsemsim.fastsemsim\_cmdline)|hyperpage}{28}
-\indexentry{fastsemsim (module)|hyperpage}{28}
+\indexentry{int\_resetFields() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{7}
+\indexentry{isConsistent() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{7}
+\indexentry{isOk() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{7}
+\indexentry{load() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{7}
+\indexentry{obj\_field2pos (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute)|hyperpage}{7}
+\indexentry{obj\_fields (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute)|hyperpage}{7}
+\indexentry{obj\_set (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute)|hyperpage}{7}
+\indexentry{parse() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{7}
+\indexentry{reset() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{7}
+\indexentry{resetCommonfilter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{7}
+\indexentry{resetFilter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{7}
+\indexentry{reverse\_annotations (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute)|hyperpage}{7}
+\indexentry{reverse\_annotations\_field2pos (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute)|hyperpage}{7}
+\indexentry{reverse\_annotations\_fields (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute)|hyperpage}{7}
+\indexentry{sanitize() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{7}
+\indexentry{setCommonfilters() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{7}
+\indexentry{setFilter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method)|hyperpage}{7}
+\indexentry{term\_field2pos (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute)|hyperpage}{7}
+\indexentry{term\_fields (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute)|hyperpage}{7}
+\indexentry{term\_set (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute)|hyperpage}{7}
+\indexentry{fastsemsim.Ontology.GAF2AnnotationCorpus (module)|hyperpage}{7}
+\indexentry{GAF2AnnotationCorpus (class in fastsemsim.Ontology.GAF2AnnotationCorpus)|hyperpage}{7}
+\indexentry{int\_comment (fastsemsim.Ontology.GAF2AnnotationCorpus.GAF2AnnotationCorpus attribute)|hyperpage}{7}
+\indexentry{int\_interpretParameters() (fastsemsim.Ontology.GAF2AnnotationCorpus.GAF2AnnotationCorpus method)|hyperpage}{7}
+\indexentry{int\_separator (fastsemsim.Ontology.GAF2AnnotationCorpus.GAF2AnnotationCorpus attribute)|hyperpage}{7}
+\indexentry{isOk() (fastsemsim.Ontology.GAF2AnnotationCorpus.GAF2AnnotationCorpus method)|hyperpage}{7}
+\indexentry{parse() (fastsemsim.Ontology.GAF2AnnotationCorpus.GAF2AnnotationCorpus method)|hyperpage}{7}
+\indexentry{setFields() (fastsemsim.Ontology.GAF2AnnotationCorpus.GAF2AnnotationCorpus method)|hyperpage}{7}
+\indexentry{fastsemsim.Ontology.PlainAnnotationCorpus (module)|hyperpage}{8}
+\indexentry{PlainAnnotationCorpus (class in fastsemsim.Ontology.PlainAnnotationCorpus)|hyperpage}{8}
+\indexentry{int\_interpretParameters() (fastsemsim.Ontology.PlainAnnotationCorpus.PlainAnnotationCorpus method)|hyperpage}{8}
+\indexentry{isOk() (fastsemsim.Ontology.PlainAnnotationCorpus.PlainAnnotationCorpus method)|hyperpage}{8}
+\indexentry{parse() (fastsemsim.Ontology.PlainAnnotationCorpus.PlainAnnotationCorpus method)|hyperpage}{8}
+\indexentry{setFields() (fastsemsim.Ontology.PlainAnnotationCorpus.PlainAnnotationCorpus method)|hyperpage}{8}
+\indexentry{fastsemsim.data (module)|hyperpage}{8}
+\indexentry{fastsemsim.data.dataset (module)|hyperpage}{8}
+\indexentry{Dataset (class in fastsemsim.data.dataset)|hyperpage}{8}
+\indexentry{get\_annotation\_corpus() (fastsemsim.data.dataset.Dataset method)|hyperpage}{8}
+\indexentry{get\_annotation\_corpus\_by\_species() (fastsemsim.data.dataset.Dataset method)|hyperpage}{8}
+\indexentry{get\_dataset() (fastsemsim.data.dataset.Dataset method)|hyperpage}{8}
+\indexentry{get\_default\_annotation\_corpus() (fastsemsim.data.dataset.Dataset method)|hyperpage}{8}
+\indexentry{get\_default\_ontology() (fastsemsim.data.dataset.Dataset method)|hyperpage}{8}
+\indexentry{get\_ontology() (fastsemsim.data.dataset.Dataset method)|hyperpage}{8}
+\indexentry{populate() (fastsemsim.data.dataset.Dataset method)|hyperpage}{8}
+\indexentry{fastsemsim.SemSim (module)|hyperpage}{9}
+\indexentry{fastsemsim.SemSim.TermSemSim (module)|hyperpage}{9}
+\indexentry{MissingAcException|hyperpage}{9}
+\indexentry{TermSemSim (class in fastsemsim.SemSim.TermSemSim)|hyperpage}{9}
+\indexentry{G\_TSS (fastsemsim.SemSim.TermSemSim.TermSemSim attribute)|hyperpage}{9}
+\indexentry{IC\_based (fastsemsim.SemSim.TermSemSim.TermSemSim attribute)|hyperpage}{9}
+\indexentry{P\_TSS (fastsemsim.SemSim.TermSemSim.TermSemSim attribute)|hyperpage}{9}
+\indexentry{SS\_type (fastsemsim.SemSim.TermSemSim.TermSemSim attribute)|hyperpage}{9}
+\indexentry{SemSim() (fastsemsim.SemSim.TermSemSim.TermSemSim method)|hyperpage}{9}
+\indexentry{format\_and\_check\_data (fastsemsim.SemSim.TermSemSim.TermSemSim attribute)|hyperpage}{9}
+\indexentry{setSanityCheck() (fastsemsim.SemSim.TermSemSim.TermSemSim method)|hyperpage}{9}
+\indexentry{fastsemsim.SemSim.ObjSemSim (module)|hyperpage}{9}
+\indexentry{ObjSemSim (class in fastsemsim.SemSim.ObjSemSim)|hyperpage}{9}
+\indexentry{SemSim() (fastsemsim.SemSim.ObjSemSim.ObjSemSim method)|hyperpage}{9}
+\indexentry{fastsemsim.SemSim.ObjSetSemSim (module)|hyperpage}{9}
+\indexentry{ObjSetSemSim (class in fastsemsim.SemSim.ObjSetSemSim)|hyperpage}{9}
+\indexentry{SemSim() (fastsemsim.SemSim.ObjSetSemSim.ObjSetSemSim method)|hyperpage}{9}
+\indexentry{fastsemsim.SemSim.SetSemSim (module)|hyperpage}{10}
+\indexentry{SetSemSim (class in fastsemsim.SemSim.SetSemSim)|hyperpage}{10}
+\indexentry{SemSim() (fastsemsim.SemSim.SetSemSim.SetSemSim method)|hyperpage}{10}
+\indexentry{fastsemsim.SemSim.ResnikSemSim (module)|hyperpage}{10}
+\indexentry{ResnikSemSim (class in fastsemsim.SemSim.ResnikSemSim)|hyperpage}{10}
+\indexentry{IC\_based (fastsemsim.SemSim.ResnikSemSim.ResnikSemSim attribute)|hyperpage}{10}
+\indexentry{SS\_type (fastsemsim.SemSim.ResnikSemSim.ResnikSemSim attribute)|hyperpage}{10}
+\indexentry{fastsemsim.SemSim.CosineSemSim (module)|hyperpage}{10}
+\indexentry{CosineSemSim (class in fastsemsim.SemSim.CosineSemSim)|hyperpage}{10}
+\indexentry{IC\_based (fastsemsim.SemSim.CosineSemSim.CosineSemSim attribute)|hyperpage}{10}
+\indexentry{SS\_type (fastsemsim.SemSim.CosineSemSim.CosineSemSim attribute)|hyperpage}{10}
+\indexentry{dotprod() (fastsemsim.SemSim.CosineSemSim.CosineSemSim method)|hyperpage}{10}
+\indexentry{extend\_annotations (fastsemsim.SemSim.CosineSemSim.CosineSemSim attribute)|hyperpage}{10}
+\indexentry{fastsemsim.SemSim.CzekanowskiDiceSemSim (module)|hyperpage}{10}
+\indexentry{CzekanowskiDiceSemSim (class in fastsemsim.SemSim.CzekanowskiDiceSemSim)|hyperpage}{10}
+\indexentry{IC\_based (fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim attribute)|hyperpage}{10}
+\indexentry{SS\_type (fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim attribute)|hyperpage}{10}
+\indexentry{extend\_annotations (fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim attribute)|hyperpage}{10}
+\indexentry{fastsemsim.SemSim.DiceSemSim (module)|hyperpage}{11}
+\indexentry{DiceSemSim (class in fastsemsim.SemSim.DiceSemSim)|hyperpage}{11}
+\indexentry{IC\_based (fastsemsim.SemSim.DiceSemSim.DiceSemSim attribute)|hyperpage}{11}
+\indexentry{SS\_type (fastsemsim.SemSim.DiceSemSim.DiceSemSim attribute)|hyperpage}{11}
+\indexentry{extend\_annotations (fastsemsim.SemSim.DiceSemSim.DiceSemSim attribute)|hyperpage}{11}
+\indexentry{fastsemsim.SemSim.GSESAMESemSim (module)|hyperpage}{11}
+\indexentry{GSESAMESemSim (class in fastsemsim.SemSim.GSESAMESemSim)|hyperpage}{11}
+\indexentry{IC\_based (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute)|hyperpage}{11}
+\indexentry{SS\_type (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute)|hyperpage}{11}
+\indexentry{generic\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute)|hyperpage}{11}
+\indexentry{is\_a\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute)|hyperpage}{11}
+\indexentry{neg\_regulates\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute)|hyperpage}{11}
+\indexentry{part\_of\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute)|hyperpage}{11}
+\indexentry{pos\_regulates\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute)|hyperpage}{11}
+\indexentry{regulates\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute)|hyperpage}{11}
+\indexentry{score\_ancestors() (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim method)|hyperpage}{11}
+\indexentry{score\_edge() (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim method)|hyperpage}{11}
+\indexentry{fastsemsim.SemSim.JaccardSemSim (module)|hyperpage}{11}
+\indexentry{JaccardSemSim (class in fastsemsim.SemSim.JaccardSemSim)|hyperpage}{11}
+\indexentry{IC\_based (fastsemsim.SemSim.JaccardSemSim.JaccardSemSim attribute)|hyperpage}{11}
+\indexentry{SS\_type (fastsemsim.SemSim.JaccardSemSim.JaccardSemSim attribute)|hyperpage}{11}
+\indexentry{extend\_annotations (fastsemsim.SemSim.JaccardSemSim.JaccardSemSim attribute)|hyperpage}{11}
+\indexentry{fastsemsim.SemSim.JiangConrathSemSim (module)|hyperpage}{12}
+\indexentry{JiangConrathSemSim (class in fastsemsim.SemSim.JiangConrathSemSim)|hyperpage}{12}
+\indexentry{IC\_based (fastsemsim.SemSim.JiangConrathSemSim.JiangConrathSemSim attribute)|hyperpage}{12}
+\indexentry{SS\_type (fastsemsim.SemSim.JiangConrathSemSim.JiangConrathSemSim attribute)|hyperpage}{12}
+\indexentry{fastsemsim.SemSim.LinSemSim (module)|hyperpage}{12}
+\indexentry{LinSemSim (class in fastsemsim.SemSim.LinSemSim)|hyperpage}{12}
+\indexentry{IC\_based (fastsemsim.SemSim.LinSemSim.LinSemSim attribute)|hyperpage}{12}
+\indexentry{SS\_type (fastsemsim.SemSim.LinSemSim.LinSemSim attribute)|hyperpage}{12}
+\indexentry{fastsemsim.SemSim.SimGICSemSim (module)|hyperpage}{12}
+\indexentry{SimGICSemSim (class in fastsemsim.SemSim.SimGICSemSim)|hyperpage}{12}
+\indexentry{IC\_based (fastsemsim.SemSim.SimGICSemSim.SimGICSemSim attribute)|hyperpage}{12}
+\indexentry{SS\_type (fastsemsim.SemSim.SimGICSemSim.SimGICSemSim attribute)|hyperpage}{12}
+\indexentry{fastsemsim.SemSim.SimICNDSemSim (module)|hyperpage}{12}
+\indexentry{ICNDSemSim (class in fastsemsim.SemSim.SimICNDSemSim)|hyperpage}{12}
+\indexentry{IC\_based (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute)|hyperpage}{12}
+\indexentry{SS\_type (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute)|hyperpage}{12}
+\indexentry{generic\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute)|hyperpage}{12}
+\indexentry{is\_a\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute)|hyperpage}{12}
+\indexentry{neg\_regulates\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute)|hyperpage}{12}
+\indexentry{part\_of\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute)|hyperpage}{12}
+\indexentry{pos\_regulates\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute)|hyperpage}{13}
+\indexentry{regulates\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute)|hyperpage}{13}
+\indexentry{score\_ancestors() (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim method)|hyperpage}{13}
+\indexentry{score\_edge() (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim method)|hyperpage}{13}
+\indexentry{fastsemsim.SemSim.SimICNPSemSim (module)|hyperpage}{13}
+\indexentry{ICNPSemSim (class in fastsemsim.SemSim.SimICNPSemSim)|hyperpage}{13}
+\indexentry{IC\_based (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute)|hyperpage}{13}
+\indexentry{SS\_type (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute)|hyperpage}{13}
+\indexentry{generic\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute)|hyperpage}{13}
+\indexentry{is\_a\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute)|hyperpage}{13}
+\indexentry{neg\_regulates\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute)|hyperpage}{13}
+\indexentry{part\_of\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute)|hyperpage}{13}
+\indexentry{pos\_regulates\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute)|hyperpage}{13}
+\indexentry{regulates\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute)|hyperpage}{13}
+\indexentry{score\_ancestors() (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim method)|hyperpage}{13}
+\indexentry{score\_edge() (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim method)|hyperpage}{13}
+\indexentry{fastsemsim.SemSim.SimICSemSim (module)|hyperpage}{13}
+\indexentry{SimICSemSim (class in fastsemsim.SemSim.SimICSemSim)|hyperpage}{13}
+\indexentry{IC\_based (fastsemsim.SemSim.SimICSemSim.SimICSemSim attribute)|hyperpage}{13}
+\indexentry{SS\_type (fastsemsim.SemSim.SimICSemSim.SimICSemSim attribute)|hyperpage}{13}
+\indexentry{use\_Lin (fastsemsim.SemSim.SimICSemSim.SimICSemSim attribute)|hyperpage}{13}
+\indexentry{fastsemsim.SemSim.SimNTOSemSim (module)|hyperpage}{13}
+\indexentry{SimNTOSemSim (class in fastsemsim.SemSim.SimNTOSemSim)|hyperpage}{13}
+\indexentry{IC\_based (fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim attribute)|hyperpage}{14}
+\indexentry{SS\_type (fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim attribute)|hyperpage}{14}
+\indexentry{extend\_annotations (fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim attribute)|hyperpage}{14}
+\indexentry{fastsemsim.SemSim.SimRelSemSim (module)|hyperpage}{14}
+\indexentry{SimRelSemSim (class in fastsemsim.SemSim.SimRelSemSim)|hyperpage}{14}
+\indexentry{IC\_based (fastsemsim.SemSim.SimRelSemSim.SimRelSemSim attribute)|hyperpage}{14}
+\indexentry{SS\_type (fastsemsim.SemSim.SimRelSemSim.SimRelSemSim attribute)|hyperpage}{14}
+\indexentry{use\_Lin (fastsemsim.SemSim.SimRelSemSim.SimRelSemSim attribute)|hyperpage}{14}
+\indexentry{fastsemsim.SemSim.SimTOSemSim (module)|hyperpage}{14}
+\indexentry{SimTOSemSim (class in fastsemsim.SemSim.SimTOSemSim)|hyperpage}{14}
+\indexentry{IC\_based (fastsemsim.SemSim.SimTOSemSim.SimTOSemSim attribute)|hyperpage}{14}
+\indexentry{SS\_type (fastsemsim.SemSim.SimTOSemSim.SimTOSemSim attribute)|hyperpage}{14}
+\indexentry{fastsemsim.SemSim.SimUISemSim (module)|hyperpage}{14}
+\indexentry{SimUISemSim (class in fastsemsim.SemSim.SimUISemSim)|hyperpage}{14}
+\indexentry{IC\_based (fastsemsim.SemSim.SimUISemSim.SimUISemSim attribute)|hyperpage}{14}
+\indexentry{SS\_type (fastsemsim.SemSim.SimUISemSim.SimUISemSim attribute)|hyperpage}{14}
+\indexentry{fastsemsim.SemSim.MixSemSim (module)|hyperpage}{14}
+\indexentry{MixSemSim (class in fastsemsim.SemSim.MixSemSim)|hyperpage}{14}
+\indexentry{SemSim() (fastsemsim.SemSim.MixSemSim.MixSemSim method)|hyperpage}{14}
+\indexentry{fastsemsim.SemSim.avgSemSim (module)|hyperpage}{15}
+\indexentry{avgSemSim (class in fastsemsim.SemSim.avgSemSim)|hyperpage}{15}
+\indexentry{fastsemsim.SemSim.maxSemSim (module)|hyperpage}{15}
+\indexentry{maxSemSim (class in fastsemsim.SemSim.maxSemSim)|hyperpage}{15}
+\indexentry{fastsemsim.SemSim.BMASemSim (module)|hyperpage}{15}
+\indexentry{BMASemSim (class in fastsemsim.SemSim.BMASemSim)|hyperpage}{15}
+\indexentry{fair (fastsemsim.SemSim.BMASemSim.BMASemSim attribute)|hyperpage}{15}
+\indexentry{fastsemsim.SemSim.SemSimUtils (module)|hyperpage}{15}
+\indexentry{SemSimUtils (class in fastsemsim.SemSim.SemSimUtils)|hyperpage}{15}
+\indexentry{det\_IC() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{15}
+\indexentry{det\_IC\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{15}
+\indexentry{det\_MICA() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{15}
+\indexentry{det\_ancestors\_union() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{15}
+\indexentry{det\_common\_ancestors() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{15}
+\indexentry{difference() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{15}
+\indexentry{get\_ancestors() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{15}
+\indexentry{int\_det\_IC() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{16}
+\indexentry{int\_det\_IC\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{16}
+\indexentry{int\_det\_ancestors() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{16}
+\indexentry{int\_det\_ancestors\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{16}
+\indexentry{int\_det\_freq() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{16}
+\indexentry{int\_det\_freq\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{16}
+\indexentry{int\_det\_lineage() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{16}
+\indexentry{int\_det\_offspring() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{16}
+\indexentry{int\_det\_offspring\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{16}
+\indexentry{int\_det\_p() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{16}
+\indexentry{int\_det\_p\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{16}
+\indexentry{int\_merge\_sets() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{16}
+\indexentry{intersection() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method)|hyperpage}{16}
+\indexentry{fastsemsim.fastsemsim\_cmdline (module)|hyperpage}{17}

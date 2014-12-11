@@ -1,32 +1,19 @@
-fastsemsim package
+FastSemSim library
 ==================
-
-Subpackages
------------
 
 .. toctree::
 
     fastsemsim.Ontology
-    fastsemsim.SemSim
     fastsemsim.data
-    fastsemsim.examples
+    fastsemsim.SemSim
 
-Submodules
-----------
-
-fastsemsim.fastsemsim_cmdline module
-------------------------------------
+Command Line interface
+======================
 
 .. automodule:: fastsemsim.fastsemsim_cmdline
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 
-Module contents
----------------
+Graphical User interface
+========================
 
-.. automodule:: fastsemsim
-    :members:
-    :undoc-members:
-    :show-inheritance:
+Still to be implemented

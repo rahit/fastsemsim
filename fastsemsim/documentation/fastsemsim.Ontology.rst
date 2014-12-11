@@ -1,83 +1,11 @@
-fastsemsim.Ontology package
-===========================
+fastsemsim.Ontology module
+==========================
 
-Submodules
-----------
+.. automodule:: fastsemsim.Ontology
 
-fastsemsim.Ontology.AnnotationCorpus module
--------------------------------------------
 
-.. automodule:: fastsemsim.Ontology.AnnotationCorpus
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-fastsemsim.Ontology.CellOntology module
----------------------------------------
-
-.. automodule:: fastsemsim.Ontology.CellOntology
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-fastsemsim.Ontology.DiseaseOntology module
-------------------------------------------
-
-.. automodule:: fastsemsim.Ontology.DiseaseOntology
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-fastsemsim.Ontology.FFOntology module
--------------------------------------
-
-.. automodule:: fastsemsim.Ontology.FFOntology
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-fastsemsim.Ontology.GAF2AnnotationCorpus module
------------------------------------------------
-
-.. automodule:: fastsemsim.Ontology.GAF2AnnotationCorpus
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-fastsemsim.Ontology.GOAnnotationCorpus module
----------------------------------------------
-
-.. automodule:: fastsemsim.Ontology.GOAnnotationCorpus
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-fastsemsim.Ontology.GeneOntology module
----------------------------------------
-
-.. automodule:: fastsemsim.Ontology.GeneOntology
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-fastsemsim.Ontology.Ontology module
------------------------------------
-
-.. automodule:: fastsemsim.Ontology.Ontology
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-fastsemsim.Ontology.PlainAnnotationCorpus module
-------------------------------------------------
-
-.. automodule:: fastsemsim.Ontology.PlainAnnotationCorpus
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-fastsemsim.Ontology.ontologies module
--------------------------------------
+Ontology.ontologies
+-------------------
 
 .. automodule:: fastsemsim.Ontology.ontologies
     :members:
@@ -85,10 +13,59 @@ fastsemsim.Ontology.ontologies module
     :show-inheritance:
 
 
-Module contents
----------------
+Ontology.Ontology
+-----------------
 
-.. automodule:: fastsemsim.Ontology
+.. automodule:: fastsemsim.Ontology.Ontology
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Ontology.GeneOntology
+---------------------
+
+.. automodule:: fastsemsim.Ontology.GeneOntology
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Ontology.CellOntology
+---------------------
+
+.. automodule:: fastsemsim.Ontology.CellOntology
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Ontology.DiseaseOntology
+------------------------
+
+.. automodule:: fastsemsim.Ontology.DiseaseOntology
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Ontology.AnnotationCorpus
+-------------------------
+
+.. automodule:: fastsemsim.Ontology.AnnotationCorpus
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Ontology.GAF2AnnotationCorpus
+-----------------------------
+
+.. automodule:: fastsemsim.Ontology.GAF2AnnotationCorpus
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
+Ontology.PlainAnnotationCorpus
+------------------------------
+
+.. automodule:: fastsemsim.Ontology.PlainAnnotationCorpus
     :members:
     :undoc-members:
     :show-inheritance:

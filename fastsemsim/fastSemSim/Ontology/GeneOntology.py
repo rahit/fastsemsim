@@ -1,38 +1,36 @@
 # -*- coding: iso-8859-1 -*-
-'''
-Copyright 2011-2013 Marco Mina. All rights reserved.
 
-This file is part of fastSemSim
+# Copyright 2011-2013 Marco Mina. All rights reserved.
 
-fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+# This file is part of fastSemSim
 
-fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+# fastSemSim is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
+# fastSemSim is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-@mail marco.mina.85@gmail.com
-@version 2.0
-@desc GeneOntology class: extend Ontology to handle the GeneOntology
-'''
+# You should have received a copy of the GNU General Public License
+# along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
+
+# @mail marco.mina.85@gmail.com
+# @version 2.0
+# @desc GeneOntology class: extend Ontology to handle the GeneOntology
 
 """
-Out-of-class variables:
-	types of relationships: is_a, part_of, regulates, ...
-Out-of-class functions:
-	go_name2id
-	go_id2name
-
-Current implementation can only handle single-scope ontologies. All terms have to begin with GO:
-
-Superclasses can extend the basic datastructure with additional layers of information. 
+Gene Ontology class
 """
+
+# Out-of-class variables:
+# 	types of relationships: is_a, part_of, regulates, ...
+# Out-of-class functions:
+# 	go_name2id
+# 	go_id2name
+
 # import types
 # import os
 # from xml.sax import make_parser

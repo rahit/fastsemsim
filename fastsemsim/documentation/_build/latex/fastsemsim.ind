@@ -2,14 +2,13 @@
 \def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
 
   \bigletter A
-  \item alt\_id\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{11}
-  \item alt\_id\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{12}
-  \item alt\_ids (fastsemsim.Ontology.CellOntology.CellOntology attribute), \hyperpage{7}
-  \item alt\_ids (fastsemsim.Ontology.DiseaseOntology.DiseaseOntology attribute), \hyperpage{7}
-  \item alt\_ids (fastsemsim.Ontology.FFOntology.FFOntology attribute), \hyperpage{8}
-  \item AnnotationCorpus (class in fastsemsim.Ontology.AnnotationCorpus), \hyperpage{5}
-  \item AnnotationCorpus.ECFilter (class in fastsemsim.Ontology.AnnotationCorpus), \hyperpage{5}
-  \item AnnotationCorpus.GOFilter (class in fastsemsim.Ontology.AnnotationCorpus), \hyperpage{5}
+  \item alt\_id\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{3}
+  \item alt\_id\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{4}
+  \item alt\_ids (fastsemsim.Ontology.CellOntology.CellOntology attribute), \hyperpage{5}
+  \item alt\_ids (fastsemsim.Ontology.DiseaseOntology.DiseaseOntology attribute), \hyperpage{5}
+  \item AnnotationCorpus (class in fastsemsim.Ontology.AnnotationCorpus), \hyperpage{6}
+  \item AnnotationCorpus.ECFilter (class in fastsemsim.Ontology.AnnotationCorpus), \hyperpage{6}
+  \item AnnotationCorpus.GOFilter (class in fastsemsim.Ontology.AnnotationCorpus), \hyperpage{6}
   \item AnnotationCorpus.TaxonomyFilter (class in fastsemsim.Ontology.AnnotationCorpus), 
 		\hyperpage{6}
   \item annotations (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute), 
@@ -18,489 +17,391 @@
 		\hyperpage{6}
   \item annotations\_fields (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute), 
 		\hyperpage{6}
-  \item avgSemSim (class in fastsemsim.SemSim.avgSemSim), \hyperpage{24}
+  \item avgSemSim (class in fastsemsim.SemSim.avgSemSim), \hyperpage{15}
 
   \indexspace
   \bigletter B
-  \item BMASemSim (class in fastsemsim.SemSim.BMASemSim), \hyperpage{13}
-  \item build\_cmdline\_args\_parser() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{27}
+  \item BMASemSim (class in fastsemsim.SemSim.BMASemSim), \hyperpage{15}
 
   \indexspace
   \bigletter C
-  \item CellOntology (class in fastsemsim.Ontology.CellOntology), \hyperpage{7}
-  \item characters() (fastsemsim.Ontology.ontologies.OboXmlParser method), \hyperpage{12}
-  \item check\_parameters() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{27}
-  \item comment\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{11}
-  \item comment\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{12}
-  \item consider\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{11}
-  \item consider\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{12}
+  \item CellOntology (class in fastsemsim.Ontology.CellOntology), \hyperpage{5}
+  \item characters() (fastsemsim.Ontology.ontologies.OboXmlParser method), \hyperpage{4}
+  \item comment\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{3}
+  \item comment\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{4}
+  \item consider\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{3}
+  \item consider\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{4}
   \item constrain() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), \hyperpage{6}
-  \item constrain() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method), 
-		\hyperpage{9}
-  \item CosineSemSim (class in fastsemsim.SemSim.CosineSemSim), \hyperpage{13}
-  \item CzekanowskiDiceSemSim (class in fastsemsim.SemSim.CzekanowskiDiceSemSim), \hyperpage{14}
+  \item CosineSemSim (class in fastsemsim.SemSim.CosineSemSim), \hyperpage{10}
+  \item CzekanowskiDiceSemSim (class in fastsemsim.SemSim.CzekanowskiDiceSemSim), \hyperpage{10}
 
   \indexspace
   \bigletter D
-  \item Dataset (class in fastsemsim.data.dataset), \hyperpage{25}
-  \item debug (fastsemsim.Ontology.Ontology.Ontology attribute), \hyperpage{10}
-  \item def\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{11}
-  \item def\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{12}
-  \item delimiter\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{11}
-  \item delimiter\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{12}
-  \item det\_ancestors\_union() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{18}
-  \item det\_common\_ancestors() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{18}
-  \item det\_IC() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{18}
-  \item det\_IC\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{18}
-  \item det\_MICA() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{18}
-  \item det\_roots() (fastsemsim.Ontology.Ontology.Ontology method), \hyperpage{10}
-  \item det\_ss() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{27}
-  \item DiceSemSim (class in fastsemsim.SemSim.DiceSemSim), \hyperpage{14}
-  \item difference() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{18}
-  \item DiseaseOntology (class in fastsemsim.Ontology.DiseaseOntology), \hyperpage{7}
-  \item dotprod() (fastsemsim.SemSim.CosineSemSim.CosineSemSim method), \hyperpage{13}
+  \item Dataset (class in fastsemsim.data.dataset), \hyperpage{8}
+  \item debug (fastsemsim.Ontology.Ontology.Ontology attribute), \hyperpage{4}
+  \item def\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{3}
+  \item def\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{4}
+  \item delimiter\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{3}
+  \item delimiter\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{4}
+  \item det\_ancestors\_union() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{15}
+  \item det\_common\_ancestors() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{15}
+  \item det\_IC() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{15}
+  \item det\_IC\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{15}
+  \item det\_MICA() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{15}
+  \item det\_roots() (fastsemsim.Ontology.Ontology.Ontology method), \hyperpage{5}
+  \item DiceSemSim (class in fastsemsim.SemSim.DiceSemSim), \hyperpage{11}
+  \item difference() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{15}
+  \item DiseaseOntology (class in fastsemsim.Ontology.DiseaseOntology), \hyperpage{5}
+  \item dotprod() (fastsemsim.SemSim.CosineSemSim.CosineSemSim method), \hyperpage{10}
 
   \indexspace
   \bigletter E
   \item EC (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.ECFilter attribute), 
-		\hyperpage{5}
-  \item EC (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.ECFilter attribute), 
-		\hyperpage{9}
-  \item edge\_number() (fastsemsim.Ontology.Ontology.Ontology method), \hyperpage{10}
-  \item endElement() (fastsemsim.Ontology.ontologies.OboXmlParser method), \hyperpage{12}
-  \item extend\_annotations (fastsemsim.SemSim.CosineSemSim.CosineSemSim attribute), \hyperpage{13}
+		\hyperpage{6}
+  \item edge\_number() (fastsemsim.Ontology.Ontology.Ontology method), \hyperpage{5}
+  \item endElement() (fastsemsim.Ontology.ontologies.OboXmlParser method), \hyperpage{4}
+  \item extend\_annotations (fastsemsim.SemSim.CosineSemSim.CosineSemSim attribute), \hyperpage{10}
   \item extend\_annotations (fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim attribute), 
-		\hyperpage{14}
-  \item extend\_annotations (fastsemsim.SemSim.DiceSemSim.DiceSemSim attribute), \hyperpage{14}
+		\hyperpage{10}
+  \item extend\_annotations (fastsemsim.SemSim.DiceSemSim.DiceSemSim attribute), \hyperpage{11}
   \item extend\_annotations (fastsemsim.SemSim.JaccardSemSim.JaccardSemSim attribute), 
-		\hyperpage{16}
-  \item extend\_annotations (fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim attribute), \hyperpage{22}
+		\hyperpage{11}
+  \item extend\_annotations (fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim attribute), \hyperpage{14}
 
   \indexspace
   \bigletter F
-  \item fair (fastsemsim.SemSim.BMASemSim.BMASemSim attribute), \hyperpage{13}
-  \item fastsemsim (module), \hyperpage{28}
-  \item fastsemsim.data (module), \hyperpage{25}
-  \item fastsemsim.data.dataset (module), \hyperpage{25}
-  \item fastsemsim.examples (module), \hyperpage{26}
-  \item fastsemsim.examples.load\_annotation\_corpus (module), \hyperpage{26}
-  \item fastsemsim.examples.load\_ontology (module), \hyperpage{26}
-  \item fastsemsim.fastsemsim\_cmdline (module), \hyperpage{27}
-  \item fastsemsim.Ontology (module), \hyperpage{12}
+  \item fair (fastsemsim.SemSim.BMASemSim.BMASemSim attribute), \hyperpage{15}
+  \item fastsemsim.data (module), \hyperpage{8}
+  \item fastsemsim.data.dataset (module), \hyperpage{8}
+  \item fastsemsim.fastsemsim\_cmdline (module), \hyperpage{17}
+  \item fastsemsim.Ontology (module), \hyperpage{3}
   \item fastsemsim.Ontology.AnnotationCorpus (module), \hyperpage{5}
-  \item fastsemsim.Ontology.CellOntology (module), \hyperpage{7}
-  \item fastsemsim.Ontology.DiseaseOntology (module), \hyperpage{7}
-  \item fastsemsim.Ontology.FFOntology (module), \hyperpage{7}
-  \item fastsemsim.Ontology.GAF2AnnotationCorpus (module), \hyperpage{8}
-  \item fastsemsim.Ontology.GeneOntology (module), \hyperpage{10}
-  \item fastsemsim.Ontology.GOAnnotationCorpus (module), \hyperpage{8}
-  \item fastsemsim.Ontology.ontologies (module), \hyperpage{11}
-  \item fastsemsim.Ontology.Ontology (module), \hyperpage{10}
-  \item fastsemsim.Ontology.PlainAnnotationCorpus (module), \hyperpage{11}
-  \item fastsemsim.SemSim (module), \hyperpage{24}
-  \item fastsemsim.SemSim.avgSemSim (module), \hyperpage{24}
-  \item fastsemsim.SemSim.BMASemSim (module), \hyperpage{13}
-  \item fastsemsim.SemSim.CosineSemSim (module), \hyperpage{13}
-  \item fastsemsim.SemSim.CzekanowskiDiceSemSim (module), \hyperpage{14}
-  \item fastsemsim.SemSim.DiceSemSim (module), \hyperpage{14}
-  \item fastsemsim.SemSim.GSESAMESemSim (module), \hyperpage{15}
-  \item fastsemsim.SemSim.JaccardSemSim (module), \hyperpage{15}
-  \item fastsemsim.SemSim.JiangConrathSemSim (module), \hyperpage{16}
-  \item fastsemsim.SemSim.LinSemSim (module), \hyperpage{16}
-  \item fastsemsim.SemSim.maxSemSim (module), \hyperpage{24}
-  \item fastsemsim.SemSim.MixSemSim (module), \hyperpage{16}
-  \item fastsemsim.SemSim.ObjSemSim (module), \hyperpage{17}
-  \item fastsemsim.SemSim.ObjSetSemSim (module), \hyperpage{17}
-  \item fastsemsim.SemSim.ResnikSemSim (module), \hyperpage{18}
-  \item fastsemsim.SemSim.SemSimUtils (module), \hyperpage{18}
-  \item fastsemsim.SemSim.SetSemSim (module), \hyperpage{19}
-  \item fastsemsim.SemSim.SimGICSemSim (module), \hyperpage{19}
-  \item fastsemsim.SemSim.SimICNDSemSim (module), \hyperpage{20}
-  \item fastsemsim.SemSim.SimICNPSemSim (module), \hyperpage{20}
-  \item fastsemsim.SemSim.SimICSemSim (module), \hyperpage{21}
-  \item fastsemsim.SemSim.SimNTOSemSim (module), \hyperpage{21}
-  \item fastsemsim.SemSim.SimRelSemSim (module), \hyperpage{22}
-  \item fastsemsim.SemSim.SimTOSemSim (module), \hyperpage{22}
-  \item fastsemsim.SemSim.SimUISemSim (module), \hyperpage{23}
-  \item fastsemsim.SemSim.TermSemSim (module), \hyperpage{23}
-  \item FFOntology (class in fastsemsim.Ontology.FFOntology), \hyperpage{8}
+  \item fastsemsim.Ontology.CellOntology (module), \hyperpage{5}
+  \item fastsemsim.Ontology.DiseaseOntology (module), \hyperpage{5}
+  \item fastsemsim.Ontology.GAF2AnnotationCorpus (module), \hyperpage{7}
+  \item fastsemsim.Ontology.GeneOntology (module), \hyperpage{5}
+  \item fastsemsim.Ontology.ontologies (module), \hyperpage{3}
+  \item fastsemsim.Ontology.Ontology (module), \hyperpage{4}
+  \item fastsemsim.Ontology.PlainAnnotationCorpus (module), \hyperpage{8}
+  \item fastsemsim.SemSim (module), \hyperpage{9}
+  \item fastsemsim.SemSim.avgSemSim (module), \hyperpage{15}
+  \item fastsemsim.SemSim.BMASemSim (module), \hyperpage{15}
+  \item fastsemsim.SemSim.CosineSemSim (module), \hyperpage{10}
+  \item fastsemsim.SemSim.CzekanowskiDiceSemSim (module), \hyperpage{10}
+  \item fastsemsim.SemSim.DiceSemSim (module), \hyperpage{11}
+  \item fastsemsim.SemSim.GSESAMESemSim (module), \hyperpage{11}
+  \item fastsemsim.SemSim.JaccardSemSim (module), \hyperpage{11}
+  \item fastsemsim.SemSim.JiangConrathSemSim (module), \hyperpage{12}
+  \item fastsemsim.SemSim.LinSemSim (module), \hyperpage{12}
+  \item fastsemsim.SemSim.maxSemSim (module), \hyperpage{15}
+  \item fastsemsim.SemSim.MixSemSim (module), \hyperpage{14}
+  \item fastsemsim.SemSim.ObjSemSim (module), \hyperpage{9}
+  \item fastsemsim.SemSim.ObjSetSemSim (module), \hyperpage{9}
+  \item fastsemsim.SemSim.ResnikSemSim (module), \hyperpage{10}
+  \item fastsemsim.SemSim.SemSimUtils (module), \hyperpage{15}
+  \item fastsemsim.SemSim.SetSemSim (module), \hyperpage{10}
+  \item fastsemsim.SemSim.SimGICSemSim (module), \hyperpage{12}
+  \item fastsemsim.SemSim.SimICNDSemSim (module), \hyperpage{12}
+  \item fastsemsim.SemSim.SimICNPSemSim (module), \hyperpage{13}
+  \item fastsemsim.SemSim.SimICSemSim (module), \hyperpage{13}
+  \item fastsemsim.SemSim.SimNTOSemSim (module), \hyperpage{13}
+  \item fastsemsim.SemSim.SimRelSemSim (module), \hyperpage{14}
+  \item fastsemsim.SemSim.SimTOSemSim (module), \hyperpage{14}
+  \item fastsemsim.SemSim.SimUISemSim (module), \hyperpage{14}
+  \item fastsemsim.SemSim.TermSemSim (module), \hyperpage{9}
   \item filter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.ECFilter method), 
-		\hyperpage{5}
+		\hyperpage{6}
   \item filter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.GOFilter method), 
-		\hyperpage{5}
+		\hyperpage{6}
   \item filter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.TaxonomyFilter method), 
 		\hyperpage{6}
-  \item filter() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.ECFilter method), 
-		\hyperpage{9}
-  \item filter() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.GOFilter method), 
-		\hyperpage{9}
-  \item filter() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.TaxonomyFilter method), 
-		\hyperpage{9}
-  \item find\_next\_term() (fastsemsim.Ontology.ontologies.OboParser method), \hyperpage{11}
-  \item format\_and\_check\_data (fastsemsim.SemSim.TermSemSim.TermSemSim attribute), 
-		\hyperpage{24}
+  \item find\_next\_term() (fastsemsim.Ontology.ontologies.OboParser method), \hyperpage{3}
+  \item format\_and\_check\_data (fastsemsim.SemSim.TermSemSim.TermSemSim attribute), \hyperpage{9}
 
   \indexspace
   \bigletter G
-  \item G\_TSS (fastsemsim.SemSim.TermSemSim.TermSemSim attribute), \hyperpage{23}
-  \item GAF2AnnotationCorpus (class in fastsemsim.Ontology.GAF2AnnotationCorpus), \hyperpage{8}
-  \item gen\_error (fastsemsim.Ontology.Ontology.Ontology attribute), \hyperpage{10}
-  \item GeneOntology (class in fastsemsim.Ontology.GeneOntology), \hyperpage{10}
-  \item generic\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute), \hyperpage{15}
-  \item generic\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute), \hyperpage{20}
-  \item generic\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute), \hyperpage{21}
-  \item get\_ancestors() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{18}
-  \item get\_annotation\_corpus() (fastsemsim.data.dataset.Dataset method), \hyperpage{25}
+  \item G\_TSS (fastsemsim.SemSim.TermSemSim.TermSemSim attribute), \hyperpage{9}
+  \item GAF2AnnotationCorpus (class in fastsemsim.Ontology.GAF2AnnotationCorpus), \hyperpage{7}
+  \item gen\_error (fastsemsim.Ontology.Ontology.Ontology attribute), \hyperpage{5}
+  \item GeneOntology (class in fastsemsim.Ontology.GeneOntology), \hyperpage{5}
+  \item generic\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute), \hyperpage{11}
+  \item generic\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute), \hyperpage{12}
+  \item generic\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute), \hyperpage{13}
+  \item get\_ancestors() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{15}
+  \item get\_annotation\_corpus() (fastsemsim.data.dataset.Dataset method), \hyperpage{8}
   \item get\_annotation\_corpus\_by\_species() (fastsemsim.data.dataset.Dataset method), 
-		\hyperpage{25}
-  \item get\_dataset() (fastsemsim.data.dataset.Dataset method), \hyperpage{25}
-  \item get\_default\_annotation\_corpus() (fastsemsim.data.dataset.Dataset method), \hyperpage{25}
-  \item get\_default\_ontology() (fastsemsim.data.dataset.Dataset method), \hyperpage{25}
-  \item get\_ontology() (fastsemsim.data.dataset.Dataset method), \hyperpage{25}
+		\hyperpage{8}
+  \item get\_dataset() (fastsemsim.data.dataset.Dataset method), \hyperpage{8}
+  \item get\_default\_annotation\_corpus() (fastsemsim.data.dataset.Dataset method), \hyperpage{8}
+  \item get\_default\_ontology() (fastsemsim.data.dataset.Dataset method), \hyperpage{8}
+  \item get\_ontology() (fastsemsim.data.dataset.Dataset method), \hyperpage{8}
   \item GO (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.GOFilter attribute), 
-		\hyperpage{5}
-  \item GO (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.GOFilter attribute), 
-		\hyperpage{9}
-  \item GOAnnotationCorpus (class in fastsemsim.Ontology.GOAnnotationCorpus), \hyperpage{9}
-  \item GOAnnotationCorpus.ECFilter (class in fastsemsim.Ontology.GOAnnotationCorpus), 
-		\hyperpage{9}
-  \item GOAnnotationCorpus.GOFilter (class in fastsemsim.Ontology.GOAnnotationCorpus), 
-		\hyperpage{9}
-  \item GOAnnotationCorpus.TaxonomyFilter (class in fastsemsim.Ontology.GOAnnotationCorpus), 
-		\hyperpage{9}
-  \item GSESAMESemSim (class in fastsemsim.SemSim.GSESAMESemSim), \hyperpage{15}
+		\hyperpage{6}
+  \item GSESAMESemSim (class in fastsemsim.SemSim.GSESAMESemSim), \hyperpage{11}
 
   \indexspace
   \bigletter H
-  \item has\_tag\_structure() (fastsemsim.Ontology.ontologies.OboParser method), \hyperpage{11}
+  \item has\_tag\_structure() (fastsemsim.Ontology.ontologies.OboParser method), \hyperpage{3}
 
   \indexspace
   \bigletter I
-  \item IC\_based (fastsemsim.SemSim.CosineSemSim.CosineSemSim attribute), \hyperpage{13}
+  \item IC\_based (fastsemsim.SemSim.CosineSemSim.CosineSemSim attribute), \hyperpage{10}
   \item IC\_based (fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim attribute), 
-		\hyperpage{14}
-  \item IC\_based (fastsemsim.SemSim.DiceSemSim.DiceSemSim attribute), \hyperpage{14}
-  \item IC\_based (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute), \hyperpage{15}
-  \item IC\_based (fastsemsim.SemSim.JaccardSemSim.JaccardSemSim attribute), \hyperpage{15}
+		\hyperpage{10}
+  \item IC\_based (fastsemsim.SemSim.DiceSemSim.DiceSemSim attribute), \hyperpage{11}
+  \item IC\_based (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute), \hyperpage{11}
+  \item IC\_based (fastsemsim.SemSim.JaccardSemSim.JaccardSemSim attribute), \hyperpage{11}
   \item IC\_based (fastsemsim.SemSim.JiangConrathSemSim.JiangConrathSemSim attribute), 
-		\hyperpage{16}
-  \item IC\_based (fastsemsim.SemSim.LinSemSim.LinSemSim attribute), \hyperpage{16}
-  \item IC\_based (fastsemsim.SemSim.ResnikSemSim.ResnikSemSim attribute), \hyperpage{18}
-  \item IC\_based (fastsemsim.SemSim.SimGICSemSim.SimGICSemSim attribute), \hyperpage{19}
-  \item IC\_based (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute), \hyperpage{20}
-  \item IC\_based (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute), \hyperpage{21}
-  \item IC\_based (fastsemsim.SemSim.SimICSemSim.SimICSemSim attribute), \hyperpage{21}
-  \item IC\_based (fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim attribute), \hyperpage{22}
-  \item IC\_based (fastsemsim.SemSim.SimRelSemSim.SimRelSemSim attribute), \hyperpage{22}
-  \item IC\_based (fastsemsim.SemSim.SimTOSemSim.SimTOSemSim attribute), \hyperpage{23}
-  \item IC\_based (fastsemsim.SemSim.SimUISemSim.SimUISemSim attribute), \hyperpage{23}
-  \item IC\_based (fastsemsim.SemSim.TermSemSim.TermSemSim attribute), \hyperpage{23}
-  \item ICNDSemSim (class in fastsemsim.SemSim.SimICNDSemSim), \hyperpage{20}
-  \item ICNPSemSim (class in fastsemsim.SemSim.SimICNPSemSim), \hyperpage{20}
-  \item id2name() (fastsemsim.Ontology.FFOntology.FFOntology method), \hyperpage{8}
-  \item id2node() (fastsemsim.Ontology.Ontology.Ontology method), \hyperpage{10}
-  \item id\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{11}
-  \item id\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{12}
+		\hyperpage{12}
+  \item IC\_based (fastsemsim.SemSim.LinSemSim.LinSemSim attribute), \hyperpage{12}
+  \item IC\_based (fastsemsim.SemSim.ResnikSemSim.ResnikSemSim attribute), \hyperpage{10}
+  \item IC\_based (fastsemsim.SemSim.SimGICSemSim.SimGICSemSim attribute), \hyperpage{12}
+  \item IC\_based (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute), \hyperpage{12}
+  \item IC\_based (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute), \hyperpage{13}
+  \item IC\_based (fastsemsim.SemSim.SimICSemSim.SimICSemSim attribute), \hyperpage{13}
+  \item IC\_based (fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim attribute), \hyperpage{14}
+  \item IC\_based (fastsemsim.SemSim.SimRelSemSim.SimRelSemSim attribute), \hyperpage{14}
+  \item IC\_based (fastsemsim.SemSim.SimTOSemSim.SimTOSemSim attribute), \hyperpage{14}
+  \item IC\_based (fastsemsim.SemSim.SimUISemSim.SimUISemSim attribute), \hyperpage{14}
+  \item IC\_based (fastsemsim.SemSim.TermSemSim.TermSemSim attribute), \hyperpage{9}
+  \item ICNDSemSim (class in fastsemsim.SemSim.SimICNDSemSim), \hyperpage{12}
+  \item ICNPSemSim (class in fastsemsim.SemSim.SimICNPSemSim), \hyperpage{13}
+  \item id2node() (fastsemsim.Ontology.Ontology.Ontology method), \hyperpage{5}
+  \item id\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{3}
+  \item id\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{4}
   \item inclusive (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.ECFilter attribute), 
-		\hyperpage{5}
+		\hyperpage{6}
   \item inclusive (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.GOFilter attribute), 
-		\hyperpage{5}
+		\hyperpage{6}
   \item inclusive (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.TaxonomyFilter attribute), 
 		\hyperpage{6}
-  \item inclusive (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.ECFilter attribute), 
-		\hyperpage{9}
-  \item inclusive (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.GOFilter attribute), 
-		\hyperpage{9}
-  \item inclusive (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.TaxonomyFilter attribute), 
-		\hyperpage{9}
-  \item init\_parameters() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{27}
-  \item init\_ss() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{27}
   \item initCommonFilter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), 
 		\hyperpage{6}
-  \item initCommonFilter() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method), 
-		\hyperpage{9}
   \item int\_checkConsistency() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), 
 		\hyperpage{6}
-  \item int\_checkConsistency() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method), 
-		\hyperpage{9}
   \item int\_comment (fastsemsim.Ontology.GAF2AnnotationCorpus.GAF2AnnotationCorpus attribute), 
-		\hyperpage{8}
-  \item int\_det\_ancestors() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{18}
+		\hyperpage{7}
+  \item int\_det\_ancestors() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{16}
   \item int\_det\_ancestors\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), 
-		\hyperpage{18}
-  \item int\_det\_freq() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{19}
-  \item int\_det\_freq\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{19}
-  \item int\_det\_IC() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{18}
-  \item int\_det\_IC\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{18}
-  \item int\_det\_lineage() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{19}
-  \item int\_det\_offspring() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{19}
+		\hyperpage{16}
+  \item int\_det\_freq() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{16}
+  \item int\_det\_freq\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{16}
+  \item int\_det\_IC() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{16}
+  \item int\_det\_IC\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{16}
+  \item int\_det\_lineage() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{16}
+  \item int\_det\_offspring() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{16}
   \item int\_det\_offspring\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), 
-		\hyperpage{19}
-  \item int\_det\_p() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{19}
-  \item int\_det\_p\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{19}
-  \item int\_exclude\_GO\_root (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus attribute), 
-		\hyperpage{9}
+		\hyperpage{16}
+  \item int\_det\_p() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{16}
+  \item int\_det\_p\_table() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{16}
   \item int\_go (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.GOFilter attribute), 
-		\hyperpage{5}
-  \item int\_go (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.GOFilter attribute), 
-		\hyperpage{9}
+		\hyperpage{6}
   \item int\_interpretParameters() (fastsemsim.Ontology.GAF2AnnotationCorpus.GAF2AnnotationCorpus method), 
-		\hyperpage{8}
+		\hyperpage{7}
   \item int\_interpretParameters() (fastsemsim.Ontology.PlainAnnotationCorpus.PlainAnnotationCorpus method), 
-		\hyperpage{11}
-  \item int\_merge\_sets() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{19}
+		\hyperpage{8}
+  \item int\_merge\_sets() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{16}
   \item int\_resetFields() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), 
-		\hyperpage{6}
-  \item int\_resetFields() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method), 
-		\hyperpage{9}
+		\hyperpage{7}
   \item int\_separator (fastsemsim.Ontology.GAF2AnnotationCorpus.GAF2AnnotationCorpus attribute), 
-		\hyperpage{8}
-  \item intersection() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{19}
-  \item is\_a\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute), \hyperpage{15}
-  \item is\_a\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute), \hyperpage{20}
-  \item is\_a\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute), \hyperpage{21}
-  \item is\_a\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{11}
-  \item is\_a\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{12}
-  \item is\_consistent() (fastsemsim.Ontology.Ontology.Ontology method), \hyperpage{10}
-  \item is\_obsolete\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{11}
-  \item is\_obsolete\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{12}
-  \item is\_valid() (fastsemsim.Ontology.Ontology.Ontology method), \hyperpage{10}
+		\hyperpage{7}
+  \item intersection() (fastsemsim.SemSim.SemSimUtils.SemSimUtils method), \hyperpage{16}
+  \item is\_a\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute), \hyperpage{11}
+  \item is\_a\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute), \hyperpage{12}
+  \item is\_a\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute), \hyperpage{13}
+  \item is\_a\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{3}
+  \item is\_a\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{4}
+  \item is\_consistent() (fastsemsim.Ontology.Ontology.Ontology method), \hyperpage{5}
+  \item is\_obsolete\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{3}
+  \item is\_obsolete\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{4}
+  \item is\_valid() (fastsemsim.Ontology.Ontology.Ontology method), \hyperpage{5}
   \item isConsistent() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), 
-		\hyperpage{6}
-  \item isConsistent() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method), 
-		\hyperpage{9}
-  \item isOk() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), \hyperpage{6}
+		\hyperpage{7}
+  \item isOk() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), \hyperpage{7}
   \item isOk() (fastsemsim.Ontology.GAF2AnnotationCorpus.GAF2AnnotationCorpus method), 
-		\hyperpage{8}
-  \item isOk() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method), \hyperpage{9}
+		\hyperpage{7}
   \item isOk() (fastsemsim.Ontology.PlainAnnotationCorpus.PlainAnnotationCorpus method), 
-		\hyperpage{11}
+		\hyperpage{8}
 
   \indexspace
   \bigletter J
-  \item JaccardSemSim (class in fastsemsim.SemSim.JaccardSemSim), \hyperpage{15}
-  \item JiangConrathSemSim (class in fastsemsim.SemSim.JiangConrathSemSim), \hyperpage{16}
+  \item JaccardSemSim (class in fastsemsim.SemSim.JaccardSemSim), \hyperpage{11}
+  \item JiangConrathSemSim (class in fastsemsim.SemSim.JiangConrathSemSim), \hyperpage{12}
 
   \indexspace
   \bigletter L
-  \item LinSemSim (class in fastsemsim.SemSim.LinSemSim), \hyperpage{16}
-  \item load() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), \hyperpage{6}
-  \item load() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method), \hyperpage{9}
-  \item load() (in module fastsemsim.Ontology.ontologies), \hyperpage{12}
-  \item load\_ac() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{27}
-  \item load\_IC\_from\_file() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{27}
-  \item load\_ontology() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{27}
-  \item load\_params\_from\_file() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{27}
-  \item load\_query() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{27}
-  \item load\_query\_from\_file() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{27}
+  \item LinSemSim (class in fastsemsim.SemSim.LinSemSim), \hyperpage{12}
+  \item load() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), \hyperpage{7}
+  \item load() (in module fastsemsim.Ontology.ontologies), \hyperpage{4}
 
   \indexspace
   \bigletter M
-  \item maxSemSim (class in fastsemsim.SemSim.maxSemSim), \hyperpage{24}
-  \item MissingAcException, \hyperpage{23}
-  \item MixSemSim (class in fastsemsim.SemSim.MixSemSim), \hyperpage{17}
+  \item maxSemSim (class in fastsemsim.SemSim.maxSemSim), \hyperpage{15}
+  \item MissingAcException, \hyperpage{9}
+  \item MixSemSim (class in fastsemsim.SemSim.MixSemSim), \hyperpage{14}
 
   \indexspace
   \bigletter N
   \item name (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.ECFilter attribute), 
-		\hyperpage{5}
+		\hyperpage{6}
   \item name (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.GOFilter attribute), 
-		\hyperpage{5}
+		\hyperpage{6}
   \item name (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.TaxonomyFilter attribute), 
 		\hyperpage{6}
-  \item name (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.ECFilter attribute), 
-		\hyperpage{9}
-  \item name (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.GOFilter attribute), 
-		\hyperpage{9}
-  \item name (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.TaxonomyFilter attribute), 
-		\hyperpage{9}
-  \item name2id() (fastsemsim.Ontology.FFOntology.FFOntology method), \hyperpage{8}
-  \item name2node() (fastsemsim.Ontology.Ontology.Ontology method), \hyperpage{10}
-  \item name\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{11}
-  \item name\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{12}
-  \item namespace\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{11}
-  \item namespace\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{12}
+  \item name2node() (fastsemsim.Ontology.Ontology.Ontology method), \hyperpage{5}
+  \item name\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{3}
+  \item name\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{4}
+  \item namespace\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{3}
+  \item namespace\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{4}
   \item neg\_regulates\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute), 
-		\hyperpage{15}
+		\hyperpage{11}
   \item neg\_regulates\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute), 
-		\hyperpage{20}
+		\hyperpage{12}
   \item neg\_regulates\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute), 
-		\hyperpage{21}
-  \item node2id() (fastsemsim.Ontology.Ontology.Ontology method), \hyperpage{10}
-  \item node\_number() (fastsemsim.Ontology.Ontology.Ontology method), \hyperpage{10}
+		\hyperpage{13}
+  \item node2id() (fastsemsim.Ontology.Ontology.Ontology method), \hyperpage{5}
+  \item node\_number() (fastsemsim.Ontology.Ontology.Ontology method), \hyperpage{5}
 
   \indexspace
   \bigletter O
   \item obj\_field2pos (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute), 
-		\hyperpage{6}
-  \item obj\_fields (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute), 
-		\hyperpage{6}
-  \item obj\_set (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute), \hyperpage{6}
-  \item ObjSemSim (class in fastsemsim.SemSim.ObjSemSim), \hyperpage{17}
-  \item ObjSetSemSim (class in fastsemsim.SemSim.ObjSetSemSim), \hyperpage{17}
-  \item OboParser (class in fastsemsim.Ontology.ontologies), \hyperpage{11}
-  \item OboXmlParser (class in fastsemsim.Ontology.ontologies), \hyperpage{12}
-  \item obsolete\_ids (fastsemsim.Ontology.CellOntology.CellOntology attribute), \hyperpage{7}
-  \item obsolete\_ids (fastsemsim.Ontology.DiseaseOntology.DiseaseOntology attribute), 
 		\hyperpage{7}
-  \item obsolete\_ids (fastsemsim.Ontology.FFOntology.FFOntology attribute), \hyperpage{8}
-  \item Ontology (class in fastsemsim.Ontology.Ontology), \hyperpage{10}
-  \item Ontology (in module Ontology), \hyperpage{3}
-  \item Ontology (module), \hyperpage{3}
+  \item obj\_fields (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute), 
+		\hyperpage{7}
+  \item obj\_set (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute), \hyperpage{7}
+  \item ObjSemSim (class in fastsemsim.SemSim.ObjSemSim), \hyperpage{9}
+  \item ObjSetSemSim (class in fastsemsim.SemSim.ObjSetSemSim), \hyperpage{9}
+  \item OboParser (class in fastsemsim.Ontology.ontologies), \hyperpage{3}
+  \item OboXmlParser (class in fastsemsim.Ontology.ontologies), \hyperpage{4}
+  \item obsolete\_ids (fastsemsim.Ontology.CellOntology.CellOntology attribute), \hyperpage{5}
+  \item obsolete\_ids (fastsemsim.Ontology.DiseaseOntology.DiseaseOntology attribute), 
+		\hyperpage{5}
+  \item Ontology (class in fastsemsim.Ontology.Ontology), \hyperpage{4}
 
   \indexspace
   \bigletter P
-  \item P\_TSS (fastsemsim.SemSim.TermSemSim.TermSemSim attribute), \hyperpage{23}
-  \item parse() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), \hyperpage{6}
+  \item P\_TSS (fastsemsim.SemSim.TermSemSim.TermSemSim attribute), \hyperpage{9}
+  \item parse() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), \hyperpage{7}
   \item parse() (fastsemsim.Ontology.GAF2AnnotationCorpus.GAF2AnnotationCorpus method), 
-		\hyperpage{8}
-  \item parse() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method), \hyperpage{9}
-  \item parse() (fastsemsim.Ontology.ontologies.OboParser method), \hyperpage{11}
+		\hyperpage{7}
+  \item parse() (fastsemsim.Ontology.ontologies.OboParser method), \hyperpage{3}
   \item parse() (fastsemsim.Ontology.PlainAnnotationCorpus.PlainAnnotationCorpus method), 
-		\hyperpage{11}
-  \item parse() (in module fastsemsim.Ontology.ontologies), \hyperpage{12}
-  \item part\_of\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute), \hyperpage{15}
-  \item part\_of\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute), \hyperpage{20}
-  \item part\_of\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute), \hyperpage{21}
-  \item part\_of\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{12}
-  \item PlainAnnotationCorpus (class in fastsemsim.Ontology.PlainAnnotationCorpus), \hyperpage{11}
-  \item populate() (fastsemsim.data.dataset.Dataset method), \hyperpage{25}
+		\hyperpage{8}
+  \item parse() (in module fastsemsim.Ontology.ontologies), \hyperpage{4}
+  \item part\_of\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute), \hyperpage{11}
+  \item part\_of\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute), \hyperpage{12}
+  \item part\_of\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute), \hyperpage{13}
+  \item part\_of\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{4}
+  \item PlainAnnotationCorpus (class in fastsemsim.Ontology.PlainAnnotationCorpus), \hyperpage{8}
+  \item populate() (fastsemsim.data.dataset.Dataset method), \hyperpage{8}
   \item pos\_regulates\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute), 
-		\hyperpage{15}
+		\hyperpage{11}
   \item pos\_regulates\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute), 
-		\hyperpage{20}
+		\hyperpage{13}
   \item pos\_regulates\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute), 
-		\hyperpage{21}
-  \item prbool() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{27}
-  \item print\_err() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{27}
-  \item print\_IC() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{27}
-  \item print\_parameters() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{27}
+		\hyperpage{13}
 
   \indexspace
   \bigletter R
-  \item regulates\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute), \hyperpage{15}
-  \item regulates\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute), \hyperpage{20}
-  \item regulates\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute), \hyperpage{21}
+  \item regulates\_score (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute), \hyperpage{11}
+  \item regulates\_score (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute), \hyperpage{13}
+  \item regulates\_score (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute), \hyperpage{13}
   \item relationship\_delimiter\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), 
-		\hyperpage{11}
+		\hyperpage{3}
   \item relationship\_delimiter\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), 
-		\hyperpage{12}
-  \item relationship\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{11}
-  \item relationship\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{12}
+		\hyperpage{4}
+  \item relationship\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{3}
+  \item relationship\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{4}
   \item relationship\_to\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), 
-		\hyperpage{12}
+		\hyperpage{4}
   \item relationship\_type\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), 
-		\hyperpage{12}
-  \item replaced\_by\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{11}
-  \item replaced\_by\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{12}
-  \item reset() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), \hyperpage{6}
-  \item reset() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method), \hyperpage{9}
+		\hyperpage{4}
+  \item replaced\_by\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{3}
+  \item replaced\_by\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{4}
+  \item reset() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), \hyperpage{7}
   \item resetCommonfilter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), 
-		\hyperpage{6}
-  \item resetCommonfilter() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method), 
-		\hyperpage{9}
-  \item resetFilter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), \hyperpage{6}
-  \item resetFilter() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method), 
-		\hyperpage{9}
-  \item ResnikSemSim (class in fastsemsim.SemSim.ResnikSemSim), \hyperpage{18}
+		\hyperpage{7}
+  \item resetFilter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), \hyperpage{7}
+  \item ResnikSemSim (class in fastsemsim.SemSim.ResnikSemSim), \hyperpage{10}
   \item reverse\_annotations (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute), 
-		\hyperpage{6}
+		\hyperpage{7}
   \item reverse\_annotations\_field2pos (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute), 
-		\hyperpage{6}
+		\hyperpage{7}
   \item reverse\_annotations\_fields (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute), 
-		\hyperpage{6}
+		\hyperpage{7}
 
   \indexspace
   \bigletter S
-  \item sanitize() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), \hyperpage{6}
-  \item sanitize() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method), 
-		\hyperpage{9}
-  \item save\_params\_to\_file() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{28}
-  \item score\_ancestors() (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim method), \hyperpage{15}
-  \item score\_ancestors() (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim method), \hyperpage{20}
-  \item score\_ancestors() (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim method), \hyperpage{21}
-  \item score\_edge() (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim method), \hyperpage{15}
-  \item score\_edge() (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim method), \hyperpage{20}
-  \item score\_edge() (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim method), \hyperpage{21}
-  \item select\_mix\_SemSim() (in module fastsemsim.SemSim), \hyperpage{25}
-  \item select\_term\_SemSim() (in module fastsemsim.SemSim), \hyperpage{25}
-  \item SemSim (module), \hyperpage{3}
-  \item SemSim() (fastsemsim.SemSim.MixSemSim.MixSemSim method), \hyperpage{17}
-  \item SemSim() (fastsemsim.SemSim.ObjSemSim.ObjSemSim method), \hyperpage{17}
-  \item SemSim() (fastsemsim.SemSim.ObjSetSemSim.ObjSetSemSim method), \hyperpage{17}
-  \item SemSim() (fastsemsim.SemSim.SetSemSim.SetSemSim method), \hyperpage{19}
-  \item SemSim() (fastsemsim.SemSim.TermSemSim.TermSemSim method), \hyperpage{23}
-  \item SemSimUtils (class in fastsemsim.SemSim.SemSimUtils), \hyperpage{18}
+  \item sanitize() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), \hyperpage{7}
+  \item score\_ancestors() (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim method), \hyperpage{11}
+  \item score\_ancestors() (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim method), \hyperpage{13}
+  \item score\_ancestors() (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim method), \hyperpage{13}
+  \item score\_edge() (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim method), \hyperpage{11}
+  \item score\_edge() (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim method), \hyperpage{13}
+  \item score\_edge() (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim method), \hyperpage{13}
+  \item SemSim() (fastsemsim.SemSim.MixSemSim.MixSemSim method), \hyperpage{14}
+  \item SemSim() (fastsemsim.SemSim.ObjSemSim.ObjSemSim method), \hyperpage{9}
+  \item SemSim() (fastsemsim.SemSim.ObjSetSemSim.ObjSetSemSim method), \hyperpage{9}
+  \item SemSim() (fastsemsim.SemSim.SetSemSim.SetSemSim method), \hyperpage{10}
+  \item SemSim() (fastsemsim.SemSim.TermSemSim.TermSemSim method), \hyperpage{9}
+  \item SemSimUtils (class in fastsemsim.SemSim.SemSimUtils), \hyperpage{15}
   \item set() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.GOFilter method), 
 		\hyperpage{6}
-  \item set() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.GOFilter method), 
-		\hyperpage{9}
-  \item set\_parameters() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{28}
   \item setCommonfilters() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), 
-		\hyperpage{6}
-  \item setCommonfilters() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method), 
-		\hyperpage{9}
+		\hyperpage{7}
   \item setFields() (fastsemsim.Ontology.GAF2AnnotationCorpus.GAF2AnnotationCorpus method), 
-		\hyperpage{8}
+		\hyperpage{7}
   \item setFields() (fastsemsim.Ontology.PlainAnnotationCorpus.PlainAnnotationCorpus method), 
-		\hyperpage{11}
-  \item setFilter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), \hyperpage{6}
-  \item setFilter() (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus method), 
-		\hyperpage{9}
-  \item setSanityCheck() (fastsemsim.SemSim.TermSemSim.TermSemSim method), \hyperpage{24}
-  \item SetSemSim (class in fastsemsim.SemSim.SetSemSim), \hyperpage{19}
-  \item SimGICSemSim (class in fastsemsim.SemSim.SimGICSemSim), \hyperpage{19}
-  \item SimICSemSim (class in fastsemsim.SemSim.SimICSemSim), \hyperpage{21}
-  \item SimNTOSemSim (class in fastsemsim.SemSim.SimNTOSemSim), \hyperpage{22}
-  \item SimRelSemSim (class in fastsemsim.SemSim.SimRelSemSim), \hyperpage{22}
-  \item SimTOSemSim (class in fastsemsim.SemSim.SimTOSemSim), \hyperpage{22}
-  \item SimUISemSim (class in fastsemsim.SemSim.SimUISemSim), \hyperpage{23}
-  \item split\_rel\_tag() (fastsemsim.Ontology.ontologies.OboParser method), \hyperpage{12}
-  \item split\_tag() (fastsemsim.Ontology.ontologies.OboParser method), \hyperpage{12}
-  \item ss\_pairs() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{28}
-  \item ss\_pairwise() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{28}
-  \item SS\_type (fastsemsim.SemSim.CosineSemSim.CosineSemSim attribute), \hyperpage{13}
+		\hyperpage{8}
+  \item setFilter() (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus method), \hyperpage{7}
+  \item setSanityCheck() (fastsemsim.SemSim.TermSemSim.TermSemSim method), \hyperpage{9}
+  \item SetSemSim (class in fastsemsim.SemSim.SetSemSim), \hyperpage{10}
+  \item SimGICSemSim (class in fastsemsim.SemSim.SimGICSemSim), \hyperpage{12}
+  \item SimICSemSim (class in fastsemsim.SemSim.SimICSemSim), \hyperpage{13}
+  \item SimNTOSemSim (class in fastsemsim.SemSim.SimNTOSemSim), \hyperpage{13}
+  \item SimRelSemSim (class in fastsemsim.SemSim.SimRelSemSim), \hyperpage{14}
+  \item SimTOSemSim (class in fastsemsim.SemSim.SimTOSemSim), \hyperpage{14}
+  \item SimUISemSim (class in fastsemsim.SemSim.SimUISemSim), \hyperpage{14}
+  \item split\_rel\_tag() (fastsemsim.Ontology.ontologies.OboParser method), \hyperpage{3}
+  \item split\_tag() (fastsemsim.Ontology.ontologies.OboParser method), \hyperpage{3}
+  \item SS\_type (fastsemsim.SemSim.CosineSemSim.CosineSemSim attribute), \hyperpage{10}
   \item SS\_type (fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim attribute), 
-		\hyperpage{14}
-  \item SS\_type (fastsemsim.SemSim.DiceSemSim.DiceSemSim attribute), \hyperpage{14}
-  \item SS\_type (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute), \hyperpage{15}
-  \item SS\_type (fastsemsim.SemSim.JaccardSemSim.JaccardSemSim attribute), \hyperpage{15}
+		\hyperpage{10}
+  \item SS\_type (fastsemsim.SemSim.DiceSemSim.DiceSemSim attribute), \hyperpage{11}
+  \item SS\_type (fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim attribute), \hyperpage{11}
+  \item SS\_type (fastsemsim.SemSim.JaccardSemSim.JaccardSemSim attribute), \hyperpage{11}
   \item SS\_type (fastsemsim.SemSim.JiangConrathSemSim.JiangConrathSemSim attribute), 
-		\hyperpage{16}
-  \item SS\_type (fastsemsim.SemSim.LinSemSim.LinSemSim attribute), \hyperpage{16}
-  \item SS\_type (fastsemsim.SemSim.ResnikSemSim.ResnikSemSim attribute), \hyperpage{18}
-  \item SS\_type (fastsemsim.SemSim.SimGICSemSim.SimGICSemSim attribute), \hyperpage{20}
-  \item SS\_type (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute), \hyperpage{20}
-  \item SS\_type (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute), \hyperpage{21}
-  \item SS\_type (fastsemsim.SemSim.SimICSemSim.SimICSemSim attribute), \hyperpage{21}
-  \item SS\_type (fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim attribute), \hyperpage{22}
-  \item SS\_type (fastsemsim.SemSim.SimRelSemSim.SimRelSemSim attribute), \hyperpage{22}
-  \item SS\_type (fastsemsim.SemSim.SimTOSemSim.SimTOSemSim attribute), \hyperpage{23}
-  \item SS\_type (fastsemsim.SemSim.SimUISemSim.SimUISemSim attribute), \hyperpage{23}
-  \item SS\_type (fastsemsim.SemSim.TermSemSim.TermSemSim attribute), \hyperpage{23}
-  \item start() (in module fastsemsim.fastsemsim\_cmdline), \hyperpage{28}
-  \item startElement() (fastsemsim.Ontology.ontologies.OboXmlParser method), \hyperpage{12}
+		\hyperpage{12}
+  \item SS\_type (fastsemsim.SemSim.LinSemSim.LinSemSim attribute), \hyperpage{12}
+  \item SS\_type (fastsemsim.SemSim.ResnikSemSim.ResnikSemSim attribute), \hyperpage{10}
+  \item SS\_type (fastsemsim.SemSim.SimGICSemSim.SimGICSemSim attribute), \hyperpage{12}
+  \item SS\_type (fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim attribute), \hyperpage{12}
+  \item SS\_type (fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim attribute), \hyperpage{13}
+  \item SS\_type (fastsemsim.SemSim.SimICSemSim.SimICSemSim attribute), \hyperpage{13}
+  \item SS\_type (fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim attribute), \hyperpage{14}
+  \item SS\_type (fastsemsim.SemSim.SimRelSemSim.SimRelSemSim attribute), \hyperpage{14}
+  \item SS\_type (fastsemsim.SemSim.SimTOSemSim.SimTOSemSim attribute), \hyperpage{14}
+  \item SS\_type (fastsemsim.SemSim.SimUISemSim.SimUISemSim attribute), \hyperpage{14}
+  \item SS\_type (fastsemsim.SemSim.TermSemSim.TermSemSim attribute), \hyperpage{9}
+  \item startElement() (fastsemsim.Ontology.ontologies.OboXmlParser method), \hyperpage{4}
 
   \indexspace
   \bigletter T
   \item taxonomy (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus.TaxonomyFilter attribute), 
 		\hyperpage{6}
-  \item taxonomy (fastsemsim.Ontology.GOAnnotationCorpus.GOAnnotationCorpus.TaxonomyFilter attribute), 
-		\hyperpage{9}
   \item term\_field2pos (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute), 
-		\hyperpage{6}
+		\hyperpage{7}
   \item term\_fields (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute), 
-		\hyperpage{6}
-  \item term\_SemSim\_measures (in module fastsemsim.SemSim), \hyperpage{25}
-  \item term\_set (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute), \hyperpage{6}
-  \item term\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{12}
-  \item term\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{12}
-  \item TermSemSim (class in fastsemsim.SemSim.TermSemSim), \hyperpage{23}
-  \item typedef\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{12}
+		\hyperpage{7}
+  \item term\_set (fastsemsim.Ontology.AnnotationCorpus.AnnotationCorpus attribute), \hyperpage{7}
+  \item term\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{3}
+  \item term\_tag (fastsemsim.Ontology.ontologies.OboXmlParser attribute), \hyperpage{4}
+  \item TermSemSim (class in fastsemsim.SemSim.TermSemSim), \hyperpage{9}
+  \item typedef\_tag (fastsemsim.Ontology.ontologies.OboParser attribute), \hyperpage{3}
 
   \indexspace
   \bigletter U
-  \item use\_Lin (fastsemsim.SemSim.SimICSemSim.SimICSemSim attribute), \hyperpage{21}
-  \item use\_Lin (fastsemsim.SemSim.SimRelSemSim.SimRelSemSim attribute), \hyperpage{22}
+  \item use\_Lin (fastsemsim.SemSim.SimICSemSim.SimICSemSim attribute), \hyperpage{13}
+  \item use\_Lin (fastsemsim.SemSim.SimRelSemSim.SimRelSemSim attribute), \hyperpage{14}
 
 \end{theindex}

@@ -1,9 +1,9 @@
-\BOOKMARK [0][-]{chapter.1}{Code}{}% 1
-\BOOKMARK [0][-]{chapter.2}{fastsemsim package}{}% 2
-\BOOKMARK [1][-]{section.2.1}{Subpackages}{chapter.2}% 3
-\BOOKMARK [1][-]{section.2.2}{Submodules}{chapter.2}% 4
-\BOOKMARK [1][-]{section.2.3}{fastsemsim.fastsemsim\137cmdline module}{chapter.2}% 5
-\BOOKMARK [1][-]{section.2.4}{Module contents}{chapter.2}% 6
-\BOOKMARK [0][-]{chapter.3}{Indices and tables}{}% 7
-\BOOKMARK [0][-]{section*.360}{Python Module Index}{}% 8
-\BOOKMARK [0][-]{section*.361}{Index}{}% 9
+\BOOKMARK [0][-]{chapter.1}{FastSemSim library}{}% 1
+\BOOKMARK [1][-]{section.1.1}{fastsemsim.Ontology module}{chapter.1}% 2
+\BOOKMARK [1][-]{section.1.2}{fastsemsim.data module}{chapter.1}% 3
+\BOOKMARK [1][-]{section.1.3}{fastsemsim.SemSim module}{chapter.1}% 4
+\BOOKMARK [0][-]{chapter.2}{Command Line interface}{}% 5
+\BOOKMARK [0][-]{chapter.3}{Graphical User interface}{}% 6
+\BOOKMARK [0][-]{chapter.4}{Indices and tables}{}% 7
+\BOOKMARK [0][-]{section*.268}{Python Module Index}{}% 8
+\BOOKMARK [0][-]{section*.269}{Index}{}% 9

@@ -1,29 +1,26 @@
 # -*- coding: iso-8859-1 -*-
+
+# Copyright 2011 Marco Mina. All rights reserved.
+
+# This file is part of fastSemSim
+
+# fastSemSim is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# fastSemSim is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
+
 '''
-Copyright 2011 Marco Mina. All rights reserved.
-
-This file is part of fastSemSim
-
-fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
-'''
-
-'''
-# DESCRIPTION
-This class reads plain annotation corpus files.
-	Plain format 1: protein ID - Term ID
-	Plain format 1: protein ID - Taxonomy - Term ID
-	Plain format 3: protein ID - Taxonomy - Term ID - EC
+Plain annotation corpus files parsing utility.
+	Plain format 1: object (eg. gene) ID - Term ID
+	Plain format 1: Term ID - object (eg. gene) ID
 '''
 
 import sys

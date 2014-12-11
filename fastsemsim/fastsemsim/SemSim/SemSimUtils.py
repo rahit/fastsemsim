@@ -1,24 +1,24 @@
 # -*- coding: iso-8859-1 -*-
+
+# Copyright 2011 Marco Mina. All rights reserved.
+
+# This file is part of fastSemSim
+
+# fastSemSim is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# fastSemSim is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
+
+
 '''
-Copyright 2011 Marco Mina. All rights reserved.
-
-This file is part of fastSemSim
-
-fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
-'''
-
-"""
 This class provides some routines to calculate basic properties used by different SS measures.
 In particular this class provides code for evaluating:
 
@@ -30,12 +30,13 @@ In particular this class provides code for evaluating:
 - terms's parents
 - MICA/DCA/LCA
 - term's distance
+'''
 
-TODO:
-- term depth
-- terms common ancestors (between two terms or two sets of terms)
-            I could use pairs module to to this!
-"""
+# TODO:
+# - term depth
+# - terms common ancestors (between two terms or two sets of terms)
+#             I could use pairs module to to this!
+
 
 # from fastSemSim.Ontology import AnnotationCorpus
 # from fastSemSim.Ontology import Ontology

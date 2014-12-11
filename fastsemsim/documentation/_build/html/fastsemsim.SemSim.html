@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fastsemsim.SemSim package &mdash; fastsemsim 0.9 documentation</title>
+    <title>fastsemsim.SemSim module &mdash; fastsemsim 0.9 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -24,9 +24,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="fastsemsim 0.9 documentation" href="index.html" />
-    <link rel="up" title="fastsemsim package" href="fastsemsim.html" />
-    <link rel="next" title="fastsemsim.data package" href="fastsemsim.data.html" />
-    <link rel="prev" title="fastsemsim.Ontology package" href="fastsemsim.Ontology.html" /> 
+    <link rel="up" title="FastSemSim library" href="fastsemsim.html" />
+    <link rel="prev" title="fastsemsim.data module" href="fastsemsim.data.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,13 +38,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="fastsemsim.data.html" title="fastsemsim.data package"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="fastsemsim.Ontology.html" title="fastsemsim.Ontology package"
+          <a href="fastsemsim.data.html" title="fastsemsim.data module"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">fastsemsim 0.9 documentation</a> &raquo;</li>
-          <li><a href="fastsemsim.html" accesskey="U">fastsemsim package</a> &raquo;</li> 
+          <li><a href="fastsemsim.html" accesskey="U">FastSemSim library</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -54,51 +50,134 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="fastsemsim-semsim-package">
-<h1>fastsemsim.SemSim package<a class="headerlink" href="#fastsemsim-semsim-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-fastsemsim.SemSim.BMASemSim">
-<span id="fastsemsim-semsim-bmasemsim-module"></span><h2>fastsemsim.SemSim.BMASemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.BMASemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+  <div class="section" id="module-fastsemsim.SemSim">
+<span id="fastsemsim-semsim-module"></span><h1>fastsemsim.SemSim module<a class="headerlink" href="#module-fastsemsim.SemSim" title="Permalink to this headline">¶</a></h1>
+<p>This module contains the classes for the evaluation of the Semantic Similarity.
+Please refer to the single classes for details on the implemented measures.</p>
+<div class="section" id="module-fastsemsim.SemSim.TermSemSim">
+<span id="semsim-termsemsim"></span><h2>SemSim.TermSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.TermSemSim" title="Permalink to this headline">¶</a></h2>
+<p>This class provides the prototype for Term semantic similarity measures (TSS)</p>
+<p>There are two types of Term semantic similarity: a first group that can evaluate the semantic similarity between two sets of terms (groupwise - G_TSS), and a second group that can only evaluate the similarity between pairs of GO terms (pairwise - P_TSS). Each class extending TermSemSim should declare whether it is groupwise or pairwise.</p>
+<p>TermSemSim relies on SemSimUtils to perform a lot of tasks (e.g. evaluating Term IC or common ancestors).
+A SemSimUtils object can be passed to the constructor as input data. Otherwise, a new instance will be created. Using only one copy of SemSimUtils helps reducing time and space requirements and is strongly recommended.</p>
+<dl class="exception">
+<dt id="fastsemsim.SemSim.TermSemSim.MissingAcException">
+<em class="property">exception </em><tt class="descclassname">fastsemsim.SemSim.TermSemSim.</tt><tt class="descname">MissingAcException</tt><big>(</big><em>message</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.MissingAcException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+</dd></dl>
+
 <dl class="class">
-<dt id="fastsemsim.SemSim.BMASemSim.BMASemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.BMASemSim.</tt><tt class="descname">BMASemSim</tt><big>(</big><em>ontology</em>, <em>ac</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.BMASemSim.BMASemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.MixSemSim.MixSemSim" title="fastsemsim.SemSim.MixSemSim.MixSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.MixSemSim.MixSemSim</span></tt></a></p>
+<dt id="fastsemsim.SemSim.TermSemSim.TermSemSim">
+<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.TermSemSim.</tt><tt class="descname">TermSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <dl class="attribute">
-<dt id="fastsemsim.SemSim.BMASemSim.BMASemSim.fair">
-<tt class="descname">fair</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.BMASemSim.BMASemSim.fair" title="Permalink to this definition">¶</a></dt>
+<dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.G_TSS">
+<tt class="descname">G_TSS</tt><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.G_TSS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.IC_based">
+<tt class="descname">IC_based</tt><em class="property"> = None</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.P_TSS">
+<tt class="descname">P_TSS</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.P_TSS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.SS_type">
+<tt class="descname">SS_type</tt><em class="property"> = None</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.SemSim">
+<tt class="descname">SemSim</tt><big>(</big><em>term1</em>, <em>term2</em>, <em>ontology=None</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.SemSim" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.format_and_check_data">
+<tt class="descname">format_and_check_data</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.format_and_check_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.setSanityCheck">
+<tt class="descname">setSanityCheck</tt><big>(</big><em>en</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.setSanityCheck" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-fastsemsim.SemSim.ObjSemSim">
+<span id="semsim-objsemsim"></span><h2>SemSim.ObjSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.ObjSemSim" title="Permalink to this headline">¶</a></h2>
+<p>This class provides the prototype for a generic Object Semantic Similarity measure</p>
+<dl class="class">
+<dt id="fastsemsim.SemSim.ObjSemSim.ObjSemSim">
+<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.ObjSemSim.</tt><tt class="descname">ObjSemSim</tt><big>(</big><em>ontology</em>, <em>ac</em>, <em>TSS=None</em>, <em>MSS=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.ObjSemSim.ObjSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="method">
+<dt id="fastsemsim.SemSim.ObjSemSim.ObjSemSim.SemSim">
+<tt class="descname">SemSim</tt><big>(</big><em>obj1</em>, <em>obj2</em>, <em>root=None</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.ObjSemSim.ObjSemSim.SemSim" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-fastsemsim.SemSim.ObjSetSemSim">
+<span id="semsim-objsetsemsim"></span><h2>SemSim.ObjSetSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.ObjSetSemSim" title="Permalink to this headline">¶</a></h2>
+<p>This class provides the prototype for a generic Object Set Semantic Similarity measure (PSS)</p>
+<dl class="class">
+<dt id="fastsemsim.SemSim.ObjSetSemSim.ObjSetSemSim">
+<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.ObjSetSemSim.</tt><tt class="descname">ObjSetSemSim</tt><big>(</big><em>ontology</em>, <em>ac</em>, <em>TSS=None</em>, <em>MSS=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.ObjSetSemSim.ObjSetSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="fastsemsim.SemSim.ObjSetSemSim.ObjSetSemSim.SemSim">
+<tt class="descname">SemSim</tt><big>(</big><em>obj1</em>, <em>obj2</em>, <em>root=None</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.ObjSetSemSim.ObjSetSemSim.SemSim" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-fastsemsim.SemSim.SetSemSim">
+<span id="semsim-setsemsim"></span><h2>SemSim.SetSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.SetSemSim" title="Permalink to this headline">¶</a></h2>
+<p>This class provides the prototype for a generic Pairwise Object Semantic Similarity measure</p>
+<dl class="class">
+<dt id="fastsemsim.SemSim.SetSemSim.SetSemSim">
+<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SetSemSim.</tt><tt class="descname">SetSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>TSS=None</em>, <em>MSS=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SetSemSim.SetSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="fastsemsim.SemSim.SetSemSim.SetSemSim.SemSim">
+<tt class="descname">SemSim</tt><big>(</big><em>obj1</em>, <em>obj2</em>, <em>root=None</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SetSemSim.SetSemSim.SemSim" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="specific-semantic-similarity-measures">
+<h2>Specific Semantic Similarity measures<a class="headerlink" href="#specific-semantic-similarity-measures" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-fastsemsim.SemSim.ResnikSemSim">
+<span id="semsim-resniksemsim"></span><h3>SemSim.ResnikSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.ResnikSemSim" title="Permalink to this headline">¶</a></h3>
+<p>Resnik Semantic Similarity Measure</p>
+<p><strong>Reference</strong>: Resnik, P. (1999). Semantic similarity in a taxonomy: An information-based measure and its application to problems of ambiguity in natural language. Journal of Artificial Intelligence Research, 11, 95-130.</p>
+<dl class="class">
+<dt id="fastsemsim.SemSim.ResnikSemSim.ResnikSemSim">
+<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.ResnikSemSim.</tt><tt class="descname">ResnikSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.ResnikSemSim.ResnikSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.ResnikSemSim.ResnikSemSim.IC_based">
+<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.ResnikSemSim.ResnikSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.ResnikSemSim.ResnikSemSim.SS_type">
+<tt class="descname">SS_type</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.ResnikSemSim.ResnikSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 </div>
 <div class="section" id="module-fastsemsim.SemSim.CosineSemSim">
-<span id="fastsemsim-semsim-cosinesemsim-module"></span><h2>fastsemsim.SemSim.CosineSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.CosineSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+<span id="semsim-cosinesemsim"></span><h3>SemSim.CosineSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.CosineSemSim" title="Permalink to this headline">¶</a></h3>
+<p>Cosine Semantic Similarity Measure</p>
+<p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.CosineSemSim.CosineSemSim">
 <em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.CosineSemSim.</tt><tt class="descname">CosineSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.CosineSemSim.CosineSemSim" title="Permalink to this definition">¶</a></dt>
@@ -127,19 +206,9 @@ along with fastSemSim.  If not, see &lt;<a class="reference external" href="http
 
 </div>
 <div class="section" id="module-fastsemsim.SemSim.CzekanowskiDiceSemSim">
-<span id="fastsemsim-semsim-czekanowskidicesemsim-module"></span><h2>fastsemsim.SemSim.CzekanowskiDiceSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.CzekanowskiDiceSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+<span id="semsim-czekanowskidicesemsim"></span><h3>SemSim.CzekanowskiDiceSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.CzekanowskiDiceSemSim" title="Permalink to this headline">¶</a></h3>
+<p>Czekanowski and Dice Semantic Similarity Measure</p>
+<p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim">
 <em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.CzekanowskiDiceSemSim.</tt><tt class="descname">CzekanowskiDiceSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim" title="Permalink to this definition">¶</a></dt>
@@ -163,19 +232,9 @@ along with fastSemSim.  If not, see &lt;<a class="reference external" href="http
 
 </div>
 <div class="section" id="module-fastsemsim.SemSim.DiceSemSim">
-<span id="fastsemsim-semsim-dicesemsim-module"></span><h2>fastsemsim.SemSim.DiceSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.DiceSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+<span id="semsim-dicesemsim"></span><h3>SemSim.DiceSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.DiceSemSim" title="Permalink to this headline">¶</a></h3>
+<p>Dice Semantic Similarity Measure</p>
+<p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.DiceSemSim.DiceSemSim">
 <em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.DiceSemSim.</tt><tt class="descname">DiceSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.DiceSemSim.DiceSemSim" title="Permalink to this definition">¶</a></dt>
@@ -199,19 +258,9 @@ along with fastSemSim.  If not, see &lt;<a class="reference external" href="http
 
 </div>
 <div class="section" id="module-fastsemsim.SemSim.GSESAMESemSim">
-<span id="fastsemsim-semsim-gsesamesemsim-module"></span><h2>fastsemsim.SemSim.GSESAMESemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.GSESAMESemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+<span id="semsim-gsesamesemsim"></span><h3>SemSim.GSESAMESemSim<a class="headerlink" href="#module-fastsemsim.SemSim.GSESAMESemSim" title="Permalink to this headline">¶</a></h3>
+<p>G-SESAME Semantic Similarity Measure</p>
+<p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim">
 <em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.GSESAMESemSim.</tt><tt class="descname">GSESAMESemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim" title="Permalink to this definition">¶</a></dt>
@@ -270,19 +319,9 @@ along with fastSemSim.  If not, see &lt;<a class="reference external" href="http
 
 </div>
 <div class="section" id="module-fastsemsim.SemSim.JaccardSemSim">
-<span id="fastsemsim-semsim-jaccardsemsim-module"></span><h2>fastsemsim.SemSim.JaccardSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.JaccardSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+<span id="semsim-jaccardsemsim"></span><h3>SemSim.JaccardSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.JaccardSemSim" title="Permalink to this headline">¶</a></h3>
+<p>Jaccard Index based Semantic Similarity Measure</p>
+<p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.JaccardSemSim.JaccardSemSim">
 <em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.JaccardSemSim.</tt><tt class="descname">JaccardSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.JaccardSemSim.JaccardSemSim" title="Permalink to this definition">¶</a></dt>
@@ -306,19 +345,9 @@ along with fastSemSim.  If not, see &lt;<a class="reference external" href="http
 
 </div>
 <div class="section" id="module-fastsemsim.SemSim.JiangConrathSemSim">
-<span id="fastsemsim-semsim-jiangconrathsemsim-module"></span><h2>fastsemsim.SemSim.JiangConrathSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.JiangConrathSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+<span id="semsim-jiangconrathsemsim"></span><h3>SemSim.JiangConrathSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.JiangConrathSemSim" title="Permalink to this headline">¶</a></h3>
+<p>Jiang and Conrath Semantic Similarity Measure</p>
+<p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.JiangConrathSemSim.JiangConrathSemSim">
 <em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.JiangConrathSemSim.</tt><tt class="descname">JiangConrathSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.JiangConrathSemSim.JiangConrathSemSim" title="Permalink to this definition">¶</a></dt>
@@ -337,19 +366,9 @@ along with fastSemSim.  If not, see &lt;<a class="reference external" href="http
 
 </div>
 <div class="section" id="module-fastsemsim.SemSim.LinSemSim">
-<span id="fastsemsim-semsim-linsemsim-module"></span><h2>fastsemsim.SemSim.LinSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.LinSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+<span id="semsim-linsemsim"></span><h3>SemSim.LinSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.LinSemSim" title="Permalink to this headline">¶</a></h3>
+<p>Lin Semantic Similarity Measure</p>
+<p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.LinSemSim.LinSemSim">
 <em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.LinSemSim.</tt><tt class="descname">LinSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.LinSemSim.LinSemSim" title="Permalink to this definition">¶</a></dt>
@@ -367,20 +386,273 @@ along with fastSemSim.  If not, see &lt;<a class="reference external" href="http
 </dd></dl>
 
 </div>
+<div class="section" id="module-fastsemsim.SemSim.SimGICSemSim">
+<span id="semsim-simgicsemsim"></span><h3>SemSim.SimGICSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.SimGICSemSim" title="Permalink to this headline">¶</a></h3>
+<p>SimGIC Semantic Similarity Measure</p>
+<p><strong>Reference</strong>:</p>
+<dl class="class">
+<dt id="fastsemsim.SemSim.SimGICSemSim.SimGICSemSim">
+<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimGICSemSim.</tt><tt class="descname">SimGICSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimGICSemSim.SimGICSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimGICSemSim.SimGICSemSim.IC_based">
+<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimGICSemSim.SimGICSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimGICSemSim.SimGICSemSim.SS_type">
+<tt class="descname">SS_type</tt><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimGICSemSim.SimGICSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-fastsemsim.SemSim.SimICNDSemSim">
+<span id="semsim-simicndsemsim"></span><h3>SemSim.SimICNDSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.SimICNDSemSim" title="Permalink to this headline">¶</a></h3>
+<p>ICND Semantic Similarity Measure</p>
+<p><strong>Reference</strong>:</p>
+<dl class="class">
+<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim">
+<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimICNDSemSim.</tt><tt class="descname">ICNDSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.IC_based">
+<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.SS_type">
+<tt class="descname">SS_type</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.generic_score">
+<tt class="descname">generic_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.generic_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.is_a_score">
+<tt class="descname">is_a_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.is_a_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.neg_regulates_score">
+<tt class="descname">neg_regulates_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.neg_regulates_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.part_of_score">
+<tt class="descname">part_of_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.part_of_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.pos_regulates_score">
+<tt class="descname">pos_regulates_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.pos_regulates_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.regulates_score">
+<tt class="descname">regulates_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.regulates_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.score_ancestors">
+<tt class="descname">score_ancestors</tt><big>(</big><em>term</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.score_ancestors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.score_edge">
+<tt class="descname">score_edge</tt><big>(</big><em>tp</em>, <em>t</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.score_edge" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-fastsemsim.SemSim.SimICNPSemSim">
+<span id="semsim-simicnpsemsim"></span><h3>SemSim.SimICNPSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.SimICNPSemSim" title="Permalink to this headline">¶</a></h3>
+<p>ICNP Semantic Similarity Measure</p>
+<p><strong>Reference</strong>:</p>
+<dl class="class">
+<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim">
+<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimICNPSemSim.</tt><tt class="descname">ICNPSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.IC_based">
+<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.SS_type">
+<tt class="descname">SS_type</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.generic_score">
+<tt class="descname">generic_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.generic_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.is_a_score">
+<tt class="descname">is_a_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.is_a_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.neg_regulates_score">
+<tt class="descname">neg_regulates_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.neg_regulates_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.part_of_score">
+<tt class="descname">part_of_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.part_of_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.pos_regulates_score">
+<tt class="descname">pos_regulates_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.pos_regulates_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.regulates_score">
+<tt class="descname">regulates_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.regulates_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.score_ancestors">
+<tt class="descname">score_ancestors</tt><big>(</big><em>term</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.score_ancestors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.score_edge">
+<tt class="descname">score_edge</tt><big>(</big><em>tp</em>, <em>t</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.score_edge" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-fastsemsim.SemSim.SimICSemSim">
+<span id="semsim-simicsemsim"></span><h3>SemSim.SimICSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.SimICSemSim" title="Permalink to this headline">¶</a></h3>
+<p>Information Content Semantic Similarity Measure</p>
+<p><strong>Reference</strong>:</p>
+<dl class="class">
+<dt id="fastsemsim.SemSim.SimICSemSim.SimICSemSim">
+<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimICSemSim.</tt><tt class="descname">SimICSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICSemSim.SimICSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimICSemSim.SimICSemSim.IC_based">
+<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimICSemSim.SimICSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimICSemSim.SimICSemSim.SS_type">
+<tt class="descname">SS_type</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimICSemSim.SimICSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimICSemSim.SimICSemSim.use_Lin">
+<tt class="descname">use_Lin</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimICSemSim.SimICSemSim.use_Lin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-fastsemsim.SemSim.SimNTOSemSim">
+<span id="semsim-simntosemsim"></span><h3>SemSim.SimNTOSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.SimNTOSemSim" title="Permalink to this headline">¶</a></h3>
+<p>Normalized Term Overlap Semantic Similarity Measure</p>
+<p><strong>Reference</strong>:</p>
+<dl class="class">
+<dt id="fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim">
+<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimNTOSemSim.</tt><tt class="descname">SimNTOSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.IC_based">
+<tt class="descname">IC_based</tt><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.SS_type">
+<tt class="descname">SS_type</tt><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.extend_annotations">
+<tt class="descname">extend_annotations</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.extend_annotations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-fastsemsim.SemSim.SimRelSemSim">
+<span id="semsim-simrelsemsim"></span><h3>SemSim.SimRelSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.SimRelSemSim" title="Permalink to this headline">¶</a></h3>
+<p>SimRel Semantic Similarity Measure</p>
+<p><strong>Reference</strong>:</p>
+<dl class="class">
+<dt id="fastsemsim.SemSim.SimRelSemSim.SimRelSemSim">
+<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimRelSemSim.</tt><tt class="descname">SimRelSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimRelSemSim.SimRelSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.IC_based">
+<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.SS_type">
+<tt class="descname">SS_type</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.use_Lin">
+<tt class="descname">use_Lin</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.use_Lin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-fastsemsim.SemSim.SimTOSemSim">
+<span id="semsim-simtosemsim"></span><h3>SemSim.SimTOSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.SimTOSemSim" title="Permalink to this headline">¶</a></h3>
+<p>SimTO Semantic Similarity Measure</p>
+<p><strong>Reference</strong>:</p>
+<dl class="class">
+<dt id="fastsemsim.SemSim.SimTOSemSim.SimTOSemSim">
+<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimTOSemSim.</tt><tt class="descname">SimTOSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimTOSemSim.SimTOSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimTOSemSim.SimTOSemSim.IC_based">
+<tt class="descname">IC_based</tt><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.SimTOSemSim.SimTOSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimTOSemSim.SimTOSemSim.SS_type">
+<tt class="descname">SS_type</tt><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimTOSemSim.SimTOSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-fastsemsim.SemSim.SimUISemSim">
+<span id="semsim-simuisemsim"></span><h3>SemSim.SimUISemSim<a class="headerlink" href="#module-fastsemsim.SemSim.SimUISemSim" title="Permalink to this headline">¶</a></h3>
+<p>SimUI Semantic Similarity Measure</p>
+<p><strong>Reference</strong>:</p>
+<dl class="class">
+<dt id="fastsemsim.SemSim.SimUISemSim.SimUISemSim">
+<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimUISemSim.</tt><tt class="descname">SimUISemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimUISemSim.SimUISemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimUISemSim.SimUISemSim.IC_based">
+<tt class="descname">IC_based</tt><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.SimUISemSim.SimUISemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.SemSim.SimUISemSim.SimUISemSim.SS_type">
+<tt class="descname">SS_type</tt><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimUISemSim.SimUISemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
 <div class="section" id="module-fastsemsim.SemSim.MixSemSim">
-<span id="fastsemsim-semsim-mixsemsim-module"></span><h2>fastsemsim.SemSim.MixSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.MixSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+<span id="semsim-mixsemsim"></span><h2>SemSim.MixSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.MixSemSim" title="Permalink to this headline">¶</a></h2>
+<p>This class provides the prototype for a generic mixing strategy for pairwise Term Semantic Similarity measures</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.MixSemSim.MixSemSim">
 <em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.MixSemSim.</tt><tt class="descname">MixSemSim</tt><big>(</big><em>ontology</em>, <em>ac</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.MixSemSim.MixSemSim" title="Permalink to this definition">¶</a></dt>
@@ -393,102 +665,55 @@ along with fastSemSim.  If not, see &lt;<a class="reference external" href="http
 </dd></dl>
 
 </div>
-<div class="section" id="module-fastsemsim.SemSim.ObjSemSim">
-<span id="fastsemsim-semsim-objsemsim-module"></span><h2>fastsemsim.SemSim.ObjSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.ObjSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+<div class="section" id="module-fastsemsim.SemSim.avgSemSim">
+<span id="semsim-avgsemsim"></span><h2>SemSim.avgSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.avgSemSim" title="Permalink to this headline">¶</a></h2>
+<p>This class defines the prototype for a generic mixing strategy for pairwise term Protein Semantic Similarity measures</p>
 <dl class="class">
-<dt id="fastsemsim.SemSim.ObjSemSim.ObjSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.ObjSemSim.</tt><tt class="descname">ObjSemSim</tt><big>(</big><em>ontology</em>, <em>ac</em>, <em>TSS=None</em>, <em>MSS=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.ObjSemSim.ObjSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
-<dl class="method">
-<dt id="fastsemsim.SemSim.ObjSemSim.ObjSemSim.SemSim">
-<tt class="descname">SemSim</tt><big>(</big><em>obj1</em>, <em>obj2</em>, <em>root=None</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.ObjSemSim.ObjSemSim.SemSim" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<dt id="fastsemsim.SemSim.avgSemSim.avgSemSim">
+<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.avgSemSim.</tt><tt class="descname">avgSemSim</tt><big>(</big><em>ontology</em>, <em>ac</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.avgSemSim.avgSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.MixSemSim.MixSemSim" title="fastsemsim.SemSim.MixSemSim.MixSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.MixSemSim.MixSemSim</span></tt></a></p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-fastsemsim.SemSim.ObjSetSemSim">
-<span id="fastsemsim-semsim-objsetsemsim-module"></span><h2>fastsemsim.SemSim.ObjSetSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.ObjSetSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+<div class="section" id="module-fastsemsim.SemSim.maxSemSim">
+<span id="semsim-maxsemsim"></span><h2>SemSim.maxSemSim<a class="headerlink" href="#module-fastsemsim.SemSim.maxSemSim" title="Permalink to this headline">¶</a></h2>
+<p>Max mixing strategy</p>
 <dl class="class">
-<dt id="fastsemsim.SemSim.ObjSetSemSim.ObjSetSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.ObjSetSemSim.</tt><tt class="descname">ObjSetSemSim</tt><big>(</big><em>ontology</em>, <em>ac</em>, <em>TSS=None</em>, <em>MSS=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.ObjSetSemSim.ObjSetSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="fastsemsim.SemSim.ObjSetSemSim.ObjSetSemSim.SemSim">
-<tt class="descname">SemSim</tt><big>(</big><em>obj1</em>, <em>obj2</em>, <em>root=None</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.ObjSetSemSim.ObjSetSemSim.SemSim" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<dt id="fastsemsim.SemSim.maxSemSim.maxSemSim">
+<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.maxSemSim.</tt><tt class="descname">maxSemSim</tt><big>(</big><em>ontology</em>, <em>ac</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.maxSemSim.maxSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.MixSemSim.MixSemSim" title="fastsemsim.SemSim.MixSemSim.MixSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.MixSemSim.MixSemSim</span></tt></a></p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-fastsemsim.SemSim.ResnikSemSim">
-<span id="fastsemsim-semsim-resniksemsim-module"></span><h2>fastsemsim.SemSim.ResnikSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.ResnikSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+<div class="section" id="module-fastsemsim.SemSim.BMASemSim">
+<span id="semsim-bmasemsim"></span><h2>SemSim.BMASemSim<a class="headerlink" href="#module-fastsemsim.SemSim.BMASemSim" title="Permalink to this headline">¶</a></h2>
+<p>Best Match Average (BMA) mixing strategy for pairwise term Protein Semantic Similarity measures</p>
 <dl class="class">
-<dt id="fastsemsim.SemSim.ResnikSemSim.ResnikSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.ResnikSemSim.</tt><tt class="descname">ResnikSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.ResnikSemSim.ResnikSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<dt id="fastsemsim.SemSim.BMASemSim.BMASemSim">
+<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.BMASemSim.</tt><tt class="descname">BMASemSim</tt><big>(</big><em>ontology</em>, <em>ac</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.BMASemSim.BMASemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.MixSemSim.MixSemSim" title="fastsemsim.SemSim.MixSemSim.MixSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.MixSemSim.MixSemSim</span></tt></a></p>
 <dl class="attribute">
-<dt id="fastsemsim.SemSim.ResnikSemSim.ResnikSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.ResnikSemSim.ResnikSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.ResnikSemSim.ResnikSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.ResnikSemSim.ResnikSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<dt id="fastsemsim.SemSim.BMASemSim.BMASemSim.fair">
+<tt class="descname">fair</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.BMASemSim.BMASemSim.fair" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 </div>
 <div class="section" id="module-fastsemsim.SemSim.SemSimUtils">
-<span id="fastsemsim-semsim-semsimutils-module"></span><h2>fastsemsim.SemSim.SemSimUtils module<a class="headerlink" href="#module-fastsemsim.SemSim.SemSimUtils" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+<span id="semsim-semsimutils"></span><h2>SemSim.SemSimUtils<a class="headerlink" href="#module-fastsemsim.SemSim.SemSimUtils" title="Permalink to this headline">¶</a></h2>
+<p>This class provides some routines to calculate basic properties used by different SS measures.
+In particular this class provides code for evaluating:</p>
+<ul class="simple">
+<li>term ICs</li>
+<li>term frequency within an annotation corpus</li>
+<li>term&#8217;s ancestors</li>
+<li>term&#8217;s offspring</li>
+<li>terms&#8217;s children</li>
+<li>terms&#8217;s parents</li>
+<li>MICA/DCA/LCA</li>
+<li>term&#8217;s distance</li>
+</ul>
 <dl class="class">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils">
 <em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SemSimUtils.</tt><tt class="descname">SemSimUtils</tt><big>(</big><em>ontology</em>, <em>ac=None</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils" title="Permalink to this definition">¶</a></dt>
@@ -596,505 +821,6 @@ along with fastSemSim.  If not, see &lt;<a class="reference external" href="http
 </dd></dl>
 
 </div>
-<div class="section" id="module-fastsemsim.SemSim.SetSemSim">
-<span id="fastsemsim-semsim-setsemsim-module"></span><h2>fastsemsim.SemSim.SetSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.SetSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
-<dl class="class">
-<dt id="fastsemsim.SemSim.SetSemSim.SetSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SetSemSim.</tt><tt class="descname">SetSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>TSS=None</em>, <em>MSS=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SetSemSim.SetSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="fastsemsim.SemSim.SetSemSim.SetSemSim.SemSim">
-<tt class="descname">SemSim</tt><big>(</big><em>obj1</em>, <em>obj2</em>, <em>root=None</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SetSemSim.SetSemSim.SemSim" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-fastsemsim.SemSim.SimGICSemSim">
-<span id="fastsemsim-semsim-simgicsemsim-module"></span><h2>fastsemsim.SemSim.SimGICSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.SimGICSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
-<dl class="class">
-<dt id="fastsemsim.SemSim.SimGICSemSim.SimGICSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimGICSemSim.</tt><tt class="descname">SimGICSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimGICSemSim.SimGICSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimGICSemSim.SimGICSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimGICSemSim.SimGICSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimGICSemSim.SimGICSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimGICSemSim.SimGICSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-fastsemsim.SemSim.SimICNDSemSim">
-<span id="fastsemsim-semsim-simicndsemsim-module"></span><h2>fastsemsim.SemSim.SimICNDSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.SimICNDSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
-<dl class="class">
-<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimICNDSemSim.</tt><tt class="descname">ICNDSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.generic_score">
-<tt class="descname">generic_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.generic_score" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.is_a_score">
-<tt class="descname">is_a_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.is_a_score" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.neg_regulates_score">
-<tt class="descname">neg_regulates_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.neg_regulates_score" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.part_of_score">
-<tt class="descname">part_of_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.part_of_score" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.pos_regulates_score">
-<tt class="descname">pos_regulates_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.pos_regulates_score" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.regulates_score">
-<tt class="descname">regulates_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.regulates_score" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.score_ancestors">
-<tt class="descname">score_ancestors</tt><big>(</big><em>term</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.score_ancestors" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.score_edge">
-<tt class="descname">score_edge</tt><big>(</big><em>tp</em>, <em>t</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.score_edge" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-fastsemsim.SemSim.SimICNPSemSim">
-<span id="fastsemsim-semsim-simicnpsemsim-module"></span><h2>fastsemsim.SemSim.SimICNPSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.SimICNPSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
-<dl class="class">
-<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimICNPSemSim.</tt><tt class="descname">ICNPSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.generic_score">
-<tt class="descname">generic_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.generic_score" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.is_a_score">
-<tt class="descname">is_a_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.is_a_score" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.neg_regulates_score">
-<tt class="descname">neg_regulates_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.neg_regulates_score" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.part_of_score">
-<tt class="descname">part_of_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.part_of_score" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.pos_regulates_score">
-<tt class="descname">pos_regulates_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.pos_regulates_score" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.regulates_score">
-<tt class="descname">regulates_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.regulates_score" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.score_ancestors">
-<tt class="descname">score_ancestors</tt><big>(</big><em>term</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.score_ancestors" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.score_edge">
-<tt class="descname">score_edge</tt><big>(</big><em>tp</em>, <em>t</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.score_edge" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-fastsemsim.SemSim.SimICSemSim">
-<span id="fastsemsim-semsim-simicsemsim-module"></span><h2>fastsemsim.SemSim.SimICSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.SimICSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
-<dl class="class">
-<dt id="fastsemsim.SemSim.SimICSemSim.SimICSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimICSemSim.</tt><tt class="descname">SimICSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICSemSim.SimICSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimICSemSim.SimICSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimICSemSim.SimICSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimICSemSim.SimICSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimICSemSim.SimICSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimICSemSim.SimICSemSim.use_Lin">
-<tt class="descname">use_Lin</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimICSemSim.SimICSemSim.use_Lin" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-fastsemsim.SemSim.SimNTOSemSim">
-<span id="fastsemsim-semsim-simntosemsim-module"></span><h2>fastsemsim.SemSim.SimNTOSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.SimNTOSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
-<dl class="class">
-<dt id="fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimNTOSemSim.</tt><tt class="descname">SimNTOSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.extend_annotations">
-<tt class="descname">extend_annotations</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.extend_annotations" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-fastsemsim.SemSim.SimRelSemSim">
-<span id="fastsemsim-semsim-simrelsemsim-module"></span><h2>fastsemsim.SemSim.SimRelSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.SimRelSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
-<dl class="class">
-<dt id="fastsemsim.SemSim.SimRelSemSim.SimRelSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimRelSemSim.</tt><tt class="descname">SimRelSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimRelSemSim.SimRelSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.use_Lin">
-<tt class="descname">use_Lin</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.use_Lin" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-fastsemsim.SemSim.SimTOSemSim">
-<span id="fastsemsim-semsim-simtosemsim-module"></span><h2>fastsemsim.SemSim.SimTOSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.SimTOSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
-<dl class="class">
-<dt id="fastsemsim.SemSim.SimTOSemSim.SimTOSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimTOSemSim.</tt><tt class="descname">SimTOSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimTOSemSim.SimTOSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimTOSemSim.SimTOSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.SimTOSemSim.SimTOSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimTOSemSim.SimTOSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimTOSemSim.SimTOSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-fastsemsim.SemSim.SimUISemSim">
-<span id="fastsemsim-semsim-simuisemsim-module"></span><h2>fastsemsim.SemSim.SimUISemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.SimUISemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
-<dl class="class">
-<dt id="fastsemsim.SemSim.SimUISemSim.SimUISemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimUISemSim.</tt><tt class="descname">SimUISemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimUISemSim.SimUISemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimUISemSim.SimUISemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.SimUISemSim.SimUISemSim.IC_based" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.SimUISemSim.SimUISemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimUISemSim.SimUISemSim.SS_type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-fastsemsim.SemSim.TermSemSim">
-<span id="fastsemsim-semsim-termsemsim-module"></span><h2>fastsemsim.SemSim.TermSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.TermSemSim" title="Permalink to this headline">¶</a></h2>
-<p>TermSemSim class</p>
-<p>This class provides the prototype for a generic Term Semantic Similarity measure (TSS)</p>
-<p>There are two types of Term Sem Sim: those which evaluate the semantic similarity between two sets of terms (groupwise - G_TSS), and those which can only evaluate the similarity between pairs of GO terms (pairwise - P_TSS). Each class extending TermSemSim should declare whether it is groupwise or pairwise.</p>
-<p>TermSemSim relies on SemSimUtils to perform a lot of tasks (such as evaluating Term IC or common ancestors)
-a SemSimUtils object can be passed to the constructor as input data. Otherwise, a new instance will be created. Using only one copy of SemSimUtils helps reducing time and spece requirements and is strongly adviced.</p>
-<dl class="exception">
-<dt id="fastsemsim.SemSim.TermSemSim.MissingAcException">
-<em class="property">exception </em><tt class="descclassname">fastsemsim.SemSim.TermSemSim.</tt><tt class="descname">MissingAcException</tt><big>(</big><em>message</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.MissingAcException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
-</dd></dl>
-
-<dl class="class">
-<dt id="fastsemsim.SemSim.TermSemSim.TermSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.TermSemSim.</tt><tt class="descname">TermSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.G_TSS">
-<tt class="descname">G_TSS</tt><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.G_TSS" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = None</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.P_TSS">
-<tt class="descname">P_TSS</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.P_TSS" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = None</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.SemSim">
-<tt class="descname">SemSim</tt><big>(</big><em>term1</em>, <em>term2</em>, <em>ontology=None</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.SemSim" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.format_and_check_data">
-<tt class="descname">format_and_check_data</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.format_and_check_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.setSanityCheck">
-<tt class="descname">setSanityCheck</tt><big>(</big><em>en</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.setSanityCheck" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-fastsemsim.SemSim.avgSemSim">
-<span id="fastsemsim-semsim-avgsemsim-module"></span><h2>fastsemsim.SemSim.avgSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.avgSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
-<dl class="class">
-<dt id="fastsemsim.SemSim.avgSemSim.avgSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.avgSemSim.</tt><tt class="descname">avgSemSim</tt><big>(</big><em>ontology</em>, <em>ac</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.avgSemSim.avgSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.MixSemSim.MixSemSim" title="fastsemsim.SemSim.MixSemSim.MixSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.MixSemSim.MixSemSim</span></tt></a></p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-fastsemsim.SemSim.maxSemSim">
-<span id="fastsemsim-semsim-maxsemsim-module"></span><h2>fastsemsim.SemSim.maxSemSim module<a class="headerlink" href="#module-fastsemsim.SemSim.maxSemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
-<dl class="class">
-<dt id="fastsemsim.SemSim.maxSemSim.maxSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.maxSemSim.</tt><tt class="descname">maxSemSim</tt><big>(</big><em>ontology</em>, <em>ac</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.maxSemSim.maxSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.MixSemSim.MixSemSim" title="fastsemsim.SemSim.MixSemSim.MixSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.MixSemSim.MixSemSim</span></tt></a></p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-fastsemsim.SemSim">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-fastsemsim.SemSim" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2011 Marco Mina. All rights reserved.</p>
-<p>This file is part of fastSemSim</p>
-<p>fastSemSim is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p>
-<p>fastSemSim is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see &lt;<a class="reference external" href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
-<dl class="function">
-<dt id="fastsemsim.SemSim.select_mix_SemSim">
-<tt class="descclassname">fastsemsim.SemSim.</tt><tt class="descname">select_mix_SemSim</tt><big>(</big><em>mix_name</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.select_mix_SemSim" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="fastsemsim.SemSim.select_term_SemSim">
-<tt class="descclassname">fastsemsim.SemSim.</tt><tt class="descname">select_term_SemSim</tt><big>(</big><em>tss_name</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.select_term_SemSim" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="data">
-<dt id="fastsemsim.SemSim.term_SemSim_measures">
-<tt class="descclassname">fastsemsim.SemSim.</tt><tt class="descname">term_SemSim_measures</tt><em class="property"> = {'G-SESAME': (&lt;class 'fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim'&gt;, True), 'Dice': (&lt;class 'fastsemsim.SemSim.DiceSemSim.DiceSemSim'&gt;, False), 'Resnik': (&lt;class 'fastsemsim.SemSim.ResnikSemSim.ResnikSemSim'&gt;, True), 'Jaccard': (&lt;class 'fastsemsim.SemSim.JaccardSemSim.JaccardSemSim'&gt;, False), 'SimIC': (&lt;class 'fastsemsim.SemSim.SimICSemSim.SimICSemSim'&gt;, True), 'SimUI': (&lt;class 'fastsemsim.SemSim.SimUISemSim.SimUISemSim'&gt;, False), 'SimICND': (&lt;class 'fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim'&gt;, True), 'Czekanowski-Dice': (&lt;class 'fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim'&gt;, False), 'SimGIC': (&lt;class 'fastsemsim.SemSim.SimGICSemSim.SimGICSemSim'&gt;, False), 'TO': (&lt;class 'fastsemsim.SemSim.SimTOSemSim.SimTOSemSim'&gt;, False), 'Cosine': (&lt;class 'fastsemsim.SemSim.CosineSemSim.CosineSemSim'&gt;, False), 'SimRel': (&lt;class 'fastsemsim.SemSim.SimRelSemSim.SimRelSemSim'&gt;, True), 'NTO': (&lt;class 'fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim'&gt;, False), 'SimICNP': (&lt;class 'fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim'&gt;, True), 'Jiang-Conrath': (&lt;class 'fastsemsim.SemSim.JiangConrathSemSim.JiangConrathSemSim'&gt;, True), 'Lin': (&lt;class 'fastsemsim.SemSim.LinSemSim.LinSemSim'&gt;, True)}</em><a class="headerlink" href="#fastsemsim.SemSim.term_SemSim_measures" title="Permalink to this definition">¶</a></dt>
-<dd><p>Struct mix_strategies.
-Contains a list of all available mixing strategies
-It is built as a dictionary. Mixing strategy names are used as keys. Each entry is a tuple with the following structure:
-(class pointer, )</p>
-</dd></dl>
-
-</div>
 </div>
 
 
@@ -1105,44 +831,42 @@ It is built as a dictionary. Mixing strategy names are used as keys. Each entry 
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">fastsemsim.SemSim package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.BMASemSim">fastsemsim.SemSim.BMASemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.CosineSemSim">fastsemsim.SemSim.CosineSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.CzekanowskiDiceSemSim">fastsemsim.SemSim.CzekanowskiDiceSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.DiceSemSim">fastsemsim.SemSim.DiceSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.GSESAMESemSim">fastsemsim.SemSim.GSESAMESemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.JaccardSemSim">fastsemsim.SemSim.JaccardSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.JiangConrathSemSim">fastsemsim.SemSim.JiangConrathSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.LinSemSim">fastsemsim.SemSim.LinSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.MixSemSim">fastsemsim.SemSim.MixSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.ObjSemSim">fastsemsim.SemSim.ObjSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.ObjSetSemSim">fastsemsim.SemSim.ObjSetSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.ResnikSemSim">fastsemsim.SemSim.ResnikSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.SemSimUtils">fastsemsim.SemSim.SemSimUtils module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.SetSemSim">fastsemsim.SemSim.SetSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.SimGICSemSim">fastsemsim.SemSim.SimGICSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.SimICNDSemSim">fastsemsim.SemSim.SimICNDSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.SimICNPSemSim">fastsemsim.SemSim.SimICNPSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.SimICSemSim">fastsemsim.SemSim.SimICSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.SimNTOSemSim">fastsemsim.SemSim.SimNTOSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.SimRelSemSim">fastsemsim.SemSim.SimRelSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.SimTOSemSim">fastsemsim.SemSim.SimTOSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.SimUISemSim">fastsemsim.SemSim.SimUISemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.TermSemSim">fastsemsim.SemSim.TermSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.avgSemSim">fastsemsim.SemSim.avgSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim.maxSemSim">fastsemsim.SemSim.maxSemSim module</a></li>
-<li><a class="reference internal" href="#module-fastsemsim.SemSim">Module contents</a></li>
+<li><a class="reference internal" href="#">fastsemsim.SemSim module</a><ul>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.TermSemSim">SemSim.TermSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.ObjSemSim">SemSim.ObjSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.ObjSetSemSim">SemSim.ObjSetSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.SetSemSim">SemSim.SetSemSim</a></li>
+<li><a class="reference internal" href="#specific-semantic-similarity-measures">Specific Semantic Similarity measures</a><ul>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.ResnikSemSim">SemSim.ResnikSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.CosineSemSim">SemSim.CosineSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.CzekanowskiDiceSemSim">SemSim.CzekanowskiDiceSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.DiceSemSim">SemSim.DiceSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.GSESAMESemSim">SemSim.GSESAMESemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.JaccardSemSim">SemSim.JaccardSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.JiangConrathSemSim">SemSim.JiangConrathSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.LinSemSim">SemSim.LinSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.SimGICSemSim">SemSim.SimGICSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.SimICNDSemSim">SemSim.SimICNDSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.SimICNPSemSim">SemSim.SimICNPSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.SimICSemSim">SemSim.SimICSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.SimNTOSemSim">SemSim.SimNTOSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.SimRelSemSim">SemSim.SimRelSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.SimTOSemSim">SemSim.SimTOSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.SimUISemSim">SemSim.SimUISemSim</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.MixSemSim">SemSim.MixSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.avgSemSim">SemSim.avgSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.maxSemSim">SemSim.maxSemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.BMASemSim">SemSim.BMASemSim</a></li>
+<li><a class="reference internal" href="#module-fastsemsim.SemSim.SemSimUtils">SemSim.SemSimUtils</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="fastsemsim.Ontology.html"
-                        title="previous chapter">fastsemsim.Ontology package</a></p>
-  <h4>Next topic</h4>
   <p class="topless"><a href="fastsemsim.data.html"
-                        title="next chapter">fastsemsim.data package</a></p>
+                        title="previous chapter">fastsemsim.data module</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/fastsemsim.SemSim.txt"
@@ -1175,13 +899,10 @@ It is built as a dictionary. Mixing strategy names are used as keys. Each entry 
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="fastsemsim.data.html" title="fastsemsim.data package"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="fastsemsim.Ontology.html" title="fastsemsim.Ontology package"
+          <a href="fastsemsim.data.html" title="fastsemsim.data module"
              >previous</a> |</li>
         <li><a href="index.html">fastsemsim 0.9 documentation</a> &raquo;</li>
-          <li><a href="fastsemsim.html" >fastsemsim package</a> &raquo;</li> 
+          <li><a href="fastsemsim.html" >FastSemSim library</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

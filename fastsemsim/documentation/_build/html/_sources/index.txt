@@ -1,17 +1,13 @@
-.. fastsemsim documentation master file, created by
-   sphinx-quickstart on Wed Dec 10 10:33:46 2014.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. fastsemsim documentation master file, created by Marco Mina
 
-Welcome to fastsemsim's documentation!
-======================================
+FastSemSim 0.9 documentation
+============================
 
 Contents:
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
-   code.rst
    fastsemsim.rst
 
 
