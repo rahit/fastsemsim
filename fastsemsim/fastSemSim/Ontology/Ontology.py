@@ -102,6 +102,8 @@ class Ontology(object):
 
 	@staticmethod
 	def _node2id(code, strict=True):
+		''' Converts an ontology term node id into its ontology form
+		'''
 		# return "generic:" + '0'*(7 - len(str(code))) + str(code)
 		return str(code) # watch out for Unicode strings
 	#
@@ -182,6 +184,17 @@ class Ontology(object):
 		return(self.edges.shape[0])
 
 	def __init__(self, terms, edges, parameters=None):
+		'''Initialization.
+
+		:Parameters:
+			terms : dict
+				Data of the ontology terms
+			edges : list
+				List of ontological relationships
+			parameters: dict [Default = None]
+				parameters affecting the construction of the ontology
+		'''
+		
 		self.name = 'Ontology'
 		self.nodes = {}
 		self.alt_id = {}

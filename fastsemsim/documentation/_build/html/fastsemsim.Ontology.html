@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fastsemsim.Ontology module &mdash; fastsemsim 0.9 documentation</title>
+    <title>Handling ontologies and annotation corpora &mdash; fastsemsim 0.9 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -24,9 +24,9 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="fastsemsim 0.9 documentation" href="index.html" />
-    <link rel="up" title="FastSemSim library" href="fastsemsim.html" />
+    <link rel="up" title="FastSemSim library" href="library.html" />
     <link rel="next" title="fastsemsim.data module" href="fastsemsim.data.html" />
-    <link rel="prev" title="FastSemSim library" href="fastsemsim.html" /> 
+    <link rel="prev" title="FastSemSim library" href="library.html" /> 
   </head>
   <body>
     <div class="related">
@@ -42,10 +42,10 @@
           <a href="fastsemsim.data.html" title="fastsemsim.data module"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="fastsemsim.html" title="FastSemSim library"
+          <a href="library.html" title="FastSemSim library"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">fastsemsim 0.9 documentation</a> &raquo;</li>
-          <li><a href="fastsemsim.html" accesskey="U">FastSemSim library</a> &raquo;</li> 
+          <li><a href="library.html" accesskey="U">FastSemSim library</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -55,7 +55,7 @@
           <div class="body">
             
   <div class="section" id="module-fastsemsim.Ontology">
-<span id="fastsemsim-ontology-module"></span><h1>fastsemsim.Ontology module<a class="headerlink" href="#module-fastsemsim.Ontology" title="Permalink to this headline">¶</a></h1>
+<span id="handling-ontologies-and-annotation-corpora"></span><h1>Handling ontologies and annotation corpora<a class="headerlink" href="#module-fastsemsim.Ontology" title="Permalink to this headline">¶</a></h1>
 <p>This module contains all the classes and scripts used to load and represent ontologies and annotation corpora by fastSemSim</p>
 <div class="section" id="module-fastsemsim.Ontology.ontologies">
 <span id="ontology-ontologies"></span><h2>Ontology.ontologies<a class="headerlink" href="#module-fastsemsim.Ontology.ontologies" title="Permalink to this headline">¶</a></h2>
@@ -63,7 +63,17 @@
 <dl class="class">
 <dt id="fastsemsim.Ontology.ontologies.OboParser">
 <em class="property">class </em><tt class="descclassname">fastsemsim.Ontology.ontologies.</tt><tt class="descname">OboParser</tt><big>(</big><em>ontology_class</em>, <em>parameters={}</em><big>)</big><a class="headerlink" href="#fastsemsim.Ontology.ontologies.OboParser" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="attribute">
+<dd><dl class="method">
+<dt id="fastsemsim.Ontology.ontologies.OboParser.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>ontology_class</em>, <em>parameters={}</em><big>)</big><a class="headerlink" href="#fastsemsim.Ontology.ontologies.OboParser.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.Ontology.ontologies.OboParser.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'fastsemsim.Ontology.ontologies'</em><a class="headerlink" href="#fastsemsim.Ontology.ontologies.OboParser.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="fastsemsim.Ontology.ontologies.OboParser.alt_id_tag">
 <tt class="descname">alt_id_tag</tt><em class="property"> = 'alt_id'</em><a class="headerlink" href="#fastsemsim.Ontology.ontologies.OboParser.alt_id_tag" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -169,6 +179,16 @@
 <dt id="fastsemsim.Ontology.ontologies.OboXmlParser">
 <em class="property">class </em><tt class="descclassname">fastsemsim.Ontology.ontologies.</tt><tt class="descname">OboXmlParser</tt><big>(</big><em>ontology_class</em>, <em>parameters={}</em><big>)</big><a class="headerlink" href="#fastsemsim.Ontology.ontologies.OboXmlParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">xml.sax.handler.ContentHandler</span></tt></p>
+<dl class="method">
+<dt id="fastsemsim.Ontology.ontologies.OboXmlParser.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>ontology_class</em>, <em>parameters={}</em><big>)</big><a class="headerlink" href="#fastsemsim.Ontology.ontologies.OboXmlParser.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fastsemsim.Ontology.ontologies.OboXmlParser.__module__">
+<tt class="descname">__module__</tt><em class="property"> = 'fastsemsim.Ontology.ontologies'</em><a class="headerlink" href="#fastsemsim.Ontology.ontologies.OboXmlParser.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="fastsemsim.Ontology.ontologies.OboXmlParser.alt_id_tag">
 <tt class="descname">alt_id_tag</tt><em class="property"> = 'alt_id'</em><a class="headerlink" href="#fastsemsim.Ontology.ontologies.OboXmlParser.alt_id_tag" title="Permalink to this definition">¶</a></dt>
@@ -290,57 +310,44 @@
 <dl class="class">
 <dt id="fastsemsim.Ontology.Ontology.Ontology">
 <em class="property">class </em><tt class="descclassname">fastsemsim.Ontology.Ontology.</tt><tt class="descname">Ontology</tt><big>(</big><em>terms</em>, <em>edges</em>, <em>parameters=None</em><big>)</big><a class="headerlink" href="#fastsemsim.Ontology.Ontology.Ontology" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for the representation of an ontology. It currently supports any multi-rooted DAG (Directed Acyclic Graph).</p>
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">fastsemsim.Ontology.Ontology.</tt><tt class="descname">Ontology</tt><big>(</big><em>terms</em>, <em>edges</em>, <em>parameters=None</em><big>)</big></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <p>Base class for the representation of an ontology. It currently supports any multi-rooted DAG (Directed Acyclic Graph).</p>
+<dl class="method">
+<dt id="fastsemsim.Ontology.Ontology.Ontology.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>terms</em>, <em>edges</em>, <em>parameters=None</em><big>)</big><a class="headerlink" href="#fastsemsim.Ontology.Ontology.Ontology.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialization.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt>terms <span class="classifier-delimiter">:</span> <span class="classifier">dict</span></dt>
+<dd><p class="first last">Data of the ontology terms</p>
+</dd>
+<dt>edges <span class="classifier-delimiter">:</span> <span class="classifier">list</span></dt>
+<dd><p class="first last">List of ontological relationships</p>
+</dd>
+<dt>parameters: dict [Default = None]</dt>
+<dd><p class="first last">parameters affecting the construction of the ontology</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
-<dt id="fastsemsim.Ontology.Ontology.Ontology.debug">
-<tt class="descname">debug</tt><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.Ontology.Ontology.Ontology.debug" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastsemsim.Ontology.Ontology.Ontology.det_roots">
-<tt class="descname">det_roots</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.Ontology.Ontology.Ontology.det_roots" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastsemsim.Ontology.Ontology.Ontology.edge_number">
-<tt class="descname">edge_number</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.Ontology.Ontology.Ontology.edge_number" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="fastsemsim.Ontology.Ontology.Ontology.gen_error">
-<tt class="descname">gen_error</tt><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.Ontology.Ontology.Ontology.gen_error" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastsemsim.Ontology.Ontology.Ontology.id2node">
-<tt class="descname">id2node</tt><big>(</big><em>codes</em>, <em>alt_check=True</em><big>)</big><a class="headerlink" href="#fastsemsim.Ontology.Ontology.Ontology.id2node" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastsemsim.Ontology.Ontology.Ontology.is_consistent">
-<tt class="descname">is_consistent</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.Ontology.Ontology.Ontology.is_consistent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastsemsim.Ontology.Ontology.Ontology.is_valid">
-<tt class="descname">is_valid</tt><big>(</big><em>term</em><big>)</big><a class="headerlink" href="#fastsemsim.Ontology.Ontology.Ontology.is_valid" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastsemsim.Ontology.Ontology.Ontology.name2node">
-<tt class="descname">name2node</tt><big>(</big><em>codes</em><big>)</big><a class="headerlink" href="#fastsemsim.Ontology.Ontology.Ontology.name2node" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastsemsim.Ontology.Ontology.Ontology.node2id">
-<tt class="descname">node2id</tt><big>(</big><em>codes</em>, <em>alt_check=False</em><big>)</big><a class="headerlink" href="#fastsemsim.Ontology.Ontology.Ontology.node2id" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fastsemsim.Ontology.Ontology.Ontology.node_number">
-<tt class="descname">node_number</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.Ontology.Ontology.Ontology.node_number" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="fastsemsim.Ontology.Ontology.Ontology.__weakref__">
+<tt class="descname">__weakref__</tt><a class="headerlink" href="#fastsemsim.Ontology.Ontology.Ontology.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -722,7 +729,7 @@ Plain format 1: Term ID - object (eg. gene) ID</dd>
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">fastsemsim.Ontology module</a><ul>
+<li><a class="reference internal" href="#">Handling ontologies and annotation corpora</a><ul>
 <li><a class="reference internal" href="#module-fastsemsim.Ontology.ontologies">Ontology.ontologies</a></li>
 <li><a class="reference internal" href="#module-fastsemsim.Ontology.Ontology">Ontology.Ontology</a></li>
 <li><a class="reference internal" href="#module-fastsemsim.Ontology.GeneOntology">Ontology.GeneOntology</a></li>
@@ -736,7 +743,7 @@ Plain format 1: Term ID - object (eg. gene) ID</dd>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="fastsemsim.html"
+  <p class="topless"><a href="library.html"
                         title="previous chapter">FastSemSim library</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="fastsemsim.data.html"
@@ -776,10 +783,10 @@ Plain format 1: Term ID - object (eg. gene) ID</dd>
           <a href="fastsemsim.data.html" title="fastsemsim.data module"
              >next</a> |</li>
         <li class="right" >
-          <a href="fastsemsim.html" title="FastSemSim library"
+          <a href="library.html" title="FastSemSim library"
              >previous</a> |</li>
         <li><a href="index.html">fastsemsim 0.9 documentation</a> &raquo;</li>
-          <li><a href="fastsemsim.html" >FastSemSim library</a> &raquo;</li> 
+          <li><a href="library.html" >FastSemSim library</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

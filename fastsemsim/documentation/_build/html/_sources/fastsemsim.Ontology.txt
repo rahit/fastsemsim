@@ -1,5 +1,5 @@
-fastsemsim.Ontology module
-==========================
+Handling ontologies and annotation corpora
+==========================================
 
 .. automodule:: fastsemsim.Ontology
 
@@ -9,6 +9,7 @@ Ontology.ontologies
 
 .. automodule:: fastsemsim.Ontology.ontologies
     :members:
+    :special-members:
     :undoc-members:
     :show-inheritance:
 
@@ -18,8 +19,12 @@ Ontology.Ontology
 
 .. automodule:: fastsemsim.Ontology.Ontology
     :members:
-    :undoc-members:
+
+.. autoclass:: fastsemsim.Ontology.Ontology.Ontology
+    :members:
     :show-inheritance:
+    :special-members:
+
 
 Ontology.GeneOntology
 ---------------------

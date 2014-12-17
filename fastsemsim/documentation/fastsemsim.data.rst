@@ -1,5 +1,5 @@
-fastsemsim.data module
-======================
+Ontologies and annotation corpora included in fastSemSim
+========================================================
 
 .. automodule:: fastsemsim.data
     :members:
@@ -7,7 +7,7 @@ fastsemsim.data module
     :show-inheritance:
 
 fastsemsim.data.dataset submodule
-------------------------------
+---------------------------------
 
 .. automodule:: fastsemsim.data.dataset
     :members:

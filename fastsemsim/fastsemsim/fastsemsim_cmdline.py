@@ -16,13 +16,7 @@
 
 # You should have received a copy of the GNU General Public License
 # along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
-'''
-The FastSemSim package includes a command line utility to load ontologies and annotation corpora, and to avaluate the available semantic similarity measures.
 
-After installation, you may run the command line utility just by typing fastsemsim in your console.
-
-Please use fastsemsim -h to visualize the full set of parameters.
-'''
 
 __author__ = "Marco Mina"
 

@@ -1,5 +1,5 @@
-fastsemsim.SemSim module
-========================
+Semantic Similarity
+===================
 
 .. automodule:: fastsemsim.SemSim
 
