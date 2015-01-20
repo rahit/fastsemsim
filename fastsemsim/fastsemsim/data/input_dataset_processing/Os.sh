@@ -15,3 +15,8 @@ mv go.obo ../Os/GeneOntology_`date "+%Y.%m.%d"`.obo
 
 wget http://archive.geneontology.org/latest-termdb/go_daily-termdb.obo-xml.gz
 mv go_daily-termdb.obo-xml.gz ../Os/GeneOntology_`date "+%Y.%m.%d"`.obo-xml.gz
+
+# Retrieve the latest Human Phenotype ontology
+# http://www.human-phenotype-ontology.org/contao/index.php/downloads.html
+wget http://purl.obolibrary.org/obo/hp.obo
+mv hp.obo ../Os/HumanPhenotypeOntology_`date "+%Y.%m.%d"`.obo

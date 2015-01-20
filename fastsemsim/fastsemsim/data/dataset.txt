@@ -13,4 +13,5 @@ CO	O	Os/CellOntology_2014.10.13.obo	CellOntology	obo	2014.10.13		Retrieved from 
 DO	O	Os/DiseaseOntology_2014.10.13.obo	DiseaseOntology	obo	2014.10.13		Retrieved from http://www.obofoundry.org/cgi-bin/detail.cgi?id=disease_ontology
 GO	O	Os/GeneOntology_2014.10.27.obo	GeneOntology	obo	2014.10.13		Retrieved from http://purl.obolibrary.org/obo/go.obo
 GO_oboxml	O	Os/GeneOntology_2014.10.13.obo-xml.gz	GeneOntology	obo-xml	2014.10.13		Retrieved from http://archive.geneontology.org/latest-termdb/go_daily-termdb.obo-xml.gz
+HPO	O	Os/HumanPhenotypeOntology_2015.01.08.obo	HumanPhenotypeOntology	obo	2015.01.08	Retrieved from http://www.human-phenotype-ontology.org/contao/index.php/downloads.html
 #pato	O	Os/pato_2014.09.09.obo	Ontology	obo	2014.09.09		Retrieved from 

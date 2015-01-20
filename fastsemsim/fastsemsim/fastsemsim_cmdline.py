@@ -593,9 +593,9 @@ def check_parameters():
 
 		if isinstance(params['query']['query_mode'], None.__class__):
 			if params['query']['query_input'] == 'ac':
-				params['query_mode'] = 'list'
+				params['query']['query_mode'] = 'list'
 			if params['query']['query_input'] == 'ontology':
-				params['query_mode'] = 'list'
+				params['query']['query_mode'] = 'list'
 			if params['query']['query_input'] == 'file':
 				raise Exception("The query_mode parameter must be specified if a query file is provided.")
 
@@ -892,7 +892,7 @@ def init_ss():
 		do_log = True
 
 	if params['query']['query_ss_type'] == 'term':
-		tss_class = SemSimMeasures.select_term_SemSim(params['ss']['tss_measure'])
+		tss_class = fastsemsim.SemSim.select_term_SemSim(params['ss']['tss_measure'])
 		tss = tss_class(ontology, ac, ssutil, do_log=do_log)
 		ss = tss
 	elif params['query']['query_ss_type'] == 'obj':
