@@ -15,19 +15,19 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
+along with fastsemsim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 import wx
         
-from fastSemSim.GO import GeneOntology
+from fastsemsim.Ontology import GeneOntology
 import WorkProcess
 import os
 
-from fastSemSim.GO import GeneOntology
-from fastSemSim.GO import AnnotationCorpus
-from fastSemSim.GO import PlainAnnotationCorpus
-from fastSemSim.GO import GAF2AnnotationCorpus
+from fastsemsim.Ontology import GeneOntology
+from fastsemsim.Ontology import AnnotationCorpus
+from fastsemsim.Ontology import PlainAnnotationCorpus
+from fastsemsim.Ontology import GAF2AnnotationCorpus
 
 GAF2_FILE_TYPE = 'GAF 2.0 (GOA)'
 GAF2_FILE_TYPE_REF = 'gaf-2.0'

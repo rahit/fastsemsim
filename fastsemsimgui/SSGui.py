@@ -1,5 +1,6 @@
 import wx
-from fastSemSim.SemSim import SemSimMeasures
+# from fastSemSim.SemSim import SemSimMeasures
+import fastsemsim.SemSim
 
 DEBUG_LEVEL = 0
 
@@ -53,9 +54,9 @@ class SSPanel(wx.Panel):
 	def _reset(self):
 		if DEBUG_LEVEL>0:
 			print "SSPanel: reset()"
-		for i in SemSimMeasures.SemSimMeasures:
+		for i in fastsemsim.SemSim.term_SemSim_measures:
 			self.SS_measure_box.Append(i)
-		for i in SemSimMeasures.MixingStrategies:
+		for i in fastsemsim.SemSim.mix_strategies:
 			self.SS_mix_box.Append(i)
 		self.SS_mix_box.SetSelection(0)
 		self.SS_measure_box.SetSelection(0)
@@ -169,7 +170,7 @@ class SSPanel(wx.Panel):
 			self.real_parent.params_SS['measure'] = self.SS_measure_box.GetString(self.SS_measure_box.GetCurrentSelection())
 			#self.real_parent.ssmeasure = SemSimMeasures.SemSimMeasures[self.availablemeasures[self.ss.GetSelection()]]
 			#self.real_parent.update_ssobject = True
-			if SemSimMeasures.SemSimMeasures[self.real_parent.params_SS['measure']][1]:
+			if fastsemsim.SemSim.term_SemSim_measures[self.real_parent.params_SS['measure']][1]:
 				self.SS_mix_box.Enable()
 				#if self.real_parent.SS_mixing_strategy == None:
 					#self.real_parent.SetOperationOk(False)

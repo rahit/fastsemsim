@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
+along with fastsemsim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 '''
@@ -25,11 +25,12 @@ import multiprocessing
 import time 
 import copy
 import os
-from fastSemSim.SemSim import SemSimMeasures
-from fastSemSim.SemSim import ObjSemSim
-from fastSemSim.SemSim import SemSimUtils
-from fastSemSim.GO import GeneOntology
-from fastSemSim.GO import AnnotationCorpus
+# import fastsemsim.SemSim import SemSimMeasures
+import fastsemsim.SemSim
+from fastsemsim.SemSim import ObjSemSim
+from fastsemsim.SemSim import SemSimUtils
+from fastsemsim.Ontology import GeneOntology
+from fastsemsim.Ontology import AnnotationCorpus
 import gzip
 
 DEBUG_LEVEL = 0 # NOTE 0: no debug output. 1:level 1 debug output. 2: verbose debug output. In any case it does not affect the performance of the calculation step

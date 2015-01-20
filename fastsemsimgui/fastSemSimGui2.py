@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
+along with fastsemsim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 #### Import basic packages
@@ -24,10 +24,10 @@ import os
 import copy
 
 #### Import fastSemSim modules
-from fastSemSim.GO import GeneOntology
-from fastSemSim.GO import AnnotationCorpus
-from fastSemSim.SemSim import SemSimMeasures
-from fastSemSim.SemSim import ObjSemSim
+from fastsemsim.Ontology import GeneOntology
+from fastsemsim.Ontology import AnnotationCorpus
+import fastsemsim.SemSim
+from fastsemsim.SemSim import ObjSemSim
 
 #### Include this to work with processes and threads
 import threading

@@ -19,7 +19,7 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 import wx
-from fastSemSim.GO import GeneOntology
+from fastsemsim.Ontology import GeneOntology
 import WorkProcess
 import os
 
