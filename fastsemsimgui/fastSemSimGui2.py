@@ -166,24 +166,23 @@ class fastSemSimGui(wx.Frame):
 		#self.query_panel = ControlsPanel(self, self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		#self.fastSemSim_listbook.AddPage( self.query_panel, u"Controls", True )
 		#self.fastSemSim_listbook.SetPageImage(0, 3)
-		#### Panel Query
-		self.query_panel = QueryPanel(self, self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.fastSemSim_listbook.AddPage( self.query_panel, u"Query", False )
-		self.fastSemSim_listbook.SetPageImage(0, 4)
+
 		#### Panel GO
 		self.GO_panel = GOPanel(self, self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		self.fastSemSim_listbook.AddPage( self.GO_panel, u"Gene Ontology", False )
-		self.fastSemSim_listbook.SetPageImage(1, 8)
+		self.fastSemSim_listbook.SetPageImage(0, 8)
 		#### Panel AC
 		self.AC_panel = ACPanel(self, self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		self.fastSemSim_listbook.AddPage( self.AC_panel, u"Annotation Corpus", False )
-		self.fastSemSim_listbook.SetPageImage(2, 8)
-
+		self.fastSemSim_listbook.SetPageImage(1, 8)
 		#### Panel SS
 		self.SS_panel = SSPanel(self, self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		self.fastSemSim_listbook.AddPage( self.SS_panel, u"Semantic Similarity", False )
-		self.fastSemSim_listbook.SetPageImage(3, 6)
-
+		self.fastSemSim_listbook.SetPageImage(2, 6)
+		#### Panel Query
+		self.query_panel = QueryPanel(self, self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.fastSemSim_listbook.AddPage( self.query_panel, u"Query", False )
+		self.fastSemSim_listbook.SetPageImage(3, 4)
 		#### Panel Output Ctrl
 		self.output_ctrl_panel = OutputCtrlPanel(self, self.fastSemSim_listbook, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		self.fastSemSim_listbook.AddPage( self.output_ctrl_panel, u"Output Settings", False )
