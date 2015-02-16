@@ -1,0 +1,21 @@
+[FEATURES]
+
+- The parser handles obo-xml files (also the gzipped version, no need to decompress)
+- The relations between GO Terms currently considered are: is_a, part_of, regulates, positively_regulates, negatively_regulates
+
+[DATA AVAILABLE AFTER PARSING (partly provided by fastSemSimUtils.py - ask Tiziana)]
+
+- direct children of a Term [Python dict. (Key=GO Term, Value= dict of children).]
+- direct ancestors of a Term [Python dict. (Key=GO Term, Value= dict of parents).]
+- all the ancestors of a Term [Python dict. (Key=GO Term, Value= dict of all the ancestors).]
+- all the descendants of a Term [Python dict. (Key=GO Term, Value= dict of all the descendants).]
+- alternative Terms [Python dict. (Key=Alternative GO Term, Value=GO Term).]
+- obsolete Terms [Python dict. If a GO Term is in this dict, then it is obsolete]
+- GO Term frequency in the annotation corpus
+- GO Term Information Content (for the annotation corpus)
+
+
+[How Annotations are handled]
+
+- Annotations involving Alternative GO Terms are merged together using the main GO Term [good for IC calculation]
+- Annotations involving obsolete GO Terms are discarded

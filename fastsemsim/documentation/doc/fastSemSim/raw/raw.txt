@@ -1,0 +1,71 @@
+fastSemSim is a library providing both a complete framework for implementing and developing semantic similarity measures as well as fast implementations of existing SS measures.
+
+The package can be divided into 3 components: GO, SemSim, gui.
+
+GO provides basic structures for handling Gene Ontology and annotation corpora
+SemSim is the most important component, and consists of several classes useful to calculate semantic similarity
+gui is a raw graphical user interface intended to be a front-end for SemSim classes
+
+All the code is written in Python.
+
+GO requires xml Python library, that is enerally included in standard Python distributions.
+SemSim does not require any external package
+gui requires wxWidgets package. It is not usually included in basic Python distributions, but is easy to install and is available under all the most common platforms (Microsoft Windows, OS X, Linux).
+
+	------------
+	GO component
+
+	GO counts two parts: a set of classes to handle Gene Ontology files and structures, and another set to handle annotation corpora.
+	Currently, the first consists of a single file: GeneOntology.py.
+
+	The latter comprises several files, the most important being AnnotationCorpus.py
+
+		---------------
+		GeneOntology.py
+		GeneOntology.py provides basic routies to read xml formatted obo files describing The Gene Ontology. Currently, the DAG of the Gene Ontology is stored in 2 variables, node_edge and edge_node: the former describes, for each node, the edges involving it; the latter keeps rtack of all the edges, pointing to its ending nodes. The 3 supplementary tables "alt_ids", "edge_types", and "obsolete_ids" provide additional information about each GO term or GO edge.
+
+		GeneOntology variables:
+			node_edge
+			edge_node
+			alt_ids
+			obsolete_ids
+			edge_types
+		GeneOntology functions:
+			load_GO_XML: load an obo-xml file
+
+		-------------------
+		AnnotationCorpus.py
+		Routines and structures to handle annotation corpora. Together with other AnnotationCorpus*.py files, it allows to parse GOA annotation files, as well as plain annotation files (each line is a pair "term" - "object" or vice versa)
+
+		AnnotationCorpus variables:
+			annotations: for each object in annotation corpus, list GO terms annotated for it
+			reverse_annotations: for each GO term, list objects annotated with it
+			obj_set: list of objects involved in annotations
+			term_set: list of GO terms involved in annotations
+
+		AnnotationCorpus functions:
+			load: load an annotation corpus file. Format specification is required. Populates variables described above. 
+			parse: see load
+			check_consistency: verifies whether GO terms used are updated to current GeneOntology version.
+			sanitize: remove annotations involving GO terms obsolete for current GeneOntology version, and resolve alternative id mappings.
+			constrain: filter annotations according to several parameters:
+					- object taxonomy
+					- annotation type
+					It is possible to filter data directly at parse-time, avoiding problems with huge files
+
+	----------------
+	SemSim component
+
+	Several files are present here. Most important ones are:
+		SemSimUtils.py: basic functions and routines useful for several SS measures (IC, term roots, term ancestors and offspring, shortest path, common ancestors, ...)
+		ObjSemSim.py: template for object semantic similarity measures. Provides a description of a common interface to any object SS measure
+		TermSemSim.py: template for term semantic similarity measures. Provides a description of a common interface to any term SS measure
+		MixSemSim.py:  template for mixing strategies (max, avg, BMA, ...)
+
+	Example code using this component is provided in examples/testSemSim.py. You can run this script using testSemSim.sh shell script file. It requires as input parameters a valid Gene Ontology xml-obo file, an annotation corpus, and a list of objects. It will determine all the pairwise "Resnik max" semantic similarity scores between the objects in the list.
+	A Gene Ontology, an annotation corpus, and a test file are included in examples folder.
+
+	---
+	gui
+
+	Use fastSemSimGui.py from gui component to start a front-end for fastSemSim package. It currently allows to load an arbitrary Gene Ontology and annotation corpus. Its use should be straightforward, thus I will not describe it here.
