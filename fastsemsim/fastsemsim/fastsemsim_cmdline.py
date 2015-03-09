@@ -91,7 +91,7 @@ def start():
 		if params['core']['verbose'] >= 2:
 			print "-> Extracting statistics..."
 
-		if params['stats']['IC']:
+		if params['stats']['IC'] or True:
 			util = SemSimUtils(ontology, ac)
 			util.det_IC_table()
 			# ----- Inject IC
