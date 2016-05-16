@@ -67,7 +67,7 @@ def start():
 	if params['core']['verbose'] >= 2:
 		print_parameters()
 	if not check_ack:
-		print "Invalid input parameters"
+		print("Invalid input parameters")
 		sys.exit()
 
 	# ----- Load ontology and (optionally) ac
@@ -89,7 +89,7 @@ def start():
 	elif params['core']['task'] == 'stats':
 
 		if params['core']['verbose'] >= 2:
-			print "-> Extracting statistics..."
+			print(("-> Extracting statistics..."))
 
 		if params['stats']['IC'] or True:
 			util = SemSimUtils(ontology, ac)
@@ -101,19 +101,19 @@ def start():
 			h = None
 			if not params['output']['out_file'] == None:
 				if params['core']['verbose'] >= 2:
-					print "-> Writing IC to file " + str(params['output']['out_file']) + "..."
+					print("-> Writing IC to file " + str(params['output']['out_file']) + "...")
 				h = open(params['output']['out_file'], 'w')
 			print_IC(util.IC, h, params['output']['cut_thres'], params['output']['cut_nan'])
 			if not h == None:
 				h.close()
 			if params['core']['verbose'] >= 2:
-				print "-> IC extracted."
+				print("-> IC extracted.")
 	# ----- Otherwise, raise Exception
 	else:
 		raise Exception("Unknown task")
 
 	if params['core']['verbose'] >= 2:
-		print '-> Process completed. Quitting.'
+		print('-> Process completed. Quitting.')
 	sys.exit()
 #
 
@@ -276,7 +276,7 @@ def load_params_from_file(list_file):
 	global params
 
 	if params['core']['verbose'] >= 2:
-		print "-> Loading parameters from " + str(list_file)
+		print("-> Loading parameters from " + str(list_file))
 	gstr = []
 	h = open(list_file,'r')
 	for line in h:
@@ -326,7 +326,7 @@ def load_params_from_file(list_file):
 		params[k1][k2] = value
 	h.close()
 	if params['core']['verbose'] >= 3:
-		print params
+		print(params)
 	return gstr
 #
 
@@ -337,7 +337,7 @@ def save_params_to_file(list_file):
 	global params
 	
 	if params['core']['verbose'] >= 2:
-		print "-> Saving parameters to " + str(list_file)
+		print("-> Saving parameters to " + str(list_file))
 
 	h = open(list_file,'w')
 	gstr = ''
@@ -522,9 +522,9 @@ def check_parameters():
 	global params
 
 	if params['core']['verbose'] >= 4:
-		print "# Raw parameters before parameters check"
-		print str(params)
-		print "# \n"
+		print("# Raw parameters before parameters check")
+		print(str(params))
+		print("# \n")
 
 	# Check core parameters
 	if isinstance(params['core']['task'], None.__class__):
@@ -684,7 +684,7 @@ def print_parameters():
 		print("\n-> [SS]")
 		print("SS measure: \t" + str(params['ss']['tss_measure']) + "\nMix strategy: \t" + str(params['ss']['tss_mix']))
 		print("Ontology category: \t" + str(params['ss']['ss_root']))
-		print("Use enhanced Resnik: \t" + str(params['ss']['use_enhanced']))		
+		print("Use enhanced Resnik: \t" + str(params['ss']['use_enhanced']))
 	elif params['core']['task'] == 'stats':
 		print("\n-> [stats]")
 		if params['stats']['IC']: print("IC")		
@@ -718,7 +718,7 @@ def load_ontology():
 
 	if params['core']['verbose'] >= 2:
 		print("-----------------------------------------------")
-		print "-> Loading ontology ..."
+		print("-> Loading ontology ...")
 
 	ontology_ignore = params['ontology']['ignore']
 	ontology = ontologies.load(params['ontology']['ontology_file'], source_type = params['ontology']['ontology_file_format'], ontology_type = params['ontology']['ontology_type'], parameters={'ignore':ontology_ignore})
@@ -726,20 +726,20 @@ def load_ontology():
 		raise Exception("Ontology not correctly loaded: ")
 
 	if params['core']['verbose'] >= 2:
-		# print "source: " + str(source)
-		# print "source_type: " + str(source_type)
-		# print "ontology_type: " + str(ontology_type)
-		# print "ignore_parameters: " + str(ontology_ignore)
-		print "Ontology roots: " + str(ontology.roots.keys())
+		# print("source: " + str(source)
+		# print("source_type: " + str(source_type)
+		# print("ontology_type: " + str(ontology_type)
+		# print("ignore_parameters: " + str(ontology_ignore)
+		print("Ontology roots: " + str(ontology.roots.keys()))
 		for i in ontology.roots.keys():
-			print "- Root " + str(i) + ": " + str(ontology.node_attributes[i])
-		print "Number of nodes: " + str(ontology.node_number())
-		print "Number of edges: " + str(ontology.edge_number())
-		print "\nType and number of edges:\n-------------\n" + str(ontology.edges['type'].value_counts())
-		print "-------------"
-		print "Outer edges (link to other ontologies): " + str(ontology.edges.loc[ontology.edges['inner'] == False].shape[0])
-		print "Inter edges (link between different namespaces - within the same ontology): " + str(ontology.edges.loc[(ontology.edges['intra'] == False) & (ontology.edges['inner'] == True)].shape[0])
-		# print "-------------"
+			print("- Root " + str(i) + ": " + str(ontology.node_attributes[i]))
+		print("Number of nodes: " + str(ontology.node_number()))
+		print("Number of edges: " + str(ontology.edge_number()))
+		print("\nType and number of edges:\n-------------\n" + str(ontology.edges['type'].value_counts()))
+		print("-------------")
+		print("Outer edges (link to other ontologies): " + str(ontology.edges.loc[ontology.edges['inner'] == False].shape[0]))
+		print("Inter edges (link between different namespaces - within the same ontology): " + str(ontology.edges.loc[(ontology.edges['intra'] == False) & (ontology.edges['inner'] == True)].shape[0]))
+		# print("-------------")
 	print("-----------------------------------------------")
 	
 	return ontology
@@ -762,12 +762,12 @@ def load_ac():
 	if params['ac']['is_defined']:
 		if params['core']['verbose'] >= 2:
 			print("-----------------------------------------------")
-			print "-> Loading annotation corpus..."
+			print("-> Loading annotation corpus...")
 	
 		ac = AnnotationCorpus.AnnotationCorpus(ontology)
 		if not isinstance(params['ac']['ac_file'], None.__class__):
 			if params['core']['verbose'] >= 2:
-				print "Loading the user-defined annotation corpus: " + str(params['ac']['ac_file'])
+				print("Loading the user-defined annotation corpus: " + str(params['ac']['ac_file']))
 			pass
 		else:
 			builtin_dataset = data.dataset.Dataset()
@@ -784,7 +784,7 @@ def load_ac():
 			params['ac']['ac_file'] = selected_source['file']
 			params['ac']['ac_type'] = selected_source['filetype']
 			if params['core']['verbose'] >= 2:
-				print "Loading the embedded annotation corpus: " + str(params['ac']['ac_file'])
+				print("Loading the embedded annotation corpus: " + str(params['ac']['ac_file']))
 
 		#-#-#-#-#-#-#-#-#-#-#-#-#-#
 		# Second step: set parsing parameters
@@ -836,11 +836,11 @@ def load_ac():
 		#### additional useful annotation corpus routines
 		ac.isConsistent() # check whether the annotations are consistent with the current gene ontology. Useful to check if everything is fine
 		# ac.sanitize() # removes annotations not consistent with the current gene ontology. USeful if you loaded an annotation corpus BEFORE loading a gene ontology
-		# print "-> Annotation Corpus correctly loaded: " + str(len(ac.obj_set)) + " objects and " +  str(len(ac.term_set)) + " GO Terms."
+		# print("-> Annotation Corpus correctly loaded: " + str(len(ac.obj_set)) + " objects and " +  str(len(ac.term_set)) + " GO Terms.")
 
 		if params['core']['verbose'] >= 2:
-			print "ac - Number of annotated proteins: " + str(len(ac.annotations))
-			print "ac - Number of annotated terms: " + str(len(ac.reverse_annotations))
+			print("ac - Number of annotated proteins: " + str(len(ac.annotations)))
+			print("ac - Number of annotated terms: " + str(len(ac.reverse_annotations)))
 			print("-----------------------------------------------")
 	#
 	return ac
@@ -869,13 +869,13 @@ def init_ss():
 
 	if params['core']['verbose'] >= 2:
 		print("-----------------------------------------------")
-		print "-> Initializing semantic similarity..."
+		print("-> Initializing semantic similarity...")
 
 	if not isinstance(params['ss']['ss_root'], None.__class__):
 		candidate_root = ontology.id2node(params['ss']['ss_root'], alt_check=False)
 		if not candidate_root in ontology.roots:
 			candidate_root = ontology.name2node(params['ss']['ss_root'])
-			print candidate_root
+			print(candidate_root)
 		if not candidate_root in ontology.roots:
 			params['ss']['ss_root'] = None
 		else:
@@ -908,14 +908,14 @@ def init_ss():
 		raise Exception
 	#
 	# if params['use_enhanced']:
-	# 	print "Enhanced version of Resnik is currently not available in this release. It will be included as soon as possible."
+	# 	print("Enhanced version of Resnik is currently not available in this release. It will be included as soon as possible.")
 	# 	sys.exit()
 	# 	raise Exception
 	# #
 
 	if params['core']['verbose'] >= 2:
-		print "-> Semantic similarity initialized."
-		print "-> Ontology root: " + str(params['ss']['ss_root'])
+		print("-> Semantic similarity initialized.")
+		print("-> Ontology root: " + str(params['ss']['ss_root']))
 		print("-----------------------------------------------")
 
 	return ss
@@ -937,33 +937,33 @@ def load_query():
 
 	if params['core']['verbose'] >= 2:
 		print("-----------------------------------------------")
-		print "-> Loading the query..."
+		print("-> Loading the query...")
 
 	if params['query']['query_input'] == 'file':
 			if params['core']['verbose'] >= 3:
-				print "-> Loading query from file..."
+				print("-> Loading query from file...")
 			query = load_query_from_file()
 	elif params['query']['query_ss_type'] == 'obj':
 		if params['query']['query_input'] == 'ac':
 			if params['core']['verbose'] >= 3:
-				print "-> Loading query from the annotation corpus..."
+				print("-> Loading query from the annotation corpus...")
 			query = ac.annotations.keys()
 	elif params['query']['query_ss_type'] == 'term':
 		if params['query']['query_input'] == 'ac':
 			if params['core']['verbose'] >= 3:
-				print "-> Loading query from annotation corpus..."
+				print("-> Loading query from annotation corpus...")
 			query = ac.reverse_annotations.keys()
 		elif params['query']['query_input'] == 'ontology':
 			if params['core']['verbose'] >= 3:
-				print "-> Loading query from ontology..."
+				print("-> Loading query from ontology...")
 			query = ontology.nodes.keys()
 	else:
 		raise Exception("Incorrect query parameters. Did you use a termset or objset query type with ac or ontology as source?")
 
 	if params['core']['verbose'] >= 4:
-		print str(query)
+		print(str(query))
 	if params['core']['verbose'] >= 2:
-		print "Query length: " + str(len(query))
+		print("Query length: " + str(len(query)))
 		print("-----------------------------------------------")
 	return query
 #
@@ -976,7 +976,7 @@ def load_query_from_file():
 	global params
 
 	if params['core']['verbose'] >= 3:
-		print "Loading query from file " + str(params['query']['query_file'])
+		print("Loading query from file " + str(params['query']['query_file']))
 	
 	h = open(params['query']['query_file'],'r')
 	query = []
@@ -1023,11 +1023,11 @@ def det_ss():
 
 	if params['core']['verbose'] >= 2:
 		print("-----------------------------------------------")
-		print '-> Evaluating Semantic Similarity...'
+		print('-> Evaluating Semantic Similarity...')
 	h = None
 	if not isinstance(params['output']['out_file'], None.__class__):
 		if params['core']['verbose'] >= 2:
-			print 'Saving SS in file ' + str(params['output']['out_file'])
+			print('Saving SS in file ' + str(params['output']['out_file']))
 		h = open(params['output']['out_file'], 'w')
 	if params['query']['query_mode'] == 'pairs':
 		ss_pairs(h)
@@ -1057,7 +1057,7 @@ def ss_pairs(out):
 	total = len(query)
 	if not out is None:
 		if params['core']['verbose'] >= 0:
-			print "Evluating semantic similarity between " + str(len(query)) + " pairs."
+			print("Evluating semantic similarity between " + str(len(query)) + " pairs.")
 			prev_text = ""
 			sys.stdout.write("Done: ")
 		chunk_size = 2000
@@ -1067,7 +1067,7 @@ def ss_pairs(out):
 	for i in range(0,len(query)):
 		temp = ss.SemSim(query[i][0], query[i][1], params['ss']['ss_root'])
 		if temp == None and params['core']['verbose'] >= 4:
-			print ss.log
+			print(ss.log)
 		done+=1
 		if not params['output']['cut_thres'] == None:
 			if temp == None or temp <= params['output']['cut_thres']:
@@ -1076,7 +1076,7 @@ def ss_pairs(out):
 				if temp == None:
 					continue
 		if out == None:
-			print str(query[i][0]) + "\t" + str(query[i][1]) + "\t" + str(temp)
+			print(str(query[i][0]) + "\t" + str(query[i][1]) + "\t" + str(temp))
 		else:
 			temptab.loc[i] = [query[i][0], query[i][1], temp]
 			if temptab.shape[0] >= chunk_size:
@@ -1109,7 +1109,7 @@ def ss_pairwise(out):
 
 	if not out == None:
 		if params['core']['verbose'] >= 0:
-			print "Evluating pairwise semantic similarity between " + str(len(query)) + " entities (" + str(len(query)*(len(query)+1)/2) + " pairs)"
+			print("Evluating pairwise semantic similarity between " + str(len(query)) + " entities (" + str(len(query)*(len(query)+1)/2) + " pairs)")
 			prev_text = ""
 			sys.stdout.write("Done: ")
 		chunk_size = 2000
@@ -1122,7 +1122,7 @@ def ss_pairwise(out):
 		for j in range(i,len(query)):
 			temp = ss.SemSim(query[i],query[j],params['ss']['ss_root'])
 			if temp == None and params['core']['verbose'] >= 4:
-				print ss.log
+				print(ss.log)
 			#scores[pairs[i]][pairs[j]] = temp
 			done+=1
 			if not params['output']['cut_thres'] == None:
@@ -1132,10 +1132,10 @@ def ss_pairwise(out):
 				if temp == None:
 					continue
 			if out == None:
-				print str(query[i]) + "\t" + str(query[j]) + "\t" + str(temp)
+				print(str(query[i]) + "\t" + str(query[j]) + "\t" + str(temp))
 			else:
-				# print temptab
-				# print i*(len(query))+j
+				# print(temptab)
+				# print(i*(len(query))+j)
 				temptab.loc[i*(len(query))+j] = [query[i], query[j], temp]
 				if temptab.shape[0] >= chunk_size:
 					temptab.to_csv(out, sep="\t", header=False, index=False)
@@ -1156,7 +1156,7 @@ def print_IC(IC, out, cut_thres=None, cut_nan=False):
 	# global params
 	global ontology
 
-	# print "Evluating pairwise semantic similarity between " + str(len(pairs)) + " GO Terms (" + str(len(pairs)*(len(pairs)-1)/2) + " pairs)"
+	# print("Evluating pairwise semantic similarity between " + str(len(pairs)) + " GO Terms (" + str(len(pairs)*(len(pairs)-1)/2) + " pairs)")
 	# scores = {}
 	done = 0
 	# total = len(pairs)*(len(pairs)-1)/2
@@ -1180,7 +1180,7 @@ def print_IC(IC, out, cut_thres=None, cut_nan=False):
 			if temp == None:
 				continue
 		if out == None:
-			print str(ontology.node2id(i)) + "\t" + str(temp)
+			print(str(ontology.node2id(i)) + "\t" + str(temp))
 		else:
 			out.write(str(ontology.node2id(i)) + "\t" + str(temp) + "\n")
 			# if verbose:
@@ -1198,10 +1198,10 @@ def print_IC(IC, out, cut_thres=None, cut_nan=False):
 
 
 def load_IC_from_file(list_file, separator = '\t'):
-	# print "Loading query from file " + str(list_file) + " [type: " + str(f_type) + "] ..."
+	# print("Loading query from file " + str(list_file) + " [type: " + str(f_type) + "] ...")
 	
 	if params['core']['verbose'] >= 2:
-		print "-> Injecting IC from file " + str(params['core']['inject_IC']) + "..."	
+		print("-> Injecting IC from file " + str(params['core']['inject_IC']) + "...")
 
 	h = open(list_file,'r')
 	IC = {}
@@ -1228,7 +1228,7 @@ def load_IC_from_file(list_file, separator = '\t'):
 	h.close()
 
 	if params['core']['verbose'] >= 2:
-		print "IC injected."
+		print("IC injected.")
 	return IC
 #
 
@@ -1239,14 +1239,14 @@ def load_IC_from_file(list_file, separator = '\t'):
 
 # def init_enhanced_ss(go, ac, termss='Resnik', mixp="BMA", params = None):
 
-# 	print "Initializing Semantic Similarity class..."
+# 	print("Initializing Semantic Similarity class...")
 # 	SS = fastResnikSemSim.fastResnikSemSim(ac, go, termss, mixp, params)
-# 	print "-> Semantic Similarity class ready"
+# 	print("-> Semantic Similarity class ready"
 # 	return SS
 # #
 
 # def ss_pairwise_enhanced(SS, pairs = None, ontology = 'BP', out = None, cut_thres = None, cut_none = False):
-# 	#print "Evluating pairwise semantic similarity between " + str(len(pairs)) + " entities (" + str(len(pairs)*(len(pairs)-1)/2) + " pairs)"
+# 	#print("Evluating pairwise semantic similarity between " + str(len(pairs)) + " entities (" + str(len(pairs)*(len(pairs)-1)/2) + " pairs)")
 # 	out_h = out
 # 	if out==None:
 # 		out_h = sys.stdout
