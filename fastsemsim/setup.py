@@ -65,7 +65,7 @@ setup(
     package_data={'fastsemsim.data':['dataset*','ACs/*','Os/*'], 'fastsemsim':['version'], 'fastsemsim.examples':['data/*','*.sh', '*.txt']},
     packages=['fastsemsim', 'fastsemsim.Ontology', 'fastsemsim.SemSim', 'fastsemsim.data', 'fastsemsim.examples'],
     install_requires=[
-          'pandas',
+          'pandas<0.18',
       ],
     requires=[
           'pandas',
