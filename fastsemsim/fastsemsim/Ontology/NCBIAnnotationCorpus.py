@@ -134,13 +134,11 @@ class NCBIAnnotationCorpus(object):
 			line = line.rstrip('\r')
 			if lines_counter == 1:
 				continue # Skip first line of NCBI file
-			if line[0] == self.int_comment:
-		 		continue
 			line = line.split(self.int_separator)
 			if len(line) < 7:
 				print("NCBIAnnotationCorpus loader. Incomplete line: " + str(line))
 				continue
-			self.temp_taxonomy = line[0][]
+			self.temp_taxonomy = line[0]
 			temp = self.temp_taxonomy.rsplit('|')
 			if len(temp) > 1:
 				self.temp_taxonomy = temp[0]

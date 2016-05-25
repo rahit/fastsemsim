@@ -70,7 +70,7 @@ RESET_PARAM = 'reset'
 
 AnnotationCorpusFormat = {	'gaf-2.0':GAF2AnnotationCorpus,
 							'GOA':GAF2AnnotationCorpus,
-							'plain':PlainAnnotationCorpus
+							'plain':PlainAnnotationCorpus,
                                                         'ncbi':NCBIAnnotationCorpus
 							}
 

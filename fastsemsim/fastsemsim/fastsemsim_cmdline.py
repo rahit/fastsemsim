@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011 Marco Mina. All rights reserved.
@@ -20,7 +21,6 @@
 
 __author__ = "Marco Mina"
 
-from __future__ import print_function
 
 import sys
 import os

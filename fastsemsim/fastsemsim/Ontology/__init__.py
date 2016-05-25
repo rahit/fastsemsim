@@ -23,6 +23,6 @@ This module contains all the classes and scripts used to load and represent onto
 __author__="Marco Mina"
 __email__="marco.mina.85@gmail.com"
 
-__all__ = ["AnnotationCorpus", "Ontology", "PlainAnnotationCorpus", "GAF2AnnotationCorpus", "ontologies"]
+__all__ = ["AnnotationCorpus", "Ontology", "NCBIAnnotationCorpus", "PlainAnnotationCorpus", "GAF2AnnotationCorpus", "ontologies"]
 
 from . import ontologies
