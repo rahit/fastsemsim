@@ -62,6 +62,7 @@ import pandas
 # from Ontology import *
 from PlainAnnotationCorpus import PlainAnnotationCorpus
 from GAF2AnnotationCorpus import GAF2AnnotationCorpus
+from NCBIAnnotationCorpus import NCBIAnnotationCorpus
 
 INT_DEBUG = True
 FILTER_PARAM = 'filter'
@@ -70,6 +71,7 @@ RESET_PARAM = 'reset'
 AnnotationCorpusFormat = {	'gaf-2.0':GAF2AnnotationCorpus,
 							'GOA':GAF2AnnotationCorpus,
 							'plain':PlainAnnotationCorpus
+                                                        'ncbi':NCBIAnnotationCorpus
 							}
 
 class AnnotationCorpus(object):
@@ -158,8 +160,8 @@ class AnnotationCorpus(object):
 		self.parse(fname, ftype, params)
 
 	def parse(self, fname, ftype, params={}):
-		#print "AnnotationCorpus: parse"
-		# print params
+		#print("AnnotationCorpus: parse")
+		# print(params)
 		if params == None:
 			self.reset()
 		elif RESET_PARAM in params and params[RESET_PARAM]:
@@ -170,10 +172,10 @@ class AnnotationCorpus(object):
 
 		# if fname == None:
 		# 	# program_dir = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
-		# 	# print "ontologies.py: " + program_dir
+		# 	# print("ontologies.py: " + program_dir)
 		# 	builtin_dataset = data.dataset.Dataset()
 		# 	selected_source = builtin_dataset.get_default_ontology(ontology_type)
-		# 	# print selected_source
+		# 	# print(selected_source)
 		# 	if selected_source is None:
 		# 		return None
 		# 	source = selected_source['file']
@@ -185,7 +187,7 @@ class AnnotationCorpus(object):
 			return temp.parse(fname)
 		else:
 			if INT_DEBUG:
-				print "AnnotationCorpus.py: Format not recognized"
+				print("AnnotationCorpus.py: Format not recognized")
 			raise Exception
 #
 
@@ -379,8 +381,8 @@ class AnnotationCorpus(object):
 				self.inclusive = params['inclusive']
 
 		def filter(self, taxonomy):
-			#print self.taxonomy
-			#print taxonomy
+			#print(self.taxonomy)
+			#print(taxonomy)
 			if taxonomy in self.taxonomy and self.inclusive:
 				return True
 			elif not taxonomy in self.taxonomy and not self.inclusive:
@@ -432,7 +434,7 @@ class AnnotationCorpus(object):
 				return True
 			elif self.GO == None and self.inclusive:
 				return False
-			print "Fix filter in GOFilter class."
+			print("Fix filter in GOFilter class.")
 			return True
 
 #-----------------------------------------------------------------------------
