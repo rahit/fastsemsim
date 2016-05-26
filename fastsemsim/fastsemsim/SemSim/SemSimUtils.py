@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011 Marco Mina. All rights reserved.
@@ -89,7 +90,7 @@ class SemSimUtils(object):
 		temp_intra = set(np.where(self.ontology.edges['intra'])[0])
 		for i in self.ontology.nodes:
 			# conta += 1
-			# print str(conta) + "on " + str(len(self.ontology.nodes)) 
+			# print(str(conta) + "on " + str(len(self.ontology.nodes)) )
 			self.offspring[i] = self.int_det_offspring(i, temp_intra)
 
 	def int_det_ancestors_table(self):
@@ -110,7 +111,7 @@ class SemSimUtils(object):
 				# continue
 			# queue.append(i)
 		while len(queue) > 0:
-			# print queue
+			# print(queue)
 			t = queue.pop()
 			anc.add(t)
 			for tp in self.ontology.children[t]:
@@ -132,11 +133,11 @@ class SemSimUtils(object):
 		queue = [goid]
 		# for i in self.ontology.parents[goid]:
 			# queue.append(i)
-		#print(queue
+		#print(queue)
 		while len(queue) > 0:
 			t = queue.pop()
 			anc.add(t)
-			#print(parent_going[t]
+			#print(parent_going[t])
 			for tp in self.ontology.parents[t]:
 				edid = self.ontology.parents[t][tp]
 				if not edid in temp_intra:
@@ -153,8 +154,8 @@ class SemSimUtils(object):
 			temp = self.offspring[j]
 			for i in temp:
 				if i in self.lineage:
-					# print i
-					# print self.lineage[i]
+					# print(i)
+					# print(self.lineage[i])
 					raise Exception
 				self.lineage[i] = j
 		return self.lineage
@@ -204,8 +205,8 @@ class SemSimUtils(object):
 		conta = 0
 		for i in self.ontology.nodes:
 			conta+= 1
-			#print conta
-			#print len(self.ontology.nodes_edges)
+			#print(conta)
+			#print(len(self.ontology.nodes_edges))
 			temp_IC = self.int_det_IC(i)
 			#if not temp_IC == None:
 			self.IC[i] = temp_IC
@@ -309,7 +310,7 @@ class SemSimUtils(object):
 				if i not in self.ancestors:
 					continue
 				gene1anc = self.int_merge_sets(gene1anc, self.ancestors[i])
-		#print(gene1anc
+		#print(gene1anc)
 		if type(term2) is int or type(term2) is str:
 			if term2 not in self.ancestors:
 				return {}
@@ -320,7 +321,7 @@ class SemSimUtils(object):
 				if i not in self.ancestors:
 					continue
 				gene2anc = self.int_merge_sets(gene2anc, self.ancestors[i])
-		#print(gene2anc
+		#print(gene2anc)
 		ca = {}
 		for i in gene1anc:
 			ca[i] = None

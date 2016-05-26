@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011 Marco Mina. All rights reserved.
@@ -96,10 +97,10 @@ class ObjSemSim(object):
 		for i in self.ac.annotations[obj]:
 			#if i in self.ontology.obsolete_ids: # not present in GO_root
 				#continue
-			# print i
-			# print self.util.lineage[i]
-			# print onto
-			# print "--"
+			# print(i)
+			# print(self.util.lineage[i])
+			# print(onto)
+			# print("--")
 			if i in self.util.lineage and self.util.lineage[i] == onto:
 				terms.append(i)
 		return terms
@@ -135,12 +136,12 @@ class ObjSemSim(object):
 				reason = 'Selected root ' + str(root) + ' is not in the ontology.'
 				self.log.append(reason)
 			return None
-		# print obj1
-		# print obj2
+		# print(obj1)
+		# print(obj2)
 		t1 = self._format_data(obj1, root)
 		t2 = self._format_data(obj2, root)
-		# print t1
-		# print t2
+		# print(t1)
+		# print(t2)
 		return self._SemSim(t1, t2)
 	#
 #

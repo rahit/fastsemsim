@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011 Marco Mina. All rights reserved.
@@ -40,12 +41,12 @@ class SimGICSemSim(TermSemSim) :
 		# super(SimGICSemSim, self).__init__(go, ac, util)
 		
 	def _SemSim(self, term1, term2):
-		#print term1
-		#print term2
+		#print(term1)
+		#print(term2)
 		inters = self.util.det_common_ancestors(term1, term2)
 		union = self.util.det_ancestors_union(term1, term2)
-		#print inters
-		#print union
+		#print(inters)
+		#print(union)
 		intIC = 0
 		for i in inters:
 			intIC += self.util.IC[i]

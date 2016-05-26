@@ -75,7 +75,7 @@ class GSESAMESemSim(TermSemSim) :
 					return self.neg_regulates_score
 				else:
 					return self.generic_score
-		print "Error"
+		print("Error")
 		raise Exception
 
 	def _SemSim(self, term1, term2):

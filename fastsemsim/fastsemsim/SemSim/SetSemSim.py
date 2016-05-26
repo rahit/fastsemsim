@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011 Marco Mina. All rights reserved.
@@ -119,12 +120,12 @@ class SetSemSim:
 			# 	reason = 'Selected non-null root not in ontology.'
 			# 	self.log.append(reason)
 			return None
-		# print obj1
-		# print obj2
+		# print(obj1)
+		# print(obj2)
 		t1 = self._format_data(obj1, root)
 		t2 = self._format_data(obj2, root)
-		# print t1
-		# print t2
+		# print(t1)
+		# print(t2)
 		return self._SemSim(t1, t2)
 	#
 #

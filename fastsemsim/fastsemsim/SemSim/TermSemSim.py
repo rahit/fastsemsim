@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011 Marco Mina. All rights reserved.
@@ -203,10 +204,10 @@ class TermSemSim(object):
 				return None
 			id1 = self._format_data(term1)
 			id2 = self._format_data(term2)
-			#print "\""+term1+"\""
-			#print "\""+term2+"\""
-			#print id1
-			#print id2
+			#print("\""+term1+"\"")
+			#print("\""+term2+"\"")
+			#print(id1)
+			#print(id2)
 			if id1 is None or id2 is None or (self.SS_type == self.G_TSS and len(id1) == 0) or (self.SS_type == self.G_TSS and len(id2) == 0):
 				#print(str(term1) + " or " + str(term2) + "   not valid.")
 				# if self.do_log:

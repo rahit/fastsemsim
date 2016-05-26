@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011 Marco Mina. All rights reserved.
@@ -60,11 +61,11 @@ class ICNDSemSim(TermSemSim) :
 #
 
 	def score_edge(self, tp, t): # t = child, tp = parent
-		# print str(tp) + " " + str(t)
+		# print(str(tp) + " " + str(t))
 		for j in self.ontology.nodes[tp]:
-			# print self.ontology.edges['nodes'][j]
+			# print(self.ontology.edges['nodes'][j])
 			if self.ontology.edges.ix[j,'child'] == t: # can replace with find. Way faster!
-				# print self.ontology.edges.ix[j,'type']
+				# print(self.ontology.edges.ix[j,'type'])
 				if self.ontology.edges.ix[j,'type'] == 'is_a':
 					return self.is_a_score
 				elif self.ontology.edges.ix[j,'type'] == 'part_of':
@@ -77,7 +78,7 @@ class ICNDSemSim(TermSemSim) :
 					return self.neg_regulates_score
 				else:
 					return self.generic_score
-		print "Error"
+		print("Error")
 		raise Exception
 #
 
