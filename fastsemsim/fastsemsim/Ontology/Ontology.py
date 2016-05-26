@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011-2013 Marco Mina. All rights reserved.
@@ -144,7 +145,7 @@ class Ontology(object):
 	def node2id(self, codes, alt_check = False):
 		if alt_check:
 			if self.debug:
-				print "id2name - alt_check not yet implemented."
+				print("id2name - alt_check not yet implemented.")
 		sid = None
 		if codes == None:
 			return sid
@@ -217,7 +218,7 @@ class Ontology(object):
 			for i in self.alt_id:
 				if i in self.nodes:
 					# if self.gen_error:
-					print "Warning: Inconsistent redefinition of valid term " + str(self._node2id(i)) + " as an alternative of " + str(self._node2id(self.alt_id[i]))
+					print("Warning: Inconsistent redefinition of valid term " + str(self._node2id(i)) + " as an alternative of " + str(self._node2id(self.alt_id[i])))
 					# raise Exception # it means there are inconsistencies!
 					# if self.debug:
 					# raise Exception # it means there are inconsistencies!
@@ -248,7 +249,7 @@ class Ontology(object):
 						pass
 					else:
 						if jid in self.nodes:
-							print "Warning: ignoring inconsistent alt id: " + j
+							print("Warning: ignoring inconsistent alt id: " + j)
 							# raise Exception
 						else:
 							if jid not in self.alt_id:
@@ -257,7 +258,7 @@ class Ontology(object):
 			#
 			if i in terms['replaced_by']:
 				if iid in self.nodes:
-					# print 
+					# print()
 					raise (Exception, "Inconsistent replaced_by id: " + i)
 				for j in terms['replaced_by'][i]:
 					jid = self._id2node(j, strict = True)
@@ -277,7 +278,7 @@ class Ontology(object):
 				if iid not in self.nodes:
 					self.nodes[iid] = []
 				else:
-					print "Duplicated term: " + i
+					print("Duplicated term: " + i)
 					raise Exception
 
 				if i in terms['namespace']:
@@ -296,7 +297,7 @@ class Ontology(object):
 		if not self.ignore == None:
 			newedges = []
 			for i in range(0,len(edges)):
-				# print edges[i][2]
+				# print(edges[i][2])
 				if not edges[i][2] in self.ignore:
 					newedges.append(edges[i])
 			edges = newedges
@@ -324,17 +325,17 @@ class Ontology(object):
 			if inner:
 				if parentid not in self.nodes:
 					if parentid in self.obsolete:
-						print "Skipping relationship " + str(edges[i]) + ": parent node is obsolete: " + str(parentid)
+						print("Skipping relationship " + str(edges[i]) + ": parent node is obsolete: " + str(parentid))
 						continue
 					else:
-						print "Adding ghost node " + str(parentid)
+						print("Adding ghost node " + str(parentid))
 						self._add_node(parentid)
 				if childid not in self.nodes:
 					if childid in self.obsolete:
-						print "Skipping relationship " + str(edges[i]) + ": child node is obsolete: " + str(childid)
+						print("Skipping relationship " + str(edges[i]) + ": child node is obsolete: " + str(childid))
 						continue
 					else:
-						print "Adding ghost node " + str(childid)
+						print("Adding ghost node " + str(childid))
 						self._add_node(childid)
 				self.nodes[parentid].append(i)
 				if parentid != childid:
@@ -378,24 +379,24 @@ class Ontology(object):
 			current = tempq.pop()
 			current_cat = temp[current]
 			current_children = self.children[current]
-			# print current_children
+			# print(current_children)
 			for i in current_children:
 				if current_children[i] in self.edges['inter'] and self.edges['inter'][current_children[i]]:
 					# print('CASO INTER')
 					continue
 				if not i in temp:
 					temp[i] = current_cat
-					# print str(i) + ' gets ' + str(current_cat)
+					# print(str(i) + ' gets ' + str(current_cat))
 				else:
 					if not temp[i] == current_cat:
 						consistent = False
-						# print "happens"
-						# print str(i) + "-" + str(current)
+						# print("happens")
+						# print(str(i) + "-" + str(current))
 						break
 					pass
 				tempq.append(i)
-		# print len(temp)
-		# print self.node_number()
+		# print(len(temp))
+		# print(self.node_number())
 		if len(temp) < self.node_number():
 			consistent = False
 		return consistent

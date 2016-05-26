@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011-2013 Marco Mina. All rights reserved.
@@ -65,10 +66,10 @@ def load(source = None, source_type = 'obo', ontology_type = 'GeneOntology', par
 
 	if source == None:
 		# program_dir = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
-		# print "ontologies.py: " + program_dir
+		# print("ontologies.py: " + program_dir)
 		builtin_dataset = data.dataset.Dataset()
 		selected_source = builtin_dataset.get_default_ontology(ontology_type)
-		# print selected_source
+		# print(selected_source)
 		if selected_source is None:
 			return None
 		source = selected_source['file']
@@ -101,15 +102,15 @@ def load(source = None, source_type = 'obo', ontology_type = 'GeneOntology', par
 		parser = make_parser()
 		handler = OboXmlParser(ontology_class, parameters)
 		parser.setContentHandler(handler)
-		# print "A"
+		# print("A")
 		parser.parse(source_handle)
-		# print "B"
+		# print("B")
 	elif source_type == 'obo':
 		handler = OboParser(ontology_class, parameters)
 		handler.parse(source_handle)
 		# namespace = handler.namespace
 	else:
-		# print "GeneOntology load: Unknown file format: " + str(parameters['type'])
+		# print("GeneOntology load: Unknown file format: " + str(parameters['type']))
 		raise Exception
 
 	if type(source) == str: # if original source was a handle, close input file
@@ -135,15 +136,15 @@ def load(source = None, source_type = 'obo', ontology_type = 'GeneOntology', par
 	# return(handler.terms, handler.edges)
 
 	ontology = ontology_class(handler.terms, handler.edges, parameters)
-	# print "LOADED"
-	# print len(handler.terms['id'])
-	# print len(ontology.nodes)
+	# print("LOADED")
+	# print(len(handler.terms['id']))
+	# print(len(ontology.nodes))
 	# for i in handler.terms:
 		# if not i in ontology.nodes:
-			# print i
+			# print(i)
 	# for i in ontology.nodes:
 		# if not i in handler.terms['id']:
-			# print i
+			# print(i)
 
 
 	return ontology
@@ -247,7 +248,7 @@ class OboParser:
 	def split_tag(self, st):
 		st = st.split(self.comment_tag, 1)[0].strip() # remove comments 
 		st = st.split(self.delimiter_tag, 1)
-		# print st
+		# print(st)
 		for i in range(0,len(st)):
 			st[i] = st[i].strip()
 
@@ -260,7 +261,7 @@ class OboParser:
 	def split_rel_tag(self, st):
 		st = st.split(self.relationship_tag, 1)[0].strip() # remove comments 
 		st = st.split(self.relationship_delimiter_tag, 1)
-		# print st
+		# print(st)
 		for i in range(0,len(st)):
 			st[i] = st[i].strip()
 
@@ -319,13 +320,13 @@ class OboParser:
 				key, value = self.split_tag(line)
 
 				if not key in self.tags:
-					# print "New tag found: " + str(key)
+					# print("New tag found: " + str(key))
 					self.tags[key] = True
 					self.terms[key] = {}
 					temp_data[key] = None
 				#
 				if not self.tags[key]:
-					# print "Ignoring tag: " + str(key)
+					# print("Ignoring tag: " + str(key))
 					continue
 				#
 
@@ -358,7 +359,7 @@ class OboParser:
 					if not got_term:
 						raise Exception
 					if got_rel:
-						# print "Obsolete with edges!"
+						# print("Obsolete with edges!")
 						# raise Exception
 						pass
 					temp_data[self.is_obsolete_tag] = True
@@ -368,7 +369,7 @@ class OboParser:
 					# if not got_term:
 						# raise Exception
 					if temp_data[self.is_obsolete_tag]:
-						# print "Obsolete with edges!"
+						# print("Obsolete with edges!")
 						# raise Exception
 						pass
 					isa = value
@@ -380,14 +381,14 @@ class OboParser:
 					# if not got_term:
 						# pass
 					if temp_data[self.is_obsolete_tag]:
-						# print "Obsolete with edges!"
+						# print("Obsolete with edges!")
 						# raise Exception
 						pass
 					cline = self.split_rel_tag(value)
 					ctype = cline[0]
 					cto = cline[1]
 					if not ctype in self.relationship_tags:
-						# print "Found new relationship: " + ctype
+						# print("Found new relationship: " + ctype)
 						self.relationship_tags[ctype] = True
 					if self.relationship_tags[ctype]:
 						temp_rel.append( (cto, ctype ) )
@@ -401,11 +402,11 @@ class OboParser:
 
 			# commit Term info
 			if not got_term:
-				print "Missing term - skipping block"
+				print("Missing term - skipping block")
 				# raise Exception
 				continue
 			if term_id in self.terms[self.id_tag]: # add term
-				print "Duplicated term: " + str(term_id)
+				print("Duplicated term: " + str(term_id))
 			for k in temp_data:
 				if not temp_data[k] == None:
 					self.terms[k][term_id] = temp_data[k]
@@ -533,7 +534,7 @@ class OboXmlParser(ContentHandler):
 				self.isDef = 1
 				self.defi = ''
 			else:
-				# print "Unknown tag: " + name 
+				# print("Unknown tag: " + name )
 				pass
 #
 

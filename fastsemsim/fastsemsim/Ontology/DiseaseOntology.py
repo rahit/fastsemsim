@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011-2013 Marco Mina. All rights reserved.
@@ -113,7 +114,7 @@ class DiseaseOntology(Ontology.Ontology):
 	# 	if codes == None:
 	# 		return None
 	# 	if alt_check:
-	# 		print "id2name - alt_check not yet implemented."
+	# 		print("id2name - alt_check not yet implemented.")
 	# 	sid = None
 	# 	if type(codes) is int:
 	# 		sid = DiseaseOntology._node2id(codes)

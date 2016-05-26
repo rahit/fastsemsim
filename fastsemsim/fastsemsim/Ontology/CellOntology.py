@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011-2013 Marco Mina. All rights reserved.
@@ -80,7 +81,7 @@ class CellOntology(Ontology.Ontology):
 				return None
 		if strict:
 			return None
-		print code
+		print(code)
 		return Ontology.Ontology._id2node(code, strict)
 	#
 
@@ -111,7 +112,7 @@ class CellOntology(Ontology.Ontology):
 
 	# def id2name(self, codes, alt_check = False):
 	# 	if alt_check:
-	# 		print "id2name - alt_check not yet implemented."
+	# 		print("id2name - alt_check not yet implemented.")
 	# 	sid = None
 	# 	if codes == None:
 	# 		return None

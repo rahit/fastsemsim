@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011 Marco Mina. All rights reserved.
@@ -154,7 +155,7 @@ class PlainAnnotationCorpus(object):
 				for k in self.temp_term_ar:
 					self.temp_term = k
 					term = k
-					# print self.temp_term
+					# print(self.temp_term)
 					if not self.isOk():
 						continue
 
@@ -173,8 +174,8 @@ class PlainAnnotationCorpus(object):
 			lines_counter += 1
 			#if self.ac.SHOW_PROCESS and (lines_counter%(filenum/20)==0):
 				#print("Lines processed: " + str(lines_counter) + " on " + str(filenum) + " (" + str(int(100*float(lines_counter)/float(filenum))) + "%)")
-		#print "Ignored: " + str(ignored)
-		#print "Obso: " + str(len(self.obso))
+		#print("Ignored: " + str(ignored))
+		#print("Obso: " + str(len(self.obso)))
 		if type(fname) is str:
 			stream.close()
 		return True

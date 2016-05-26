@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 '''
 Copyright 2011 Marco Mina. All rights reserved.
@@ -70,7 +71,7 @@ if __name__ == "__main__":
 
 	ac_params['filter']['taxonomy'] = {}
 	# ac_params['filter']['taxonomy']['taxonomy'] = tax_include # set properly this field to load only annotations involving proteins/genes of a specific species
-	# ac_params['filter']['taxonomy']['inclusive'] = True # select which EC accept or reject
+	# ac_params['filter']['taxonomy']['inclusive'] = True # select which taxonomy accept or reject
 	# ac_params['filter']['taxonomy'] = {}
 	# ac_params['filter']['taxonomy']['taxonomy'] = tax_ignore
 	# ac_params['filter']['taxonomy']['inclusive'] = False # select which EC accept or reject
@@ -82,15 +83,15 @@ if __name__ == "__main__":
 	ac_params['separator'] = "\t" # select the separtor used to divide fields
 	
 
-	print "\n######################"
-	print "# Loading ontology... #"
-	print "######################\n"
+	print("\n######################")
+	print("# Loading ontology... #")
+	print("######################\n")
 
 	ontology = ontologies.load(source=ontology_source, source_type=ontology_source_type, ontology_type = ontology_type, parameters=ontology_parameters)
 
-	print "\n######################"
-	print "# Loading annotation corpus... #"
-	print "######################\n"
+	print("\n######################")
+	print("# Loading annotation corpus... #")
+	print("######################\n")
 
 	ac = AnnotationCorpus.AnnotationCorpus(ontology)
 	builtin_dataset = data.dataset.Dataset()
@@ -103,41 +104,39 @@ if __name__ == "__main__":
 	ac.parse(ac_source, ac_source_type, ac_params)
 	ac.isConsistent()
 
-	print "\n#################################"
-	print "# Annotation corpus successfully loaded."
-	print "#################################\n"
+	print("\n#################################")
+	print("# Annotation corpus successfully loaded.")
+	print("#################################\n")
 
 
-	print "Ontology source: " + str(ontology_source)
-	print "Ontology source_type: " + str(ontology_source_type)
-	print "ontology_type: " + str(ontology_type)
-	print "ontology_parameters: " + str(ontology_parameters)
-	print "Ontology - Number of nodes: " + str(ontology.node_number())
-	print "Ontology - Number of edges: " + str(ontology.edge_number())
-	print "\nOntology - Type and number of edges:\n-------------\n" + str(ontology.edges['type'].value_counts())
-	print "-------------"
-	print "\nOntology - Inner edge number (within the ontology):\n-------------\n" + str(ontology.edges['inner'].value_counts())
-	print "-------------"
-	print "\nOntology - Intra edge number (within the same namespace):\n-------------\n" + str(ontology.edges['intra'].value_counts())
-	print "-------------"
-	print "\nOntology - Outer edges (link to other ontologies):\n-------------\n" + str(ontology.edges.loc[ontology.edges['inner'] == False])
-	print "-------------"
-	print "\nOntology - Inter edges (link between different namespaces - within the same ontology):\n-------------\n" + str(ontology.edges.loc[(ontology.edges['intra'] == False) & (ontology.edges['inner'] == True)])
-	print "-------------"
+	print("Ontology source: " + str(ontology_source))
+	print("Ontology source_type: " + str(ontology_source_type))
+	print("ontology_type: " + str(ontology_type))
+	print("ontology_parameters: " + str(ontology_parameters))
+	print("Ontology - Number of nodes: " + str(ontology.node_number()))
+	print("Ontology - Number of edges: " + str(ontology.edge_number()))
+	print("\nOntology - Type and number of edges:\n-------------\n" + str(ontology.edges['type'].value_counts()))
+	print("-------------")
+	print("\nOntology - Inner edge number (within the ontology):\n-------------\n" + str(ontology.edges['inner'].value_counts()))
+	print("-------------")
+	print("\nOntology - Intra edge number (within the same namespace):\n-------------\n" + str(ontology.edges['intra'].value_counts()))
+	print("-------------")
+	print("\nOntology - Outer edges (link to other ontologies):\n-------------\n" + str(ontology.edges.loc[ontology.edges['inner'] == False]))
+	print("-------------")
+	print("\nOntology - Inter edges (link between different namespaces - within the same ontology):\n-------------\n" + str(ontology.edges.loc[(ontology.edges['intra'] == False) & (ontology.edges['inner'] == True)]))
+	print("-------------")
 	#
 
-	print "\n\n"
-	print "AC source: " + str(ac_source)
-	print "ac source_type: " + str(ac_source_type)
-	print "ac_parameters: " + str(ac_params)
-	print "AC species: " + str(ac_species)
-	print "ac - Number of annotated proteins: " + str(len(ac.annotations))
-	print "ac - Number of annotated terms: " + str(len(ac.reverse_annotations))
-	print "-------------"
+	print("\n\n")
+	print("AC source: " + str(ac_source))
+	print("ac source_type: " + str(ac_source_type))
+	print("ac_parameters: " + str(ac_params))
+	print("AC species: " + str(ac_species))
+	print("ac - Number of annotated proteins: " + str(len(ac.annotations)))
+	print("ac - Number of annotated terms: " + str(len(ac.reverse_annotations)))
+	print("-------------")
 	#
 #
-
-
 
 
 

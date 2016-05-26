@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011 Marco Mina. All rights reserved.
@@ -94,7 +95,7 @@ class GAF2AnnotationCorpus(object):
 		self.ac.reverse_annotations_field2pos= {'EC':0}
 
 	def isOk(self):
-		# print "A"
+		# print("A")
 		if not self.ac.isOk('taxonomy', self.temp_taxonomy): return False
 		if not self.ac.isOk('EC', self.temp_EC): return False
 
@@ -102,10 +103,10 @@ class GAF2AnnotationCorpus(object):
 
 		if self.ac._exclude_roots:
 			if temp_term in self.ac.go.roots:
-				# print 'Root exclude ' + str(temp_term)
+				# print('Root exclude ' + str(temp_term))
 				return False		
 		if not temp_term in self.ac.go.nodes:
-			# print str(temp_term) + " not found in GO."
+			# print(str(temp_term) + " not found in GO.")
 			return False
 		# if not temp_term in self.ac.go.nodes:
 				#print(str(self.temp_term) + " is obsolete.")
@@ -114,7 +115,7 @@ class GAF2AnnotationCorpus(object):
 #
 
 	def parse(self, fname):
-		#print "GAF2AnnotationCorpus: parse()"
+		#print("GAF2AnnotationCorpus: parse()")
 		self.setFields()
 		if type(fname) == unicode:
 			fname = str(fname)
@@ -165,7 +166,7 @@ class GAF2AnnotationCorpus(object):
 
 			for k in self.temp_term_ar:
 				self.temp_term = k
-				# print self.temp_term
+				# print(self.temp_term)
 				if not self.isOk():
 					continue
 

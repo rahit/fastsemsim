@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011 Marco Mina. All rights reserved.
@@ -117,7 +118,7 @@ class GOAnnotationCorpus:
 		self.parse(fname, ftype, params)
 
 	def parse(self, fname, ftype, params={}):
-		#print "AnnotationCorpus: parse"
+		#print("AnnotationCorpus: parse")
 		if params == None:
 			self.reset()
 		elif RESET_PARAM in params and params[RESET_PARAM]:
@@ -131,7 +132,7 @@ class GOAnnotationCorpus:
 			return temp.parse(fname)
 		else:
 			if INT_DEBUG:
-				print "AnnotationCorpus.py: Format not recognized"
+				print("AnnotationCorpus.py: Format not recognized")
 			raise Exception
 #
 
@@ -324,8 +325,8 @@ class GOAnnotationCorpus:
 				self.inclusive = params['inclusive']
 
 		def filter(self, taxonomy):
-			#print self.taxonomy
-			#print taxonomy
+			#print(self.taxonomy)
+			#print(taxonomy)
 			if taxonomy in self.taxonomy and self.inclusive:
 				return True
 			elif not taxonomy in self.taxonomy and not self.inclusive:
@@ -377,7 +378,7 @@ class GOAnnotationCorpus:
 				return True
 			elif self.GO == None and self.inclusive:
 				return False
-			print "Fix filter in GOFilter class."
+			print("Fix filter in GOFilter class.")
 			return True
 
 #-----------------------------------------------------------------------------
