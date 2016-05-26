@@ -1,3 +1,4 @@
+from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 '''
 Copyright 2011 Marco Mina. All rights reserved.
@@ -41,32 +42,32 @@ if __name__ == "__main__":
 	# Select the source file name. If None, the default GeneOntology included in fastsemsim will be used
 	source = None
 
-	print "\n######################"
-	print "# Loading ontology... #"
-	print "######################\n"
+	print("\n######################")
+	print("# Loading ontology... #")
+	print("######################\n")
 
 	ontology = ontologies.load(source=source, source_type=source_type, ontology_type = ontology_type, parameters=ignore_parameters)
 
-	print "\n#################################"
-	print "# Ontology successfully loaded."
-	print "#################################\n"
+	print("\n#################################")
+	print("# Ontology successfully loaded.")
+	print("#################################\n")
 
-	print "source: " + str(source)
-	print "source_type: " + str(source_type)
-	print "ontology_type: " + str(ontology_type)
-	print "ignore_parameters: " + str(ignore_parameters)
-	print "Number of nodes: " + str(ontology.node_number())
-	print "Number of edges: " + str(ontology.edge_number())
-	print "\nType and number of edges:\n-------------\n" + str(ontology.edges['type'].value_counts())
-	print "-------------"
-	print "\nInner edge number (within the ontology):\n-------------\n" + str(ontology.edges['inner'].value_counts())
-	print "-------------"
-	print "\nIntra edge number (within the same namespace):\n-------------\n" + str(ontology.edges['intra'].value_counts())
-	print "-------------"
-	print "\nOuter edges (link to other ontologies):\n-------------\n" + str(ontology.edges.loc[ontology.edges['inner'] == False])
-	print "-------------"
-	print "\nInter edges (link between different namespaces - within the same ontology):\n-------------\n" + str(ontology.edges.loc[(ontology.edges['intra'] == False) & (ontology.edges['inner'] == True)])
-	print "-------------"
+	print("source: " + str(source))
+	print("source_type: " + str(source_type))
+	print("ontology_type: " + str(ontology_type))
+	print("ignore_parameters: " + str(ignore_parameters))
+	print("Number of nodes: " + str(ontology.node_number()))
+	print("Number of edges: " + str(ontology.edge_number()))
+	print("\nType and number of edges:\n-------------\n" + str(ontology.edges['type'].value_counts()))
+	print("-------------")
+	print("\nInner edge number (within the ontology):\n-------------\n" + str(ontology.edges['inner'].value_counts()))
+	print("-------------")
+	print("\nIntra edge number (within the same namespace):\n-------------\n" + str(ontology.edges['intra'].value_counts()))
+	print("-------------")
+	print("\nOuter edges (link to other ontologies):\n-------------\n" + str(ontology.edges.loc[ontology.edges['inner'] == False]))
+	print("-------------")
+	print("\nInter edges (link between different namespaces - within the same ontology):\n-------------\n" + str(ontology.edges.loc[(ontology.edges['intra'] == False) & (ontology.edges['inner'] == True)]))
+	print("-------------")
 	#
 
 #
