@@ -156,7 +156,7 @@ class NCBIAnnotationCorpus(object):
 				self.temp_taxonomy = temp[0]
 			self.temp_obj = line[1]
 			self.temp_term = line[2]
-			self.temp_EC = line[4]
+			self.temp_EC = line[3]
 			self.temp_reference = line[6]
 			self.temp_GO = line[7]
 
