@@ -61,9 +61,9 @@ import copy
 import pandas
 
 # from Ontology import *
-from PlainAnnotationCorpus import PlainAnnotationCorpus
-from GAF2AnnotationCorpus import GAF2AnnotationCorpus
-from NCBIAnnotationCorpus import NCBIAnnotationCorpus
+from .PlainAnnotationCorpus import PlainAnnotationCorpus
+from .GAF2AnnotationCorpus import GAF2AnnotationCorpus
+from .NCBIAnnotationCorpus import NCBIAnnotationCorpus
 
 INT_DEBUG = True
 FILTER_PARAM = 'filter'
@@ -376,8 +376,12 @@ class AnnotationCorpus(object):
 		def __init__(self, params):
 			if 'taxonomy' in params:
 				self.taxonomy = params['taxonomy']
-				if type(self.taxonomy) == str or type(self.taxonomy) == unicode:
-					self.taxonomy = {str(self.taxonomy): None}
+				try:
+					if type(self.taxonomy) == str or type(self.taxonomy) == unicode:
+						self.taxonomy = {str(self.taxonomy): None}
+				except NameError:
+					if type(self.taxonomy) == str:
+						self.taxonomy = {self.taxonomy: None}
 			if 'inclusive' in params:
 				self.inclusive = params['inclusive']
 
@@ -397,8 +401,12 @@ class AnnotationCorpus(object):
 		def __init__(self, params):
 			if 'EC' in params:
 				self.EC = params['EC']
-				if type(self.EC) == str or type(self.EC) == unicode:
-					self.EC = {str(self.EC):None}
+				try:
+					if type(self.EC) == str or type(self.EC) == unicode:
+						self.EC = {str(self.EC):None}
+				except NameError:
+					if type(self.EC) == str:
+						self.EC = {str(self.EC):None}
 			if 'inclusive' in params:
 				self.inclusive = params['inclusive']
 

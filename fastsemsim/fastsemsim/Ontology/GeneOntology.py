@@ -37,7 +37,7 @@ Gene Ontology class
 # from xml.sax import make_parser
 # from xml.sax.handler import ContentHandler
 # import gzip
-import Ontology
+from . import Ontology
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 # constants and macro

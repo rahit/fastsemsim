@@ -116,16 +116,27 @@ class NCBIAnnotationCorpus(object):
 	def parse(self, fname):
 		#print("NCBIAnnotationCorpus: parse()")
 		self.setFields()
-		if type(fname) == unicode:
-			fname = str(fname)
-		if type(fname) is str:
-			fn,fe = os.path.splitext(fname)
-			if fe == '.gz':
-				stream = gzip.open(fname, 'rb')
+		try:
+			if type(fname) == unicode:
+				fname = str(fname)
+			if type(fname) is str:
+				fn,fe = os.path.splitext(fname)
+				if fe == '.gz':
+					stream = gzip.open(fname, 'rb')
+				else:
+					stream = open(fname, 'r')
 			else:
-				stream = open(fname, 'r')
-		else:
-			stream = fname
+				stream = fname
+		except NameError:
+			if type(fname) is str:
+				fn,fe = os.path.splitext(fname)
+				if fe == '.gz':
+					stream = gzip.open(fname, 'rb')
+				else:
+					stream = open(fname, 'r')
+			else:
+				stream = fname
+
 		lines_counter = 0
 
 		#ignored = 0
