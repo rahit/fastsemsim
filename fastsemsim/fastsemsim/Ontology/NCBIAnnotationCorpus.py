@@ -22,7 +22,7 @@ from __future__ import print_function
 '''
 #@desc
 Class to parse Annotation Corporus files in NCBI format [i.e. Gene Ontology Annotation files] tab separated file. 
-Format as defined in http://geneontology.org/page/go-annotation-file-gaf-format-20
+Format as defined in ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/README
 '''
 
 # The gaf-2 file format is documented here: ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/UNIPROT/README
