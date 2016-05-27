@@ -25,7 +25,7 @@ This class defines the prototype for a generic mixing strategy for pairwise term
 #from GO import AnnotationCorpus
 #from GO import GeneOntology
 #from SemSimUtils import *
-from MixSemSim import *
+from .MixSemSim import *
 import sys
 import os
 import math

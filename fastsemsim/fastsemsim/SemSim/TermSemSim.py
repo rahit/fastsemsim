@@ -30,7 +30,7 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 
 from fastsemsim.Ontology import AnnotationCorpus
 from fastsemsim.Ontology import Ontology
-from SemSimUtils import *
+from .SemSimUtils import *
 import sys
 import os
 import math

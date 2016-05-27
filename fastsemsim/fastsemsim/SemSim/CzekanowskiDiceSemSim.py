@@ -24,8 +24,8 @@ Czekanowski and Dice Semantic Similarity Measure
 **Reference**: 
 """
 
-from SemSimUtils import *
-from TermSemSim import * 
+from .SemSimUtils import *
+from .TermSemSim import * 
 # import sys
 # import os
 import math

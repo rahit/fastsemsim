@@ -23,7 +23,7 @@ from __future__ import print_function
 Max mixing strategy
 """
 
-from MixSemSim import *
+from .MixSemSim import *
 import sys
 import os
 import math

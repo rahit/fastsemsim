@@ -27,7 +27,7 @@ Normalized Term Overlap Semantic Similarity Measure
 # from fastSemSim.Ontology import AnnotationCorpus
 # from fastSemSim.Ontology import Ontology
 # from SemSimUtils import *
-from TermSemSim import * 
+from .TermSemSim import * 
 import sys
 import os
 import math

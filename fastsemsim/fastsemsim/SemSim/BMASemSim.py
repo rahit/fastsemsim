@@ -23,7 +23,7 @@ from __future__ import print_function
 Best Match Average (BMA) mixing strategy for pairwise term Protein Semantic Similarity measures
 """
 
-from MixSemSim import *
+from .MixSemSim import *
 # import sys
 # import os
 import math
