@@ -43,8 +43,8 @@ import sys
 import copy
 
 # from GeneOntology import *
-from PlainAnnotationCorpus import PlainAnnotationCorpus
-from GAF2AnnotationCorpus import GAF2AnnotationCorpus
+from .PlainAnnotationCorpus import PlainAnnotationCorpus
+from .GAF2AnnotationCorpus import GAF2AnnotationCorpus
 
 INT_DEBUG = True
 FILTER_PARAM = 'filter'
