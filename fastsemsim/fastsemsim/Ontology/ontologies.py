@@ -1,4 +1,3 @@
-from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011-2013 Marco Mina. All rights reserved.
@@ -27,6 +26,7 @@ from __future__ import print_function
 Set of functions to parse and handle ontologies.
 """
 
+from __future__ import print_function
 import types
 import os
 from xml.sax import make_parser
@@ -38,6 +38,11 @@ from . import CellOntology
 from . import GeneOntology
 from . import FFOntology
 from fastsemsim import data
+
+try:
+	unicode
+except (NameError, AttributeError):
+	unicode = str #For python3
 
 '''
 Struct ontologies.
@@ -76,26 +81,16 @@ def load(source = None, source_type = 'obo', ontology_type = 'GeneOntology', par
 		source_type = selected_source['filetype']
 
 	# generate source file handle
-	try:
-		if type(source) == unicode:
-			source = str(source)
-		if type(source) == str:
-			fn,fe = os.path.splitext(source)
-			if fe == '.gz':
-				source_handle = gzip.open(source, 'rb')
-			else:
-				source_handle = open(source, 'rU')
-		else: # assume that the passed object is a file stream
-			source_handle = source
-	except NameError:
-		if type(source) == str:
-			fn,fe = os.path.splitext(source)
-			if fe == '.gz':
-				source_handle = gzip.open(source, 'rb')
-			else:
-				source_handle = open(source, 'rU')
-		else: # assume that the passed object is a file stream
-			source_handle = source
+	if type(source) == unicode:
+		source = str(source)
+	if type(source) == str:
+		fn,fe = os.path.splitext(source)
+		if fe == '.gz':
+			source_handle = gzip.open(source, 'rb')
+		else:
+			source_handle = open(source, 'rU')
+	else: # assume that the passed object is a file stream
+		source_handle = source
 
 	# select proper input parser
 	if 'ontology_type' in parameters:
