@@ -1,4 +1,3 @@
-from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011 Marco Mina. All rights reserved.
@@ -56,6 +55,7 @@ Each type of file carries different types of information. How to deal with that?
 # 		?obsolete?
 
 
+from __future__ import print_function
 import sys
 import copy
 import pandas
@@ -64,6 +64,11 @@ import pandas
 from .PlainAnnotationCorpus import PlainAnnotationCorpus
 from .GAF2AnnotationCorpus import GAF2AnnotationCorpus
 from .NCBIAnnotationCorpus import NCBIAnnotationCorpus
+
+try:
+	unicode
+except (NameError, AttributeError):
+	unicode = str #For python3
 
 INT_DEBUG = True
 FILTER_PARAM = 'filter'
@@ -376,12 +381,8 @@ class AnnotationCorpus(object):
 		def __init__(self, params):
 			if 'taxonomy' in params:
 				self.taxonomy = params['taxonomy']
-				try:
-					if type(self.taxonomy) == str or type(self.taxonomy) == unicode:
-						self.taxonomy = {str(self.taxonomy): None}
-				except NameError:
-					if type(self.taxonomy) == str:
-						self.taxonomy = {self.taxonomy: None}
+				if type(self.taxonomy) == str or type(self.taxonomy) == unicode:
+					self.taxonomy = {str(self.taxonomy): None}
 			if 'inclusive' in params:
 				self.inclusive = params['inclusive']
 
@@ -401,12 +402,8 @@ class AnnotationCorpus(object):
 		def __init__(self, params):
 			if 'EC' in params:
 				self.EC = params['EC']
-				try:
-					if type(self.EC) == str or type(self.EC) == unicode:
-						self.EC = {str(self.EC):None}
-				except NameError:
-					if type(self.EC) == str:
-						self.EC = {str(self.EC):None}
+				if type(self.EC) == str or type(self.EC) == unicode:
+					self.EC = {str(self.EC):None}
 			if 'inclusive' in params:
 				self.inclusive = params['inclusive']
 

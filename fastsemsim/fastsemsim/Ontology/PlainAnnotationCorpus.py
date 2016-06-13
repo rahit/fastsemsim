@@ -1,4 +1,3 @@
-from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011 Marco Mina. All rights reserved.
@@ -24,9 +23,15 @@ Plain annotation corpus files parsing utility.
 	Plain format 1: Term ID - object (eg. gene) ID
 '''
 
+from __future__ import print_function
 import sys
 import os
 # import GeneOntology
+
+try:
+	unicode
+except (NameError, AttributeError):
+	unicode = str #For python3
 
 MANYASSPERROW = 'multiple'
 TERMFIRST = 'term first'
