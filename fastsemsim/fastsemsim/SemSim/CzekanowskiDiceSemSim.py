@@ -1,4 +1,3 @@
-from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011 Marco Mina. All rights reserved.
@@ -24,6 +23,7 @@ Czekanowski and Dice Semantic Similarity Measure
 **Reference**: 
 """
 
+from __future__ import print_function
 from .SemSimUtils import *
 from .TermSemSim import * 
 # import sys

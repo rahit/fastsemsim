@@ -1,4 +1,3 @@
-from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011 Marco Mina. All rights reserved.
@@ -39,6 +38,7 @@ In particular this class provides code for evaluating:
 #             I could use pairs module to to this!
 
 
+from __future__ import print_function
 # from fastSemSim.Ontology import AnnotationCorpus
 # from fastSemSim.Ontology import Ontology
 # import sys

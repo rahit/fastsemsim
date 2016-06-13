@@ -1,4 +1,3 @@
-from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011 Marco Mina. All rights reserved.
@@ -39,6 +38,7 @@ Each type of file carries different types of information. How to deal with that?
 
 '''
 
+from __future__ import print_function
 import sys
 import copy
 

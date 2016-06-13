@@ -1,4 +1,3 @@
-from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011 Marco Mina. All rights reserved.
@@ -28,6 +27,7 @@ TermSemSim relies on SemSimUtils to perform a lot of tasks (e.g. evaluating Term
 A SemSimUtils object can be passed to the constructor as input data. Otherwise, a new instance will be created. Using only one copy of SemSimUtils helps reducing time and space requirements and is strongly recommended.
 '''
 
+from __future__ import print_function
 from fastsemsim.Ontology import AnnotationCorpus
 from fastsemsim.Ontology import Ontology
 from .SemSimUtils import *

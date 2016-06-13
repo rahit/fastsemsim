@@ -1,4 +1,3 @@
-from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011 Marco Mina. All rights reserved.
@@ -23,6 +22,7 @@ from __future__ import print_function
 This class provides the prototype for a generic Object Set Semantic Similarity measure (PSS)
 """
 
+from __future__ import print_function
 # from fastSemSim.Ontology import AnnotationCorpus
 # from fastSemSim.Ontology import Ontology
 from SemSimUtils import SemSimUtils

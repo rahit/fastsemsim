@@ -1,4 +1,3 @@
-from __future__ import print_function
 # -*- coding: iso-8859-1 -*-)
 
 # Copyright 2011 Marco Mina. All rights reserved.
@@ -23,6 +22,7 @@ from __future__ import print_function
 Max mixing strategy
 """
 
+from __future__ import print_function
 from .MixSemSim import *
 import sys
 import os

@@ -1,4 +1,3 @@
-from __future__ import print_function
 # -*- coding: iso-8859-1 -*-
 
 # Copyright 2011 Marco Mina. All rights reserved.
@@ -45,6 +44,7 @@ Format as defined in http://geneontology.org/page/go-annotation-file-gaf-format-
 # 	return Bz
 # #
 
+from __future__ import print_function
 import sys
 import os
 import gzip
