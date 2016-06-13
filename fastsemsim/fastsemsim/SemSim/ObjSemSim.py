@@ -24,7 +24,7 @@ This class provides the prototype for a generic Object Semantic Similarity measu
 from __future__ import print_function
 # from fastSemSim.Ontology import AnnotationCorpus
 # from fastSemSim.Ontology import Ontology
-from SemSimUtils import SemSimUtils
+from .SemSimUtils import SemSimUtils
 # from TermSemSim import *
 # from MixSemSim import *
 from . import select_term_SemSim, select_mix_SemSim
