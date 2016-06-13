@@ -53,6 +53,11 @@ import gzip
 
 SIMPLIFY = 'simplify'
 
+try:
+	unicode
+except (NameError, AttributeError):
+	unicode = str #For python3
+
 class NCBIAnnotationCorpus(object):
 
 #------------------------------------------------------
@@ -116,26 +121,16 @@ class NCBIAnnotationCorpus(object):
 	def parse(self, fname):
 		#print("NCBIAnnotationCorpus: parse()")
 		self.setFields()
-		try:
-			if type(fname) == unicode:
-				fname = str(fname)
-			if type(fname) is str:
-				fn,fe = os.path.splitext(fname)
-				if fe == '.gz':
-					stream = gzip.open(fname, 'rb')
-				else:
-					stream = open(fname, 'r')
+		if type(fname) == unicode:
+			fname = str(fname)
+		if type(fname) is str:
+			fn,fe = os.path.splitext(fname)
+			if fe == '.gz':
+				stream = gzip.open(fname, 'rb')
 			else:
-				stream = fname
-		except NameError:
-			if type(fname) is str:
-				fn,fe = os.path.splitext(fname)
-				if fe == '.gz':
-					stream = gzip.open(fname, 'rb')
-				else:
-					stream = open(fname, 'r')
-			else:
-				stream = fname
+				stream = open(fname, 'r')
+		else:
+			stream = fname
 
 		lines_counter = 0
 
