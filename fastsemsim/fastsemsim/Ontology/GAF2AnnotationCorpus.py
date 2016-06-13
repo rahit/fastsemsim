@@ -51,6 +51,11 @@ import gzip
 # import GeneOntology
 # import pandas as pd
 
+try:
+	unicode
+except (NameError, AttributeError):
+	unicode = str #For python3
+
 SIMPLIFY = 'simplify'
 
 class GAF2AnnotationCorpus(object):
