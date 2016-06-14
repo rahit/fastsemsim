@@ -137,6 +137,8 @@ class NCBIAnnotationCorpus(object):
 		#ignored = 0
 		for line in stream:
 			lines_counter += 1
+			if isinstance(line, bytes):
+				line = line.decode('utf-8')
 			line = line.rstrip('\n')
 			line = line.rstrip('\r')
 			if lines_counter == 1:

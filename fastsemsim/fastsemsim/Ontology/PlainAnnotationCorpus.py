@@ -120,6 +120,8 @@ class PlainAnnotationCorpus(object):
 		lines_counter = 0
 		#ignored = 0
 		for line in stream:
+			if isinstance(line, bytes):
+				line = line.decode('utf-8')
 			line = line.rstrip('\n')
 			line = line.rstrip('\r')
 			if line[0] == self.int_comment:
