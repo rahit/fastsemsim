@@ -93,6 +93,11 @@ import numpy as np
 	# is_a_tag = "is_a"
 	# relationship_tag = "relationship"
 
+try:
+	unicode
+except (NameError, AttributeError):
+	unicode = str #For python3
+
 class Ontology(object):
 	'''
 	Base class for the representation of an ontology. It currently supports any multi-rooted DAG (Directed Acyclic Graph).
@@ -117,7 +122,7 @@ class Ontology(object):
 			nid = None
 			if codes == None:
 				return nid
-			if isinstance(codes,str):
+			if isinstance(codes,str) or isinstance(codes,unicode):
 				# nid = go_name2id(codes)
 				nid = self._id2node(codes,strict=True)
 				nid = self.id2node(nid, alt_check)
