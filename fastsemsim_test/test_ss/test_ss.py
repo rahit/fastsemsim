@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
+from __future__ import print_function
 from fastsemsim.Ontology import ontologies
 from fastsemsim.Ontology import AnnotationCorpus
 from fastsemsim import data, SemSim
@@ -33,7 +34,7 @@ from fastsemsim.SemSim.ObjSemSim import ObjSemSim
 from fastsemsim.SemSim.ObjSetSemSim import ObjSetSemSim
 
 def load_ontology(i,j):
-	# print "LOAD ONTOLOGY" + str(i)
+	# print("LOAD ONTOLOGY" + str(i))
 	ontology = ontologies.load(i[0], i[1], i[2], j)
 	return ontology
 #
@@ -41,15 +42,15 @@ def load_ontology(i,j):
 def load_ac(ontology,j,k):
 	ac = AnnotationCorpus.AnnotationCorpus(ontology)
 	builtin_dataset = data.dataset.Dataset()
-	# print ontology.name
-	# print j
+	# print(ontology.name)
+	# print(j)
 	selected_source = builtin_dataset.get_default_annotation_corpus(ontology.name, j)
 	if selected_source is None:
 		return None
 	source = selected_source['file']
 	source_type = selected_source['filetype']
-	# print source_type
-	# print source
+	# print(source_type)
+	# print(source)
 	ac.parse(source, source_type, k)
 	ac.isConsistent()
 	return ac
@@ -90,9 +91,9 @@ def test_SS():
 	term_ss_measures = SemSim.term_SemSim_measures.keys()
 	pair_ss_measures =  SemSim.mix_strategies.keys()
 
-	print "\n#################################"
-	print "\n# Testing SS measures... #\n"
-	print "#################################\n"
+	print("\n#################################")
+	print("\n# Testing SS measures... #\n")
+	print("#################################\n")
 
 	acs = []
 	for i in input_ac_set:
@@ -100,16 +101,16 @@ def test_SS():
 		for k1 in ontology_parameters_set:
 			print('-> Loading ontology ', str(i), '...')
 			ontology = load_ontology(i,k1)
-			print "Ontology loaded: " + str(ontology.node_number()) + " nodes and " +  str(ontology.edge_number()) + " edges."
+			print("Ontology loaded: " + str(ontology.node_number()) + " nodes and " +  str(ontology.edge_number()) + " edges.")
 			for j in i[3]:
 				for k in ac_parameters_set:
 					print("-> Loading ac: " + str(i)+'\nParameters: ' + str(j))
 					ac = load_ac(ontology, j, k)
-					print "Annotation Corpus loaded: " + str(len(ac.reverse_annotations)) + " terms, " +  str(len(ac.annotations)) + " objects."
+					print("Annotation Corpus loaded: " + str(len(ac.reverse_annotations)) + " terms, " +  str(len(ac.annotations)) + " objects.")
 					# A = 0
 					# for i in ac.reverse_annotations:
 						# A += len(ac.reverse_annotations[i])
-					# print A
+					# print(A)
 					print('-> Setting up SemSimUtils...')
 					ssutil = SemSimUtils(ontology, ac)
 
