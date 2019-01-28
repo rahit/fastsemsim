@@ -77,7 +77,7 @@ RESET_PARAM = 'reset'
 AnnotationCorpusFormat = {	'gaf-2.0':GAF2AnnotationCorpus,
 							'GOA':GAF2AnnotationCorpus,
 							'plain':PlainAnnotationCorpus,
-                                                        'ncbi':NCBIAnnotationCorpus
+							'ncbi':NCBIAnnotationCorpus
 							}
 
 class AnnotationCorpus(object):
@@ -448,10 +448,10 @@ class AnnotationCorpus(object):
 #-----------------------------------------------------------------------------
 	def initCommonFilter(self):
 		self.common_filters = {
-											self.TaxonomyFilter.name:(self.TaxonomyFilter,),
-											self.ECFilter.name:(self.ECFilter,),
-											self.GOFilter.name:(self.GOFilter, {'int_current_go':self.go})
-											}
+								self.TaxonomyFilter.name:(self.TaxonomyFilter,),
+								self.ECFilter.name:(self.ECFilter,),
+								self.GOFilter.name:(self.GOFilter, {'int_current_go':self.go})
+							}
 
 	def setCommonfilters(self, inf):
 		if type(inf) == dict:

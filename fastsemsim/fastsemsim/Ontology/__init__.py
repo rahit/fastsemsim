@@ -26,3 +26,4 @@ __email__="marco.mina.85@gmail.com"
 __all__ = ["AnnotationCorpus", "Ontology", "NCBIAnnotationCorpus", "PlainAnnotationCorpus", "GAF2AnnotationCorpus", "ontologies"]
 
 from . import ontologies
+from . import AnnotationCorpus

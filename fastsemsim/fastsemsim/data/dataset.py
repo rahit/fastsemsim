@@ -72,6 +72,14 @@ class Dataset(object):
 		pass
 	#
 
+	def list_ontologies(self):
+		return(self.dataset.loc[self.dataset['type'] == 'O'])
+	#
+
+	def list_acs(self):
+		return(self.dataset.loc[self.dataset['type'] == 'AC'])
+	#
+
 	def get_dataset(self, dataset_name):
 		'''
 		Return the required dataset

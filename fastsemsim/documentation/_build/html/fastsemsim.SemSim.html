@@ -1,35 +1,27 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Semantic Similarity &mdash; fastsemsim 0.9 documentation</title>
-    
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <title>Semantic Similarity &#8212; fastsemsim 1.0.0beta documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.9',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="fastsemsim 0.9 documentation" href="index.html" />
-    <link rel="up" title="FastSemSim library" href="library.html" />
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="FastSemSim Command Line Interface (CLI)" href="cmdline.html" />
     <link rel="prev" title="Ontologies and annotation corpora included in fastSemSim" href="fastsemsim.data.html" /> 
-  </head>
-  <body>
-    <div class="related">
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -44,15 +36,15 @@
         <li class="right" >
           <a href="fastsemsim.data.html" title="Ontologies and annotation corpora included in fastSemSim"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">fastsemsim 0.9 documentation</a> &raquo;</li>
-          <li><a href="library.html" accesskey="U">FastSemSim library</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">fastsemsim 1.0.0beta documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="package.html" accesskey="U">FastSemSim package</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-fastsemsim.SemSim">
 <span id="semantic-similarity"></span><h1>Semantic Similarity<a class="headerlink" href="#module-fastsemsim.SemSim" title="Permalink to this headline">¶</a></h1>
@@ -66,47 +58,47 @@ Please refer to the single classes for details on the implemented measures.</p>
 A SemSimUtils object can be passed to the constructor as input data. Otherwise, a new instance will be created. Using only one copy of SemSimUtils helps reducing time and space requirements and is strongly recommended.</p>
 <dl class="exception">
 <dt id="fastsemsim.SemSim.TermSemSim.MissingAcException">
-<em class="property">exception </em><tt class="descclassname">fastsemsim.SemSim.TermSemSim.</tt><tt class="descname">MissingAcException</tt><big>(</big><em>message</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.MissingAcException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<em class="property">exception </em><code class="descclassname">fastsemsim.SemSim.TermSemSim.</code><code class="descname">MissingAcException</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.MissingAcException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="fastsemsim.SemSim.TermSemSim.TermSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.TermSemSim.</tt><tt class="descname">TermSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.TermSemSim.</code><code class="descname">TermSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.G_TSS">
-<tt class="descname">G_TSS</tt><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.G_TSS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">G_TSS</code><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.G_TSS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = None</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<code class="descname">IC_based</code><em class="property"> = None</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.P_TSS">
-<tt class="descname">P_TSS</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.P_TSS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">P_TSS</code><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.P_TSS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = None</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_type</code><em class="property"> = None</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.SemSim">
-<tt class="descname">SemSim</tt><big>(</big><em>term1</em>, <em>term2</em>, <em>ontology=None</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.SemSim" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SemSim</code><span class="sig-paren">(</span><em>term1</em>, <em>term2</em>, <em>ontology=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.SemSim" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.format_and_check_data">
-<tt class="descname">format_and_check_data</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.format_and_check_data" title="Permalink to this definition">¶</a></dt>
+<code class="descname">format_and_check_data</code><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.format_and_check_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.TermSemSim.TermSemSim.setSanityCheck">
-<tt class="descname">setSanityCheck</tt><big>(</big><em>en</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.setSanityCheck" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setSanityCheck</code><span class="sig-paren">(</span><em>en</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.TermSemSim.TermSemSim.setSanityCheck" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -117,11 +109,11 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p>This class provides the prototype for a generic Object Semantic Similarity measure</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.ObjSemSim.ObjSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.ObjSemSim.</tt><tt class="descname">ObjSemSim</tt><big>(</big><em>ontology</em>, <em>ac</em>, <em>TSS=None</em>, <em>MSS=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.ObjSemSim.ObjSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.ObjSemSim.</code><code class="descname">ObjSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac</em>, <em>TSS=None</em>, <em>MSS=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.ObjSemSim.ObjSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="fastsemsim.SemSim.ObjSemSim.ObjSemSim.SemSim">
-<tt class="descname">SemSim</tt><big>(</big><em>obj1</em>, <em>obj2</em>, <em>root=None</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.ObjSemSim.ObjSemSim.SemSim" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SemSim</code><span class="sig-paren">(</span><em>obj1</em>, <em>obj2</em>, <em>root=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.ObjSemSim.ObjSemSim.SemSim" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -132,10 +124,11 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p>This class provides the prototype for a generic Object Set Semantic Similarity measure (PSS)</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.ObjSetSemSim.ObjSetSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.ObjSetSemSim.</tt><tt class="descname">ObjSetSemSim</tt><big>(</big><em>ontology</em>, <em>ac</em>, <em>TSS=None</em>, <em>MSS=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.ObjSetSemSim.ObjSetSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.ObjSetSemSim.</code><code class="descname">ObjSetSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac</em>, <em>TSS=None</em>, <em>MSS=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.ObjSetSemSim.ObjSetSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
 <dt id="fastsemsim.SemSim.ObjSetSemSim.ObjSetSemSim.SemSim">
-<tt class="descname">SemSim</tt><big>(</big><em>obj1</em>, <em>obj2</em>, <em>root=None</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.ObjSetSemSim.ObjSetSemSim.SemSim" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SemSim</code><span class="sig-paren">(</span><em>obj1</em>, <em>obj2</em>, <em>root=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.ObjSetSemSim.ObjSetSemSim.SemSim" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -146,10 +139,11 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p>This class provides the prototype for a generic Pairwise Object Semantic Similarity measure</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.SetSemSim.SetSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SetSemSim.</tt><tt class="descname">SetSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>TSS=None</em>, <em>MSS=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SetSemSim.SetSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.SetSemSim.</code><code class="descname">SetSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac=None</em>, <em>TSS=None</em>, <em>MSS=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SetSemSim.SetSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
 <dt id="fastsemsim.SemSim.SetSemSim.SetSemSim.SemSim">
-<tt class="descname">SemSim</tt><big>(</big><em>obj1</em>, <em>obj2</em>, <em>root=None</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SetSemSim.SetSemSim.SemSim" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SemSim</code><span class="sig-paren">(</span><em>obj1</em>, <em>obj2</em>, <em>root=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SetSemSim.SetSemSim.SemSim" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -163,16 +157,16 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p><strong>Reference</strong>: Resnik, P. (1999). Semantic similarity in a taxonomy: An information-based measure and its application to problems of ambiguity in natural language. Journal of Artificial Intelligence Research, 11, 95-130.</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.ResnikSemSim.ResnikSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.ResnikSemSim.</tt><tt class="descname">ResnikSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.ResnikSemSim.ResnikSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.ResnikSemSim.</code><code class="descname">ResnikSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.ResnikSemSim.ResnikSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></code></a></p>
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.ResnikSemSim.ResnikSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.ResnikSemSim.ResnikSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<code class="descname">IC_based</code><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.ResnikSemSim.ResnikSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.ResnikSemSim.ResnikSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.ResnikSemSim.ResnikSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_type</code><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.ResnikSemSim.ResnikSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -184,26 +178,26 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.CosineSemSim.CosineSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.CosineSemSim.</tt><tt class="descname">CosineSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.CosineSemSim.CosineSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.CosineSemSim.</code><code class="descname">CosineSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.CosineSemSim.CosineSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></code></a></p>
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.CosineSemSim.CosineSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.CosineSemSim.CosineSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<code class="descname">IC_based</code><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.CosineSemSim.CosineSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.CosineSemSim.CosineSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.CosineSemSim.CosineSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_type</code><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.CosineSemSim.CosineSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.CosineSemSim.CosineSemSim.dotprod">
-<tt class="descname">dotprod</tt><big>(</big><em>vector1</em>, <em>vector2</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.CosineSemSim.CosineSemSim.dotprod" title="Permalink to this definition">¶</a></dt>
+<code class="descname">dotprod</code><span class="sig-paren">(</span><em>vector1</em>, <em>vector2</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.CosineSemSim.CosineSemSim.dotprod" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.CosineSemSim.CosineSemSim.extend_annotations">
-<tt class="descname">extend_annotations</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.CosineSemSim.CosineSemSim.extend_annotations" title="Permalink to this definition">¶</a></dt>
+<code class="descname">extend_annotations</code><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.CosineSemSim.CosineSemSim.extend_annotations" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -215,21 +209,21 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.CzekanowskiDiceSemSim.</tt><tt class="descname">CzekanowskiDiceSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.CzekanowskiDiceSemSim.</code><code class="descname">CzekanowskiDiceSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></code></a></p>
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<code class="descname">IC_based</code><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_type</code><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim.extend_annotations">
-<tt class="descname">extend_annotations</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim.extend_annotations" title="Permalink to this definition">¶</a></dt>
+<code class="descname">extend_annotations</code><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.CzekanowskiDiceSemSim.CzekanowskiDiceSemSim.extend_annotations" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -241,21 +235,21 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.DiceSemSim.DiceSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.DiceSemSim.</tt><tt class="descname">DiceSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.DiceSemSim.DiceSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.DiceSemSim.</code><code class="descname">DiceSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.DiceSemSim.DiceSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></code></a></p>
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.DiceSemSim.DiceSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.DiceSemSim.DiceSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<code class="descname">IC_based</code><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.DiceSemSim.DiceSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.DiceSemSim.DiceSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.DiceSemSim.DiceSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_type</code><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.DiceSemSim.DiceSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.DiceSemSim.DiceSemSim.extend_annotations">
-<tt class="descname">extend_annotations</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.DiceSemSim.DiceSemSim.extend_annotations" title="Permalink to this definition">¶</a></dt>
+<code class="descname">extend_annotations</code><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.DiceSemSim.DiceSemSim.extend_annotations" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -267,56 +261,56 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.GSESAMESemSim.</tt><tt class="descname">GSESAMESemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.GSESAMESemSim.</code><code class="descname">GSESAMESemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></code></a></p>
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<code class="descname">IC_based</code><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.IC_based" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_type</code><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.SS_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.generic_score">
-<tt class="descname">generic_score</tt><em class="property"> = 0.5</em><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.generic_score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">generic_score</code><em class="property"> = 0.5</em><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.generic_score" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.is_a_score">
-<tt class="descname">is_a_score</tt><em class="property"> = 0.8</em><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.is_a_score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">is_a_score</code><em class="property"> = 0.8</em><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.is_a_score" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.neg_regulates_score">
-<tt class="descname">neg_regulates_score</tt><em class="property"> = 0.6</em><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.neg_regulates_score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">neg_regulates_score</code><em class="property"> = 0.6</em><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.neg_regulates_score" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.part_of_score">
-<tt class="descname">part_of_score</tt><em class="property"> = 0.6</em><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.part_of_score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">part_of_score</code><em class="property"> = 0.6</em><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.part_of_score" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.pos_regulates_score">
-<tt class="descname">pos_regulates_score</tt><em class="property"> = 0.6</em><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.pos_regulates_score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">pos_regulates_score</code><em class="property"> = 0.6</em><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.pos_regulates_score" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.regulates_score">
-<tt class="descname">regulates_score</tt><em class="property"> = 0.6</em><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.regulates_score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">regulates_score</code><em class="property"> = 0.6</em><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.regulates_score" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.score_ancestors">
-<tt class="descname">score_ancestors</tt><big>(</big><em>term</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.score_ancestors" title="Permalink to this definition">¶</a></dt>
+<code class="descname">score_ancestors</code><span class="sig-paren">(</span><em>term</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.score_ancestors" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.score_edge">
-<tt class="descname">score_edge</tt><big>(</big><em>tp</em>, <em>t</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.score_edge" title="Permalink to this definition">¶</a></dt>
+<code class="descname">score_edge</code><span class="sig-paren">(</span><em>tp</em>, <em>t</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.GSESAMESemSim.GSESAMESemSim.score_edge" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -328,21 +322,21 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.JaccardSemSim.JaccardSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.JaccardSemSim.</tt><tt class="descname">JaccardSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.JaccardSemSim.JaccardSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.JaccardSemSim.</code><code class="descname">JaccardSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.JaccardSemSim.JaccardSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></code></a></p>
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.JaccardSemSim.JaccardSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.JaccardSemSim.JaccardSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<code class="descname">IC_based</code><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.JaccardSemSim.JaccardSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.JaccardSemSim.JaccardSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.JaccardSemSim.JaccardSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_type</code><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.JaccardSemSim.JaccardSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.JaccardSemSim.JaccardSemSim.extend_annotations">
-<tt class="descname">extend_annotations</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.JaccardSemSim.JaccardSemSim.extend_annotations" title="Permalink to this definition">¶</a></dt>
+<code class="descname">extend_annotations</code><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.JaccardSemSim.JaccardSemSim.extend_annotations" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -354,16 +348,16 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.JiangConrathSemSim.JiangConrathSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.JiangConrathSemSim.</tt><tt class="descname">JiangConrathSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.JiangConrathSemSim.JiangConrathSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.JiangConrathSemSim.</code><code class="descname">JiangConrathSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.JiangConrathSemSim.JiangConrathSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></code></a></p>
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.JiangConrathSemSim.JiangConrathSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.JiangConrathSemSim.JiangConrathSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<code class="descname">IC_based</code><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.JiangConrathSemSim.JiangConrathSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.JiangConrathSemSim.JiangConrathSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.JiangConrathSemSim.JiangConrathSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_type</code><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.JiangConrathSemSim.JiangConrathSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -375,16 +369,16 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.LinSemSim.LinSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.LinSemSim.</tt><tt class="descname">LinSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.LinSemSim.LinSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.LinSemSim.</code><code class="descname">LinSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.LinSemSim.LinSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></code></a></p>
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.LinSemSim.LinSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.LinSemSim.LinSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<code class="descname">IC_based</code><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.LinSemSim.LinSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.LinSemSim.LinSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.LinSemSim.LinSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_type</code><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.LinSemSim.LinSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -396,16 +390,16 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.SimGICSemSim.SimGICSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimGICSemSim.</tt><tt class="descname">SimGICSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimGICSemSim.SimGICSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.SimGICSemSim.</code><code class="descname">SimGICSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SimGICSemSim.SimGICSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></code></a></p>
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimGICSemSim.SimGICSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimGICSemSim.SimGICSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<code class="descname">IC_based</code><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimGICSemSim.SimGICSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimGICSemSim.SimGICSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimGICSemSim.SimGICSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_type</code><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimGICSemSim.SimGICSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -417,56 +411,56 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimICNDSemSim.</tt><tt class="descname">ICNDSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.SimICNDSemSim.</code><code class="descname">ICNDSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></code></a></p>
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<code class="descname">IC_based</code><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_type</code><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.generic_score">
-<tt class="descname">generic_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.generic_score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">generic_score</code><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.generic_score" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.is_a_score">
-<tt class="descname">is_a_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.is_a_score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">is_a_score</code><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.is_a_score" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.neg_regulates_score">
-<tt class="descname">neg_regulates_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.neg_regulates_score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">neg_regulates_score</code><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.neg_regulates_score" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.part_of_score">
-<tt class="descname">part_of_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.part_of_score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">part_of_score</code><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.part_of_score" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.pos_regulates_score">
-<tt class="descname">pos_regulates_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.pos_regulates_score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">pos_regulates_score</code><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.pos_regulates_score" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.regulates_score">
-<tt class="descname">regulates_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.regulates_score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">regulates_score</code><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.regulates_score" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.score_ancestors">
-<tt class="descname">score_ancestors</tt><big>(</big><em>term</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.score_ancestors" title="Permalink to this definition">¶</a></dt>
+<code class="descname">score_ancestors</code><span class="sig-paren">(</span><em>term</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.score_ancestors" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.score_edge">
-<tt class="descname">score_edge</tt><big>(</big><em>tp</em>, <em>t</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.score_edge" title="Permalink to this definition">¶</a></dt>
+<code class="descname">score_edge</code><span class="sig-paren">(</span><em>tp</em>, <em>t</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SimICNDSemSim.ICNDSemSim.score_edge" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -478,56 +472,56 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimICNPSemSim.</tt><tt class="descname">ICNPSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.SimICNPSemSim.</code><code class="descname">ICNPSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></code></a></p>
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<code class="descname">IC_based</code><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_type</code><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.generic_score">
-<tt class="descname">generic_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.generic_score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">generic_score</code><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.generic_score" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.is_a_score">
-<tt class="descname">is_a_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.is_a_score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">is_a_score</code><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.is_a_score" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.neg_regulates_score">
-<tt class="descname">neg_regulates_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.neg_regulates_score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">neg_regulates_score</code><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.neg_regulates_score" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.part_of_score">
-<tt class="descname">part_of_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.part_of_score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">part_of_score</code><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.part_of_score" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.pos_regulates_score">
-<tt class="descname">pos_regulates_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.pos_regulates_score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">pos_regulates_score</code><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.pos_regulates_score" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.regulates_score">
-<tt class="descname">regulates_score</tt><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.regulates_score" title="Permalink to this definition">¶</a></dt>
+<code class="descname">regulates_score</code><em class="property"> = 1.0</em><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.regulates_score" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.score_ancestors">
-<tt class="descname">score_ancestors</tt><big>(</big><em>term</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.score_ancestors" title="Permalink to this definition">¶</a></dt>
+<code class="descname">score_ancestors</code><span class="sig-paren">(</span><em>term</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.score_ancestors" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.score_edge">
-<tt class="descname">score_edge</tt><big>(</big><em>tp</em>, <em>t</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.score_edge" title="Permalink to this definition">¶</a></dt>
+<code class="descname">score_edge</code><span class="sig-paren">(</span><em>tp</em>, <em>t</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SimICNPSemSim.ICNPSemSim.score_edge" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -539,21 +533,21 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.SimICSemSim.SimICSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimICSemSim.</tt><tt class="descname">SimICSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimICSemSim.SimICSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.SimICSemSim.</code><code class="descname">SimICSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SimICSemSim.SimICSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></code></a></p>
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimICSemSim.SimICSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimICSemSim.SimICSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<code class="descname">IC_based</code><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimICSemSim.SimICSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimICSemSim.SimICSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimICSemSim.SimICSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_type</code><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimICSemSim.SimICSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimICSemSim.SimICSemSim.use_Lin">
-<tt class="descname">use_Lin</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimICSemSim.SimICSemSim.use_Lin" title="Permalink to this definition">¶</a></dt>
+<code class="descname">use_Lin</code><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimICSemSim.SimICSemSim.use_Lin" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -565,21 +559,21 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimNTOSemSim.</tt><tt class="descname">SimNTOSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.SimNTOSemSim.</code><code class="descname">SimNTOSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></code></a></p>
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<code class="descname">IC_based</code><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_type</code><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.extend_annotations">
-<tt class="descname">extend_annotations</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.extend_annotations" title="Permalink to this definition">¶</a></dt>
+<code class="descname">extend_annotations</code><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimNTOSemSim.SimNTOSemSim.extend_annotations" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -591,21 +585,21 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.SimRelSemSim.SimRelSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimRelSemSim.</tt><tt class="descname">SimRelSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimRelSemSim.SimRelSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.SimRelSemSim.</code><code class="descname">SimRelSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SimRelSemSim.SimRelSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></code></a></p>
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<code class="descname">IC_based</code><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_type</code><em class="property"> = 'Pairwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.use_Lin">
-<tt class="descname">use_Lin</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.use_Lin" title="Permalink to this definition">¶</a></dt>
+<code class="descname">use_Lin</code><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.SimRelSemSim.SimRelSemSim.use_Lin" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -617,16 +611,16 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.SimTOSemSim.SimTOSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimTOSemSim.</tt><tt class="descname">SimTOSemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimTOSemSim.SimTOSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.SimTOSemSim.</code><code class="descname">SimTOSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SimTOSemSim.SimTOSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></code></a></p>
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimTOSemSim.SimTOSemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.SimTOSemSim.SimTOSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<code class="descname">IC_based</code><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.SimTOSemSim.SimTOSemSim.IC_based" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimTOSemSim.SimTOSemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimTOSemSim.SimTOSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_type</code><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimTOSemSim.SimTOSemSim.SS_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -638,16 +632,16 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p><strong>Reference</strong>:</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.SimUISemSim.SimUISemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SimUISemSim.</tt><tt class="descname">SimUISemSim</tt><big>(</big><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SimUISemSim.SimUISemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.SimUISemSim.</code><code class="descname">SimUISemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac=None</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SimUISemSim.SimUISemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.TermSemSim.TermSemSim" title="fastsemsim.SemSim.TermSemSim.TermSemSim"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastsemsim.SemSim.TermSemSim.TermSemSim</span></code></a></p>
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimUISemSim.SimUISemSim.IC_based">
-<tt class="descname">IC_based</tt><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.SimUISemSim.SimUISemSim.IC_based" title="Permalink to this definition">¶</a></dt>
+<code class="descname">IC_based</code><em class="property"> = False</em><a class="headerlink" href="#fastsemsim.SemSim.SimUISemSim.SimUISemSim.IC_based" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.SimUISemSim.SimUISemSim.SS_type">
-<tt class="descname">SS_type</tt><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimUISemSim.SimUISemSim.SS_type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SS_type</code><em class="property"> = 'Groupwise'</em><a class="headerlink" href="#fastsemsim.SemSim.SimUISemSim.SimUISemSim.SS_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -659,11 +653,11 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p>This class provides the prototype for a generic mixing strategy for pairwise Term Semantic Similarity measures</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.MixSemSim.MixSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.MixSemSim.</tt><tt class="descname">MixSemSim</tt><big>(</big><em>ontology</em>, <em>ac</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.MixSemSim.MixSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.MixSemSim.</code><code class="descname">MixSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.MixSemSim.MixSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="fastsemsim.SemSim.MixSemSim.MixSemSim.SemSim">
-<tt class="descname">SemSim</tt><big>(</big><em>set1</em>, <em>set2</em>, <em>TSS</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.MixSemSim.MixSemSim.SemSim" title="Permalink to this definition">¶</a></dt>
+<code class="descname">SemSim</code><span class="sig-paren">(</span><em>set1</em>, <em>set2</em>, <em>TSS</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.MixSemSim.MixSemSim.SemSim" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -674,8 +668,8 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p>This class defines the prototype for a generic mixing strategy for pairwise term Protein Semantic Similarity measures</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.avgSemSim.avgSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.avgSemSim.</tt><tt class="descname">avgSemSim</tt><big>(</big><em>ontology</em>, <em>ac</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.avgSemSim.avgSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.MixSemSim.MixSemSim" title="fastsemsim.SemSim.MixSemSim.MixSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.MixSemSim.MixSemSim</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.avgSemSim.</code><code class="descname">avgSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.avgSemSim.avgSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.MixSemSim.MixSemSim" title="fastsemsim.SemSim.MixSemSim.MixSemSim"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastsemsim.SemSim.MixSemSim.MixSemSim</span></code></a></p>
 </dd></dl>
 
 </div>
@@ -684,8 +678,8 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p>Max mixing strategy</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.maxSemSim.maxSemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.maxSemSim.</tt><tt class="descname">maxSemSim</tt><big>(</big><em>ontology</em>, <em>ac</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.maxSemSim.maxSemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.MixSemSim.MixSemSim" title="fastsemsim.SemSim.MixSemSim.MixSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.MixSemSim.MixSemSim</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.maxSemSim.</code><code class="descname">maxSemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.maxSemSim.maxSemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.MixSemSim.MixSemSim" title="fastsemsim.SemSim.MixSemSim.MixSemSim"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastsemsim.SemSim.MixSemSim.MixSemSim</span></code></a></p>
 </dd></dl>
 
 </div>
@@ -694,11 +688,11 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 <p>Best Match Average (BMA) mixing strategy for pairwise term Protein Semantic Similarity measures</p>
 <dl class="class">
 <dt id="fastsemsim.SemSim.BMASemSim.BMASemSim">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.BMASemSim.</tt><tt class="descname">BMASemSim</tt><big>(</big><em>ontology</em>, <em>ac</em>, <em>util=None</em>, <em>do_log=False</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.BMASemSim.BMASemSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.MixSemSim.MixSemSim" title="fastsemsim.SemSim.MixSemSim.MixSemSim"><tt class="xref py py-class docutils literal"><span class="pre">fastsemsim.SemSim.MixSemSim.MixSemSim</span></tt></a></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.BMASemSim.</code><code class="descname">BMASemSim</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac</em>, <em>util=None</em>, <em>do_log=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.BMASemSim.BMASemSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fastsemsim.SemSim.MixSemSim.MixSemSim" title="fastsemsim.SemSim.MixSemSim.MixSemSim"><code class="xref py py-class docutils literal notranslate"><span class="pre">fastsemsim.SemSim.MixSemSim.MixSemSim</span></code></a></p>
 <dl class="attribute">
 <dt id="fastsemsim.SemSim.BMASemSim.BMASemSim.fair">
-<tt class="descname">fair</tt><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.BMASemSim.BMASemSim.fair" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fair</code><em class="property"> = True</em><a class="headerlink" href="#fastsemsim.SemSim.BMASemSim.BMASemSim.fair" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -711,115 +705,115 @@ In particular this class provides code for evaluating:</p>
 <ul class="simple">
 <li>term ICs</li>
 <li>term frequency within an annotation corpus</li>
-<li>term&#8217;s ancestors</li>
-<li>term&#8217;s offspring</li>
-<li>terms&#8217;s children</li>
-<li>terms&#8217;s parents</li>
+<li>term’s ancestors</li>
+<li>term’s offspring</li>
+<li>terms’s children</li>
+<li>terms’s parents</li>
 <li>MICA/DCA/LCA</li>
-<li>term&#8217;s distance</li>
+<li>term’s distance</li>
 </ul>
 <dl class="class">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils">
-<em class="property">class </em><tt class="descclassname">fastsemsim.SemSim.SemSimUtils.</tt><tt class="descname">SemSimUtils</tt><big>(</big><em>ontology</em>, <em>ac=None</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.SemSim.SemSimUtils.</code><code class="descname">SemSimUtils</code><span class="sig-paren">(</span><em>ontology</em>, <em>ac=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.det_IC">
-<tt class="descname">det_IC</tt><big>(</big><em>term</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.det_IC" title="Permalink to this definition">¶</a></dt>
+<code class="descname">det_IC</code><span class="sig-paren">(</span><em>term</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.det_IC" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.det_IC_table">
-<tt class="descname">det_IC_table</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.det_IC_table" title="Permalink to this definition">¶</a></dt>
+<code class="descname">det_IC_table</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.det_IC_table" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.det_MICA">
-<tt class="descname">det_MICA</tt><big>(</big><em>term1</em>, <em>term2</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.det_MICA" title="Permalink to this definition">¶</a></dt>
+<code class="descname">det_MICA</code><span class="sig-paren">(</span><em>term1</em>, <em>term2</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.det_MICA" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.det_ancestors_union">
-<tt class="descname">det_ancestors_union</tt><big>(</big><em>term1</em>, <em>term2</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.det_ancestors_union" title="Permalink to this definition">¶</a></dt>
+<code class="descname">det_ancestors_union</code><span class="sig-paren">(</span><em>term1</em>, <em>term2</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.det_ancestors_union" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.det_common_ancestors">
-<tt class="descname">det_common_ancestors</tt><big>(</big><em>term1</em>, <em>term2</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.det_common_ancestors" title="Permalink to this definition">¶</a></dt>
+<code class="descname">det_common_ancestors</code><span class="sig-paren">(</span><em>term1</em>, <em>term2</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.det_common_ancestors" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.difference">
-<tt class="descname">difference</tt><big>(</big><em>set1</em>, <em>set2</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.difference" title="Permalink to this definition">¶</a></dt>
+<code class="descname">difference</code><span class="sig-paren">(</span><em>set1</em>, <em>set2</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.difference" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.get_ancestors">
-<tt class="descname">get_ancestors</tt><big>(</big><em>term1</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.get_ancestors" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_ancestors</code><span class="sig-paren">(</span><em>term1</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.get_ancestors" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_IC">
-<tt class="descname">int_det_IC</tt><big>(</big><em>term_id</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_IC" title="Permalink to this definition">¶</a></dt>
+<code class="descname">int_det_IC</code><span class="sig-paren">(</span><em>term_id</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_IC" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_IC_table">
-<tt class="descname">int_det_IC_table</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_IC_table" title="Permalink to this definition">¶</a></dt>
+<code class="descname">int_det_IC_table</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_IC_table" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_ancestors">
-<tt class="descname">int_det_ancestors</tt><big>(</big><em>goid</em>, <em>temp_intra</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_ancestors" title="Permalink to this definition">¶</a></dt>
+<code class="descname">int_det_ancestors</code><span class="sig-paren">(</span><em>goid</em>, <em>temp_intra</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_ancestors" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_ancestors_table">
-<tt class="descname">int_det_ancestors_table</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_ancestors_table" title="Permalink to this definition">¶</a></dt>
+<code class="descname">int_det_ancestors_table</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_ancestors_table" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_freq">
-<tt class="descname">int_det_freq</tt><big>(</big><em>term_id</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_freq" title="Permalink to this definition">¶</a></dt>
+<code class="descname">int_det_freq</code><span class="sig-paren">(</span><em>term_id</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_freq" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_freq_table">
-<tt class="descname">int_det_freq_table</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_freq_table" title="Permalink to this definition">¶</a></dt>
+<code class="descname">int_det_freq_table</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_freq_table" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_lineage">
-<tt class="descname">int_det_lineage</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_lineage" title="Permalink to this definition">¶</a></dt>
+<code class="descname">int_det_lineage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_lineage" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_offspring">
-<tt class="descname">int_det_offspring</tt><big>(</big><em>goid</em>, <em>temp_intra</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_offspring" title="Permalink to this definition">¶</a></dt>
+<code class="descname">int_det_offspring</code><span class="sig-paren">(</span><em>goid</em>, <em>temp_intra</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_offspring" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_offspring_table">
-<tt class="descname">int_det_offspring_table</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_offspring_table" title="Permalink to this definition">¶</a></dt>
+<code class="descname">int_det_offspring_table</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_offspring_table" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_p">
-<tt class="descname">int_det_p</tt><big>(</big><em>term_id</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_p" title="Permalink to this definition">¶</a></dt>
+<code class="descname">int_det_p</code><span class="sig-paren">(</span><em>term_id</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_p" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_p_table">
-<tt class="descname">int_det_p_table</tt><big>(</big><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_p_table" title="Permalink to this definition">¶</a></dt>
+<code class="descname">int_det_p_table</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_det_p_table" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_merge_sets">
-<tt class="descname">int_merge_sets</tt><big>(</big><em>set1</em>, <em>set2</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_merge_sets" title="Permalink to this definition">¶</a></dt>
+<code class="descname">int_merge_sets</code><span class="sig-paren">(</span><em>set1</em>, <em>set2</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.int_merge_sets" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.SemSim.SemSimUtils.SemSimUtils.intersection">
-<tt class="descname">intersection</tt><big>(</big><em>set1</em>, <em>set2</em><big>)</big><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.intersection" title="Permalink to this definition">¶</a></dt>
+<code class="descname">intersection</code><span class="sig-paren">(</span><em>set1</em>, <em>set2</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.SemSim.SemSimUtils.SemSimUtils.intersection" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -831,9 +825,9 @@ In particular this class provides code for evaluating:</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Semantic Similarity</a><ul>
 <li><a class="reference internal" href="#module-fastsemsim.SemSim.TermSemSim">SemSim.TermSemSim</a></li>
@@ -874,29 +868,30 @@ In particular this class provides code for evaluating:</p>
   <h4>Next topic</h4>
   <p class="topless"><a href="cmdline.html"
                         title="next chapter">FastSemSim Command Line Interface (CLI)</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/fastsemsim.SemSim.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/fastsemsim.SemSim.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -911,13 +906,13 @@ In particular this class provides code for evaluating:</p>
         <li class="right" >
           <a href="fastsemsim.data.html" title="Ontologies and annotation corpora included in fastSemSim"
              >previous</a> |</li>
-        <li><a href="index.html">fastsemsim 0.9 documentation</a> &raquo;</li>
-          <li><a href="library.html" >FastSemSim library</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">fastsemsim 1.0.0beta documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="package.html" >FastSemSim package</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Marco Mina.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2019, Marco Mina.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
     </div>
   </body>
 </html>

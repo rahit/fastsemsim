@@ -29,3 +29,20 @@ vh.close()
 __version__ = lines[0].rstrip('\n').rstrip('\r')
 
 from . import Ontology
+
+# --------------------------------------------
+#
+# Let's define here some convenient functions to load ontologies and annotation corpora
+
+AnnotationCorpus = Ontology.AnnotationCorpus.AnnotationCorpus
+
+load_ontology = Ontology.ontologies.load
+
+def load_ac(ontology, fname, ftype, params={}):
+	ac = AnnotationCorpus(ontology)
+	ac.load(fname, ftype, params)
+	return(ac)
+#
+
+list_ontologies = Ontology.ontologies.builtin_dataset.list_ontologies
+list_acs = Ontology.ontologies.builtin_dataset.list_acs

@@ -9,18 +9,18 @@ FastSemSim Documentation
 :Date: |today|
 :Homepage: https://sites.google.com/site/fastsemsim/
 
-FastSemSim is a Python library for the evaluation of semantic similarity measures over ontologies.
+FastSemSim is a Python package for calculating semantic similarities over ontologies (notably over the Gene Ontology).
 
-FastSemSim includes a command line application to evaluate the semantic similarity without requiring programming skills.
+FastSemSim includes a command line interface to evaluate semantic similarities without programming skills requirements.
 
-This reference manual details modules and classes included in fastSemSim.
+This reference manual details modules and classes included in fastSemSim, as well as the command line interface usage.
 
 
 
 .. toctree::
    :maxdepth: 2
 
-   library.rst
+   package.rst
    cmdline.rst
 
 

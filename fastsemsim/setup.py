@@ -1,6 +1,6 @@
 # -*- coding: iso-8859-1 -*-
 '''
-Copyright 2011 Marco Mina. All rights reserved.
+Copyright 2011-2019 Marco Mina. All rights reserved.
 
 This file is part of fastSemSim
 

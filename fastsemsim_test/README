@@ -1,14 +1,16 @@
-Test folder
+fastsemsim_test folder
 
-This folder contains scripts for testing whether fastSemSim works correctly.
-Run them from within this folder, otherwise they'll complain about missing data.
+This folder contains scripts for testing fastSemSim.
+Run the script within this folder, otherwise they'll complain about missing data.
 
-If fastSemSim library has not been installed, the local path to the library might have to  be added to PYTHONPATH using the export command.
-Example: if fastSemSim has been downloaded in a folder with path 'path-to-x', then you should use
+If the fastSemSim library has not been installed, the path to the local folder containing the source code of fastsemsim has to be added to PYTHONPATH (using the export shell command).
+
+Example: if fastSemSim has been downloaded in the folder with path '~/fastsemsim', you should use
 	
-	export PYTHONPATH=$PYTHONPATH:'path-to-x'
+	export PYTHONPATH=$PYTHONPATH:'~/fastsemsim'
 
-before executing any fastSemSim test. Under Windows, set the python library path variable from Control Panel.
+before executing the test scripts.
 
-If you installed fastSemSim, you should be able to run any test script.
+Under Windows, set the python library path variable from Control Panel.
 
+If you installed fastSemSim, you should be able to run any test script without setting any path.

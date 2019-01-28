@@ -1,35 +1,27 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Ontologies and annotation corpora included in fastSemSim &mdash; fastsemsim 0.9 documentation</title>
-    
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <title>Ontologies and annotation corpora included in fastSemSim &#8212; fastsemsim 1.0.0beta documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.9',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="fastsemsim 0.9 documentation" href="index.html" />
-    <link rel="up" title="FastSemSim library" href="library.html" />
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Semantic Similarity" href="fastsemsim.SemSim.html" />
     <link rel="prev" title="Handling ontologies and annotation corpora" href="fastsemsim.Ontology.html" /> 
-  </head>
-  <body>
-    <div class="related">
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -44,15 +36,15 @@
         <li class="right" >
           <a href="fastsemsim.Ontology.html" title="Handling ontologies and annotation corpora"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">fastsemsim 0.9 documentation</a> &raquo;</li>
-          <li><a href="library.html" accesskey="U">FastSemSim library</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">fastsemsim 1.0.0beta documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="package.html" accesskey="U">FastSemSim package</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="module-fastsemsim.data">
 <span id="ontologies-and-annotation-corpora-included-in-fastsemsim"></span><h1>Ontologies and annotation corpora included in fastSemSim<a class="headerlink" href="#module-fastsemsim.data" title="Permalink to this headline">¶</a></h1>
@@ -61,49 +53,49 @@
 <span id="fastsemsim-data-dataset-submodule"></span><h2>fastsemsim.data.dataset submodule<a class="headerlink" href="#module-fastsemsim.data.dataset" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="fastsemsim.data.dataset.Dataset">
-<em class="property">class </em><tt class="descclassname">fastsemsim.data.dataset.</tt><tt class="descname">Dataset</tt><big>(</big><em>descriptor=None</em><big>)</big><a class="headerlink" href="#fastsemsim.data.dataset.Dataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<em class="property">class </em><code class="descclassname">fastsemsim.data.dataset.</code><code class="descname">Dataset</code><span class="sig-paren">(</span><em>descriptor=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.dataset.Dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>This class keeps track of the dataset of ontologies and annotation corpora included in fastSemSim.
 The file data/dataset.txt is read to collect the list of embedded ontologies and annotation corpora.</p>
 <dl class="method">
 <dt id="fastsemsim.data.dataset.Dataset.get_annotation_corpus">
-<tt class="descname">get_annotation_corpus</tt><big>(</big><em>dataset_name</em><big>)</big><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.get_annotation_corpus" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_annotation_corpus</code><span class="sig-paren">(</span><em>dataset_name</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.get_annotation_corpus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the required annotation corpus</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.data.dataset.Dataset.get_annotation_corpus_by_species">
-<tt class="descname">get_annotation_corpus_by_species</tt><big>(</big><em>ontology=None</em>, <em>species=None</em><big>)</big><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.get_annotation_corpus_by_species" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_annotation_corpus_by_species</code><span class="sig-paren">(</span><em>ontology=None</em>, <em>species=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.get_annotation_corpus_by_species" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the annotation corpus for the selected species, and compatible with the ontology specified by the ontology parameter.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.data.dataset.Dataset.get_dataset">
-<tt class="descname">get_dataset</tt><big>(</big><em>dataset_name</em><big>)</big><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.get_dataset" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_dataset</code><span class="sig-paren">(</span><em>dataset_name</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.get_dataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the required dataset</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.data.dataset.Dataset.get_default_annotation_corpus">
-<tt class="descname">get_default_annotation_corpus</tt><big>(</big><em>ontology=None</em>, <em>species=None</em><big>)</big><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.get_default_annotation_corpus" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_default_annotation_corpus</code><span class="sig-paren">(</span><em>ontology=None</em>, <em>species=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.get_default_annotation_corpus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the default annotation corpus for the selected species, and compatible with the ontology specified by the ontology parameter.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.data.dataset.Dataset.get_default_ontology">
-<tt class="descname">get_default_ontology</tt><big>(</big><em>ontology_type</em><big>)</big><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.get_default_ontology" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_default_ontology</code><span class="sig-paren">(</span><em>ontology_type</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.get_default_ontology" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the default embedded ontology of the ontology_type type</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.data.dataset.Dataset.get_ontology">
-<tt class="descname">get_ontology</tt><big>(</big><em>dataset_name</em><big>)</big><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.get_ontology" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_ontology</code><span class="sig-paren">(</span><em>dataset_name</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.get_ontology" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the required ontology</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="fastsemsim.data.dataset.Dataset.populate">
-<tt class="descname">populate</tt><big>(</big><em>descriptor=None</em><big>)</big><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.populate" title="Permalink to this definition">¶</a></dt>
+<code class="descname">populate</code><span class="sig-paren">(</span><em>descriptor=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.populate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize class structures. Use the descriptor parameter to specify a dataset descriptor file.
 By default, the file data/dataset.txt will be used.</p>
 </dd></dl>
@@ -117,9 +109,9 @@ By default, the file data/dataset.txt will be used.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Ontologies and annotation corpora included in fastSemSim</a><ul>
 <li><a class="reference internal" href="#module-fastsemsim.data.dataset">fastsemsim.data.dataset submodule</a></li>
@@ -133,29 +125,30 @@ By default, the file data/dataset.txt will be used.</p>
   <h4>Next topic</h4>
   <p class="topless"><a href="fastsemsim.SemSim.html"
                         title="next chapter">Semantic Similarity</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/fastsemsim.data.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/fastsemsim.data.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -170,13 +163,13 @@ By default, the file data/dataset.txt will be used.</p>
         <li class="right" >
           <a href="fastsemsim.Ontology.html" title="Handling ontologies and annotation corpora"
              >previous</a> |</li>
-        <li><a href="index.html">fastsemsim 0.9 documentation</a> &raquo;</li>
-          <li><a href="library.html" >FastSemSim library</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">fastsemsim 1.0.0beta documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="package.html" >FastSemSim package</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2014, Marco Mina.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2019, Marco Mina.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
     </div>
   </body>
 </html>

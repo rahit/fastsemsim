@@ -61,8 +61,11 @@ ontologies = {
 
 ontology_source_types = ['obo-xml', 'obo']
 
+# load embedded dataset
+builtin_dataset = data.dataset.Dataset()
+
 def parse(source = None, source_type = 'obo', ontology_type = 'GeneOntology', parameters={}):
-	return load(source, source_type, ontology_type, parameters)
+	return(load(source, source_type, ontology_type, parameters))
 #
 
 def load(source = None, source_type = 'obo', ontology_type = 'GeneOntology', parameters={}):
@@ -72,7 +75,7 @@ def load(source = None, source_type = 'obo', ontology_type = 'GeneOntology', par
 	if source == None:
 		# program_dir = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
 		# print("ontologies.py: " + program_dir)
-		builtin_dataset = data.dataset.Dataset()
+		# builtin_dataset = data.dataset.Dataset()
 		selected_source = builtin_dataset.get_default_ontology(ontology_type)
 		# print(selected_source)
 		if selected_source is None:
