@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-1 -*-
 '''
-Copyright 2011 Marco Mina. All rights reserved.
+Copyright 2011-2019 Marco Mina. All rights reserved.
 
 This file is part of fastSemSim
 
@@ -31,18 +31,20 @@ __version__ = lines[0].rstrip('\n').rstrip('\r')
 from . import Ontology
 
 # --------------------------------------------
-#
-# Let's define here some convenient functions to load ontologies and annotation corpora
+# Import some convenient functions to load ontologies and annotation corpora
 
 AnnotationCorpus = Ontology.AnnotationCorpus.AnnotationCorpus
 
+# Entrypoint function: load ontology
 load_ontology = Ontology.ontologies.load
 
+# Entrypoint function: load annotation corpus
 def load_ac(ontology, fname, ftype, params={}):
 	ac = AnnotationCorpus(ontology)
 	ac.load(fname, ftype, params)
 	return(ac)
 #
 
+# Entrypoint function: list available ontologies and annotation corpora
 list_ontologies = Ontology.ontologies.builtin_dataset.list_ontologies
 list_acs = Ontology.ontologies.builtin_dataset.list_acs
