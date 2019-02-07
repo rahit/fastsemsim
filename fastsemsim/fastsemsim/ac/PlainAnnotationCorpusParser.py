@@ -38,7 +38,7 @@ TERMFIRST = 'term first'
 SEPARATOR = 'separator'
 COMMENT = 'comment'
 
-class PlainAnnotationCorpus(object):
+class PlainAnnotationCorpusParser(object):
 	
 #------------------------------------------------------
 # Inizialization routines

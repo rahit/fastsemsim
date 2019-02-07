@@ -28,23 +28,8 @@ lines = vh.readlines()
 vh.close()
 __version__ = lines[0].rstrip('\n').rstrip('\r')
 
-from . import Ontology
-
 # --------------------------------------------
-# Import some convenient functions to load ontologies and annotation corpora
+# Define convenient entrypoint functions to load ontologies and annotation corpora
+from fastsemsim.api import *
 
-AnnotationCorpus = Ontology.AnnotationCorpus.AnnotationCorpus
 
-# Entrypoint function: load ontology
-load_ontology = Ontology.ontologies.load
-
-# Entrypoint function: load annotation corpus
-def load_ac(ontology, fname, ftype, params={}):
-	ac = AnnotationCorpus(ontology)
-	ac.load(fname, ftype, params)
-	return(ac)
-#
-
-# Entrypoint function: list available ontologies and annotation corpora
-list_ontologies = Ontology.ontologies.builtin_dataset.list_ontologies
-list_acs = Ontology.ontologies.builtin_dataset.list_acs

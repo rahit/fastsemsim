@@ -151,8 +151,10 @@ class FFOntology(Ontology.Ontology):
 		return sid
 	#
 
-	# def __init__(self, terms, edges, parameters):
+	def __init__(self, terms, edges, parameters):
 		# namespace = None # impose this if current Ontology is faulty
 		# Ontology.Ontology.__init__(self, terms = terms, edges = edges, parameters)
+		Ontology.Ontology.__init__(self, terms = terms, edges = edges, parameters = parameters)
+		self.name = 'FFOntology'
 	#
 #

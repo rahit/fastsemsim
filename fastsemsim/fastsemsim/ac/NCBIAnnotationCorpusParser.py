@@ -20,8 +20,8 @@
 
 '''
 #@desc
-Class to parse Annotation Corporus files in GAF-2.0 format [i.e. Gene Ontology Annotation files] tab separated file. 
-Format as defined in http://geneontology.org/page/go-annotation-file-gaf-format-20
+Class to parse Annotation Corporus files in NCBI format [i.e. Gene Ontology Annotation files] tab separated file. 
+Format as defined in ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/README
 '''
 
 # The gaf-2 file format is documented here: ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/UNIPROT/README
@@ -51,21 +51,20 @@ import gzip
 # import GeneOntology
 # import pandas as pd
 
+SIMPLIFY = 'simplify'
+
 try:
 	unicode
 except (NameError, AttributeError):
 	unicode = str #For python3
 
-SIMPLIFY = 'simplify'
-
-class GAF2AnnotationCorpus(object):
+class NCBIAnnotationCorpusParser(object):
 
 #------------------------------------------------------
 # Inizialization routines
 #------------------------------------------------------
 
 	int_separator = '\t'
-	int_comment = '!'
 
 	def __init__(self, ac, parameters=None):
 		self.ac = ac
@@ -120,7 +119,7 @@ class GAF2AnnotationCorpus(object):
 #
 
 	def parse(self, fname):
-		#print("GAF2AnnotationCorpus: parse()")
+		#print("NCBIAnnotationCorpus: parse()")
 		self.setFields()
 		if type(fname) == unicode:
 			fname = str(fname)
@@ -132,32 +131,31 @@ class GAF2AnnotationCorpus(object):
 				stream = open(fname, 'r')
 		else:
 			stream = fname
+
 		lines_counter = 0
 
 		#ignored = 0
 		for line in stream:
 			lines_counter += 1
-			if isinstance(line,bytes):
+			if isinstance(line, bytes):
 				line = line.decode('utf-8')
 			line = line.rstrip('\n')
 			line = line.rstrip('\r')
 			if lines_counter == 1:
-				pass # to implement
-			if line[0] == self.int_comment:
-		 		continue
+				continue # Skip first line of NCBI file
 			line = line.split(self.int_separator)
-			if len(line) < 14:
-				print("GAF2AnnotationCorpus loader. Incomplete line: " + str(line))
+			if len(line) < 7:
+				print("NCBIAnnotationCorpus loader. Incomplete line: " + str(line))
 				continue
-			self.temp_taxonomy = line[12][6:]
+			self.temp_taxonomy = line[0]
 			temp = self.temp_taxonomy.rsplit('|')
 			if len(temp) > 1:
 				self.temp_taxonomy = temp[0]
 			self.temp_obj = line[1]
-			self.temp_term = line[4]
-			self.temp_EC = line[6]
-			self.temp_reference = line[5]
-			self.temp_GO = line[8]
+			self.temp_term = line[2]
+			self.temp_EC = line[3]
+			self.temp_reference = line[6]
+			self.temp_GO = line[7]
 
 
 			self.temp_term_ar = self.ac.go.id2node(self.temp_term, alt_check = True)

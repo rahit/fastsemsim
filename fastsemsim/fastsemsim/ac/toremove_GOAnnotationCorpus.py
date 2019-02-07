@@ -18,7 +18,7 @@
 # along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 
 '''
-This class provides a unified interface to handle Annotation Corpora.
+This class provides an interface to handle Annotation Corpora.
 
 annotations: dict with protein ids as primary key. Each key is associated with a dictionary of GO Terms annotated for the protein. Detailed information, when available, are included as values within the latter dictionary.
 
@@ -36,76 +36,32 @@ specific_parameters: parameter that should be used to load a particular file for
 
 Each type of file carries different types of information. How to deal with that? Every operation is rerouted to the original file parser, that will take care of it. This is good since it avoids to duplicate data. 
 
-**Constraint**: an Ontology MUST be loaded and provided as an AnnotationCorpus object is istantiated.
 '''
-
-
-# Tentative class for loading generic Annotation Corpora.
-# Constraint: an Ontology MUST be loaded and provided as an AnnotationCorpus object is istantiated.
-# AnnotationCorpus relies on the functions and datastructures of the Ontology to map the IDS properly.
-
-# Requires:
-# 	GO:
-# 		roots
-# 		name2id
-# 		id2name
-# 		nodes
-# 		edges
-# 		alt_ids
-# 		?obsolete?
-
 
 from __future__ import print_function
 import sys
 import copy
-import pandas
 
-# from Ontology import *
-from .PlainAnnotationCorpus import PlainAnnotationCorpus
-from .GAF2AnnotationCorpus import GAF2AnnotationCorpus
-from .NCBIAnnotationCorpus import NCBIAnnotationCorpus
-
-try:
-	unicode
-except (NameError, AttributeError):
-	unicode = str #For python3
+# from GeneOntology import *
+from .PlainAnnotationCorpusParser import PlainAnnotationCorpusParser
+from .GAF2AnnotationCorpusParser import GAF2AnnotationCorpusParser
 
 INT_DEBUG = True
 FILTER_PARAM = 'filter'
 RESET_PARAM = 'reset'
 
-AnnotationCorpusFormat = {	'gaf-2.0':GAF2AnnotationCorpus,
-							'GOA':GAF2AnnotationCorpus,
-							'plain':PlainAnnotationCorpus,
-							'ncbi':NCBIAnnotationCorpus
-							}
+AnnotationCorpusFormat = {	'gaf-2.0':GAF2AnnotationCorpusParser,
+							'gaf-1.0':None,
+							'GOA':GAF2AnnotationCorpusParser,
+							'plain':PlainAnnotationCorpusParser,
+						}
 
-class AnnotationCorpus(object):
 
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
-# variables 
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+class GOAnnotationCorpus:
+	#----------------------------------------------------------------------------------------
+	int_exclude_GO_root = True
 
-	_exclude_roots = True
-
-# data struct 1: dicts
-	annotations = {} # dict with objects as keys, dict of annotated terms as values
-	reverse_annotations = {} # dict as terms as keys, dicts of annotated objects as values
-	obj_set = {} # set of all the objects 
-	term_set = {} # set of all the terms involved in the annotation corpus
-	obj_fields = [] # ?
-	term_fields = [] # ?
-	annotations_fields = [] # ?
-	reverse_annotations_fields = [] # ?
-	obj_field2pos= {} # ?
-	term_field2pos= {} # ?
-	annotations_field2pos= {} # ?
-	reverse_annotations_field2pos= {} # ??
-
-	
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
-# functions
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+	#----------------------------------------------------------------------------------------
 
 	def reset(self):
 		self.annotations = {}
@@ -125,13 +81,10 @@ class AnnotationCorpus(object):
 		self.annotations_field2pos= {}
 		self.reverse_annotations_field2pos= {}
 
-	def __init__(self, go):
+	def __init__(self, go=None):
 		self.go = go
-		if self.go == None:
-			raise Exception
 		self.initCommonFilter()
 		self.reset()
-		self.go.det_roots()
 
 	def __deepcopy__(self, memo):
 		a = AnnotationCorpus(self.go)
@@ -167,7 +120,6 @@ class AnnotationCorpus(object):
 
 	def parse(self, fname, ftype, params={}):
 		#print("AnnotationCorpus: parse")
-		# print(params)
 		if params == None:
 			self.reset()
 		elif RESET_PARAM in params and params[RESET_PARAM]:
@@ -176,20 +128,8 @@ class AnnotationCorpus(object):
 		if not params == None and FILTER_PARAM in params:
 			self.setCommonfilters(params[FILTER_PARAM])
 
-		# if fname == None:
-		# 	# program_dir = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
-		# 	# print("ontologies.py: " + program_dir)
-		# 	builtin_dataset = data.dataset.Dataset()
-		# 	selected_source = builtin_dataset.get_default_ontology(ontology_type)
-		# 	# print(selected_source)
-		# 	if selected_source is None:
-		# 		return None
-		# 	source = selected_source['file']
-		# 	source_type = selected_source['filetype']
-
 		if ftype in AnnotationCorpusFormat:
 			temp = AnnotationCorpusFormat[ftype](self, params)
-
 			return temp.parse(fname)
 		else:
 			if INT_DEBUG:
@@ -205,13 +145,12 @@ class AnnotationCorpus(object):
 #-----------------------------------------------------------------------------
 	
 	def sanitize(self):
-		raise Exception # do not use
 		if self.go is None:
 			if INT_DEBUG:
 				print("No GO specified. All the annotations will be considered valid.")
 			return True
 		for i in self.reverse_annotations.keys():
-			if not i in self.go.nodes:
+			if not i in self.go.alt_ids:
 				#print("Term " + str(i) + " not found in GO.")
 				for j in self.reverse_annotations[i]:
 					del self.annotations[j][i]
@@ -252,22 +191,22 @@ class AnnotationCorpus(object):
 			return True
 		valid = True
 		for i in self.reverse_annotations:
-			if not i in self.go.nodes:
+			if not i in self.go.alt_ids:
 				if INT_DEBUG:
 					print("Term " + str(i) + " not found in GO.")
 				valid = False
 				continue
-			# if not i in self.go.nodes:
-				# if self.go.alt_ids[i] == i:
-					# if INT_DEBUG:
-						# print("Term " + str(i) + " is an obsolete id.")
+			if not i in self.go.nodes:
+				if self.go.alt_ids[i] == i:
+					if INT_DEBUG:
+						print("Term " + str(i) + " is an obsolete id.")
 					#self.obsoletes[i] = {}
-					# valid = False
-				# else:
-					# if INT_DEBUG:
-						# print("Term " + str(i) + " is an alternative id.")
-					# valid = False
-					# continue
+					valid = False
+				else:
+					if INT_DEBUG:
+						print("Term " + str(i) + " is an alternative id.")
+					valid = False
+					continue
 		return valid
 
 #-----------------------------------------------------------------------------
@@ -382,7 +321,7 @@ class AnnotationCorpus(object):
 			if 'taxonomy' in params:
 				self.taxonomy = params['taxonomy']
 				if type(self.taxonomy) == str or type(self.taxonomy) == unicode:
-					self.taxonomy = {str(self.taxonomy): None}
+					self.taxonomy = {str(self.taxonomy):None}
 			if 'inclusive' in params:
 				self.inclusive = params['inclusive']
 
@@ -448,10 +387,10 @@ class AnnotationCorpus(object):
 #-----------------------------------------------------------------------------
 	def initCommonFilter(self):
 		self.common_filters = {
-								self.TaxonomyFilter.name:(self.TaxonomyFilter,),
-								self.ECFilter.name:(self.ECFilter,),
-								self.GOFilter.name:(self.GOFilter, {'int_current_go':self.go})
-							}
+											self.TaxonomyFilter.name:(self.TaxonomyFilter,),
+											self.ECFilter.name:(self.ECFilter,),
+											self.GOFilter.name:(self.GOFilter, {'int_current_go':self.go})
+											}
 
 	def setCommonfilters(self, inf):
 		if type(inf) == dict:

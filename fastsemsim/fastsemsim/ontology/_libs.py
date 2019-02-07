@@ -27,22 +27,24 @@ Set of functions to parse and handle ontologies.
 """
 
 from __future__ import print_function
+try:
+	unicode
+except (NameError, AttributeError):
+	unicode = str #For python3
+
 import types
 import os
 from xml.sax import make_parser
 from xml.sax.handler import ContentHandler
 import gzip
-from . import Ontology
+
+from . import Ontology # Relative version. # from fastsemsim.ontology import Ontology # Absolute version
 from . import DiseaseOntology
 from . import CellOntology
 from . import GeneOntology
 from . import FFOntology
-from fastsemsim import data
+# from fastsemsim import data
 
-try:
-	unicode
-except (NameError, AttributeError):
-	unicode = str #For python3
 
 '''
 Struct ontologies.
@@ -62,38 +64,30 @@ ontologies = {
 ontology_source_types = ['obo-xml', 'obo']
 
 # load embedded dataset
-builtin_dataset = data.dataset.Dataset()
+# builtin_dataset = data.dataset
 
-def parse(source = None, source_type = 'obo', ontology_type = 'GeneOntology', parameters={}):
-	return(load(source, source_type, ontology_type, parameters))
+def parse(source_file = None, file_type = 'obo', ontology_type = 'GeneOntology', parameters={}):
+	return(load(source_file, file_type, ontology_type, parameters))
 #
 
-def load(source = None, source_type = 'obo', ontology_type = 'GeneOntology', parameters={}):
+def load(source_file = None, file_type = 'obo', ontology_type = 'GeneOntology', parameters={}):
 	ontology = None
 	# namespace = None
 
-	if source == None:
-		# program_dir = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
-		# print("ontologies.py: " + program_dir)
-		# builtin_dataset = data.dataset.Dataset()
-		selected_source = builtin_dataset.get_default_ontology(ontology_type)
-		# print(selected_source)
-		if selected_source is None:
-			return None
-		source = selected_source['file']
-		source_type = selected_source['filetype']
+	if source_file == None:
+		raise Exception('source_file parameter cannot be None in ontology.load. Use fastsemsim load_ontology to enable dataset lookup.')
 
-	# generate source file handle
-	if type(source) == unicode:
-		source = str(source)
-	if type(source) == str:
-		fn,fe = os.path.splitext(source)
+	# generate source_file file handle
+	if type(source_file) == unicode: # useless?
+		source_file = str(source_file) # useless?
+	if type(source_file) == str:
+		fn,fe = os.path.splitext(source_file)
 		if fe == '.gz':
-			source_handle = gzip.open(source, 'rb')
+			source_handle = gzip.open(source_file, 'rb')
 		else:
-			source_handle = open(source, 'rU')
+			source_handle = open(source_file, 'rU')
 	else: # assume that the passed object is a file stream
-		source_handle = source
+		source_handle = source_file
 
 	# select proper input parser
 	if 'ontology_type' in parameters:
@@ -102,18 +96,18 @@ def load(source = None, source_type = 'obo', ontology_type = 'GeneOntology', par
 		ontology_class = ontologies[ontology_type][0]
 	else:
 		raise Exception
-	if 'source_type' in parameters:
-		source_type = parameters['source_type']
+	if 'file_type' in parameters:
+		file_type = parameters['file_type']
 
 	# parse data
-	if source_type == 'obo-xml':
+	if file_type == 'obo-xml':
 		parser = make_parser()
 		handler = OboXmlParser(ontology_class, parameters)
 		parser.setContentHandler(handler)
 		# print("A")
 		parser.parse(source_handle)
 		# print("B")
-	elif source_type == 'obo':
+	elif file_type == 'obo':
 		handler = OboParser(ontology_class, parameters)
 		handler.parse(source_handle)
 		# namespace = handler.namespace
@@ -121,7 +115,7 @@ def load(source = None, source_type = 'obo', ontology_type = 'GeneOntology', par
 		# print("GeneOntology load: Unknown file format: " + str(parameters['type']))
 		raise Exception
 
-	if type(source) == str: # if original source was a handle, close input file
+	if type(source_file) == str: # if original source_file was a handle, close input file
 		source_handle.close()
 
 	# # postprocess data, if required

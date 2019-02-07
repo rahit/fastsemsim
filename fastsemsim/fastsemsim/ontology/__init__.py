@@ -20,10 +20,6 @@
 This module contains all the classes and scripts used to load and represent ontologies and annotation corpora by fastSemSim
 '''
 
-__author__="Marco Mina"
-__email__="marco.mina.85@gmail.com"
+__all__ = ["Ontology", "_libs"]
 
-__all__ = ["AnnotationCorpus", "Ontology", "NCBIAnnotationCorpus", "PlainAnnotationCorpus", "GAF2AnnotationCorpus", "ontologies"]
-
-from . import ontologies
-from . import AnnotationCorpus
+from fastsemsim.ontology._libs import *
