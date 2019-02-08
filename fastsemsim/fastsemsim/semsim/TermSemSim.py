@@ -28,8 +28,8 @@ A SemSimUtils object can be passed to the constructor as input data. Otherwise, 
 '''
 
 from __future__ import print_function
-from fastsemsim.Ontology import AnnotationCorpus
-from fastsemsim.Ontology import Ontology
+from fastsemsim.ac import AnnotationCorpus
+from fastsemsim.ontology import Ontology
 from .SemSimUtils import *
 import sys
 import os

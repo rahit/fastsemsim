@@ -28,6 +28,8 @@ except (NameError, AttributeError):
 from fastsemsim import ontology
 from fastsemsim import ac
 from fastsemsim import data
+from fastsemsim import semsim
+
 
 # --------------------------------------------
 # Export some convenient entrypoint functions to load ontologies and annotation corpora
@@ -80,4 +82,26 @@ def load_ac(ontology, source_file = None, file_type = None, species = None, ac_d
 		fontologytype = selected_source['ontology']
 
 	return(ac.load_ac(ontology=ontology, source_file=source_file, file_type=file_type, params=params))
+#
+
+# Entrypoint function: init a SemSim object
+# semsim_types = ('obj', 'term', 'objset', 'termset')
+def init_semsim(ontology, ac=None, semsim_type = 'obj', semsim_measure='Resnik', mixing_strategy='max', ss_util=None, do_log = False, params={}):
+	semsim_class = semsim.select_term_semsim(semsim_measure)
+	mix_class = semsim.select_mix_strategy(mixing_strategy)
+#
+	# util = SemSimUtils(ontology, ac)
+	# util.det_IC_table()
+	ss = None
+	if semsim_type == 'term':
+		ss = semsim_class(ontology, ac, ss_util=ss_util, do_log=do_log)
+	elif semsim_type == 'obj':
+		ss = semsim.ObjSemSim(ontology, ac, semsim_measure, mixing_strategy, ss_util, do_log = do_log)
+	elif semsim_type == 'termset':
+		ss = semsim.SetSemSim(ontology, ac, semsim_measure, mixing_strategy, ss_util, do_log = do_log)
+	elif semsim_type == 'objset':
+		ss = semsim.ObjSetSemSim(ontology, ac, semsim_measure, mixing_strategy, ss_util, do_log = do_log)
+	else:
+		raise Exception
+	return(ss)
 #
