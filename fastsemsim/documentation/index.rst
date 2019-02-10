@@ -9,18 +9,26 @@ FastSemSim Documentation
 :Date: |today|
 :Homepage: https://sites.google.com/site/fastsemsim/
 
-FastSemSim is a Python package for calculating semantic similarities over ontologies (notably over the Gene Ontology).
+FastSemSim is a Python package for calculating semantic similarity over ontologies (yes, including the Gene Ontology).
 
-FastSemSim includes a command line interface to evaluate semantic similarities without programming skills requirements.
+FastSemSim has three main components:
 
-This reference manual details modules and classes included in fastSemSim, as well as the command line interface usage.
+* An underlying library of data structures to represent ontologies and annotation corpora, and algorithms to calculate semantic similarity measures.
 
+* A comprehensive API, built on top of the library, to load and play with ontologies and annotation corpora and calculate semantic similarity scores within the Python environment.
 
+* A command line interface (CLI) to compute semantic similarity without requiring programming skills.
+
+This reference manual details modules and classes included in FastSemSim, as well as the command line interface usage.
+The sections library, API andd CLI describe the aforementioned components and include some examlples.
 
 .. toctree::
    :maxdepth: 2
 
-   package.rst
+   library.rst
+
+   API.rst
+   
    cmdline.rst
 
 

@@ -52,25 +52,26 @@ ontology_aliases = {
 
 class Dataset(object):
 	'''
-	This class keeps track of the dataset of ontologies and annotation corpora included in fastSemSim.
-	The file data/dataset.txt is read to collect the list of embedded ontologies and annotation corpora.
+	The class Dataset keeps track of the ontologies and annotation corpora (ACs) included in fastsemsim.
+	The class includes all the methods to create and browse the dataset of available ontologies and ACs.
+	Each ontology or AC is represented by a 'descriptor' inside Dataset.
+	Descriptors returned to the user through the API functions can be fed to the other functions of fastsemsim
+	to load ontologies and ac.
+	Upon creation, unless otherwise specified through the parameter 'descriptor', a Dataset object will load the standard dataset
+	shipped with fastsemsim (file data/dataset.txt).
 	'''
 
 	def __init__(self, descriptor=None):
-		'''
-		Initialize class structures. Use the descriptor parameter to specify a dataset descriptor file.
-		By default, the file data/dataset.txt will be used.
-		'''
 		# program_dir = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
 		# print "dataset.py: " + program_dir
 		self.populate(descriptor)
-		# print self.dataset
 	#
 
 	def populate(self, descriptor=None):
 		'''
-		Initialize class structures. Use the descriptor parameter to specify a dataset descriptor file.
-		By default, the file data/dataset.txt will be used.
+		Initialize object structures, loading their content from a file describing the dataset.
+		This function is called on class instantiation. By default, the file data/dataset.txt will be loaded.
+		The 'descriptor' parameter allows the user to use a custom dataset descriptor file.
 		'''
 		descriptor_null = False
 		if descriptor == None:
@@ -87,25 +88,43 @@ class Dataset(object):
 			# print self.dataset
 	#
 
-	def get_dataset(self, dataset_name):
+	def get_descriptor(self, name):
 		'''
-		Return the required dataset
+		Return the descriptor of the required ontology or ac, if it exists in the loaded dataset.
 		'''
 		# if not dataset_name in self.dataset.index:
 			# return None
-		return self.dataset.loc[self.dataset['name'] == dataset_name] # return the selected ontology or ac
+		return self.dataset.loc[self.dataset['name'] == name] # return the selected ontology or ac
 	#
 
 ##############
 # Ontology section
 ##############
 	def list_ontologies(self):
+		'''
+		List all the ontologies in the dataset. Each row of the returned pandas table is a valid descriptor.
+		'''
 		return(self.dataset.loc[self.dataset['type'] == 'O'])
 	#
 
 	def get_ontology(self, ontology_name=None, ontology_type='GeneOntology'):
 		'''
-		Return the required ontology
+		Return the descriptor(s) of the required ontology, if it exists in the loaded dataset.
+		The user can require a specific ontology by name and/or ontology type. Either the name or the type has to be specified.
+		
+		Parameters
+		----------
+		ontology_name : str, optional
+			Name of the desired ontology
+
+		ontology_type : str, optional
+			Type of ontology (e.g. GeneOntology, CellOntology, ...)
+
+		Returns
+		-------
+		pandas table
+			Table of descriptors of ontologies compatible with input query. Each row is a valid descriptor.
+
 		'''
 		if (ontology_name == None) & (ontology_type == None):
 			raise Exception('At least one between ontology_type and ontology_name must be provided.')
@@ -125,7 +144,19 @@ class Dataset(object):
 
 	def get_default_ontology(self, ontology_type='GeneOntology'):
 		'''
-		Return the default embedded ontology of the ontology_type type
+		Return the default ontology consistent with the required type.
+		Note that, differently fomr get_ontology, this method always returns 1 ontology descriptor (if it exists).
+
+		Parameters
+		----------
+		ontology_type : str
+			Type of ontology (e.g. GeneOntology, CellOntology, ...)
+
+		Returns
+		-------
+		pandas Series
+			Descriptor of ontology compatible with input query.
+
 		'''
 		selected = self.get_ontology(ontology_name = None, ontology_type=ontology_type)
 		if selected.shape[0] == 0:
@@ -138,12 +169,33 @@ class Dataset(object):
 # AC section
 ##############
 	def list_acs(self):
+		'''
+		List all the annotation corpora in the dataset. Each row of the returned pandas table is a valid descriptor.
+		'''
 		return(self.dataset.loc[self.dataset['type'] == 'AC'])
 	#
 
 	def get_annotation_corpus(self, ac_name=None, ontology_type=None, ac_species=None):
 		'''
-		Return the required annotation corpus
+		Return the descriptor(s) of the required ACs, if it exists in the loaded dataset.
+		The user can require a specific AC by name and/or ontology type. Either the name or the type has to be specified.
+		
+		Parameters
+		----------
+		ontology_name : str, optional
+			Name of the desired AC
+
+		ontology_type : str, optional
+			Type of ontology (e.g. GeneOntology, CellOntology, ...)
+
+		ac_species : str, optional
+			Require species (e.g. human, fly, ...)
+
+		Returns
+		-------
+		pandas table
+			Table of descriptors of ACs compatible with input query. Each row is a valid descriptor.
+
 		'''
 		if (ac_name == None) & (ontology_type == None):
 			raise Exception('At least one between ontology_type and ac_name must be provided.')
@@ -166,7 +218,22 @@ class Dataset(object):
 
 	def get_default_annotation_corpus(self, ontology_type='GeneOntology', ac_species='human'):
 		'''
-		Return the default annotation corpus for the selected species, and compatible with the ontology specified by the ontology parameter.
+		Return the default AC consistent with the required type.
+		Note that, differently fomr get_annotation_corpus, this method always returns 1 ac descriptor (if it exists).
+
+		Parameters
+		----------
+		ontology_type : str
+			Type of ontology (e.g. GeneOntology, CellOntology, ...)
+
+		ac_species : str
+			Require species (e.g. human, fly, ...)
+
+		Returns
+		-------
+		pandas Series
+			Descriptor of AC compatible with input query.
+
 		'''
 		selected = self.get_annotation_corpus(ac_name = None, ontology_type = ontology_type, ac_species = ac_species)
 		if selected.shape[0] == 0:

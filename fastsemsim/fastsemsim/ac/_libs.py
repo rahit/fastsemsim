@@ -48,7 +48,6 @@ from .AnnotationCorpus import AnnotationCorpus
 # from fastsemsim import data
 # INT_DEBUG = True # remove?
 
-# Entrypoint function: load annotation corpus
 def load_ac(ontology, source_file, file_type, params={}):
 	ac = AnnotationCorpus(ontology)
 	ac.load(source_file, file_type, params)

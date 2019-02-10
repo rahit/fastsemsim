@@ -44,6 +44,33 @@ list_acs = dataset.list_acs
 # Helping function: load ontology
 # load_ontology = ontology.load # base version form ontology module. No dataset check
 def load_ontology(source_file = None, file_type = 'obo', ontology_type = 'GeneOntology', ontology_descriptor = None, parameters={}):
+	'''
+	Entrypoint function to parse an ontology.
+	The ontology can be referenced though the source file (source_file parameeter) or a descriptor (see fatsemsim.Dataset section).
+
+	To load an ontology already included in FastSemSim, it is sufficient to specify the ontology type (oontology_type parameter). 
+	FastSemSim will take care of loading the correct ontology in this case
+	
+	Parameters
+	----------
+	source_file : str, optional
+		File containing the ontology to be loaded
+
+	source_type : str, optional
+		The format of the input file. Currently supported formats are obo and obo-xml (also compressed)
+
+	ontology_type : str, optional
+		Type of ontology (e.g. GeneOntology, CellOntology, ...)
+
+	ontology_descriptor : pandas Series, optional
+		A descriptor of an ontology, as provided by the Dataset module
+
+	Returns
+	-------
+	Ontology object
+		The loaded ontology
+
+	'''
 	if not ontology_descriptor == None:
 		selected_source = ontology_descriptor
 		# print(selected_source)
@@ -67,6 +94,38 @@ AnnotationCorpus = ac.AnnotationCorpus
 # Helping function: load annotation corpus
 # load_ac = ac.load_ac # base version from ac module. No dataset check
 def load_ac(ontology, source_file = None, file_type = None, species = None, ac_descriptor = None, params={}):
+	'''
+	Entrypoint function to parse an Annotation Corpus.
+	The AC can be referenced though the source file (source_file parameeter) or a descriptor (see fatsemsim.Dataset section).
+
+	
+	Parameters
+	----------
+
+	ontology: an object of class Ontology
+
+	source_file : str, optional
+		File containing the AC to be loaded
+
+	file_type : str, optional
+		The format of the input file. Currently supported formats are plain and GAF2
+
+	species : str, optional
+		The species to be loaded. Used only if no ac_descriptor and source_file are provided to automatically load
+		a AC included in FastSemSim.
+
+	ac_descriptor : pandas Series, optional
+		A descriptor of an AC, as provided by the Dataset module
+
+	params: dictionary, optional
+		Additional parameters, such as which evidence codes to filter or retain
+
+	Returns
+	-------
+	AnnotationCorpus object
+		The loaded AC
+
+	'''
 	if not ac_descriptor == None:
 		selected_source = ac_descriptor
 		source_file = selected_source['file']

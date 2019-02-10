@@ -18,7 +18,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="FastSemSim package" href="package.html" /> 
+    <link rel="next" title="FastSemSim library" href="library.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -30,7 +30,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="package.html" title="FastSemSim package"
+          <a href="library.html" title="FastSemSim library"
              accesskey="N">next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">fastsemsim 1.0.0beta documentation</a> &#187;</li> 
       </ul>
@@ -49,22 +49,37 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Release:</th><td class="field-body">1.0</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Date:</th><td class="field-body">Jan 28, 2019</td>
+<tr class="field-even field"><th class="field-name">Date:</th><td class="field-body">Feb 09, 2019</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Homepage:</th><td class="field-body"><a class="reference external" href="https://sites.google.com/site/fastsemsim/">https://sites.google.com/site/fastsemsim/</a></td>
 </tr>
 </tbody>
 </table>
-<p>FastSemSim is a Python package for calculating semantic similarities over ontologies (notably over the Gene Ontology).</p>
-<p>FastSemSim includes a command line interface to evaluate semantic similarities without programming skills requirements.</p>
-<p>This reference manual details modules and classes included in fastSemSim, as well as the command line interface usage.</p>
+<p>FastSemSim is a Python package for calculating semantic similarity over ontologies (yes, including the Gene Ontology).</p>
+<p>FastSemSim has three main components:</p>
+<ul class="simple">
+<li>An underlying library of data structures to represent ontologies and annotation corpora, and algorithms to calculate semantic similarity measures.</li>
+<li>A comprehensive API, built on top of the library, to load and play with ontologies and annotation corpora and calculate semantic similarity scores within the Python environment.</li>
+<li>A command line interface (CLI) to compute semantic similarity without requiring programming skills.</li>
+</ul>
+<p>This reference manual details modules and classes included in FastSemSim, as well as the command line interface usage.
+The sections library, API andd CLI describe the aforementioned components and include some examlples.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="package.html">FastSemSim package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="package.html#handling-and-playing-with-ontologies-in-particular-with-the-gene-ontology">Handling and playing with Ontologies (in particular, with the Gene Ontology)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="package.html#representing-and-using-with-annotation-corpora">Representing and using with Annotation Corpora</a></li>
-<li class="toctree-l2"><a class="reference internal" href="package.html#putting-all-together-calculating-semantic-similarities">Putting all together: calculating semantic similarities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="package.html#divers">Divers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library.html">FastSemSim library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="library.html#ontologies">Ontologies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="library.html#annotation-corpora-acs">Annotation Corpora (ACs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="library.html#semantic-similarity-measures">Semantic Similarity measures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="API.html">FastSemSim API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="API.html#importing-fastsemsim">0. Importing FastSemSim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="API.html#api-ontologies">1. API - Ontologies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="API.html#api-annotation-corpora">2. API - Annotation Corpora</a></li>
+<li class="toctree-l2"><a class="reference internal" href="API.html#fastsemsim-datasets">FastSemSim Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="API.html#semantic-similarity">Semantic similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="API.html#putting-all-together-calculating-semantic-similarities">Putting all together: calculating semantic similarities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="API.html#divers">Divers</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="cmdline.html">FastSemSim Command Line Interface (CLI)</a><ul>
@@ -101,8 +116,8 @@
 </ul>
 
   <h4>Next topic</h4>
-  <p class="topless"><a href="package.html"
-                        title="next chapter">FastSemSim package</a></p>
+  <p class="topless"><a href="library.html"
+                        title="next chapter">FastSemSim library</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -136,7 +151,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="package.html" title="FastSemSim package"
+          <a href="library.html" title="FastSemSim library"
              >next</a> |</li>
         <li class="nav-item nav-item-0"><a href="#">fastsemsim 1.0.0beta documentation</a> &#187;</li> 
       </ul>

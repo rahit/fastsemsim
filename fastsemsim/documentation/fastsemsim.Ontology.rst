@@ -1,13 +1,13 @@
-Handling ontologies and annotation corpora
+Ontologies
 ==========================================
 
-.. automodule:: fastsemsim.Ontology
+.. automodule:: fastsemsim.ontology
+    :members:
+    :special-members:
+    :undoc-members:
+    :show-inheritance:
 
-
-Ontology.ontologies
--------------------
-
-.. automodule:: fastsemsim.Ontology.ontologies
+.. automodule:: fastsemsim.ontology._lib
     :members:
     :special-members:
     :undoc-members:
@@ -17,10 +17,7 @@ Ontology.ontologies
 Ontology.Ontology
 -----------------
 
-.. automodule:: fastsemsim.Ontology.Ontology
-    :members:
-
-.. autoclass:: fastsemsim.Ontology.Ontology.Ontology
+.. automodule:: fastsemsim.ontology.Ontology
     :members:
     :show-inheritance:
     :special-members:
@@ -29,7 +26,7 @@ Ontology.Ontology
 Ontology.GeneOntology
 ---------------------
 
-.. automodule:: fastsemsim.Ontology.GeneOntology
+.. automodule:: fastsemsim.ontology.GeneOntology
     :members:
     :undoc-members:
     :show-inheritance:
@@ -37,7 +34,7 @@ Ontology.GeneOntology
 Ontology.CellOntology
 ---------------------
 
-.. automodule:: fastsemsim.Ontology.CellOntology
+.. automodule:: fastsemsim.ontology.CellOntology
     :members:
     :undoc-members:
     :show-inheritance:
@@ -45,32 +42,7 @@ Ontology.CellOntology
 Ontology.DiseaseOntology
 ------------------------
 
-.. automodule:: fastsemsim.Ontology.DiseaseOntology
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Ontology.AnnotationCorpus
--------------------------
-
-.. automodule:: fastsemsim.Ontology.AnnotationCorpus
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-Ontology.GAF2AnnotationCorpus
------------------------------
-
-.. automodule:: fastsemsim.Ontology.GAF2AnnotationCorpus
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    
-Ontology.PlainAnnotationCorpus
-------------------------------
-
-.. automodule:: fastsemsim.Ontology.PlainAnnotationCorpus
+.. automodule:: fastsemsim.ontology.DiseaseOntology
     :members:
     :undoc-members:
     :show-inheritance:

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Ontologies and annotation corpora included in fastSemSim &#8212; fastsemsim 1.0.0beta documentation</title>
+    <title>Ontologies and annotation corpora included in fastsemsim &#8212; fastsemsim 1.0.0beta documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -47,57 +47,116 @@
           <div class="body" role="main">
             
   <div class="section" id="module-fastsemsim.data">
-<span id="ontologies-and-annotation-corpora-included-in-fastsemsim"></span><h1>Ontologies and annotation corpora included in fastSemSim<a class="headerlink" href="#module-fastsemsim.data" title="Permalink to this headline">¶</a></h1>
-<p>This module contains a set of embedded ontologies and annotation corpora, and a class for keeping track and easily find the required datasets.</p>
-<div class="section" id="module-fastsemsim.data.dataset">
-<span id="fastsemsim-data-dataset-submodule"></span><h2>fastsemsim.data.dataset submodule<a class="headerlink" href="#module-fastsemsim.data.dataset" title="Permalink to this headline">¶</a></h2>
+<span id="ontologies-and-annotation-corpora-included-in-fastsemsim"></span><h1>Ontologies and annotation corpora included in fastsemsim<a class="headerlink" href="#module-fastsemsim.data" title="Permalink to this headline">¶</a></h1>
+<p>This module contains ontologies and annotation corpora embedded in fastsemsim,
+and the code for keeping track, browsing and load the desired datasets.
+The file data/dataset.txt contains the list of ontologies and annotation corpora currently embedded in the fastsemsim package.
+Dataset handling and API functions are entirely included in the Dataset class.</p>
+<div class="section" id="module-fastsemsim.data.Dataset">
+<span id="class-dataset"></span><h2>Class Dataset<a class="headerlink" href="#module-fastsemsim.data.Dataset" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="fastsemsim.data.dataset.Dataset">
-<em class="property">class </em><code class="descclassname">fastsemsim.data.dataset.</code><code class="descname">Dataset</code><span class="sig-paren">(</span><em>descriptor=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.dataset.Dataset" title="Permalink to this definition">¶</a></dt>
+<dt id="fastsemsim.data.Dataset.Dataset">
+<em class="property">class </em><code class="descclassname">fastsemsim.data.Dataset.</code><code class="descname">Dataset</code><span class="sig-paren">(</span><em>descriptor=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.Dataset.Dataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This class keeps track of the dataset of ontologies and annotation corpora included in fastSemSim.
-The file data/dataset.txt is read to collect the list of embedded ontologies and annotation corpora.</p>
+<p>The class Dataset keeps track of the ontologies and annotation corpora (ACs) included in fastsemsim.
+The class includes all the methods to create and browse the dataset of available ontologies and ACs.
+Each ontology or AC is represented by a ‘descriptor’ inside Dataset.
+Descriptors returned to the user through the API functions can be fed to the other functions of fastsemsim
+to load ontologies and ac.
+Upon creation, unless otherwise specified through the parameter ‘descriptor’, a Dataset object will load the standard dataset
+shipped with fastsemsim (file data/dataset.txt).</p>
 <dl class="method">
-<dt id="fastsemsim.data.dataset.Dataset.get_annotation_corpus">
-<code class="descname">get_annotation_corpus</code><span class="sig-paren">(</span><em>dataset_name</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.get_annotation_corpus" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the required annotation corpus</p>
+<dt id="fastsemsim.data.Dataset.Dataset.get_annotation_corpus">
+<code class="descname">get_annotation_corpus</code><span class="sig-paren">(</span><em>ac_name=None</em>, <em>ontology_type=None</em>, <em>ac_species=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.Dataset.Dataset.get_annotation_corpus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the descriptor(s) of the required ACs, if it exists in the loaded dataset.
+The user can require a specific AC by name and/or ontology type. Either the name or the type has to be specified.</p>
+<dl class="docutils">
+<dt>ontology_name <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd>Name of the desired AC</dd>
+<dt>ontology_type <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd>Type of ontology (e.g. GeneOntology, CellOntology, …)</dd>
+<dt>ac_species <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd>Require species (e.g. human, fly, …)</dd>
+</dl>
+<dl class="docutils">
+<dt>pandas table</dt>
+<dd>Table of descriptors of ACs compatible with input query. Each row is a valid descriptor.</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
-<dt id="fastsemsim.data.dataset.Dataset.get_annotation_corpus_by_species">
-<code class="descname">get_annotation_corpus_by_species</code><span class="sig-paren">(</span><em>ontology=None</em>, <em>species=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.get_annotation_corpus_by_species" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the annotation corpus for the selected species, and compatible with the ontology specified by the ontology parameter.</p>
+<dt id="fastsemsim.data.Dataset.Dataset.get_default_annotation_corpus">
+<code class="descname">get_default_annotation_corpus</code><span class="sig-paren">(</span><em>ontology_type='GeneOntology'</em>, <em>ac_species='human'</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.Dataset.Dataset.get_default_annotation_corpus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the default AC consistent with the required type.
+Note that, differently fomr get_annotation_corpus, this method always returns 1 ac descriptor (if it exists).</p>
+<dl class="docutils">
+<dt>ontology_type <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>Type of ontology (e.g. GeneOntology, CellOntology, …)</dd>
+<dt>ac_species <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>Require species (e.g. human, fly, …)</dd>
+</dl>
+<dl class="docutils">
+<dt>pandas Series</dt>
+<dd>Descriptor of AC compatible with input query.</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
-<dt id="fastsemsim.data.dataset.Dataset.get_dataset">
-<code class="descname">get_dataset</code><span class="sig-paren">(</span><em>dataset_name</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.get_dataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the required dataset</p>
+<dt id="fastsemsim.data.Dataset.Dataset.get_default_ontology">
+<code class="descname">get_default_ontology</code><span class="sig-paren">(</span><em>ontology_type='GeneOntology'</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.Dataset.Dataset.get_default_ontology" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the default ontology consistent with the required type.
+Note that, differently fomr get_ontology, this method always returns 1 ontology descriptor (if it exists).</p>
+<dl class="docutils">
+<dt>ontology_type <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
+<dd>Type of ontology (e.g. GeneOntology, CellOntology, …)</dd>
+</dl>
+<dl class="docutils">
+<dt>pandas Series</dt>
+<dd>Descriptor of ontology compatible with input query.</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
-<dt id="fastsemsim.data.dataset.Dataset.get_default_annotation_corpus">
-<code class="descname">get_default_annotation_corpus</code><span class="sig-paren">(</span><em>ontology=None</em>, <em>species=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.get_default_annotation_corpus" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the default annotation corpus for the selected species, and compatible with the ontology specified by the ontology parameter.</p>
+<dt id="fastsemsim.data.Dataset.Dataset.get_descriptor">
+<code class="descname">get_descriptor</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.Dataset.Dataset.get_descriptor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the descriptor of the required ontology or ac, if it exists in the loaded dataset.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="fastsemsim.data.dataset.Dataset.get_default_ontology">
-<code class="descname">get_default_ontology</code><span class="sig-paren">(</span><em>ontology_type</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.get_default_ontology" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the default embedded ontology of the ontology_type type</p>
+<dt id="fastsemsim.data.Dataset.Dataset.get_ontology">
+<code class="descname">get_ontology</code><span class="sig-paren">(</span><em>ontology_name=None</em>, <em>ontology_type='GeneOntology'</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.Dataset.Dataset.get_ontology" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the descriptor(s) of the required ontology, if it exists in the loaded dataset.
+The user can require a specific ontology by name and/or ontology type. Either the name or the type has to be specified.</p>
+<dl class="docutils">
+<dt>ontology_name <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd>Name of the desired ontology</dd>
+<dt>ontology_type <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd>Type of ontology (e.g. GeneOntology, CellOntology, …)</dd>
+</dl>
+<dl class="docutils">
+<dt>pandas table</dt>
+<dd>Table of descriptors of ontologies compatible with input query. Each row is a valid descriptor.</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
-<dt id="fastsemsim.data.dataset.Dataset.get_ontology">
-<code class="descname">get_ontology</code><span class="sig-paren">(</span><em>dataset_name</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.get_ontology" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the required ontology</p>
+<dt id="fastsemsim.data.Dataset.Dataset.list_acs">
+<code class="descname">list_acs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.Dataset.Dataset.list_acs" title="Permalink to this definition">¶</a></dt>
+<dd><p>List all the annotation corpora in the dataset. Each row of the returned pandas table is a valid descriptor.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="fastsemsim.data.dataset.Dataset.populate">
-<code class="descname">populate</code><span class="sig-paren">(</span><em>descriptor=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.dataset.Dataset.populate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize class structures. Use the descriptor parameter to specify a dataset descriptor file.
-By default, the file data/dataset.txt will be used.</p>
+<dt id="fastsemsim.data.Dataset.Dataset.list_ontologies">
+<code class="descname">list_ontologies</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.Dataset.Dataset.list_ontologies" title="Permalink to this definition">¶</a></dt>
+<dd><p>List all the ontologies in the dataset. Each row of the returned pandas table is a valid descriptor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fastsemsim.data.Dataset.Dataset.populate">
+<code class="descname">populate</code><span class="sig-paren">(</span><em>descriptor=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.Dataset.Dataset.populate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize object structures, loading their content from a file describing the dataset.
+This function is called on class instantiation. By default, the file data/dataset.txt will be loaded.
+The ‘descriptor’ parameter allows the user to use a custom dataset descriptor file.</p>
 </dd></dl>
 
 </dd></dl>
@@ -113,8 +172,8 @@ By default, the file data/dataset.txt will be used.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Ontologies and annotation corpora included in fastSemSim</a><ul>
-<li><a class="reference internal" href="#module-fastsemsim.data.dataset">fastsemsim.data.dataset submodule</a></li>
+<li><a class="reference internal" href="#">Ontologies and annotation corpora included in fastsemsim</a><ul>
+<li><a class="reference internal" href="#module-fastsemsim.data.Dataset">Class Dataset</a></li>
 </ul>
 </li>
 </ul>
