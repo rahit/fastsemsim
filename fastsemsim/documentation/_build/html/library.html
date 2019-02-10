@@ -1,0 +1,176 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>FastSemSim library &#8212; fastsemsim 1.0.0beta documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Ontologies" href="fastsemsim.Ontology.html" />
+    <link rel="prev" title="FastSemSim Documentation" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fastsemsim.Ontology.html" title="Ontologies"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="FastSemSim Documentation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">fastsemsim 1.0.0beta documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="fastsemsim-library">
+<h1>FastSemSim library<a class="headerlink" href="#fastsemsim-library" title="Permalink to this headline">¶</a></h1>
+<p>The FastSemSim Python package implements</p>
+<ul class="simple">
+<li>a set of classes to represent and reason with ontologies (e.g. Gene Ontology)</li>
+<li>a set of classes to represent and reason on ACs</li>
+<li>the algorithms to calculate semantic similarity measures</li>
+</ul>
+<div class="section" id="ontologies">
+<h2>Ontologies<a class="headerlink" href="#ontologies" title="Permalink to this headline">¶</a></h2>
+<p>Algorithms and data structure to parse and represent ontologies, and exctract information from them.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="fastsemsim.Ontology.html">Ontologies</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.Ontology.html#module-fastsemsim.ontology.Ontology">Ontology.Ontology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.Ontology.html#module-fastsemsim.ontology.GeneOntology">Ontology.GeneOntology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.Ontology.html#module-fastsemsim.ontology.CellOntology">Ontology.CellOntology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.Ontology.html#module-fastsemsim.ontology.DiseaseOntology">Ontology.DiseaseOntology</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="annotation-corpora-acs">
+<h2>Annotation Corpora (ACs)<a class="headerlink" href="#annotation-corpora-acs" title="Permalink to this headline">¶</a></h2>
+<p>Algorithms and data structure to parse and represent ACs, and exctract information from them.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="fastsemsim.AC.html">Annotation Corpora (ACs)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.AC.html#ontology-annotationcorpus">Ontology.AnnotationCorpus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.AC.html#ontology-gaf2annotationcorpus">Ontology.GAF2AnnotationCorpus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.AC.html#ontology-plainannotationcorpus">Ontology.PlainAnnotationCorpus</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="semantic-similarity-measures">
+<h2>Semantic Similarity measures<a class="headerlink" href="#semantic-similarity-measures" title="Permalink to this headline">¶</a></h2>
+<p>Implementation of semantic similarity measures.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="fastsemsim.SemSim.html">Semantic Similarity</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#semsim-termsemsim">SemSim.TermSemSim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#semsim-objsemsim">SemSim.ObjSemSim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#semsim-objsetsemsim">SemSim.ObjSetSemSim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#semsim-setsemsim">SemSim.SetSemSim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#specific-semantic-similarity-measures">Specific Semantic Similarity measures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#semsim-mixsemsim">SemSim.MixSemSim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#semsim-avgsemsim">SemSim.avgSemSim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#semsim-maxsemsim">SemSim.maxSemSim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#semsim-bmasemsim">SemSim.BMASemSim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastsemsim.SemSim.html#semsim-semsimutils">SemSim.SemSimUtils</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">FastSemSim library</a><ul>
+<li><a class="reference internal" href="#ontologies">Ontologies</a></li>
+<li><a class="reference internal" href="#annotation-corpora-acs">Annotation Corpora (ACs)</a></li>
+<li><a class="reference internal" href="#semantic-similarity-measures">Semantic Similarity measures</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">FastSemSim Documentation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="fastsemsim.Ontology.html"
+                        title="next chapter">Ontologies</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/library.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fastsemsim.Ontology.html" title="Ontologies"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="FastSemSim Documentation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">fastsemsim 1.0.0beta documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2019, Marco Mina.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
+    </div>
+  </body>
+</html>

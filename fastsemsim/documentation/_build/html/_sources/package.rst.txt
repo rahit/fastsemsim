@@ -1,0 +1,53 @@
+FastSemSim package
+==================
+
+The FastSemSim Python package implements 
+- a set of classes to represent and reason with ontologies (e.g. Gene Ontology) and annotation corpora
+- the algorithms to calculate multiple semantic similarity measures
+
+This documentation explains how to start and use FastSemSim in your Python programs and scripts.
+The materials here presented are divided in four sections
+
+The standard processing workflow used when calculating semantic similarity scores can be recapitulated in the following 6 steps:
+
+.. image:: images/cli_ss_pipeline_1.jpg
+
+
+Handling and playing with Ontologies (in particular, with the Gene Ontology)
+----------------------------------
+All the classes required to handle ontologies are defined in the Ontology component of fastSemSim.
+
+After importing fastsemsim, you can load an ontology using the function load_ontology()
+
+import fastsemsim
+ontology = fastsemsim.load_ontology()
+
+If invoked without parameters, this function will load the Gene Ontology shipped with fastsemsim.
+Playing with the parameters of the function allows loading other ontologies included in fastsemsim, as well as custom ontologies from obo or xml files.
+
+To list the ontologies available in fastsemsim, you can use the function list_ontologies()
+
+
+
+Representing and using with Annotation Corpora
+----------------------------------
+
+Putting all together: calculating semantic similarities
+----------------------------------
+
+
+Divers
+----------------------------------
+
+The CLI main function is  designed to evaluate semantic similarity scores.
+
+It currently allows to load an arbitrary obo ontology and annotation corpus. If no custom ontology is provided, the embedded version will be  used.
+
+
+
+.. toctree::
+    :maxdepth: 2
+
+    fastsemsim.Ontology.rst
+    fastsemsim.data.rst
+    fastsemsim.SemSim.rst

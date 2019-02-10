@@ -1,0 +1,165 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>FastSemSim Command Line Interface (CLI) &#8212; fastsemsim 1.0.0beta documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Semantic Similarity" href="fastsemsim.SemSim.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fastsemsim.SemSim.html" title="Semantic Similarity"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">fastsemsim 1.0.0beta documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="fastsemsim-command-line-interface-cli">
+<h1>FastSemSim Command Line Interface (CLI)<a class="headerlink" href="#fastsemsim-command-line-interface-cli" title="Permalink to this headline">¶</a></h1>
+<p>The FastSemSim package includes a command line Interface to load ontologies and annotation corpora, and evaluate semantic similarity, without requiring any programming effort.</p>
+<p>This section explains how to start and use FastSemSim from the command line.</p>
+<div class="section" id="running-the-command-line-interface">
+<h2>Running the Command Line Interface<a class="headerlink" href="#running-the-command-line-interface" title="Permalink to this headline">¶</a></h2>
+<p>FastSemSim installations takes care to create the executable of the command line Interface. To run it, just type <code class="docutils literal notranslate"><span class="pre">fastsemsim</span></code> in a console.</p>
+<p>Run <code class="docutils literal notranslate"><span class="pre">fastsemsim</span> <span class="pre">-h</span></code> to visualize the full set of parameters.</p>
+</div>
+<div class="section" id="cli-capabilities-and-standard-workflow">
+<h2>CLI capabilities and standard workflow<a class="headerlink" href="#cli-capabilities-and-standard-workflow" title="Permalink to this headline">¶</a></h2>
+<p>The CLI main function is  designed to evaluate semantic similarity scores.</p>
+<p>It currently allows to load an arbitrary obo ontology and annotation corpus. If no custom ontology is provided, the embedded version will be  used.</p>
+<p>The standard processing workflow performed by the CLI to evaluate the semantic similarity scores can be recapitulated in the following 6 steps</p>
+<img alt="_images/cli_ss_pipeline_1.jpg" src="_images/cli_ss_pipeline_1.jpg" />
+</div>
+<div class="section" id="examples-of-semantic-similarity-calculation-with-the-cli">
+<h2>Examples of semantic similarity calculation with the CLI<a class="headerlink" href="#examples-of-semantic-similarity-calculation-with-the-cli" title="Permalink to this headline">¶</a></h2>
+<p>This section provides several CLI use cases. You may take them as exampels and modify the parameters to fit your objectives.</p>
+<p><strong>Exampe 1</strong>. Evaluate the Resnik BMA semantic similarity over the Gene Ontology between all the pairs of human proteins annotated in the Uniprot GOA:</p>
+<p><code class="docutils literal notranslate"><span class="pre">fastsemsim</span> <span class="pre">--ontology_type</span> <span class="pre">GeneOntology</span> <span class="pre">--query_ss_type</span> <span class="pre">obj</span> <span class="pre">--tss</span> <span class="pre">Resnik</span> <span class="pre">--mix</span> <span class="pre">BMA</span> <span class="pre">--query_input</span> <span class="pre">ac</span> <span class="pre">--ac_species</span> <span class="pre">human</span>&#160; <span class="pre">-vv</span></code></p>
+<p><em>Parameter description</em>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--ontology_type</span> <span class="pre">GeneOntology</span></code>: instructs fastSemSim to load the embedded version of the GeneOntology</p>
+<p><code class="docutils literal notranslate"><span class="pre">--ac_species</span> <span class="pre">human</span></code>: instructs fastSemSim to load the embedded version of the Uniprot human gene ontology annotation corpus</p>
+<p><code class="docutils literal notranslate"><span class="pre">--tss</span> <span class="pre">Resnik</span></code>: selects the term semantic similarity to use</p>
+<p><code class="docutils literal notranslate"><span class="pre">--mix</span> <span class="pre">BMA</span></code>: selects the mixing strategy to use (required by pairwise semantic similarity measures, e.g. Resnik)</p>
+<p><code class="docutils literal notranslate"><span class="pre">--query_ss_type</span> <span class="pre">obj</span></code>: tells fastSemSim that the query will be a list of objects annotated with the ontology terms</p>
+<p><code class="docutils literal notranslate"><span class="pre">--query_input</span> <span class="pre">ac</span></code>: tells fastSemSim to use all the objects in the annotation corpus as query</p>
+<p><code class="docutils literal notranslate"><span class="pre">-vv</span></code>: the verbosity level</p>
+<p><strong>Exampe 2</strong>. Evaluate the SimGIC semantic similarity over the Disease Ontology between all the pairs of ontology terms, using the human DOA (Disease Ontology Annotation) dataset for establishing the Information Content statistics:</p>
+<p><code class="docutils literal notranslate"><span class="pre">fastsemsim</span> <span class="pre">--ontology_type</span> <span class="pre">DiseaseOntology</span> <span class="pre">--query_ss_type</span> <span class="pre">term</span> <span class="pre">--tss</span> <span class="pre">SimGIC</span> <span class="pre">--query_input</span> <span class="pre">ontology</span> <span class="pre">--ac_species</span> <span class="pre">human</span> <span class="pre">-vv</span></code></p>
+<p><em>Parameter description</em>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--ontology_type</span> <span class="pre">DiseaseOntology</span></code>: instructs fastSemSim to load the embedded version of the DiseaseOntology</p>
+<p><code class="docutils literal notranslate"><span class="pre">--ac_species</span> <span class="pre">human</span></code>: instructs fastSemSim to load the embedded version of the human Disease Ontology Annotation corpus</p>
+<p><code class="docutils literal notranslate"><span class="pre">--tss</span> <span class="pre">SimGIC</span></code>: selects the term semantic similarity to use (as SimGIC is a pairwise semantic similarity, the –mix parameter is not required )</p>
+<p><code class="docutils literal notranslate"><span class="pre">--query_ss_type</span> <span class="pre">term</span></code>: tells fastSemSim that the query will be a list of ontology terms</p>
+<p><code class="docutils literal notranslate"><span class="pre">--query_input</span> <span class="pre">ontology</span></code>: tells fastSemSim to use all the terms in the ontology as query. Use <code class="docutils literal notranslate"><span class="pre">--query_input</span> <span class="pre">ac</span></code> to use all the ontology terms associated to at least one object in the annotation corpus as query.</p>
+<p><code class="docutils literal notranslate"><span class="pre">-vv</span></code>: the verbosity level</p>
+<p><strong>Exampe 3</strong>. Evaluate the SimGIC semantic similarity over the Gene Ontology (loaded from file <em>GO_FILE</em>) and the Uniprot human gene ontology annotation corpus. The query is a list of sets of objects loaded from the <em>QUERY_FILE</em> file. See <a class="reference download internal" download="" href="_downloads/6deb530ef6a857cfafb1dbfcf04551dd/objset_GOA_query.txt"><code class="xref download docutils literal notranslate"><span class="pre">this</span> <span class="pre">file</span></code></a> for an example of a valid objset query file. The output will be written in the <em>OUTPUT_FILE</em> file. See <a class="reference download internal" download="" href="_downloads/b8aea64d5440aac86d64f8dca236f300/objset_GOA_output.txt"><code class="xref download docutils literal notranslate"><span class="pre">this</span> <span class="pre">file</span></code></a> for an example of the output generated.</p>
+<p><code class="docutils literal notranslate"><span class="pre">fastsemsim</span> <span class="pre">--ontology_type</span> <span class="pre">GeneOntology</span> <span class="pre">--ontology_file</span> <span class="pre">GO_FILE</span> <span class="pre">--ac_species</span> <span class="pre">human</span> <span class="pre">--query_ss_type</span> <span class="pre">objset</span> <span class="pre">--tss</span> <span class="pre">SimGIC</span> <span class="pre">--query_input</span> <span class="pre">file</span> <span class="pre">--query_file</span> <span class="pre">QUERY_FILE</span>&#160; <span class="pre">-vv</span> <span class="pre">--output_file</span> <span class="pre">OUTPUT_FILE</span> <span class="pre">--query_mode</span> <span class="pre">list</span></code></p>
+<p><a href="#id1"><span class="problematic" id="id2">*</span></a>Parameter description <a href="#id3"><span class="problematic" id="id4">*</span></a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--ontology_file</span> <span class="pre">GO_FILE</span></code>: the file with the ontology to load</p>
+<p><code class="docutils literal notranslate"><span class="pre">--ontology_type</span> <span class="pre">GeneOntology</span></code>: instructs fastSemSim about the type of ontology that will be loaded</p>
+<p><code class="docutils literal notranslate"><span class="pre">--ac_species</span> <span class="pre">human</span></code>: instructs fastSemSim to load the embedded version of the human Disease Ontology Annotation corpus</p>
+<p><code class="docutils literal notranslate"><span class="pre">--tss</span> <span class="pre">SimGIC</span></code>: selects the term semantic similarity to use</p>
+<p><code class="docutils literal notranslate"><span class="pre">--query_ss_type</span> <span class="pre">objset</span></code>: tells fastSemSim that the query will be a list of sets of objects.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--query_input</span> <span class="pre">file</span></code>: tells fastSemSim to load the query from file. Requires the parameter –query_file to be specified.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--query_file</span> <span class="pre">QUERY_FILE</span></code>: the name of the query file</p>
+<p><code class="docutils literal notranslate"><span class="pre">--query_mode</span> <span class="pre">list</span></code>: tells fastSemSim that the query is a list of elements. The pairwise semantic similarity between each element will be evaluated.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--output_file</span> <span class="pre">OUTPUT_FILE</span></code>: the output file where the scores will be stored.</p>
+</div>
+<div class="section" id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
+<p>If you want to run fastSemSim Command Line Interface without installing the FastSemSim library, you can run the Python script <code class="docutils literal notranslate"><span class="pre">fastsemsim_cmdline.py</span></code> located in the folder <code class="docutils literal notranslate"><span class="pre">fastsemsim</span></code>.
+You should include the FastSemSim library in your PYTHONPATH before running the script, by running <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PYTHONPATH=path-to-fastsemsim-folder</span></code>.</p>
+<span class="target" id="module-fastsemsim.fastsemsim_cmdline"></span></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">FastSemSim Command Line Interface (CLI)</a><ul>
+<li><a class="reference internal" href="#running-the-command-line-interface">Running the Command Line Interface</a></li>
+<li><a class="reference internal" href="#cli-capabilities-and-standard-workflow">CLI capabilities and standard workflow</a></li>
+<li><a class="reference internal" href="#examples-of-semantic-similarity-calculation-with-the-cli">Examples of semantic similarity calculation with the CLI</a></li>
+<li><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="fastsemsim.SemSim.html"
+                        title="previous chapter">Semantic Similarity</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/cmdline.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fastsemsim.SemSim.html" title="Semantic Similarity"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">fastsemsim 1.0.0beta documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2011-2019, Marco Mina.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
+    </div>
+  </body>
+</html>
