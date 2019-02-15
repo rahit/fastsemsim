@@ -19,41 +19,41 @@ along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 from __future__ import print_function
-from fastsemsim.Ontology import ontologies
+import fastsemsim
 import sys
 import os
 
 if __name__ == "__main__":
 
 	# Select the type of ontology (GeneOntology, ...)
-	ontology_type = 'GeneOntology'
-	# ontology_type = 'CellOntology'
+	# ontology_type = 'GeneOntology'
+	ontology_type = 'CellOntology'
 	# ontology_type = 'DiseaseOntology'
 
 	# Select the relatioships to be ignored. For the GeneOntology, has_part is ignore by default, for CellOntology, lacks_plasma_membrane_part is ignored by default
 	# ignore_parameters =	{}
-	ignore_parameters =	{'ignore':{}}
+	# ignore_parameters =	{'ignore':{}}
 	# ignore_parameters =	{'ignore':{'has_part':True, 'occurs_in':True, 'happens_during':True}}
-	# ignore_parameters =	{'ignore':{'regulates':True, 'has_part':True, 'negatively_regulates':True, 'positively_regulates':True, 'occurs_in':True, 'happens_during':True}}
+	ignore_parameters =	{'ignore':{'regulates':False, 'has_part':True, 'negatively_regulates':False, 'positively_regulates':False, 'occurs_in':False, 'happens_during':True, 'lacks_plasma_membrane_part':True}}
 
 	# Select the source file type (obo or obo-xml)
-	source_type = 'obo'
+	file_type = 'obo'
 
-	# Select the source file name. If None, the default GeneOntology included in fastsemsim will be used
-	source = None
+	# Select the source_file file name. If None, the default GeneOntology included in fastsemsim will be used
+	source_file = None
 
 	print("\n######################")
 	print("# Loading ontology... #")
 	print("######################\n")
 
-	ontology = ontologies.load(source=source, source_type=source_type, ontology_type = ontology_type, parameters=ignore_parameters)
+	ontology = fastsemsim.load_ontology(source_file = source_file, file_type = file_type, ontology_type = ontology_type, ontology_descriptor = None, parameters=ignore_parameters)
 
 	print("\n#################################")
 	print("# Ontology successfully loaded.")
 	print("#################################\n")
 
-	print("source: " + str(source))
-	print("source_type: " + str(source_type))
+	print("source_file: " + str(source_file))
+	print("file_type: " + str(file_type))
 	print("ontology_type: " + str(ontology_type))
 	print("ignore_parameters: " + str(ignore_parameters))
 	print("Number of nodes: " + str(ontology.node_number()))
@@ -69,5 +69,4 @@ if __name__ == "__main__":
 	print("\nInter edges (link between different namespaces - within the same ontology):\n-------------\n" + str(ontology.edges.loc[(ontology.edges['intra'] == False) & (ontology.edges['inner'] == True)]))
 	print("-------------")
 	#
-
 #

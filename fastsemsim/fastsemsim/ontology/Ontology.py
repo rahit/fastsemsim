@@ -122,12 +122,13 @@ class Ontology(object):
 			nid = None
 			if codes == None:
 				return nid
-			if isinstance(codes,str) or isinstance(codes,unicode):
+			if isinstance(codes,str) or isinstance(codes,unicode) or isinstance(codes,int):
+				if isinstance(codes,str) or isinstance(codes,unicode):
 				# nid = go_name2id(codes)
-				nid = self._id2node(codes,strict=True)
-				nid = self.id2node(nid, alt_check)
-			elif isinstance(codes,int):
-				nid = codes
+					nid = self._id2node(codes,strict=True)
+				# nid = self.id2node(nid, alt_check)
+				elif isinstance(codes, int):
+					nid = codes
 				if alt_check:
 					if nid in self.alt_id:
 						nid = self.alt_id[nid]

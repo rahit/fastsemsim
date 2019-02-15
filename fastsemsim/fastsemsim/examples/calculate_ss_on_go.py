@@ -35,9 +35,9 @@ if __name__ == "__main__":
 
 
 	# Select the type of ontology (GeneOntology, ...)
-	# ontology_type = 'GeneOntology'
+	ontology_type = 'GeneOntology'
 	# ontology_type = 'CellOntology'
-	ontology_type = 'DiseaseOntology'
+	# ontology_type = 'DiseaseOntology'
 
 	# Select the relatioships to be ignored. For the GeneOntology, has_part is ignore by default, for CellOntology, lacks_plasma_membrane_part is ignored by default
 	# ontology_parameters =	{}
@@ -70,8 +70,8 @@ if __name__ == "__main__":
 	# ac_species = 'worm'
 	# ac_species = 'zebrafish'
 
-	ac_source_file_type = 'plain'
-	# ac_source_file_type = 'gaf-2.0'
+	# ac_source_file_type = 'plain'
+	ac_source_type = 'gaf-2.0'
 
 	ac_params = {}
 
@@ -99,6 +99,32 @@ if __name__ == "__main__":
 	
 
 	
+
+
+
+
+
+
+
+	##################
+	# Parameters for the SS
+
+
+	semsim_type='obj'
+	semsim_measure='Resnik'
+	mixing_strategy='max'
+	ss_util=None
+	semsim_do_log=False
+	semsim_params={}
+
+
+
+
+
+
+
+
+
 
 
 
@@ -133,9 +159,17 @@ if __name__ == "__main__":
 #
 
 
+
+
+
+
+
+
+
 	print("\n######################")
 	print("# Loading annotation corpus... #")
 	print("######################\n")
+
 
 	if ac_source_file is None:
 		ac_descriptor = fastsemsim.dataset.get_default_annotation_corpus(ontology_type=ontology_type, ac_species=ac_species)
@@ -164,3 +198,41 @@ if __name__ == "__main__":
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+	print("\n######################")
+	print("# Initializing Semantic Similarity core... #")
+	print("######################\n")
+
+
+	ss = fastsemsim.init_semsim(ontology = ontology, ac = ac, semsim_type = semsim_type, semsim_measure = semsim_measure, mixing_strategy = mixing_strategy, ss_util = ss_util, do_log = semsim_do_log, params = semsim_params)
+
+
+
+	print("\n######################")
+	print("# Calculating SS for some pairs of proteins... #")
+	print("######################\n")
+
+
+	ss.SemSim('O75884', 'Q9NQB0')
+
+	ss.SemSim('Q14206', 'Q8IUH3')
+
+
+
+
+
+
+
+
+
+	

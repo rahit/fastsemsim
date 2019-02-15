@@ -67,14 +67,16 @@ class DiseaseOntology(Ontology.Ontology):
 
 	@staticmethod
 	def _node2id(code):
-		return "DOID:" + '0'*(7 - len(str(code))) + str(code)
+		# return "DOID:" + '0'*(7 - len(str(code))) + str(code) # numeric ids not working with latest version of DO
+		return "DOID:" + str(code)
 	#
 
 	@staticmethod
 	def _id2node(code, strict=True):
 		if code.startswith('DOID:'):
 			try:
-				return int(code[5:])
+				# return int(code[5:]) $ numeric version does not work with latest version of DO. Using characters instead
+				return code[5:]
 			except Exception:
 				return None
 		if strict:

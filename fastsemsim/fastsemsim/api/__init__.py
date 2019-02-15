@@ -126,15 +126,15 @@ def load_ac(ontology, source_file = None, file_type = None, species = None, ac_d
 		The loaded AC
 
 	'''
-	if not ac_descriptor == None:
+	if not isinstance(ac_descriptor, None.__class__):
 		selected_source = ac_descriptor
 		source_file = selected_source['file']
 		file_type = selected_source['filetype']
 		fontologytype = selected_source['ontology']
-	elif source_file == None:
+	elif isinstance(source_file, None.__class__):
 		selected_source = dataset.get_default_annotation_corpus(ontology_type = ontology.name, ac_species = species)
 		# print(selected_source)
-		if selected_source is None:
+		if isinstance(selected_source, None.__class__):
 			return None
 		source_file = selected_source['file']
 		file_type = selected_source['filetype']
@@ -142,6 +142,11 @@ def load_ac(ontology, source_file = None, file_type = None, species = None, ac_d
 
 	return(ac.load_ac(ontology=ontology, source_file=source_file, file_type=file_type, params=params))
 #
+
+
+
+
+
 
 # Entrypoint function: init a SemSim object
 # semsim_types = ('obj', 'term', 'objset', 'termset')
