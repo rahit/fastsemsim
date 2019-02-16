@@ -213,7 +213,6 @@ if __name__ == "__main__":
 	print("# Initializing Semantic Similarity core... #")
 	print("######################\n")
 
-
 	ss = fastsemsim.init_semsim(ontology = ontology, ac = ac, semsim_type = semsim_type, semsim_measure = semsim_measure, mixing_strategy = mixing_strategy, ss_util = ss_util, do_log = semsim_do_log, params = semsim_params)
 
 
@@ -222,9 +221,7 @@ if __name__ == "__main__":
 	print("# Calculating SS for some pairs of proteins... #")
 	print("######################\n")
 
-
 	ss.SemSim('O75884', 'Q9NQB0')
-
 	ss.SemSim('Q14206', 'Q8IUH3')
 
 
@@ -235,4 +232,23 @@ if __name__ == "__main__":
 
 
 
-	
+
+
+
+
+
+
+	print("\n######################")
+	print("# Initializing batch Semantic Similarity onject... #")
+	print("######################\n")
+
+	ssbatch = fastsemsim.init_batchsemsim(ontology = ontology, ac = ac, semsim_type = semsim_type, semsim_measure = semsim_measure, mixing_strategy = mixing_strategy, ss_util = ss_util, do_log = semsim_do_log, params = semsim_params)
+
+
+
+	print("\n######################")
+	print("# Calculating pairwise SS in batch mode for a list of proteins... #")
+	print("######################\n")
+
+	ssbatch.semsim_list( ['O75884', 'Q9NQB0', 'Q14206', 'Q8IUH3' ] )
+

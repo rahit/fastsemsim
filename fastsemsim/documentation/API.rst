@@ -74,8 +74,9 @@ Here the full description of the function:
 
 
 
-FastSemSim Datasets
+3. Data embedded in FastSemSim 
 ----------------------------------
+
 Ontologies and annotation corpora included in fastsemsim
 
 To list the ontologies available in fastsemsim, you can use the function list_ontologies()
@@ -87,16 +88,20 @@ To list the ontologies available in fastsemsim, you can use the function list_on
 
 
 
-Semantic similarity
-----------------------------------
+4. Calculating the Semantic similarity
+------------------------------------------
 
 
 
 
 
+5. Calculating the Semantic similarity - batch mode 
+------------------------------------------------------
 
-Putting all together: calculating semantic similarities
-----------------------------------
+
+
+6. Examples and use cases: Putting all together
+---------------------------------------------------
 
 
 

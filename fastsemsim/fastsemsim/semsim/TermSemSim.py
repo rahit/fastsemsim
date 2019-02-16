@@ -172,7 +172,7 @@ class TermSemSim(object):
 
 	def _SemSim(self, term1, term2):
 		if self.do_log:
-			reason = 'Generic _SemSim_'
+			reason = 'Generic _SemSim_. Will always return None.'
 			self.log.append(reason)
 		return None
 	#
@@ -187,7 +187,7 @@ class TermSemSim(object):
 		self.format_and_check_data = en
 
 
-	def SemSim(self, term1, term2, ontology = None):
+	def SemSim(self, term1, term2, root = None):
 	# This is the main function that should be called to evaluate the Term Sem Sim
 	# It takes care of verifying data, format them, and evaluate the Sem Sim.
 	# It might be necessary to Overload this function for cross-ontological Term Sem Sim measures 

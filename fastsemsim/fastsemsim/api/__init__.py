@@ -29,6 +29,7 @@ from fastsemsim import ontology
 from fastsemsim import ac
 from fastsemsim import data
 from fastsemsim import semsim
+from .BatchSemSim import BatchSemSim
 
 
 # --------------------------------------------
@@ -151,13 +152,58 @@ def load_ac(ontology, source_file = None, file_type = None, species = None, ac_d
 # Entrypoint function: init a SemSim object
 # semsim_types = ('obj', 'term', 'objset', 'termset')
 def init_semsim(ontology, ac=None, semsim_type = 'obj', semsim_measure='Resnik', mixing_strategy='max', ss_util=None, do_log = False, params={}):
-	semsim_class = semsim.select_term_semsim(semsim_measure)
-	mix_class = semsim.select_mix_strategy(mixing_strategy)
+	'''
+	Entrypoint function to initialize a semantic similarity object to evaluate semantic similarity over an ontology / Annotation Corpus.
+	The function takes care of creating the right semsim object to calculate the semantic similarity between the required type of query.
+	The type of query is specific through the parameter semsim_type. Query type can be 'term', 'obj', 'termset' or 'objset'.
+	An ontology has to be passed as mandatory parameter. An Annotation corpus has to be specific for query types 'obj' and 'objset'.
+
+	
+	Parameters
+	----------
+
+	ontology: Ontology object
+		an object of class Ontology.
+
+	ac : AnnotationCorpus object, optional
+		the annotation corpus to consider. Mandatory is semsim_type is 'obj' or 'objset'
+
+	semsim_type : str
+		The type of query and semantic similarity to calculate:
+		- 'term': ss between single terms of the ontology.
+		- 'termset': ss between groups of terms of the ontology.
+		- 'obj': ss between pairs of object in the AC.
+		- 'term': ss between groups of objects in the AC.
+
+	semsim_measure : str
+		the semantic similarity to use
+
+	mixing_strategy : str
+		As some semantic similarities are only defined between pairs of ontological terms, this option allows to specify how to mix the scores between multiple pairs of terms (e.g. when calculating the similarity between objects of the AC.
+
+	ss_util: object of SemSimUtils, optional
+		This class implements a set of routines and metrics used internally by several semantic similarity measures (e.g. the IC index)
+
+	do_log: boolean, optional
+		Whether an output log should be provided
+
+	params: dictionary, optional
+		Additional parameters
+
+	Returns
+	-------
+	SemSim object
+		A semantic similarity object initialized with the right configuration and ready to be used to calculate SS.
+
+	'''
+	# semsim_class = semsim.select_term_semsim(semsim_measure)
+	# mix_class = semsim.select_mix_strategy(mixing_strategy)
 #
 	# util = SemSimUtils(ontology, ac)
 	# util.det_IC_table()
 	ss = None
 	if semsim_type == 'term':
+		semsim_class = semsim.select_term_semsim(semsim_measure)
 		ss = semsim_class(ontology, ac, ss_util=ss_util, do_log=do_log)
 	elif semsim_type == 'obj':
 		ss = semsim.ObjSemSim(ontology, ac, semsim_measure, mixing_strategy, ss_util, do_log = do_log)
@@ -169,3 +215,70 @@ def init_semsim(ontology, ac=None, semsim_type = 'obj', semsim_measure='Resnik',
 		raise Exception
 	return(ss)
 #
+
+
+
+
+
+
+
+
+
+
+# Entrypoint function: create a SemSim measure object with convenient functions to process different types of queries (eg list, pairs,...)
+def init_batchsemsim(ontology, ac=None, semsim_type = 'obj', semsim_measure='Resnik', mixing_strategy='max', ss_util=None, do_log = False, params={}):
+	'''
+	Entrypoint function to initialize a batch wrapper for a semantic similarity object to evaluate semantic similarity over an ontology / Annotation Corpus.
+	The batch wrapper implements convenients methods to calculate the SS between pairs of lists of query objects/terms.
+	This function create a BatchSemSim object.
+	For each query format (pairs, list, ...) a method from BatchSemSim is available.
+
+	
+	Parameters
+	----------
+
+	ontology: Ontology object
+		an object of class Ontology.
+
+	ac : AnnotationCorpus object, optional
+		the annotation corpus to consider. Mandatory is semsim_type is 'obj' or 'objset'
+
+	semsim_type : str
+		The type of query and semantic similarity to calculate:
+		- 'term': ss between single terms of the ontology.
+		- 'termset': ss between groups of terms of the ontology.
+		- 'obj': ss between pairs of object in the AC.
+		- 'term': ss between groups of objects in the AC.
+
+	semsim_measure : str
+		the semantic similarity to use
+
+	mixing_strategy : str
+		As some semantic similarities are only defined between pairs of ontological terms, this option allows to specify how to mix the scores between multiple pairs of terms (e.g. when calculating the similarity between objects of the AC.
+
+	ss_util: object of SemSimUtils, optional
+		This class implements a set of routines and metrics used internally by several semantic similarity measures (e.g. the IC index)
+
+	do_log: boolean, optional
+		Whether an output log should be provided
+
+	params: dictionary, optional
+		Additional parameters
+
+	Returns
+	-------
+	BatchSemSim object
+		A semantic similarity object with convenience functions initialized with the right configuration and ready to be used to calculate SS.
+
+	'''
+	semsim_core = init_semsim(ontology = ontology, ac = ac, semsim_type = semsim_type, semsim_measure = semsim_measure, mixing_strategy = mixing_strategy, ss_util = ss_util, do_log = do_log, params = params)
+	semsim_batch = BatchSemSim(semsim_core)
+	return semsim_batch
+#
+
+
+
+
+
+
+
