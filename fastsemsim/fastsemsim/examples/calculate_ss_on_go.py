@@ -71,7 +71,7 @@ if __name__ == "__main__":
 	# ac_species = 'zebrafish'
 
 	# ac_source_file_type = 'plain'
-	ac_source_type = 'gaf-2.0'
+	ac_source_file_type = 'gaf-2.0'
 
 	ac_params = {}
 
@@ -221,9 +221,10 @@ if __name__ == "__main__":
 	print("# Calculating SS for some pairs of proteins... #")
 	print("######################\n")
 
-	ss.SemSim('O75884', 'Q9NQB0')
-	ss.SemSim('Q14206', 'Q8IUH3')
-
+	res = ss.SemSim('O75884', 'Q9NQB0')
+	print(res)
+	res = ss.SemSim('Q14206', 'Q8IUH3')
+	print(res)
 
 
 
@@ -250,5 +251,6 @@ if __name__ == "__main__":
 	print("# Calculating pairwise SS in batch mode for a list of proteins... #")
 	print("######################\n")
 
+	res = ssbatch.semsim_pairs( [['O75884', 'Q9NQB0'], ['Q14206', 'Q8IUH3' ]] )
 	ssbatch.semsim_list( ['O75884', 'Q9NQB0', 'Q14206', 'Q8IUH3' ] )
 

@@ -31,7 +31,12 @@ from __future__ import print_function
 import sys
 import os
 import math
+import pandas as pd
 
+try:
+	unicode
+except (NameError, AttributeError):
+	unicode = str #For python3
 
 	#-#-#-#-#-#-#-#-#-#-#
 	# class TermSemSim  #
@@ -40,53 +45,111 @@ import math
 
 
 class BatchSemSim(object):
+	verbose = True
 
-
-	def __init__(self, semsim):
+	def __init__(self, semsim, root = None):
 		self.semsim = semsim
+		self.set_root(root)
+		self.set_output(output = None)
+	#
+
+	def set_root(self, root=None):
+		if isinstance(root, None.__class__):
+			root = list(self.semsim.ontology.roots.keys())[0]
+		if not root in self.semsim.ontology.roots:
+			raise Exception(str(root) + " is not an ontology root.")
+		self.root = root
+	#
+
+	def set_output(self, output = None, output_params = None):
+		'''
+		Set the output of a BatchSemSim
+		'''
+		if isinstance(output, None.__class__): # output is returned as returning variable
+			pass
+		elif output == 'file': # output is saved to file.
+			if isinstance(output_params, str): # Output file
+				self.output_file = output_params
+			else:
+				raise Exception('Uknown ' + 'output_file format.')	
+		elif output == 'iterator': # output is saved to file.
+			pass
+		else:
+			raise Exception('Uknown ' + str(output) + ' output format.')
+		self.output = output
+	#
+
+	def SemSim(self, term1, term2, root = None):
+		'''
+		Passthrough function. Invokes directly the SemSim function of the ss object.
+		Parameters as in the general SemSim function.
+		'''
+		if isinstance(root, None.__class__):
+			root = self.root
+		#
+		return self.semsim.SemSim(term1, term2, root = root)
+	#
+
 
 	def semsim_pairs(self, query):
 		'''
 		Pairwise Semantic Similarity
+
+		Parameters
+		----------
+			query: list or record of pairs of objects or terms or objsets or termsets
+
+
 		'''
-		scores = []
+
 		done = 0
 		total = len(query)
-		if not self.out is None:
-			if params['core']['verbose'] >= 0:
-				print("Evluating semantic similarity between " + str(len(query)) + " pairs.")
-				prev_text = ""
-				sys.stdout.write("Done: ")
+		prev_text = ""
+
+		if self.output == 'iterator':
+			raise Exception('Iterator not implemented yet.')
+		elif self.output == 'file':
 			chunk_size = 2000
 			temptab = pd.DataFrame(columns=['obj_1','obj_2','ss'])
-			temptab.to_csv(self.out, sep="\t", header=True, index=False)
-		sys.stdout.flush()
+			temptab.to_csv(self.output_file, sep="\t", header=True, index=False)
+		else:
+			temptab = pd.DataFrame(columns=['obj_1','obj_2','ss'])
+		
+		if self.verbose == True:
+			sys.stdout.flush() # <- why?
+
 		for i in range(0,len(query)):
-			temp = self.semsim.SemSim(query[i][0], query[i][1], params['ss']['ss_root'])
-			if temp == None and params['core']['verbose'] >= 4:
-				print(self.semsim.log)
+			temp = self.semsim.SemSim(query[i][0], query[i][1], root = self.root)
+			# if temp == None and params['core']['verbose'] >= 4:
+				# print(self.semsim.log)
 			done+=1
-			if not params['output']['cut_thres'] == None:
-				if temp == None or temp <= params['output']['cut_thres']:
-					continue
-				if params['output']['cut_nan']:
-					if temp == None:
-						continue
-			if self.out == None:
-				print(str(query[i][0]) + "\t" + str(query[i][1]) + "\t" + str(temp))
-			else:
+			# if not params['output']['cut_thres'] == None:
+				# if temp == None or temp <= params['output']['cut_thres']:
+					# continue
+				# if params['output']['cut_nan']:
+					# if temp == None:
+						# continue
+			if self.output == 'file':
+				# print(str(query[i][0]) + "\t" + str(query[i][1]) + "\t" + str(temp))
 				temptab.loc[i] = [query[i][0], query[i][1], temp]
 				if temptab.shape[0] >= chunk_size:
-					temptab.to_csv(self.out, sep="\t", header=False, index=False)
+					temptab.to_csv(self.output_file, sep="\t", header=False, index=False)
 					temptab = pd.DataFrame(columns=['obj_1','obj_2','ss'])
-				if params['core']['verbose'] >= 0:
-					sys.stdout.write("\b"*len(prev_text))
-					prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
-					sys.stdout.write(prev_text)
-					sys.stdout.flush()
-		if not self.out is None:
-			temptab.to_csv(self.out, sep="\t", header=False, index=False)
-		return scores
+				#
+			elif isinstance(self.output, None.__class__):
+				temptab.loc[i] = [query[i][0], query[i][1], temp]
+			#
+			if self.verbose == True:
+				sys.stdout.write("\b"*len(prev_text))
+				prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
+				sys.stdout.write(prev_text)
+				sys.stdout.flush()
+
+		if self.output == 'file':
+			temptab.to_csv(self.output_file, sep="\t", header=False, index=False)
+			temptab = None
+
+		return temptab
 	#
 
 

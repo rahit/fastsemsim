@@ -46,6 +46,11 @@ from __future__ import print_function
 import math
 import numpy as np
 
+try:
+	unicode
+except (NameError, AttributeError):
+	unicode = str #For python3
+
 class SemSimUtils(object):
 
 # variables
@@ -215,6 +220,7 @@ class SemSimUtils(object):
 # public functions
 
 # ASSUMPTION: Terms are passed as integers or lists of integers, not as strings!
+# Is the assumption still valid? I think now fastsemsim works well with string formatted terms as well
 
 	def det_IC_table(self):
 		self.int_det_IC_table()
