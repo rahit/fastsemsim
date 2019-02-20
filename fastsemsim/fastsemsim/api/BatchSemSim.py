@@ -91,124 +91,170 @@ class BatchSemSim(object):
 	#
 
 
-	def semsim_pairs(self, query):
+	class Query:
+		def __init__(self, query, query_type='pairs', skip_self_similarity=False):
+			self.query = query
+			self.query_type = query_type
+			self.skip_self_similarity = skip_self_similarity
+			self.n = len(self.query)
+		#
+
+		def len(self):
+			if self.query_type == 'pairs':
+				return(self.n)
+			elif self.query_type == 'pairwise':
+				if self.skip_self_similarity == True: # do or do not skip self score
+					return((self.n * (self.n - 1))/2)
+				#
+				return(self.n + (self.n * (self.n - 1))/2)
+			elif self.query_type == 'bipartite':
+				return(len(self.query[0]) * len(self.query[1]))
+			else:
+				raise Exception('Unsupported query type:'+str(self.query_type))
+		#
+
+		def __iter__(self):
+			self.i = 0
+			self.j = 0
+			if self.skip_self_similarity == True: # do or do not skip self score
+				self.j += 1
+			return self
+
+		def __next__(self):
+			if self.query_type == 'pairs':
+				if self.i < self.n:
+					i = self.i
+					self.i += 1
+					return self.query[i]
+				else:
+					raise StopIteration()
+			elif self.query_type == 'pairwise':
+				if self.j == self.n: # move to next i
+					self.i += 1
+					self.j = self.i
+					if self.skip_self_similarity == True: # do or do not skip self score
+						self.j += 1
+				if self.i < self.n and self.j < self.n: # still have some calculations to do
+					i = self.i
+					j = self.j
+					self.j += 1
+					return [self.query[i], self.query[j]]
+				else:
+					raise StopIteration()
+			elif self.query_type == 'bipartite':
+				if self.j == len(self.query[1]):
+					self.i += 1
+					self.j = 0
+				if self.i == len(self.query[0]):
+					raise StopIteration()
+				i = self.i
+				j = self.j
+				self.j += 1
+				return [self.query[0][i], self.query[1][j]]
+			else:
+				raise Exception('Unsupported query type:'+str(self.query_type))
+		#
+	#
+
+
+	# test & debug example
+	# q = [['O75884', 'Q9NQB0'], ['Q14206', 'Q8IUH3' ]]
+	# q2 = ['O75884', 'Q9NQB0', 'Q14206', 'Q8IUH3' ]
+	# a = Query(q, query_type = 'pairs')
+	# a2 = Query(q2, query_type = 'pairwise')
+	# a2b = Query(q2, query_type = 'pairwise', skip_self_similarity=True)
+
+	def SemSim(self, query, query_type='pairs', root=None):
 		'''
-		Pairwise Semantic Similarity
+		Batch Pairwise Semantic Similarity.
+		Calculate Semantic similarity in batch mode overmultiple pairs of objects/terms.
 
 		Parameters
 		----------
-			query: list or record of pairs of objects or terms or objsets or termsets
+			query: list 
+				List of pairs or list of objects or terms or objsets or termsets
 
+			query_type: str
+				Type of query. Can be 'pairs' if the list contains pairs of elements to consider; 'pairwise' if the list is a vector of elements for which the SS has to be calculated in a pairwsie fashion; 'bipartite' if the list contains two lists of element. In this case all the pairwise SS between elements of list 1 and list 2 will be calculated.
+
+			root: str, optional
+				The root of the ontolgoy to consider. If set to None, the first root (and possibly the only one) will be used.
+
+		Returns
+		------------
+			Pandas DataFrame with all the SS.
 
 		'''
 
+		if isinstance(root, None.__class__):
+			root = self.root
+		#
+
+		query_it = self.Query(query, query_type, skip_self_similarity=False)
+
 		done = 0
-		total = len(query)
+		total = query_it.len()
 		prev_text = ""
+
+		templist = []
+		temptab = pd.DataFrame(columns=['obj_1','obj_2','ss'])
 
 		if self.output == 'iterator':
 			raise Exception('Iterator not implemented yet.')
 		elif self.output == 'file':
 			chunk_size = 2000
-			temptab = pd.DataFrame(columns=['obj_1','obj_2','ss'])
 			temptab.to_csv(self.output_file, sep="\t", header=True, index=False)
-		else:
-			temptab = pd.DataFrame(columns=['obj_1','obj_2','ss'])
-		
+		# else:
+			# pass
+
 		if self.verbose == True:
 			sys.stdout.flush() # <- why?
 
-		for i in range(0,len(query)):
-			temp = self.semsim.SemSim(query[i][0], query[i][1], root = self.root)
+		for current_query in query_it:
+			temp = self.semsim.SemSim(current_query[0], current_query[1], root = self.root)
 			# if temp == None and params['core']['verbose'] >= 4:
 				# print(self.semsim.log)
-			done+=1
 			# if not params['output']['cut_thres'] == None:
 				# if temp == None or temp <= params['output']['cut_thres']:
 					# continue
 				# if params['output']['cut_nan']:
 					# if temp == None:
 						# continue
+
+			# temp = pd.DataFrame([[current_query[0], current_query[1], temp],], columns=['obj_1','obj_2','ss']) # way slower!
+			temp = [current_query[0], current_query[1], temp]
+			templist.append(temp)
+			
 			if self.output == 'file':
-				# print(str(query[i][0]) + "\t" + str(query[i][1]) + "\t" + str(temp))
-				temptab.loc[i] = [query[i][0], query[i][1], temp]
-				if temptab.shape[0] >= chunk_size:
+				if len(templist) >= chunk_size:
+					temptab = pd.DataFrame(templist, columns=['obj_1','obj_2','ss'])
+					# temptab = pd.concat(templist, sort=False, ignore_index=True) # way slower!
+					templist = []
 					temptab.to_csv(self.output_file, sep="\t", header=False, index=False)
 					temptab = pd.DataFrame(columns=['obj_1','obj_2','ss'])
 				#
 			elif isinstance(self.output, None.__class__):
-				temptab.loc[i] = [query[i][0], query[i][1], temp]
+				pass
 			#
+
+			done+=1
 			if self.verbose == True:
 				sys.stdout.write("\b"*len(prev_text))
 				prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
 				sys.stdout.write(prev_text)
 				sys.stdout.flush()
 
+		# collect output
+		if len(templist)>0:
+			temptab = pd.DataFrame(templist, columns=['obj_1','obj_2','ss'])
+			# temptab = pd.concat(templist, sort=False, ignore_index=True) # way slower!
+			templist = []
+
 		if self.output == 'file':
 			temptab.to_csv(self.output_file, sep="\t", header=False, index=False)
-			temptab = None
 
 		return temptab
 	#
-
-
-
-		#-#-#-#-#-#-#-#-#-#-#
-		# Pairwise Sem Sim  #
-		#-#-#-#-#-#-#-#-#-#-#
-	def semsim_list(self, query):
-		'''
-		List Semantic Similarity
-		'''
-		scores = {}
-		done = 0
-		total = len(query)*(len(query)+1)/2
-
-		if not self.out == None:
-			if params['core']['verbose'] >= 0:
-				print("Evluating pairwise semantic similarity between " + str(len(query)) + " entities (" + str(len(query)*(len(query)+1)/2) + " pairs)")
-				prev_text = ""
-				sys.stdout.write("Done: ")
-			chunk_size = 2000
-			temptab = pd.DataFrame(columns=['obj_1','obj_2','ss'])
-			temptab.to_csv(self.out, sep="\t", header=True, index=False)
-		sys.stdout.flush()
-		for i in range(0,len(query)):
-			# if params['query_ss_type'] == 'obj':
-			# scores[pairs[i]] = {}
-			for j in range(i,len(query)):
-				temp = self.semsim.SemSim(query[i],query[j],params['ss']['ss_root'])
-				if temp == None and params['core']['verbose'] >= 4:
-					print(self.semsim.log)
-				#scores[pairs[i]][pairs[j]] = temp
-				done+=1
-				if not params['output']['cut_thres'] == None:
-					if temp == None or temp <= params['output']['cut_thres']:
-						continue
-				if params['output']['cut_nan']:
-					if temp == None:
-						continue
-				if self.out == None:
-					print(str(query[i]) + "\t" + str(query[j]) + "\t" + str(temp))
-				else:
-					# print(temptab)
-					# print(i*(len(query))+j)
-					temptab.loc[i*(len(query))+j] = [query[i], query[j], temp]
-					if temptab.shape[0] >= chunk_size:
-						temptab.to_csv(self.out, sep="\t", header=False, index=False)
-						temptab = pd.DataFrame(columns=['obj_1','obj_2','ss'])
-					if params['core']['verbose'] >= 0:
-						sys.stdout.write("\b"*len(prev_text))
-						prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
-						sys.stdout.write(prev_text)
-						sys.stdout.flush()
-		if not self.out is None:
-			temptab.to_csv(self.out, sep="\t", header=False, index=False)
-		return scores
-	#
-
-
 
 	def build_query_from_ac(self):
 		query = self.semsim.ac.annotations.keys()

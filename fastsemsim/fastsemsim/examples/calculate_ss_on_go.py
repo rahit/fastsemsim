@@ -18,6 +18,9 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
+# runme from python:
+# load fastsemsim/fastsemsim/examples/calculate_ss_on_go.py
+
 from __future__ import print_function
 
 import fastsemsim
@@ -232,18 +235,13 @@ if __name__ == "__main__":
 
 
 
-
-
-
-
-
-
-
 	print("\n######################")
 	print("# Initializing batch Semantic Similarity onject... #")
 	print("######################\n")
 
 	ssbatch = fastsemsim.init_batchsemsim(ontology = ontology, ac = ac, semsim_type = semsim_type, semsim_measure = semsim_measure, mixing_strategy = mixing_strategy, ss_util = ss_util, do_log = semsim_do_log, params = semsim_params)
+	
+	ssbatch2 = fastsemsim.init_batchsemsim(ontology = ontology, ac = ac, semsim=ss)
 
 
 
@@ -251,6 +249,22 @@ if __name__ == "__main__":
 	print("# Calculating pairwise SS in batch mode for a list of proteins... #")
 	print("######################\n")
 
-	res = ssbatch.semsim_pairs( [['O75884', 'Q9NQB0'], ['Q14206', 'Q8IUH3' ]] )
-	ssbatch.semsim_list( ['O75884', 'Q9NQB0', 'Q14206', 'Q8IUH3' ] )
+	batch_query_pairs = [['O75884', 'Q9NQB0'], ['Q14206', 'Q8IUH3' ]]
+	res = ssbatch.SemSim(query=batch_query_pairs, query_type='pairs')
+
+	batch_query_pairwise = ['O75884', 'Q9NQB0', 'Q14206', 'Q8IUH3' ]
+	res2 = ssbatch.SemSim(query=batch_query_pairwise, query_type='pairwise')
+
+
+	res_long = ssbatch.SemSim(query= 10*batch_query_pairwise, query_type='pairwise')
+	res_very_long = ssbatch.SemSim(query= 30*batch_query_pairwise, query_type='pairwise')
+	res_very_very_long = ssbatch.SemSim(query= 100*batch_query_pairwise, query_type='pairwise')
+
+	res_long_v2 = ssbatch2.SemSim(query= 10*batch_query_pairwise, query_type='pairwise')
+	
+
+	%%timeit
+	res_very_very_long = ssbatch.SemSim(query= 10*batch_query_pairwise, query_type='pairwise')
+
+
 

@@ -226,7 +226,7 @@ def init_semsim(ontology, ac=None, semsim_type = 'obj', semsim_measure='Resnik',
 
 
 # Entrypoint function: create a SemSim measure object with convenient functions to process different types of queries (eg list, pairs,...)
-def init_batchsemsim(ontology, ac=None, semsim_type = 'obj', semsim_measure='Resnik', mixing_strategy='max', ss_util=None, do_log = False, params={}):
+def init_batchsemsim(ontology, ac=None, semsim = None, semsim_type = 'obj', semsim_measure='Resnik', mixing_strategy='max', ss_util=None, do_log = False, params={}):
 	'''
 	Entrypoint function to initialize a batch wrapper for a semantic similarity object to evaluate semantic similarity over an ontology / Annotation Corpus.
 	The batch wrapper implements convenients methods to calculate the SS between pairs of lists of query objects/terms.
@@ -271,8 +271,12 @@ def init_batchsemsim(ontology, ac=None, semsim_type = 'obj', semsim_measure='Res
 		A semantic similarity object with convenience functions initialized with the right configuration and ready to be used to calculate SS.
 
 	'''
-	semsim_core = init_semsim(ontology = ontology, ac = ac, semsim_type = semsim_type, semsim_measure = semsim_measure, mixing_strategy = mixing_strategy, ss_util = ss_util, do_log = do_log, params = params)
-	semsim_batch = BatchSemSim(semsim_core)
+	if(semsim == None):
+		semsim_core = init_semsim(ontology = ontology, ac = ac, semsim_type = semsim_type, semsim_measure = semsim_measure, mixing_strategy = mixing_strategy, ss_util = ss_util, do_log = do_log, params = params)
+		semsim_batch = BatchSemSim(semsim_core)
+	else:
+		semsim_batch = BatchSemSim(semsim)
+		
 	return semsim_batch
 #
 
