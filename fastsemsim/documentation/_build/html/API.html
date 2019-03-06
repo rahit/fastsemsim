@@ -102,12 +102,13 @@ FastSemSim will take care of loading the correct ontology in this case</p>
 <div class="section" id="loading-an-annotation-corpus">
 <h3>Loading an annotation corpus<a class="headerlink" href="#loading-an-annotation-corpus" title="Permalink to this headline">¶</a></h3>
 <p>Loading an annotation corpus (AC) is as easy as loading ontologies. The only additional requirement is that an ontology must be passed as parameter to the parser, that will take care of matching the terms in the ontology to the terms in the annotation corpus.
-As for ontologies, the AC can be loaded from a file or from a descriptor (more about descriptors in section FastSemSim Datasets) using the entrypoint function fastsemsim.load_ac:</p>
+The AC can be loaded from a file or from a descriptor (more about descriptors in section FastSemSim Datasets) using the entrypoint function fastsemsim.load_ac:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ac</span> <span class="o">=</span> <span class="n">fastsemsim</span><span class="o">.</span><span class="n">load_ac</span><span class="p">(</span><span class="n">ontology</span> <span class="o">=</span> <span class="n">my_ontology</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>If invoked without parameters, beside the mandatory ontology parameter, this function will load the AC shipped with fastsemsim.
-Passing the right parameters to the function allows loading other ontologies included in fastsemsim, as well as custom ontologies.</p>
+<p>If invoked without parameters, beside the mandatory ontology parameter, this function will load one of the ACs shipped with fastsemsim.
+Passing the right parameters to the function allows loading other ontologies included in fastsemsim (see Dataset section), as well as custom ontologies from a file.
+In general, fastsemsim is able to load any file coming from the geneontology community (gaf2 file format).</p>
 <p>Here the full description of the function:</p>
 <dl class="function">
 <dt id="fastsemsim.load_ac">
@@ -138,8 +139,107 @@ a AC included in FastSemSim.</dd>
 </div>
 <div class="section" id="data-embedded-in-fastsemsim">
 <h2>3. Data embedded in FastSemSim<a class="headerlink" href="#data-embedded-in-fastsemsim" title="Permalink to this headline">¶</a></h2>
-<p>Ontologies and annotation corpora included in fastsemsim</p>
-<p>To list the ontologies available in fastsemsim, you can use the function list_ontologies()</p>
+<p>Fastsemsim includes some of the standard broadly used ontologies and annotation corpora. The corresponding files are automatically installed with the library.</p>
+<p>All the available ACs and ontologies are managed by the Dataset class.
+The Dataset class works around the concept of Descriptor. Each ontology or AC available is referenced with a Descriptor indicating where the file is stored and the parameters necesary to correctly load it.
+Upon importing fastsemsim, an instance of the class Dataset is automatically created and filled with the descriptors of the Acs and ontologies embedded in fatsemsim.
+Such Dataset object is available as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fastsemsim</span><span class="o">.</span><span class="n">dataset</span>
+</pre></div>
+</div>
+<p>The Dataset class exposes some convenient functions to easily interrogate the available ACs and ontologies and load them.
+It is possible, for instance, to list the available ontologies of a given type (e.g. GeneOntology, DiseaseOntology, …) and get a valid descriptor. The descriptor can be passed to the ontology or AC loading functions (see API - Ontoliges and API - Annotation Corpora sections).</p>
+<p>The main functions exposed by Dataset are:</p>
+<ul class="simple">
+<li>list_ontologies(): list the ontologies available in fastsemsim.</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fastsemsim</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">list_ontologies</span><span class="p">()</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>list_acs(): list the ACs available in fastsemsim, you can use the function .</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fastsemsim</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">list_acs</span><span class="p">()</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>get_ontology(): returns the descriptor(s) of the ontologies satisfying the passed parameters (if any).</li>
+</ul>
+<p>Note that more than one descriptor might be returned.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fastsemsim</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">get_ontology</span><span class="p">(</span><span class="n">ontology_type</span><span class="o">=...</span><span class="p">)</span>
+<span class="n">fastsemsim</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">get_ontology</span><span class="p">(</span><span class="n">ontology_type</span><span class="o">=</span><span class="s1">&#39;GeneOntology&#39;</span><span class="p">)</span> <span class="c1"># to look specifically for the Gene Ontology</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>get_annotation_corpus(): returns the descriptor(s) of the annotation corpora satisfying the passed parameters (if any).</li>
+</ul>
+<p>Note that more than one descriptor might be returned.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fastsemsim</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">get_annotation_corpus</span><span class="p">(</span><span class="n">ontology_type</span><span class="o">=...</span><span class="p">,</span> <span class="n">ac_species</span><span class="o">=...</span><span class="p">)</span>
+<span class="n">fastsemsim</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">get_annotation_corpus</span><span class="p">(</span><span class="n">ontology_type</span><span class="o">=</span><span class="s1">&#39;GeneOntology&#39;</span><span class="p">,</span> <span class="n">ac_species</span><span class="o">=</span><span class="s1">&#39;human&#39;</span><span class="p">)</span> <span class="c1"># look for ACs compatible with the Gene Ontology, for the human species</span>
+</pre></div>
+</div>
+<p>Here the full description of the four functions list above:</p>
+<dl class="class">
+<dt id="fastsemsim.data.Dataset">
+<em class="property">class </em><code class="descclassname">fastsemsim.data.</code><code class="descname">Dataset</code><span class="sig-paren">(</span><em>descriptor=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.Dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>The class Dataset keeps track of the ontologies and annotation corpora (ACs) included in fastsemsim.
+The class includes all the methods to create and browse the dataset of available ontologies and ACs.
+Each ontology or AC is represented by a ‘descriptor’ inside Dataset.
+Descriptors returned to the user through the API functions can be fed to the other functions of fastsemsim
+to load ontologies and ac.
+Upon creation, unless otherwise specified through the parameter ‘descriptor’, a Dataset object will load the standard dataset
+shipped with fastsemsim (file data/dataset.txt).</p>
+<dl class="method">
+<dt id="fastsemsim.data.Dataset.get_annotation_corpus">
+<code class="descname">get_annotation_corpus</code><span class="sig-paren">(</span><em>ac_name=None</em>, <em>ontology_type=None</em>, <em>ac_species=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.Dataset.get_annotation_corpus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the descriptor(s) of the required ACs, if it exists in the loaded dataset.
+The user can require a specific AC by name and/or ontology type. Either the name or the type has to be specified.</p>
+<dl class="docutils">
+<dt>ontology_name <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd>Name of the desired AC</dd>
+<dt>ontology_type <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd>Type of ontology (e.g. GeneOntology, CellOntology, …)</dd>
+<dt>ac_species <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd>Require species (e.g. human, fly, …)</dd>
+</dl>
+<dl class="docutils">
+<dt>pandas table</dt>
+<dd>Table of descriptors of ACs compatible with input query. Each row is a valid descriptor.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="fastsemsim.data.Dataset.get_ontology">
+<code class="descname">get_ontology</code><span class="sig-paren">(</span><em>ontology_name=None</em>, <em>ontology_type='GeneOntology'</em><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.Dataset.get_ontology" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the descriptor(s) of the required ontology, if it exists in the loaded dataset.
+The user can require a specific ontology by name and/or ontology type. Either the name or the type has to be specified.</p>
+<dl class="docutils">
+<dt>ontology_name <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd>Name of the desired ontology</dd>
+<dt>ontology_type <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
+<dd>Type of ontology (e.g. GeneOntology, CellOntology, …)</dd>
+</dl>
+<dl class="docutils">
+<dt>pandas table</dt>
+<dd>Table of descriptors of ontologies compatible with input query. Each row is a valid descriptor.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="fastsemsim.data.Dataset.list_acs">
+<code class="descname">list_acs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.Dataset.list_acs" title="Permalink to this definition">¶</a></dt>
+<dd><p>List all the annotation corpora in the dataset. Each row of the returned pandas table is a valid descriptor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fastsemsim.data.Dataset.list_ontologies">
+<code class="descname">list_ontologies</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fastsemsim.data.Dataset.list_ontologies" title="Permalink to this definition">¶</a></dt>
+<dd><p>List all the ontologies in the dataset. Each row of the returned pandas table is a valid descriptor.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p>For more details about the Dataset class, check the full documentation of the data module available at the follwing page:</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="fastsemsim.data.html">Ontologies and annotation corpora included in fastsemsim</a></li>
@@ -151,12 +251,6 @@ a AC included in FastSemSim.</dd>
 </div>
 <div class="section" id="calculating-the-semantic-similarity-batch-mode">
 <h2>5. Calculating the Semantic similarity - batch mode<a class="headerlink" href="#calculating-the-semantic-similarity-batch-mode" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="examples-and-use-cases-putting-all-together">
-<h2>6. Examples and use cases: Putting all together<a class="headerlink" href="#examples-and-use-cases-putting-all-together" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="divers">
-<h2>Divers<a class="headerlink" href="#divers" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -181,8 +275,6 @@ a AC included in FastSemSim.</dd>
 <li><a class="reference internal" href="#data-embedded-in-fastsemsim">3. Data embedded in FastSemSim</a></li>
 <li><a class="reference internal" href="#calculating-the-semantic-similarity">4. Calculating the Semantic similarity</a></li>
 <li><a class="reference internal" href="#calculating-the-semantic-similarity-batch-mode">5. Calculating the Semantic similarity - batch mode</a></li>
-<li><a class="reference internal" href="#examples-and-use-cases-putting-all-together">6. Examples and use cases: Putting all together</a></li>
-<li><a class="reference internal" href="#divers">Divers</a></li>
 </ul>
 </li>
 </ul>

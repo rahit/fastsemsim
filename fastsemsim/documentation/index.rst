@@ -20,7 +20,7 @@ FastSemSim has three main components:
 * A command line interface (CLI) to compute semantic similarity without requiring programming skills.
 
 This reference manual details modules and classes included in FastSemSim, as well as the command line interface usage.
-The sections library, API andd CLI describe the aforementioned components and include some examlples.
+The follwoing sections library, API, Examlpes and CLI describe the aforementioned components and provide some examlples.
 
 .. toctree::
    :maxdepth: 2
@@ -29,6 +29,8 @@ The sections library, API andd CLI describe the aforementioned components and in
 
    API.rst
    
+   examples.rst
+
    cmdline.rst
 
 
