@@ -33,7 +33,7 @@ class MixSemSim(object):
 		self.util = util
 		self.do_log = do_log
 
-		#if self.util == None:
+		#if self.util is None:
 			#self.util = SemSimUtils(ac, go)
 			#self.ssu.det_IC_table()
 	#
@@ -59,7 +59,7 @@ class MixSemSim(object):
 		for i in lset1:
 			for j in lset2:
 				newscore = TSS.SemSim(i,j)
-				if newscore == None:
+				if newscore is None:
 					if self.do_log:
 						reason = 'None score'
 						self.log.append(reason)

@@ -93,7 +93,7 @@ class ICNPSemSim(TermSemSim) :
 		#curda = 0.0
 		#curdb = 0.0
 		for i in ca:
-			if curmin == None:
+			if curmin is None:
 				curmin = s1[i] + s2[i]
 				#curda = s1[i]
 				#curdb = s2[i]
@@ -104,7 +104,7 @@ class ICNPSemSim(TermSemSim) :
 				#curdb = s2[i]
 				termid = i
 
-		if curmin == None:
+		if curmin is None:
 			return None
 
 		distance = curmin

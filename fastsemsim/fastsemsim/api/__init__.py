@@ -72,13 +72,13 @@ def load_ontology(source_file = None, file_type = 'obo', ontology_type = 'GeneOn
 		The loaded ontology
 
 	'''
-	if not ontology_descriptor == None:
+	if not ontology_descriptor is None:
 		selected_source = ontology_descriptor
 		# print(selected_source)
 		source_file = selected_source['file']
 		file_type = selected_source['filetype']
 		ontology_type = selected_source['ontology']		
-	elif source_file == None:
+	elif source_file is None:
 		selected_source = dataset.get_default_ontology(ontology_type)
 		# print(selected_source)
 		if selected_source is None:
@@ -271,7 +271,7 @@ def init_batchsemsim(ontology, ac=None, semsim = None, semsim_type = 'obj', sems
 		A semantic similarity object with convenience functions initialized with the right configuration and ready to be used to calculate SS.
 
 	'''
-	if(semsim == None):
+	if semsim is None:
 		semsim_core = init_semsim(ontology = ontology, ac = ac, semsim_type = semsim_type, semsim_measure = semsim_measure, mixing_strategy = mixing_strategy, ss_util = ss_util, do_log = do_log, params = params)
 		semsim_batch = BatchSemSim(semsim_core)
 	else:

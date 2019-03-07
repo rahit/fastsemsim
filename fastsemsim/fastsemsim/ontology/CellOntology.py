@@ -87,7 +87,7 @@ class CellOntology(Ontology.Ontology):
 
 	# def name2id(self, codes, alt_check = True):
 	# 	nid = None
-	# 	if codes == None:
+	# 	if codes is None:
 	# 		return None
 	# 	if type(codes) is str:
 	# 		nid = CellOntology._name2id(codes)
@@ -114,7 +114,7 @@ class CellOntology(Ontology.Ontology):
 	# 	if alt_check:
 	# 		print("id2name - alt_check not yet implemented.")
 	# 	sid = None
-	# 	if codes == None:
+	# 	if codes is None:
 	# 		return None
 	# 	if type(codes) is int:
 	# 		sid = CellOntology._id2name(codes)
@@ -133,7 +133,7 @@ class CellOntology(Ontology.Ontology):
 
 	def __init__(self, terms, edges, parameters):
 		terms['namespace'] = {} # impose this if current Ontology is faulty
-		if parameters == None:
+		if parameters is None:
 			parameters = {}
 		if not 'ignore' in parameters:
 			parameters['ignore'] = {'lacks_plasma_membrane_part':True} #, 'develops_from':True}

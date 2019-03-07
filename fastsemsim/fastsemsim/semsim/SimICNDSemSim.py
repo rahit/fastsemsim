@@ -91,14 +91,14 @@ class ICNDSemSim(TermSemSim) :
 
 		curmin = None
 		for i in ca:
-			if curmin == None:
+			if curmin is None:
 				curmin = s1[i] + s2[i]
 				termid = i
 			elif (s1[i] + s2[i]) < curmin:
 				curmin = s1[i] + s2[i]
 				termid = i
 
-		if curmin == None:
+		if curmin is None:
 			return None
 		sim = (self.util.IC[termid])/(self.util.IC[term1] + self.util.IC[term2] - 2*self.util.IC[termid] + 1)
 		return sim

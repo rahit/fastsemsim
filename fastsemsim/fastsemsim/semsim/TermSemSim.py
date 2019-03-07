@@ -64,9 +64,9 @@ class TermSemSim(object):
 	def __init__(self, ontology, ac = None, util = None, do_log = False):
 		# self.SS_type = None # Type of Term Sem Sim: Can be P_TSS or G_TSS
 		# self.IC_based = False # Tells whether te Term Sem Sim is based on Information Content
-		if self.SS_type == None: # Must be set
+		if self.SS_type is None: # Must be set
 			raise Exception
-		if self.IC_based == None: # Must be set
+		if self.IC_based is None: # Must be set
 			raise Exception
 
 		self.ontology = ontology
@@ -75,20 +75,20 @@ class TermSemSim(object):
 		self.log = []
 		self.do_log = do_log
 
-		if self.IC_based and self.ac == None:
+		if self.IC_based and self.ac is None:
 			raise MissingAcException("The selected semantic measure is based on IC and requires an annotation corpus.")
-		if self.util == None:
+		if self.util is None:
 			self.util = SemSimUtils(self.ontology, self.ac)
-		if self.IC_based and self.util.IC == None:
+		if self.IC_based and self.util.IC is None:
 			self.util.det_IC_table()
 	#
 
 	def _has_IC(self, term):
-		# if self.util.IC == None:
+		# if self.util.IC is None:
 			# return None
 		if not term in self.util.IC:
 			return False
-		if self.util.IC[term] == None:
+		if self.util.IC[term] is None:
 			return False
 		return True
 	#
@@ -101,7 +101,7 @@ class TermSemSim(object):
 		id1 = self.ontology.id2node(term1, alt_check = False)
 
 		if self.SS_type == self.P_TSS: # only single terms allowed
-			if id1 == None:
+			if id1 is None:
 				if self.do_log:
 					reason = 'Unmapped Term'
 					self.log.append(reason)
@@ -135,7 +135,7 @@ class TermSemSim(object):
 
 			current_onto = None
 			for i in temp_id1:
-				if i == None:
+				if i is None:
 					if self.do_log:
 						reason = 'Unmapped Term'
 						self.log.append(reason)

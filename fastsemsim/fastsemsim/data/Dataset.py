@@ -74,7 +74,7 @@ class Dataset(object):
 		The 'descriptor' parameter allows the user to use a custom dataset descriptor file.
 		'''
 		descriptor_null = False
-		if descriptor == None:
+		if descriptor is None:
 			descriptor_null = True
 		if descriptor_null:
 			program_dir = os.path.dirname(os.path.abspath(__file__)).replace("\\", "/")
@@ -126,17 +126,17 @@ class Dataset(object):
 			Table of descriptors of ontologies compatible with input query. Each row is a valid descriptor.
 
 		'''
-		if (ontology_name == None) & (ontology_type == None):
+		if (ontology_name is None) & (ontology_type is None):
 			raise Exception('At least one between ontology_type and ontology_name must be provided.')
 
 		if ontology_type in ontology_aliases: # mapping aliases
 			ontology_type = ontology_aliases[ontology_type]
 
 		current_options = self.dataset.loc[self.dataset['type'] == 'O']
-		if not ontology_type == None:
+		if not ontology_type is None:
 			current_options = current_options.loc[current_options['ontology'] == ontology_type]
 
-		if not ontology_name == None:
+		if not ontology_name is None:
 			current_options = current_options.loc[current_options['name'] == ontology_name]
 
 		return current_options
@@ -197,20 +197,20 @@ class Dataset(object):
 			Table of descriptors of ACs compatible with input query. Each row is a valid descriptor.
 
 		'''
-		if (ac_name == None) & (ontology_type == None):
+		if (ac_name is None) & (ontology_type is None):
 			raise Exception('At least one between ontology_type and ac_name must be provided.')
 
 		if ontology_type in ontology_aliases: # mapping aliases
 			ontology_type = ontology_aliases[ontology_type]
 			
 		current_options = self.dataset.loc[self.dataset['type'] == 'AC']
-		if not ontology_type == None:
+		if not ontology_type is None:
 			current_options = current_options.loc[current_options['ontology'] == ontology_type]
 
-		if not ac_name == None:
+		if not ac_name is None:
 			current_options = current_options.loc[current_options['name'] == ac_name]
 
-		if not ac_species == None:
+		if not ac_species is None:
 			current_options = current_options.loc[current_options['species'] == ac_species]
 
 		return current_options

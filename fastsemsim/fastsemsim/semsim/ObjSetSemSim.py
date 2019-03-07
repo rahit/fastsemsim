@@ -58,20 +58,20 @@ class ObjSetSemSim:
 		self.log = []
 
 		self.util = util
-		if self.util == None:
+		if self.util is None:
 			self.util = SemSimUtils(self.ontology, self.ac)
 			# self.util.det_IC_table()
 
 		self.term_SS_class = select_term_semsim(TSS)
 		self.term_SS = self.term_SS_class(self.ontology, self.ac, self.util)
 
-		if not MSS == None:
+		if not MSS is None:
 			self.mix_SS_class = select_mix_strategy(MSS)
 			self.mix_SS = self.mix_SS_class(self.ontology, self.ac, self.util)
 		else:
 			self.mix_SS = None
 
-		# if not OMSS == None:
+		# if not OMSS is None:
 		# 	self.o_mix_SS_class = select_mix_SemSim(OMSS)
 		# 	self.o_mix_SS = self.mix_SS_class(self.ontology, self.ac, self.util)
 		# else:
@@ -142,7 +142,7 @@ class ObjSetSemSim:
 		if self.do_log:
 			self.log = []
 		# print(root)
-		if root == None:
+		if root is None:
 			root = self.ontology.roots.keys()[0]
 			# print(root)
 		if not root in self.ontology.roots:

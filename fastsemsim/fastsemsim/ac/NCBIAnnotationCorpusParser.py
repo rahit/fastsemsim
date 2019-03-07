@@ -68,14 +68,14 @@ class NCBIAnnotationCorpusParser(object):
 
 	def __init__(self, ac, parameters=None):
 		self.ac = ac
-		if self.ac == None:
+		if self.ac is None:
 			raise Exception
 		self.parameters = parameters
 		self.int_interpretParameters()
 
 	def int_interpretParameters(self):
 		self.int_simplify = False
-		if self.parameters == None:
+		if self.parameters is None:
 			return
 		if len(self.parameters) > 0:
 			if SIMPLIFY in self.parameters:

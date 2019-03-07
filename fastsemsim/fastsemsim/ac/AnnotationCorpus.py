@@ -127,7 +127,7 @@ class AnnotationCorpus(object):
 
 	def __init__(self, go):
 		self.go = go
-		if self.go == None:
+		if self.go is None:
 			raise Exception
 		self.initCommonFilter()
 		self.reset()
@@ -168,15 +168,15 @@ class AnnotationCorpus(object):
 	def parse(self, source_file, file_type, params={}):
 		#print("AnnotationCorpus: parse")
 		# print(params)
-		if source_file == None:
+		if source_file is None:
 			raise Exception('source_file parameter cannot be None in AnnotationCorpus.load. Use fastsemsim load_ac to enable dataset lookup.')
 
-		if params == None:
+		if params is None:
 			self.reset()
 		elif RESET_PARAM in params and params[RESET_PARAM]:
 			self.reset()
 
-		if not params == None and FILTER_PARAM in params:
+		if not params is None and FILTER_PARAM in params:
 			self.setCommonfilters(params[FILTER_PARAM])
 
 		if file_type in AnnotationCorpusFormat:
@@ -415,7 +415,7 @@ class AnnotationCorpus(object):
 			self.set(params)
 
 		def set(self, params):
-			if params == None:
+			if params is None:
 				return True
 			if 'int_current_go' in params:
 				self.int_go = params['int_current_go']
@@ -426,11 +426,11 @@ class AnnotationCorpus(object):
 			return True
 
 		def filter(self, GO):
-			if self.int_go == None:
+			if self.int_go is None:
 				raise Exception
-			if self.GO == None and not self.inclusive:
+			if self.GO is None and not self.inclusive:
 				return True
-			elif self.GO == None and self.inclusive:
+			elif self.GO is None and self.inclusive:
 				return False
 			print("Fix filter in GOFilter class.")
 			return True

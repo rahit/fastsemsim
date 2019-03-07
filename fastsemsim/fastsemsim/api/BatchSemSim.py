@@ -212,13 +212,13 @@ class BatchSemSim(object):
 
 		for current_query in query_it:
 			temp = self.semsim.SemSim(current_query[0], current_query[1], root = self.root)
-			# if temp == None and params['core']['verbose'] >= 4:
+			# if temp is None and params['core']['verbose'] >= 4:
 				# print(self.semsim.log)
-			# if not params['output']['cut_thres'] == None:
-				# if temp == None or temp <= params['output']['cut_thres']:
+			# if not params['output']['cut_thres'] is None:
+				# if temp is None or temp <= params['output']['cut_thres']:
 					# continue
 				# if params['output']['cut_nan']:
-					# if temp == None:
+					# if temp is None:
 						# continue
 
 			# temp = pd.DataFrame([[current_query[0], current_query[1], temp],], columns=['obj_1','obj_2','ss']) # way slower!
@@ -325,7 +325,7 @@ class BatchSemSim(object):
 	# 		ss_pairwise(h)
 	# 	else:
 	# 		raise Exception
-	# 	if not h == None:
+	# 	if not h is None:
 	# 		h.close()
 	# 	if params['core']['verbose'] >= 2:
 	# 		print("-----------------------------------------------")

@@ -69,7 +69,7 @@ class SemSimUtils(object):
 
 	def __init__(self, ontology, ac=None):
 		self.ontology = ontology
-		if self.ontology == None:
+		if self.ontology is None:
 			raise Exception
 		# self.ontology._s1_to_s2() # already done when loading the go. no need here?
 
@@ -184,7 +184,7 @@ class SemSimUtils(object):
 			self.p[i] = self.int_det_p(i)
 
 	def int_det_p(self,term_id):
-		if self.freq == None:
+		if self.freq is None:
 			self.int_det_freq_table()
 		if not term_id in self.freq:
 			return None
@@ -196,7 +196,7 @@ class SemSimUtils(object):
 
 	def int_det_IC(self, term_id):
 		pr = self.int_det_p(term_id)
-		if pr == None:
+		if pr is None:
 			return None
 		if pr == float(0):
 			return None
@@ -213,7 +213,7 @@ class SemSimUtils(object):
 			#print(conta)
 			#print(len(self.ontology.nodes_edges))
 			temp_IC = self.int_det_IC(i)
-			#if not temp_IC == None:
+			#if not temp_IC is None:
 			self.IC[i] = temp_IC
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
@@ -228,7 +228,7 @@ class SemSimUtils(object):
 
 	def det_IC(self,term):
 		id = self.ontology.name2id(term)
-		if self.IC == None:
+		if self.IC is None:
 			self.det_IC_table()
 		if id in self.IC:
 			return self.IC[id]
@@ -337,11 +337,11 @@ class SemSimUtils(object):
 	#
 
 	def _has_IC(self, term):
-		if self.IC == None:
+		if self.IC is None:
 			return False
 		if not term in self.IC:
 			return False
-		if self.IC[term] == None:
+		if self.IC[term] is None:
 			return False
 		return True
 	#

@@ -89,7 +89,7 @@ class DiseaseOntology(Ontology.Ontology):
 
 	# def name2id(self, codes, alt_check = True):
 	# 	nid = None
-	# 	if codes == None:
+	# 	if codes is None:
 	# 		return None
 	# 	if type(codes) is str:
 	# 		nid = DiseaseOntology._id2node(codes)
@@ -113,7 +113,7 @@ class DiseaseOntology(Ontology.Ontology):
 	# 	return nid
 
 	# def id2name(self, codes, alt_check = False):
-	# 	if codes == None:
+	# 	if codes is None:
 	# 		return None
 	# 	if alt_check:
 	# 		print("id2name - alt_check not yet implemented.")

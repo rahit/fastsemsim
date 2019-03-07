@@ -120,7 +120,7 @@ class Ontology(object):
 
 	def id2node(self, codes, alt_check = True):
 			nid = None
-			if codes == None:
+			if codes is None:
 				return nid
 			if isinstance(codes,str) or isinstance(codes,unicode) or isinstance(codes,int):
 				if isinstance(codes,str) or isinstance(codes,unicode):
@@ -152,7 +152,7 @@ class Ontology(object):
 			if self.debug:
 				print("id2name - alt_check not yet implemented.")
 		sid = None
-		if codes == None:
+		if codes is None:
 			return sid
 		if type(codes) is dict or type(codes) is list:
 			sid= []
@@ -211,7 +211,7 @@ class Ontology(object):
 		self.children = {}
 
 		self.ignore = None
-		if not parameters == None and 'ignore' in parameters:
+		if not parameters is None and 'ignore' in parameters:
 			self.ignore = parameters['ignore']
 
 		self._add_nodes(terms)
@@ -219,7 +219,7 @@ class Ontology(object):
 		self.det_roots()
 
 		# Check consistency of alt_names
-		if not self.alt_id == None:
+		if not self.alt_id is None:
 			for i in self.alt_id:
 				if i in self.nodes:
 					# if self.gen_error:
@@ -240,17 +240,17 @@ class Ontology(object):
 
 	def _add_nodes(self, terms): #input: disctionary of terms to be added.
 		for i in terms['id']:
-			if i == None:
+			if i is None:
 				continue
 			iid = self._id2node(i, strict = True)
-			if iid == None: # not in ontology. Do not save data for now
+			if iid is None: # not in ontology. Do not save data for now
 				continue
 			
 			# process alt_id and replaced_by
 			if i in terms['alt_id']:
 				for j in terms['alt_id'][i]:
 					jid = self._id2node(j, strict = True)
-					if jid == None: 
+					if jid is None: 
 						pass
 					else:
 						if jid in self.nodes:
@@ -267,7 +267,7 @@ class Ontology(object):
 					raise (Exception, "Inconsistent replaced_by id: " + i)
 				for j in terms['replaced_by'][i]:
 					jid = self._id2node(j, strict = True)
-					if jid == None: 
+					if jid is None: 
 						pass
 					else:
 						if iid not in self.alt_id:
@@ -299,7 +299,7 @@ class Ontology(object):
 	#
 
 	def _add_edges(self, edges): #input: list of edges to be added. Each item of the list is a list [child, parent, type]
-		if not self.ignore == None:
+		if not self.ignore is None:
 			newedges = []
 			for i in range(0,len(edges)):
 				# print(edges[i][2])
@@ -312,10 +312,10 @@ class Ontology(object):
 			parentid = self._id2node(edges[i][1], strict = True)
 			inner = True
 			intra = True
-			if childid == None :
+			if childid is None :
 				inner = False
 				childid = edges[i][0]
-			if parentid == None :
+			if parentid is None :
 				inner = False
 				parentid = edges[i][1]
 			if inner and (childid in self.namespace) and (parentid in self.namespace) and (not self.namespace[parentid] == self.namespace[childid]):

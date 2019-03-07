@@ -74,7 +74,7 @@ def load(source_file = None, file_type = 'obo', ontology_type = 'GeneOntology', 
 	ontology = None
 	# namespace = None
 
-	if source_file == None:
+	if source_file is None:
 		raise Exception('source_file parameter cannot be None in ontology.load. Use fastsemsim load_ontology to enable dataset lookup.')
 
 	# generate source_file file handle
@@ -122,7 +122,7 @@ def load(source_file = None, file_type = 'obo', ontology_type = 'GeneOntology', 
 	# if 'ignore' in parameters and 'inter' in parameters['ignore'] and parameters['ignore']['inter']:
 	# 	for i in range(0, len(handler.edges)):
 	# 		(u,v,z) = handler.edges[i] 
-	# 		if not namespace == None:
+	# 		if not namespace is None:
 	# 			vn = None
 	# 			un = None
 	# 			if u in namespace:
@@ -274,7 +274,7 @@ class OboParser:
 	Check if lines have a key:value structure
 	'''
 	def has_tag_structure(self, st):
-		if st == None:
+		if st is None:
 			return False
 		if st.startswith(self.comment_tag):
 			return False
@@ -342,13 +342,13 @@ class OboParser:
 
 				elif key == self.alt_id_tag:
 					# term_alt_ids.append(value)
-					if temp_data[self.alt_id_tag] == None:
+					if temp_data[self.alt_id_tag] is None:
 						temp_data[self.alt_id_tag] = []
 					temp_data[self.alt_id_tag].append(value)
 				#
 
 				elif key == self.replaced_by_tag:
-					if temp_data[self.replaced_by_tag] == None:
+					if temp_data[self.replaced_by_tag] is None:
 						temp_data[self.replaced_by_tag] = []
 					temp_data[self.replaced_by_tag].append(value)
 					# term_replaced_ids.append(value)
@@ -410,7 +410,7 @@ class OboParser:
 			if term_id in self.terms[self.id_tag]: # add term
 				print("Duplicated term: " + str(term_id))
 			for k in temp_data:
-				if not temp_data[k] == None:
+				if not temp_data[k] is None:
 					self.terms[k][term_id] = temp_data[k]
 			for i in temp_rel:
 				self.edges.append( [ term_id, i[0], i[1] ] )
@@ -550,7 +550,7 @@ class OboXmlParser(ContentHandler):
 				self.terms[self.id_tag][self.id] = {}
 
 				for k in self.temp_data:
-					if not self.temp_data[k] == None:
+					if not self.temp_data[k] is None:
 						self.terms[k][self.id] = self.temp_data[k]
 				for i in self.temp_rel:
 					self.edges.append( [ self.id, i[0], i[1] ] )
@@ -589,7 +589,7 @@ class OboXmlParser(ContentHandler):
 				self.isaltId = 0
 				if not self.got_term:
 					raise Exception
-				if self.temp_data[self.alt_id_tag] == None:
+				if self.temp_data[self.alt_id_tag] is None:
 					self.temp_data[self.alt_id_tag] = []
 				self.temp_data[self.alt_id_tag].append(self.curaltid)
 			#
@@ -601,7 +601,7 @@ class OboXmlParser(ContentHandler):
 				self.isReplacedBy = 0
 				if not self.got_term:
 					raise Exception
-				if self.temp_data[self.replaced_by_tag] == None:
+				if self.temp_data[self.replaced_by_tag] is None:
 					self.temp_data[self.replaced_by_tag] = []
 				self.temp_data[self.replaced_by_tag].append(self.currepid)
 			#

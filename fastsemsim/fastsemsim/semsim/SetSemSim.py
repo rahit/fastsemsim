@@ -44,14 +44,14 @@ class SetSemSim:
 		self.log = []
 
 		self.util = util
-		if self.util == None:
+		if self.util is None:
 			self.util = SemSimUtils(self.ontology, self.ac)
 			# self.util.det_IC_table() # only if required by SS measure
 
 		self.term_SS_class = select_term_semsim(TSS)
 		self.term_SS = self.term_SS_class(self.ontology, self.ac, self.util)
 
-		if not MSS == None:
+		if not MSS is None:
 			self.mix_SS_class = select_mix_strategy(MSS)
 			self.mix_SS = self.mix_SS_class(self.ontology, self.ac, self.util)
 		else:
@@ -82,7 +82,7 @@ class SetSemSim:
 			obj = [term1,]
 		terms = []
 		for i in obj:
-			if onto == None:
+			if onto is None:
 				terms.append(i)
 			elif i in self.util.lineage and self.util.lineage[i] == onto:
 				terms.append(i)
@@ -112,7 +112,7 @@ class SetSemSim:
 	def SemSim(self, obj1, obj2, root = None):
 		if self.do_log:
 			self.log = []
-		if (not root == None) and (not root in self.ontology.roots):
+		if (not root is None) and (not root in self.ontology.roots):
 			if self.do_log:
 				reason = 'Selected root ' + str(root) + ' is not in the ontology.'
 				self.log.append(reason)

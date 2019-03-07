@@ -96,7 +96,7 @@ class GeneOntology(Ontology.Ontology):
 
 	# def name2id(self, codes, alt_check = True):
 	# 	nid = None
-	# 	if codes == None:
+	# 	if codes is None:
 	# 		return nid
 	# 	if type(codes) is str:
 	# 		# nid = go_name2id(codes)
@@ -125,7 +125,7 @@ class GeneOntology(Ontology.Ontology):
 	# 	if alt_check:
 	# 		print("id2name - alt_check not yet implemented.")
 	# 	sid = None
-	# 	if codes == None:
+	# 	if codes is None:
 	# 		return sid
 	# 	if type(codes) is int:
 	# 		sid = GeneOntology._id2name(codes)
@@ -144,7 +144,7 @@ class GeneOntology(Ontology.Ontology):
 
 	def __init__(self, terms, edges, parameters):
 		# terms['namespace'] = {} # impose this if current Ontology is faulty
-		if parameters == None:
+		if parameters is None:
 			parameters = {}
 		if not 'ignore' in parameters:
 			parameters['ignore'] = {'has_part':True, 'happens_during':True, 'occurs_in':True}
