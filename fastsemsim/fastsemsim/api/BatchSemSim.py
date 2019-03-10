@@ -79,15 +79,15 @@ class BatchSemSim(object):
 		self.output = output
 	#
 
-	def SemSim(self, term1, term2, root = None):
-		'''
-		Passthrough function. Invokes directly the SemSim function of the ss object.
-		Parameters as in the general SemSim function.
-		'''
-		if isinstance(root, None.__class__):
-			root = self.root
-		#
-		return self.semsim.SemSim(term1, term2, root = root)
+	# def SemSim(self, term1, term2, root = None):
+	# 	'''
+	# 	Passthrough function. Invokes directly the SemSim function of the ss object.
+	# 	Parameters as in the general SemSim function.
+	# 	'''
+	# 	if isinstance(root, None.__class__):
+	# 		root = self.root
+	# 	#
+	# 	return self.semsim.SemSim(term1, term2, root = root)
 	#
 
 
@@ -252,6 +252,7 @@ class BatchSemSim(object):
 
 		if self.output == 'file':
 			temptab.to_csv(self.output_file, sep="\t", header=False, index=False)
+			temptab = None
 
 		return temptab
 	#

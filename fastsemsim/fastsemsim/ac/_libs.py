@@ -35,6 +35,7 @@ except (NameError, AttributeError):
 	unicode = str #For python3
 
 from .AnnotationCorpus import AnnotationCorpus
+from .AnnotationCorpus import AnnotationCorpusFormat
 
 # import sys
 # import os

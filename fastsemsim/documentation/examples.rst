@@ -1,10 +1,30 @@
-Examples and use cases: Putting all together
+Examples and use cases
 ======================================================
 
-Loading the Gene Ontology embedded in fastsemsim
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+In this section real example code and use case scenarios are proposed.
 
-Loading an ontology from a file or a descriptor (more about descriptors in section FastSemSim Datasets) is as simple as running a single line of code using the entrypoint function fastsemsim.load_ontology
+Loading the Gene Ontology
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In this example the Gene Ontology embedded in FastSemSim is loaded.
+
+The quick example loads the Gene Ontology in one simple call. The more complete example explores some of the parameters that can be used. 
+
+Please refer to the FastSemSim API section for a detailed description of the function to load ontologies.
+
+The quick way
+-------------------------
+
+::
+
+	# Import fastsemsim
+	import fastsemsim
+
+	ontology = fastsemsim.load_ontology(ontology_type = 'GeneOntology')
+
+
+A more comprehensive example
+------------------------------
 
 ::
 
@@ -33,8 +53,29 @@ Loading an ontology from a file or a descriptor (more about descriptors in secti
 
 
 
-Loading the human Gene Ontology annotation corpus for Uniprot Proteins
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Loading the human Gene Ontology annotation corpus
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In this example the human Gene Ontology annotation corpus for Uniprot Proteins embedded in FastSemSim is loaded.
+
+The quick example loads the Annotation Corpus in one simple line. The more complete example explores some of the parameters that can be used. 
+
+Note that in any case an ontology has to be already loaded.
+
+Please refer to the FastSemSim API section for a detailed description of the function to load acs.
+
+The quick way
+-------------------------
+
+::
+
+	ac = fastsemsim.load_ac(ontology, ac_species = 'human')
+
+
+
+
+A more comprehensive example
+------------------------------
 
 ::
 
@@ -81,8 +122,23 @@ Loading the human Gene Ontology annotation corpus for Uniprot Proteins
 
 
 
-Calculating semantic similarity 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Calculating a semantic similarity 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Once an ontology (and possibly an annotation corpus) has been loaded, semantic similarity scores can be calculated.
+
+As in the previous examples, a first quick glance at some simple code is presented, followed by a more complex example.
+
+Note that in any case an ontology (and the annotation corpus, if required) has to be already loaded.
+
+Please refer to the FastSemSim API section for a detailed description of the function to initialize semantic similarity measures and calculate semantic similarity scores.
+
+
+The quick way
+-------------------------
+
+In this quick example we tell fastSemSim we wish to initialize the Resnik semantic similarity measure between proteins in the annotation corpus (using the parameter semsin_type='obj'. as Resnik is a term pairwise measure, we also need to say how to mix the single term-term similarities (mixing_strategy parameter).
+The returned object can then be used (by invoking its method SemSim) to calculate similarities between two proteins.
 
 ::
 
@@ -90,23 +146,20 @@ Calculating semantic similarity
 	semsim_type='obj'
 	semsim_measure='Resnik'
 	mixing_strategy='max'
-	ss_util=None
-	semsim_do_log=False
-	semsim_params={}
-
 
 	# Initializing semantic similarity
-	ss = fastsemsim.init_semsim(ontology = ontology, ac = ac, semsim_type = semsim_type, semsim_measure = semsim_measure, mixing_strategy = mixing_strategy, ss_util = ss_util, do_log = semsim_do_log, params = semsim_params)
-
+	ss = fastsemsim.init_semsim(ontology = ontology, ac = ac, semsim_type = semsim_type, semsim_measure = semsim_measure, mixing_strategy = mixing_strategy)
 
 	# Calculating SS for some pairs of proteins...
-
 	res = ss.SemSim('O75884', 'Q9NQB0')
 	print(res)
 
 
 Calculating semantic similarity - batch mode
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The previous minimal example is sufficient to calculate a semantic similarity score.
+Suppose we want to calculate the semantic similarity in a pairwise fashion between all the pairs of proteins within a given set. Of course, we could use the object built in the quick example from above, and repeteadly invoke it within a loop cycling through all the protein pairs. Albeit feasible, this is not very efficient and requires some programming effort.
+For this reasons, FastSemSim provides a 'batch mode' to calculate semantic simialrity between several pairs/groups of protein.
 
 ::
 
@@ -145,6 +198,14 @@ Calculating semantic similarity - batch mode
 
 
 
+
+Putting all together
+----------------------------------
+
 Divers
 ----------------------------------
+
+
+
+
 
