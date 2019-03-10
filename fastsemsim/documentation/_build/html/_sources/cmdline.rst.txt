@@ -26,11 +26,16 @@ The standard processing workflow performed by the CLI to evaluate the semantic s
 
 
 Examples of semantic similarity calculation with the CLI
---------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 This section provides several CLI use cases. You may take them as exampels and modify the parameters to fit your objectives.
 
+More examples of CLI usage are included in the file fastsemsim/examples/example_cmdline.sh
+
+
 **Exampe 1**. Evaluate the Resnik BMA semantic similarity over the Gene Ontology between all the pairs of human proteins annotated in the Uniprot GOA:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ``fastsemsim --ontology_type GeneOntology --query_ss_type obj --tss Resnik --mix BMA --query_input ac --ac_species human  -vv``
 
@@ -54,6 +59,7 @@ This section provides several CLI use cases. You may take them as exampels and m
 
 
 **Exampe 2**. Evaluate the SimGIC semantic similarity over the Disease Ontology between all the pairs of ontology terms, using the human DOA (Disease Ontology Annotation) dataset for establishing the Information Content statistics:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ``fastsemsim --ontology_type DiseaseOntology --query_ss_type term --tss SimGIC --query_input ontology --ac_species human -vv``
 
@@ -73,7 +79,10 @@ This section provides several CLI use cases. You may take them as exampels and m
 
 
 
-**Exampe 3**. Evaluate the SimGIC semantic similarity over the Gene Ontology (loaded from file *GO_FILE*) and the Uniprot human gene ontology annotation corpus. The query is a list of sets of objects loaded from the *QUERY_FILE* file. See :download:`this file <objset_GOA_query.txt>` for an example of a valid objset query file. The output will be written in the *OUTPUT_FILE* file. See :download:`this file <objset_GOA_output.txt>` for an example of the output generated.
+**Exampe 3**. Evaluate the SimGIC semantic similarity over the Gene Ontology (loaded from file *GO_FILE*) and the Uniprot human gene ontology annotation corpus. 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The query is a list of sets of objects loaded from the *QUERY_FILE* file. See :download:`this file <objset_GOA_query.txt>` for an example of a valid objset query file. The output will be written in the *OUTPUT_FILE* file. See :download:`this file <objset_GOA_output.txt>` for an example of the output generated.
 
 ``fastsemsim --ontology_type GeneOntology --ontology_file GO_FILE --ac_species human --query_ss_type objset --tss SimGIC --query_input file --query_file QUERY_FILE  -vv --output_file OUTPUT_FILE --query_mode list``
 
@@ -100,11 +109,7 @@ This section provides several CLI use cases. You may take them as exampels and m
 
 
 
-
 Troubleshooting
 ---------------
 If you want to run fastSemSim Command Line Interface without installing the FastSemSim library, you can run the Python script ``fastsemsim_cmdline.py`` located in the folder ``fastsemsim``.
 You should include the FastSemSim library in your PYTHONPATH before running the script, by running ``export PYTHONPATH=path-to-fastsemsim-folder``.
-
-
-.. automodule:: fastsemsim.fastsemsim_cmdline

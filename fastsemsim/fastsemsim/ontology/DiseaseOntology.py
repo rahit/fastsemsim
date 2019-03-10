@@ -79,8 +79,8 @@ class DiseaseOntology(Ontology.Ontology):
 				return code[5:]
 			except Exception:
 				return None
-		if strict:
-			return None
+		# if strict:
+			# return None
 		return Ontology.Ontology._id2node(code)
 	#
 

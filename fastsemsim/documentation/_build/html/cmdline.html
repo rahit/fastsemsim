@@ -18,7 +18,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Semantic Similarity" href="fastsemsim.SemSim.html" /> 
+    <link rel="prev" title="Examples and use cases" href="examples.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -30,7 +30,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="fastsemsim.SemSim.html" title="Semantic Similarity"
+          <a href="examples.html" title="Examples and use cases"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">fastsemsim 1.0.0beta documentation</a> &#187;</li> 
       </ul>
@@ -60,7 +60,9 @@
 <div class="section" id="examples-of-semantic-similarity-calculation-with-the-cli">
 <h2>Examples of semantic similarity calculation with the CLI<a class="headerlink" href="#examples-of-semantic-similarity-calculation-with-the-cli" title="Permalink to this headline">¶</a></h2>
 <p>This section provides several CLI use cases. You may take them as exampels and modify the parameters to fit your objectives.</p>
-<p><strong>Exampe 1</strong>. Evaluate the Resnik BMA semantic similarity over the Gene Ontology between all the pairs of human proteins annotated in the Uniprot GOA:</p>
+<p>More examples of CLI usage are included in the file fastsemsim/examples/example_cmdline.sh</p>
+<div class="section" id="exampe-1-evaluate-the-resnik-bma-semantic-similarity-over-the-gene-ontology-between-all-the-pairs-of-human-proteins-annotated-in-the-uniprot-goa">
+<h3><strong>Exampe 1</strong>. Evaluate the Resnik BMA semantic similarity over the Gene Ontology between all the pairs of human proteins annotated in the Uniprot GOA:<a class="headerlink" href="#exampe-1-evaluate-the-resnik-bma-semantic-similarity-over-the-gene-ontology-between-all-the-pairs-of-human-proteins-annotated-in-the-uniprot-goa" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">fastsemsim</span> <span class="pre">--ontology_type</span> <span class="pre">GeneOntology</span> <span class="pre">--query_ss_type</span> <span class="pre">obj</span> <span class="pre">--tss</span> <span class="pre">Resnik</span> <span class="pre">--mix</span> <span class="pre">BMA</span> <span class="pre">--query_input</span> <span class="pre">ac</span> <span class="pre">--ac_species</span> <span class="pre">human</span>&#160; <span class="pre">-vv</span></code></p>
 <p><em>Parameter description</em>:</p>
 <p><code class="docutils literal notranslate"><span class="pre">--ontology_type</span> <span class="pre">GeneOntology</span></code>: instructs fastSemSim to load the embedded version of the GeneOntology</p>
@@ -70,7 +72,9 @@
 <p><code class="docutils literal notranslate"><span class="pre">--query_ss_type</span> <span class="pre">obj</span></code>: tells fastSemSim that the query will be a list of objects annotated with the ontology terms</p>
 <p><code class="docutils literal notranslate"><span class="pre">--query_input</span> <span class="pre">ac</span></code>: tells fastSemSim to use all the objects in the annotation corpus as query</p>
 <p><code class="docutils literal notranslate"><span class="pre">-vv</span></code>: the verbosity level</p>
-<p><strong>Exampe 2</strong>. Evaluate the SimGIC semantic similarity over the Disease Ontology between all the pairs of ontology terms, using the human DOA (Disease Ontology Annotation) dataset for establishing the Information Content statistics:</p>
+</div>
+<div class="section" id="exampe-2-evaluate-the-simgic-semantic-similarity-over-the-disease-ontology-between-all-the-pairs-of-ontology-terms-using-the-human-doa-disease-ontology-annotation-dataset-for-establishing-the-information-content-statistics">
+<h3><strong>Exampe 2</strong>. Evaluate the SimGIC semantic similarity over the Disease Ontology between all the pairs of ontology terms, using the human DOA (Disease Ontology Annotation) dataset for establishing the Information Content statistics:<a class="headerlink" href="#exampe-2-evaluate-the-simgic-semantic-similarity-over-the-disease-ontology-between-all-the-pairs-of-ontology-terms-using-the-human-doa-disease-ontology-annotation-dataset-for-establishing-the-information-content-statistics" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">fastsemsim</span> <span class="pre">--ontology_type</span> <span class="pre">DiseaseOntology</span> <span class="pre">--query_ss_type</span> <span class="pre">term</span> <span class="pre">--tss</span> <span class="pre">SimGIC</span> <span class="pre">--query_input</span> <span class="pre">ontology</span> <span class="pre">--ac_species</span> <span class="pre">human</span> <span class="pre">-vv</span></code></p>
 <p><em>Parameter description</em>:</p>
 <p><code class="docutils literal notranslate"><span class="pre">--ontology_type</span> <span class="pre">DiseaseOntology</span></code>: instructs fastSemSim to load the embedded version of the DiseaseOntology</p>
@@ -79,7 +83,10 @@
 <p><code class="docutils literal notranslate"><span class="pre">--query_ss_type</span> <span class="pre">term</span></code>: tells fastSemSim that the query will be a list of ontology terms</p>
 <p><code class="docutils literal notranslate"><span class="pre">--query_input</span> <span class="pre">ontology</span></code>: tells fastSemSim to use all the terms in the ontology as query. Use <code class="docutils literal notranslate"><span class="pre">--query_input</span> <span class="pre">ac</span></code> to use all the ontology terms associated to at least one object in the annotation corpus as query.</p>
 <p><code class="docutils literal notranslate"><span class="pre">-vv</span></code>: the verbosity level</p>
-<p><strong>Exampe 3</strong>. Evaluate the SimGIC semantic similarity over the Gene Ontology (loaded from file <em>GO_FILE</em>) and the Uniprot human gene ontology annotation corpus. The query is a list of sets of objects loaded from the <em>QUERY_FILE</em> file. See <a class="reference download internal" download="" href="_downloads/6deb530ef6a857cfafb1dbfcf04551dd/objset_GOA_query.txt"><code class="xref download docutils literal notranslate"><span class="pre">this</span> <span class="pre">file</span></code></a> for an example of a valid objset query file. The output will be written in the <em>OUTPUT_FILE</em> file. See <a class="reference download internal" download="" href="_downloads/b8aea64d5440aac86d64f8dca236f300/objset_GOA_output.txt"><code class="xref download docutils literal notranslate"><span class="pre">this</span> <span class="pre">file</span></code></a> for an example of the output generated.</p>
+</div>
+<div class="section" id="exampe-3-evaluate-the-simgic-semantic-similarity-over-the-gene-ontology-loaded-from-file-go-file-and-the-uniprot-human-gene-ontology-annotation-corpus">
+<h3><strong>Exampe 3</strong>. Evaluate the SimGIC semantic similarity over the Gene Ontology (loaded from file <em>GO_FILE</em>) and the Uniprot human gene ontology annotation corpus.<a class="headerlink" href="#exampe-3-evaluate-the-simgic-semantic-similarity-over-the-gene-ontology-loaded-from-file-go-file-and-the-uniprot-human-gene-ontology-annotation-corpus" title="Permalink to this headline">¶</a></h3>
+<p>The query is a list of sets of objects loaded from the <em>QUERY_FILE</em> file. See <a class="reference download internal" download="" href="_downloads/6deb530ef6a857cfafb1dbfcf04551dd/objset_GOA_query.txt"><code class="xref download docutils literal notranslate"><span class="pre">this</span> <span class="pre">file</span></code></a> for an example of a valid objset query file. The output will be written in the <em>OUTPUT_FILE</em> file. See <a class="reference download internal" download="" href="_downloads/b8aea64d5440aac86d64f8dca236f300/objset_GOA_output.txt"><code class="xref download docutils literal notranslate"><span class="pre">this</span> <span class="pre">file</span></code></a> for an example of the output generated.</p>
 <p><code class="docutils literal notranslate"><span class="pre">fastsemsim</span> <span class="pre">--ontology_type</span> <span class="pre">GeneOntology</span> <span class="pre">--ontology_file</span> <span class="pre">GO_FILE</span> <span class="pre">--ac_species</span> <span class="pre">human</span> <span class="pre">--query_ss_type</span> <span class="pre">objset</span> <span class="pre">--tss</span> <span class="pre">SimGIC</span> <span class="pre">--query_input</span> <span class="pre">file</span> <span class="pre">--query_file</span> <span class="pre">QUERY_FILE</span>&#160; <span class="pre">-vv</span> <span class="pre">--output_file</span> <span class="pre">OUTPUT_FILE</span> <span class="pre">--query_mode</span> <span class="pre">list</span></code></p>
 <p><a href="#id1"><span class="problematic" id="id2">*</span></a>Parameter description <a href="#id3"><span class="problematic" id="id4">*</span></a>:</p>
 <p><code class="docutils literal notranslate"><span class="pre">--ontology_file</span> <span class="pre">GO_FILE</span></code>: the file with the ontology to load</p>
@@ -92,11 +99,12 @@
 <p><code class="docutils literal notranslate"><span class="pre">--query_mode</span> <span class="pre">list</span></code>: tells fastSemSim that the query is a list of elements. The pairwise semantic similarity between each element will be evaluated.</p>
 <p><code class="docutils literal notranslate"><span class="pre">--output_file</span> <span class="pre">OUTPUT_FILE</span></code>: the output file where the scores will be stored.</p>
 </div>
+</div>
 <div class="section" id="troubleshooting">
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
 <p>If you want to run fastSemSim Command Line Interface without installing the FastSemSim library, you can run the Python script <code class="docutils literal notranslate"><span class="pre">fastsemsim_cmdline.py</span></code> located in the folder <code class="docutils literal notranslate"><span class="pre">fastsemsim</span></code>.
 You should include the FastSemSim library in your PYTHONPATH before running the script, by running <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PYTHONPATH=path-to-fastsemsim-folder</span></code>.</p>
-<span class="target" id="module-fastsemsim.fastsemsim_cmdline"></span></div>
+</div>
 </div>
 
 
@@ -110,15 +118,20 @@ You should include the FastSemSim library in your PYTHONPATH before running the 
 <li><a class="reference internal" href="#">FastSemSim Command Line Interface (CLI)</a><ul>
 <li><a class="reference internal" href="#running-the-command-line-interface">Running the Command Line Interface</a></li>
 <li><a class="reference internal" href="#cli-capabilities-and-standard-workflow">CLI capabilities and standard workflow</a></li>
-<li><a class="reference internal" href="#examples-of-semantic-similarity-calculation-with-the-cli">Examples of semantic similarity calculation with the CLI</a></li>
+<li><a class="reference internal" href="#examples-of-semantic-similarity-calculation-with-the-cli">Examples of semantic similarity calculation with the CLI</a><ul>
+<li><a class="reference internal" href="#exampe-1-evaluate-the-resnik-bma-semantic-similarity-over-the-gene-ontology-between-all-the-pairs-of-human-proteins-annotated-in-the-uniprot-goa"><strong>Exampe 1</strong>. Evaluate the Resnik BMA semantic similarity over the Gene Ontology between all the pairs of human proteins annotated in the Uniprot GOA:</a></li>
+<li><a class="reference internal" href="#exampe-2-evaluate-the-simgic-semantic-similarity-over-the-disease-ontology-between-all-the-pairs-of-ontology-terms-using-the-human-doa-disease-ontology-annotation-dataset-for-establishing-the-information-content-statistics"><strong>Exampe 2</strong>. Evaluate the SimGIC semantic similarity over the Disease Ontology between all the pairs of ontology terms, using the human DOA (Disease Ontology Annotation) dataset for establishing the Information Content statistics:</a></li>
+<li><a class="reference internal" href="#exampe-3-evaluate-the-simgic-semantic-similarity-over-the-gene-ontology-loaded-from-file-go-file-and-the-uniprot-human-gene-ontology-annotation-corpus"><strong>Exampe 3</strong>. Evaluate the SimGIC semantic similarity over the Gene Ontology (loaded from file <em>GO_FILE</em>) and the Uniprot human gene ontology annotation corpus.</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="fastsemsim.SemSim.html"
-                        title="previous chapter">Semantic Similarity</a></p>
+  <p class="topless"><a href="examples.html"
+                        title="previous chapter">Examples and use cases</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -152,7 +165,7 @@ You should include the FastSemSim library in your PYTHONPATH before running the 
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="fastsemsim.SemSim.html" title="Semantic Similarity"
+          <a href="examples.html" title="Examples and use cases"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">fastsemsim 1.0.0beta documentation</a> &#187;</li> 
       </ul>

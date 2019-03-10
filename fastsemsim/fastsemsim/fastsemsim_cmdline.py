@@ -104,18 +104,18 @@ def start():
 			print(("-> Extracting statistics..."))
 
 		if params['stats']['IC'] or True:
-			util = SemSimUtils(ontology, ac)
-			util.det_IC_table()
+			ss_util = fastsemsim.semsim.SemSimUtils(ontology, ac)
+			ss_util.det_IC_table()
 			# ----- Inject IC
 			if not params['core']['inject_IC'] is None:
-				util.IC = load_IC_from_file(params['core']['inject_IC'])
+				ss_util.IC = load_IC_from_file(params['core']['inject_IC'])
 			# ----- evaluate SS
 			h = None
 			if not params['output']['out_file'] is None:
 				if params['core']['verbose'] >= 2:
 					print("-> Writing IC to file " + str(params['output']['out_file']) + "...")
 				h = open(params['output']['out_file'], 'w')
-			print_IC(util.IC, h, params['output']['cut_thres'], params['output']['cut_nan'])
+			print_IC(ss_util.IC, h, params['output']['cut_thres'], params['output']['cut_nan'])
 			if not h is None:
 				h.close()
 			if params['core']['verbose'] >= 2:
@@ -238,8 +238,8 @@ def build_cmdline_args_parser():
 	# Define parameters for section 'core'
 	param_core.add_argument('--inject_IC', '--inject_IC_form_file', action='store', default=None, help=params_help['IC_table_form_file'], metavar='inject_IC', dest='inject_IC')
 	param_core.add_argument('--verbose', '-v', action='count', default=None, help=params_help['verbose'], dest='verbose')
-	param_core.add_argument('--save_params', default=None, help=params_help['save_params'], metavar='save_params', dest='save_params')
-	param_core.add_argument('--load_params', default=None, help=params_help['load_params'], metavar='load_params', dest='load_params')
+	param_core.add_argument('--save_params', default=None, help=params_help['save_params'], metavar='config_file', dest='save_params')
+	param_core.add_argument('--load_params', '--config', '--config_file', '-c', default=None, help=params_help['load_params'], metavar='config_file', dest='load_params')
 	param_core.add_argument('--task', action='store', default=None, choices=['SS', 'stats'], help=params_help['task'], metavar='task', dest='task')
 
 
@@ -435,7 +435,7 @@ def init_parameters():
 	params['ss']['tss_mix'] = None
 	params['output']['cut_thres'] = None
 	params['output']['out_file'] = None
-	params['output']['out_mode'] = None
+	params['output']['out_mode'] = 'console'
 	params['output']['cut_nan'] = None
 	params['stats']['IC'] = None
 	return(params)
@@ -1037,6 +1037,7 @@ def load_query():
 		print(str(query))
 	if params['core']['verbose'] >= 2:
 		print("Query length: " + str(len(query)))
+		print(query)
 		print("-------------")
 	return query
 #
@@ -1108,7 +1109,13 @@ def det_ss():
 	# if params['query']['query_mode'] in ('pairs', 'pairwise', 'bipartite'):
 	ss.verbose = True
 	ss.set_root(params['ss']['ss_root'])
-	ss.set_output(output = params['output']['out_mode'], output_params = params['output']['out_file'])
+
+	output_params = dict()
+	output_params['file'] = params['output']['out_file']
+	output_params['cut_thres'] = params['output']['cut_thres']
+	output_params['cut_nan'] = params['output']['cut_nan']
+
+	ss.set_output(output = params['output']['out_mode'], output_params = output_params)
 	res = ss.SemSim(query=query, query_type=params['query']['query_mode'])
 
 	# if params['query']['query_mode'] == 'pairs':
@@ -1152,110 +1159,110 @@ def det_ss():
 ################3################3################3################3################3
 # Obsolete
 
-def ss_pairs(out):
-	'''
-	Pairwise Semantic Similarity
-	'''
-	global params
-	global ss
+# def ss_pairs(out):
+# 	'''
+# 	Pairwise Semantic Similarity
+# 	'''
+# 	global params
+# 	global ss
 
-	scores = []
-	done = 0
-	total = len(query)
-	if not out is None:
-		if params['core']['verbose'] >= 0:
-			print("Evluating semantic similarity between " + str(len(query)) + " pairs.")
-			prev_text = ""
-			sys.stdout.write("Done: ")
-		chunk_size = 2000
-		temptab = pd.DataFrame(columns=['obj_1','obj_2','ss'])
-		temptab.to_csv(out, sep="\t", header=True, index=False)
-	sys.stdout.flush()
-	for i in range(0,len(query)):
-		temp = ss.SemSim(query[i][0], query[i][1], params['ss']['ss_root'])
-		if temp is None and params['core']['verbose'] >= 4:
-			print(ss.log)
-		done+=1
-		if not params['output']['cut_thres'] is None:
-			if temp is None or temp <= params['output']['cut_thres']:
-				continue
-			if params['output']['cut_nan']:
-				if temp is None:
-					continue
-		if out is None:
-			print(str(query[i][0]) + "\t" + str(query[i][1]) + "\t" + str(temp))
-		else:
-			temptab.loc[i] = [query[i][0], query[i][1], temp]
-			if temptab.shape[0] >= chunk_size:
-				temptab.to_csv(out, sep="\t", header=False, index=False)
-				temptab = pd.DataFrame(columns=['obj_1','obj_2','ss'])
-			if params['core']['verbose'] >= 0:
-				sys.stdout.write("\b"*len(prev_text))
-				prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
-				sys.stdout.write(prev_text)
-				sys.stdout.flush()
-	if not out is None:
-		temptab.to_csv(out, sep="\t", header=False, index=False)
-	#return scores
-#
+# 	scores = []
+# 	done = 0
+# 	total = len(query)
+# 	if not out is None:
+# 		if params['core']['verbose'] >= 0:
+# 			print("Evluating semantic similarity between " + str(len(query)) + " pairs.")
+# 			prev_text = ""
+# 			sys.stdout.write("Done: ")
+# 		chunk_size = 2000
+# 		temptab = pd.DataFrame(columns=['obj_1','obj_2','ss'])
+# 		temptab.to_csv(out, sep="\t", header=True, index=False)
+# 	sys.stdout.flush()
+# 	for i in range(0,len(query)):
+# 		temp = ss.SemSim(query[i][0], query[i][1], params['ss']['ss_root'])
+# 		if temp is None and params['core']['verbose'] >= 4:
+# 			print(ss.log)
+# 		done+=1
+# 		if not params['output']['cut_thres'] is None:
+# 			if temp is None or temp <= params['output']['cut_thres']:
+# 				continue
+# 			if params['output']['cut_nan']:
+# 				if temp is None:
+# 					continue
+# 		if out is None:
+# 			print(str(query[i][0]) + "\t" + str(query[i][1]) + "\t" + str(temp))
+# 		else:
+# 			temptab.loc[i] = [query[i][0], query[i][1], temp]
+# 			if temptab.shape[0] >= chunk_size:
+# 				temptab.to_csv(out, sep="\t", header=False, index=False)
+# 				temptab = pd.DataFrame(columns=['obj_1','obj_2','ss'])
+# 			if params['core']['verbose'] >= 0:
+# 				sys.stdout.write("\b"*len(prev_text))
+# 				prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
+# 				sys.stdout.write(prev_text)
+# 				sys.stdout.flush()
+# 	if not out is None:
+# 		temptab.to_csv(out, sep="\t", header=False, index=False)
+# 	#return scores
+# #
 
 
 
-	#-#-#-#-#-#-#-#-#-#-#
-	# Pairwise Sem Sim  #
-	#-#-#-#-#-#-#-#-#-#-#
+# 	#-#-#-#-#-#-#-#-#-#-#
+# 	# Pairwise Sem Sim  #
+# 	#-#-#-#-#-#-#-#-#-#-#
 
-def ss_pairwise(out):
-	global params
-	global ss
-	global query
+# def ss_pairwise(out):
+# 	global params
+# 	global ss
+# 	global query
 
-	scores = {}
-	done = 0
-	total = len(query)*(len(query)+1)/2
+# 	scores = {}
+# 	done = 0
+# 	total = len(query)*(len(query)+1)/2
 
-	if not out is None:
-		if params['core']['verbose'] >= 0:
-			print("Evluating pairwise semantic similarity between " + str(len(query)) + " entities (" + str(len(query)*(len(query)+1)/2) + " pairs)")
-			prev_text = ""
-			sys.stdout.write("Done: ")
-		chunk_size = 2000
-		temptab = pd.DataFrame(columns=['obj_1','obj_2','ss'])
-		temptab.to_csv(out, sep="\t", header=True, index=False)
-	sys.stdout.flush()
-	for i in range(0,len(query)):
-		# if params['query_ss_type'] == 'obj':
-		# scores[pairs[i]] = {}
-		for j in range(i,len(query)):
-			temp = ss.SemSim(query[i],query[j],params['ss']['ss_root'])
-			if temp is None and params['core']['verbose'] >= 4:
-				print(ss.log)
-			#scores[pairs[i]][pairs[j]] = temp
-			done+=1
-			if not params['output']['cut_thres'] is None:
-				if temp is None or temp <= params['output']['cut_thres']:
-					continue
-			if params['output']['cut_nan']:
-				if temp is None:
-					continue
-			if out is None:
-				print(str(query[i]) + "\t" + str(query[j]) + "\t" + str(temp))
-			else:
-				# print(temptab)
-				# print(i*(len(query))+j)
-				temptab.loc[i*(len(query))+j] = [query[i], query[j], temp]
-				if temptab.shape[0] >= chunk_size:
-					temptab.to_csv(out, sep="\t", header=False, index=False)
-					temptab = pd.DataFrame(columns=['obj_1','obj_2','ss'])
-				if params['core']['verbose'] >= 0:
-					sys.stdout.write("\b"*len(prev_text))
-					prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
-					sys.stdout.write(prev_text)
-					sys.stdout.flush()
-	if not out is None:
-		temptab.to_csv(out, sep="\t", header=False, index=False)
-	#return scores
-#
+# 	if not out is None:
+# 		if params['core']['verbose'] >= 0:
+# 			print("Evluating pairwise semantic similarity between " + str(len(query)) + " entities (" + str(len(query)*(len(query)+1)/2) + " pairs)")
+# 			prev_text = ""
+# 			sys.stdout.write("Done: ")
+# 		chunk_size = 2000
+# 		temptab = pd.DataFrame(columns=['obj_1','obj_2','ss'])
+# 		temptab.to_csv(out, sep="\t", header=True, index=False)
+# 	sys.stdout.flush()
+# 	for i in range(0,len(query)):
+# 		# if params['query_ss_type'] == 'obj':
+# 		# scores[pairs[i]] = {}
+# 		for j in range(i,len(query)):
+# 			temp = ss.SemSim(query[i],query[j],params['ss']['ss_root'])
+# 			if temp is None and params['core']['verbose'] >= 4:
+# 				print(ss.log)
+# 			#scores[pairs[i]][pairs[j]] = temp
+# 			done+=1
+# 			if not params['output']['cut_thres'] is None:
+# 				if temp is None or temp <= params['output']['cut_thres']:
+# 					continue
+# 			if params['output']['cut_nan']:
+# 				if temp is None:
+# 					continue
+# 			if out is None:
+# 				print(str(query[i]) + "\t" + str(query[j]) + "\t" + str(temp))
+# 			else:
+# 				# print(temptab)
+# 				# print(i*(len(query))+j)
+# 				temptab.loc[i*(len(query))+j] = [query[i], query[j], temp]
+# 				if temptab.shape[0] >= chunk_size:
+# 					temptab.to_csv(out, sep="\t", header=False, index=False)
+# 					temptab = pd.DataFrame(columns=['obj_1','obj_2','ss'])
+# 				if params['core']['verbose'] >= 0:
+# 					sys.stdout.write("\b"*len(prev_text))
+# 					prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
+# 					sys.stdout.write(prev_text)
+# 					sys.stdout.flush()
+# 	if not out is None:
+# 		temptab.to_csv(out, sep="\t", header=False, index=False)
+# 	#return scores
+# #
 
 ################3################3################3################3################3
 

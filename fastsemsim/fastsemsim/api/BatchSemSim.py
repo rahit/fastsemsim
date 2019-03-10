@@ -50,7 +50,7 @@ class BatchSemSim(object):
 	def __init__(self, semsim, root = None):
 		self.semsim = semsim
 		self.set_root(root)
-		self.set_output(output = None)
+		self.set_output(output = None, output_params = None)
 	#
 
 	def set_root(self, root=None):
@@ -61,22 +61,58 @@ class BatchSemSim(object):
 		self.root = root
 	#
 
-	def set_output(self, output = None, output_params = None):
+	def set_output(self, output, output_params = None):
 		'''
-		Set the output of a BatchSemSim
+		Select the output format of BatchSemSim.
+
+		Parameters
+		----------
+			output: string
+				The desiderd output format. Can be either 'console', 'file', None or 'iterator'.
+				'console' will instruct BatchSemSim to print to onsole the scores.
+				'file' will redirect the output to the output file indicated in output_params
+				None will return all the values in a pandas dataframe. If the number of pairs is huge, this output format could require a significant amount of memory.
+				'iterator' (not yeet imlpemented): returns an iterator that will generate the output on request (eg while loopping through the iterator).
+
+			output_params: dict, optional
+				Additional parameters required by some output formats.
+				output_params['file']: string. Has to contain the name of the output file when the 'output' parameter is 'file'
+				output_params['cut_nan']: True/False. Remove from the output all the pairs with NaN as sematic similarity (e.g. when one of the two objects are not annotated in the ontology)
+				output_params['cut_thres']: numeric. Remove from the output the pairs with a semantic similarity lower or equal than the indicated threshold
+
+
+			root: str, optional
+				The root of the ontolgoy to consider. If set to None, the first root (and possibly the only one) will be used.
+
+		Returns
+		------------
+			Pandas DataFrame with all the SS.
 		'''
 		if isinstance(output, None.__class__): # output is returned as returning variable
 			pass
 		elif output == 'file': # output is saved to file.
-			if isinstance(output_params, str): # Output file
-				self.output_file = output_params
-			else:
-				raise Exception('Uknown ' + 'output_file format.')	
+			if not isinstance(output_params, dict): # Output file
+				raise Exception('Wrong output_params format.')	
+			if not isinstance(output_params['file'], str): # Output file
+				raise Exception('Uknown ' + 'output_params[file] format.')	
+			self.output_file = output_params['file']
 		elif output == 'iterator': # output is saved to file.
+			pass
+		elif output == 'console': # output is saved to file.
 			pass
 		else:
 			raise Exception('Uknown ' + str(output) + ' output format.')
+		# good to go
 		self.output = output
+
+		# set other params
+		self.output_cut_thresh = None
+		self.output_cut_nan = None
+		if isinstance(output_params, dict): # Output file
+			if isinstance(output_params['cut_nan'], bool):
+				self.output_cut_nan = output_params['cut_nan']
+			if isinstance(output_params['cut_thres'], float):
+				self.output_cut_thresh = output_params['cut_thres']
 	#
 
 	# def SemSim(self, term1, term2, root = None):
@@ -203,7 +239,8 @@ class BatchSemSim(object):
 			raise Exception('Iterator not implemented yet.')
 		elif self.output == 'file':
 			chunk_size = 2000
-			temptab.to_csv(self.output_file, sep="\t", header=True, index=False)
+			out_file_handle = open(self.output_file, 'w')
+			temptab.to_csv(out_file_handle, sep="\t", header=True, index=False)
 		# else:
 			# pass
 
@@ -222,6 +259,19 @@ class BatchSemSim(object):
 						# continue
 
 			# temp = pd.DataFrame([[current_query[0], current_query[1], temp],], columns=['obj_1','obj_2','ss']) # way slower!
+
+			done+=1
+			if self.verbose == True and not self.output == 'console':
+				sys.stdout.write("\b"*len(prev_text))
+				prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
+				sys.stdout.write(prev_text)
+				sys.stdout.flush()
+
+			if (self.output_cut_nan) and (temp is None): # do not process None
+				continue
+			if (not self.output_cut_thresh is None) and (temp <= self.output_cut_thresh): # do not process scores below threshold
+				continue
+
 			temp = [current_query[0], current_query[1], temp]
 			templist.append(temp)
 			
@@ -230,19 +280,19 @@ class BatchSemSim(object):
 					temptab = pd.DataFrame(templist, columns=['obj_1','obj_2','ss'])
 					# temptab = pd.concat(templist, sort=False, ignore_index=True) # way slower!
 					templist = []
-					temptab.to_csv(self.output_file, sep="\t", header=False, index=False)
+					temptab.to_csv(out_file_handle, sep="\t", header=False, index=False)
 					temptab = pd.DataFrame(columns=['obj_1','obj_2','ss'])
-				#
+			#
+			elif self.output == 'console':
+				print(temp)
+				# sys.stdout.write(temp)
+				templist = []
+			#
 			elif isinstance(self.output, None.__class__):
 				pass
 			#
 
-			done+=1
-			if self.verbose == True:
-				sys.stdout.write("\b"*len(prev_text))
-				prev_text = str(done) + ' [%.4f' % (100*done/float(total)) + " %]"
-				sys.stdout.write(prev_text)
-				sys.stdout.flush()
+
 
 		# collect output
 		if len(templist)>0:
@@ -251,8 +301,9 @@ class BatchSemSim(object):
 			templist = []
 
 		if self.output == 'file':
-			temptab.to_csv(self.output_file, sep="\t", header=False, index=False)
+			temptab.to_csv(out_file_handle, sep="\t", header=False, index=False)
 			temptab = None
+			out_file_handle.close()
 
 		return temptab
 	#

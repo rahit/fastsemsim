@@ -7,10 +7,11 @@ Loading the Gene Ontology
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In this example the Gene Ontology embedded in FastSemSim is loaded.
-
 The quick example loads the Gene Ontology in one simple call. The more complete example explores some of the parameters that can be used. 
 
 Please refer to the FastSemSim API section for a detailed description of the function to load ontologies.
+
+The complete example code is available in the file fastsemsim/examples/load_ontology.py within the source tarball of FastSemSim.
 
 The quick way
 -------------------------
@@ -57,12 +58,12 @@ Loading the human Gene Ontology annotation corpus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In this example the human Gene Ontology annotation corpus for Uniprot Proteins embedded in FastSemSim is loaded.
-
 The quick example loads the Annotation Corpus in one simple line. The more complete example explores some of the parameters that can be used. 
-
 Note that in any case an ontology has to be already loaded.
 
 Please refer to the FastSemSim API section for a detailed description of the function to load acs.
+
+The complete example code is available in the file fastsemsim/examples/load_go_annotation_corpus.py within the source tarball of FastSemSim.
 
 The quick way
 -------------------------
@@ -126,12 +127,13 @@ Calculating a semantic similarity
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Once an ontology (and possibly an annotation corpus) has been loaded, semantic similarity scores can be calculated.
-
 As in the previous examples, a first quick glance at some simple code is presented, followed by a more complex example.
 
 Note that in any case an ontology (and the annotation corpus, if required) has to be already loaded.
 
 Please refer to the FastSemSim API section for a detailed description of the function to initialize semantic similarity measures and calculate semantic similarity scores.
+
+The complete example code is available in the file fastsemsim/examples/calculate_ss_on_go.py within the source tarball of FastSemSim.
 
 
 The quick way
@@ -200,7 +202,32 @@ For this reasons, FastSemSim provides a 'batch mode' to calculate semantic simia
 
 
 Putting all together
-----------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Here is a complete minimal example to calculate the semantic similaity between two proteins over the gene ontology
+
+::
+
+	# Import fastsemsim
+	import fastsemsim
+
+	ontology = fastsemsim.load_ontology(ontology_type = 'GeneOntology')
+	ac = fastsemsim.load_ac(ontology, ac_species = 'human')
+	ssbatch = fastsemsim.init_batchsemsim(ontology = ontology, ac = ac, semsim_type = 'obj', semsim_measure = 'resnik', mixing_strategy = 'BMA')
+
+	# Calculating pairwise SS in batch mode for a list of proteins...
+	ssbatch.set_root('molecular_function')
+	ssbatch.set_output(output = 'console')
+	batch_query_pairs = [['O75884', 'Q9NQB0'], ['Q14206', 'Q8IUH3' ]]
+	res = ssbatch.SemSim(query=batch_query_pairs, query_type='pairs'
+
+
+	ssbatch.set_root('biological_process')
+	ssbatch.set_output(output = None)
+	batch_query_pairwise = ['O75884', 'Q9NQB0', 'Q14206', 'Q8IUH3' ]
+	res2 = ssbatch.SemSim(query=batch_query_pairwise, query_type='pairwise')
+
+
 
 Divers
 ----------------------------------

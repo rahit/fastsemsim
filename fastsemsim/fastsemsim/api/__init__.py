@@ -204,7 +204,7 @@ def init_semsim(ontology, ac=None, semsim_type = 'obj', semsim_measure='Resnik',
 	ss = None
 	if semsim_type == 'term':
 		semsim_class = semsim.select_term_semsim(semsim_measure)
-		ss = semsim_class(ontology, ac, ss_util=ss_util, do_log=do_log)
+		ss = semsim_class(ontology, ac, util=ss_util, do_log=do_log)
 	elif semsim_type == 'obj':
 		ss = semsim.ObjSemSim(ontology, ac, semsim_measure, mixing_strategy, ss_util, do_log = do_log)
 	elif semsim_type == 'termset':

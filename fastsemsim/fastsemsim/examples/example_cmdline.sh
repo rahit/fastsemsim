@@ -12,4 +12,15 @@ fastsemsim --load_params example_cmdline_params.txt
 
 
 
-# fastsemsim --ontology_type GeneOntology --query_ss_type obj --tss Resnik --mix BMA --query_input ac --ac_species human  -vv
+fastsemsim --ontology_type GeneOntology --query_ss_type obj --tss Resnik --mix BMA --query_input ac --ac_species human  -vv --root molecular_function
+fastsemsim --ontology_type GeneOntology --query_ss_type obj --tss Resnik --mix BMA --query_input ac --ac_species human  -vv --root molecular_function --remove_nan
+fastsemsim --ontology_type DiseaseOntology --query_ss_type obj --tss Resnik --mix BMA --query_input ac --ac_species human  -vv --output_file temp.txt --remove_nan
+
+fastsemsim --ontology_type DiseaseOntology --query_ss_type term --tss Resnik --mix BMA --query_input ontology --ac_species human  -vv --output_file temp.txt --remove_nan
+
+fastsemsim --ontology_type DiseaseOntology --ac_species human  -vv --task stats
+fastsemsim --ontology_type GeneOntology --ac_species human  -vv --task stats
+
+
+fastsemsim --ontology_type DiseaseOntology --ac_species human  -vv --task stats --save_params example_cmdline_params.txt
+fastsemsim  --load_params example_cmdline_params.txt
