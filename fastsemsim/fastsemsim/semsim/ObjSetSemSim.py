@@ -142,8 +142,13 @@ class ObjSetSemSim:
 		if self.do_log:
 			self.log = []
 		# print(root)
-		if root is None:
-			root = self.ontology.roots.keys()[0]
+		if root is None: # pick thefirst root if none is specified
+			root = list(self.ontology.roots.keys())[0]
+		else: # convert the specified root and check it exists
+			candidate_root = self.ontology.id2node(root, alt_check=False)
+			if not candidate_root in self.ontology.roots:
+				candidate_root = self.ontology.name2node(root)
+			root = candidate_root
 			# print(root)
 		if not root in self.ontology.roots:
 			# raise Exception(str(root) + " is not an ontology root.")

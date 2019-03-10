@@ -112,6 +112,13 @@ class SetSemSim:
 	def SemSim(self, obj1, obj2, root = None):
 		if self.do_log:
 			self.log = []
+
+		if not root is None: # convert the specified root and check it exists
+			candidate_root = self.ontology.id2node(root, alt_check=False)
+			if not candidate_root in self.ontology.roots:
+				candidate_root = self.ontology.name2node(root)
+			root = candidate_root
+
 		if (not root is None) and (not root in self.ontology.roots):
 			if self.do_log:
 				reason = 'Selected root ' + str(root) + ' is not in the ontology.'

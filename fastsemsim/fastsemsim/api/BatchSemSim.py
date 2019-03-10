@@ -56,6 +56,11 @@ class BatchSemSim(object):
 	def set_root(self, root=None):
 		if isinstance(root, None.__class__):
 			root = list(self.semsim.ontology.roots.keys())[0]
+		else: # convert the specified root and check it exists
+			candidate_root = self.semsim.ontology.id2node(root, alt_check=False)
+			if not candidate_root in self.semsim.ontology.roots:
+				candidate_root = self.semsim.ontology.name2node(root)
+			root = candidate_root
 		if not root in self.semsim.ontology.roots:
 			raise Exception(str(root) + " is not an ontology root.")
 		self.root = root
@@ -101,7 +106,7 @@ class BatchSemSim(object):
 		elif output == 'console': # output is saved to file.
 			pass
 		else:
-			raise Exception('Uknown ' + str(output) + ' output format.')
+			raise Exception('Unknown ' + str(output) + ' output format.')
 		# good to go
 		self.output = output
 
@@ -268,6 +273,8 @@ class BatchSemSim(object):
 				sys.stdout.flush()
 
 			if (self.output_cut_nan) and (temp is None): # do not process None
+				continue
+			if (not self.output_cut_thresh is None) and (temp is None): # do not process scores below threshold
 				continue
 			if (not self.output_cut_thresh is None) and (temp <= self.output_cut_thresh): # do not process scores below threshold
 				continue

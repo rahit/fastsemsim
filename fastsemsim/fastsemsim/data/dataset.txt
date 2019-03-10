@@ -1,7 +1,7 @@
 # This file describes the ontologies and the annotation corpora included in fastSemSim.
 name	type	file	ontology	filetype	date	species	description
 AC_GO_uniprot_arabidopsis	AC	ACs/GO.goa_arabidopsis_2019.01.29.gz	GeneOntology	gaf-2.0	2019.01.29	arabidopsis	Annotation of arabidopsis genes with the Gene Ontology terms. Retrieved from Uniprot http://www.ebi.ac.uk/GOA/downloads
-AC_GO_uniprot_fly	AC	ACs/GO.goa_fly_2019.01.29.gz	GeneOntology	gaf-2.0	2019.01.29	fly	Annotation of arabidopsis genes with the Gene Ontology terms. Retrieved from Uniprot http://www.ebi.ac.uk/GOA/downloads
+AC_GO_uniprot_fly	AC	ACs/GO.goa_fly_2019.01.29.gz	GeneOntology	gaf-2.0	2019.01.29	fly	Annotation of fly genes with the Gene Ontology terms. Retrieved from Uniprot http://www.ebi.ac.uk/GOA/downloads
 AC_GO_uniprot_human	AC	ACs/GO.goa_human_2019.01.29.gz	GeneOntology	gaf-2.0	2019.01.29	human	Annotation of human genes with the Gene Ontology terms. Retrieved from Uniprot http://www.ebi.ac.uk/GOA/downloads
 AC_GO_uniprot_mouse	AC	ACs/GO.goa_mouse_2019.01.29.gz	GeneOntology	gaf-2.0	2019.01.29	mouse	Annotation of mouse genes with the Gene Ontology terms. Retrieved from Uniprot http://www.ebi.ac.uk/GOA/downloads
 AC_GO_uniprot_rat	AC	ACs/GO.goa_rat_2019.01.29.gz	GeneOntology	gaf-2.0	2019.01.29	rat	Annotation of rat genes with the Gene Ontology terms. Retrieved from Uniprot http://www.ebi.ac.uk/GOA/downloads

@@ -256,7 +256,7 @@ def build_cmdline_args_parser():
 
 	# Define parameters for section 'AC'
 	param_ac.add_argument('-a','--ac', '--ac_name', action='store', default=None, help=params_help['ac_name'], metavar='ac', dest='ac')
-	param_ac.add_argument('--ac_species', action='store', default=None, help=params_help['ac_species'], metavar='ac_species', dest='ac_species')
+	param_ac.add_argument('--ac_species', action='store', default='human', help=params_help['ac_species'], metavar='ac_species', dest='ac_species')
 	param_ac.add_argument('--ac_file', action='store', default=None, help=params_help['ac_file'], metavar='ac_file', dest='ac_file')
 	param_ac.add_argument('--ac_type', action='store', default=None, help=params_help['ac_type'], metavar='ac_type', dest='ac_type', choices=fastsemsim.ac.AnnotationCorpusFormat.keys())
 	param_ac.add_argument('--ac_sep', action='store', default=None, help=params_help['ac_sep'], metavar='ac_sep', dest='ac_sep')
@@ -274,7 +274,7 @@ def build_cmdline_args_parser():
 	param_query.add_argument('--query_mode', action='store', default=None, choices=['pairwise', 'pairs', 'bipartite'], help=params_help['query_mode'], metavar='query_mode', dest='query_mode')
 	param_query.add_argument('--query_input', action='store', default=None, choices=['ac', 'ontology', 'file'], help=params_help['query_input'], metavar='query_input', dest='query_input')
 	param_query.add_argument('--query_file', action='store', default=None, help=params_help['query_file'], metavar='query_file', dest='query_file')
-	param_query.add_argument('--query_file_sep', action='store', default=None, help=params_help['query_file_sep'], metavar='query_file_sep', dest='query_file_sep')
+	param_query.add_argument('--query_file_sep', action='store', default='\t', help=params_help['query_file_sep'], metavar='query_file_sep', dest='query_file_sep')
 
 
 	# Define parameters for section 'ss'
@@ -415,7 +415,7 @@ def init_parameters():
 	params['ontology']['ignore'] = list()
 	params['ac']['ac'] = None
 	params['ac']['ac_type'] = None
-	params['ac']['ac_species'] = None
+	params['ac']['ac_species'] = 'human'
 	params['ac']['ac_file'] = None
 	params['ac']['EC_include'] = list()
 	params['ac']['EC_ignore'] = list()
@@ -427,7 +427,7 @@ def init_parameters():
 	params['query']['query_ss_type'] = None
 	params['query']['query_mode'] = None
 	params['query']['query_input'] = None
-	params['query']['query_file_sep'] = None
+	params['query']['query_file_sep'] = '	'
 	params['query']['query_file'] = None
 	params['ss']['ss_root'] = None
 	params['ss']['use_enhanced'] = None
@@ -507,6 +507,11 @@ def set_parameters(args):
 		params['query']['query_input'] = args.query_input
 	if not isinstance(args.query_file_sep, None.__class__):
 		params['query']['query_file_sep'] = args.query_file_sep
+		if params['query']['query_file_sep'] == '\\s':
+			params['query']['query_file_sep'] = ' '
+		if params['query']['query_file_sep'] == '\\t':
+			params['query']['query_file_sep'] = '\t'
+
 	if not isinstance(args.query_file, None.__class__):
 		params['query']['query_file'] = args.query_file
 
@@ -1065,7 +1070,7 @@ def load_query_from_file():
 				for i in range(0,len(line)):
 					for j in range(i+1,len(line)):
 						query.append((line[i], line[j]))
-			elif params['query']['query_mode'] == 'list':
+			elif params['query']['query_mode'] == 'pairwise':
 				for i in line:
 					query.append(i)
 			else:
@@ -1073,7 +1078,7 @@ def load_query_from_file():
 		elif params['query']['query_ss_type'] == 'objset' or params['query']['query_ss_type'] == 'termset':
 			if params['query']['query_mode'] == 'pairs':
 				raise Exception(bug_msg)
-			elif params['query']['query_mode'] == 'list':
+			elif params['query']['query_mode'] == 'pairwise':
 				newline = []
 				for i in line:
 					newline.append(i)
@@ -1116,7 +1121,11 @@ def det_ss():
 	output_params['cut_nan'] = params['output']['cut_nan']
 
 	ss.set_output(output = params['output']['out_mode'], output_params = output_params)
-	res = ss.SemSim(query=query, query_type=params['query']['query_mode'])
+
+	# print(query)
+	# print(type(query))
+
+	res = ss.SemSim(query = query, query_type=params['query']['query_mode'])
 
 	# if params['query']['query_mode'] == 'pairs':
 	# 	ss_pairs(h)

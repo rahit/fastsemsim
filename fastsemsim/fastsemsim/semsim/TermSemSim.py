@@ -196,6 +196,14 @@ class TermSemSim(object):
 		# reason = 'Generic _SemSim_'
 		# self.log.append(reason)
 
+		if root is None: # pick thefirst root if none is specified
+			root = list(self.ontology.roots.keys())[0]
+		else: # convert the specified root and check it exists
+			candidate_root = self.ontology.id2node(root, alt_check=False)
+			if not candidate_root in self.ontology.roots:
+				candidate_root = self.ontology.name2node(root)
+			root = candidate_root
+
 		if self.format_and_check_data:
 			if term1 is None or term2 is None:
 				if self.do_log:

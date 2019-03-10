@@ -251,9 +251,11 @@ if __name__ == "__main__":
 
 	batch_query_pairs = [['O75884', 'Q9NQB0'], ['Q14206', 'Q8IUH3' ]]
 	res = ssbatch.SemSim(query=batch_query_pairs, query_type='pairs')
+	res = ssbatch2.SemSim(query=batch_query_pairs, query_type='pairs')
 
 	batch_query_pairwise = ['O75884', 'Q9NQB0', 'Q14206', 'Q8IUH3' ]
 	res2 = ssbatch.SemSim(query=batch_query_pairwise, query_type='pairwise')
+	res2 = ssbatch2.SemSim(query=batch_query_pairwise, query_type='pairwise')
 
 
 	res_long = ssbatch.SemSim(query= 10*batch_query_pairwise, query_type='pairwise')
@@ -265,6 +267,4 @@ if __name__ == "__main__":
 
 	%%timeit
 	res_very_very_long = ssbatch.SemSim(query= 10*batch_query_pairwise, query_type='pairwise')
-
-
 
