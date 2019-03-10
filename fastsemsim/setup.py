@@ -34,6 +34,8 @@ lines = open(README).readlines()
 description = ''.join(lines[:3])
 long_description = ''.join(lines[:4])
 
+print(long_description)
+
 ## Get package Version
 vh = open('fastsemsim/version','r')
 lines = vh.readlines()
@@ -43,9 +45,10 @@ vh.close()
 setup(
     name='fastsemsim',
     version=version,
-    url='https://sites.google.com/site/fastsemsim/',
+    url='https://sourceforge.net/p/fastsemsim/',
     description=description,
     long_description=long_description,
+    long_description_content_type='text/markdown',
     keywords='semantic similarity, Ontology, Gene Ontology',
     author='Marco Mina',
     author_email='marco.mina.85@gmail.com',
