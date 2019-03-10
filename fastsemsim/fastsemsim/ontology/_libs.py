@@ -238,6 +238,9 @@ class OboParser:
 	        line = self.handle.readline()
 	        if not line:
 	            break
+	        # print(line)
+	        # print(type(line))
+	        # ddas
 	        if line.startswith(self.term_tag):
 	            # self.handle.seek(pos)
 	            return True
