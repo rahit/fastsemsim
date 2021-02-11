@@ -64,17 +64,17 @@ class ICNDSemSim(TermSemSim) :
 		# print(str(tp) + " " + str(t))
 		for j in self.ontology.nodes[tp]:
 			# print(self.ontology.edges['nodes'][j])
-			if self.ontology.edges.ix[j,'child'] == t: # can replace with find. Way faster!
-				# print(self.ontology.edges.ix[j,'type'])
-				if self.ontology.edges.ix[j,'type'] == 'is_a':
+			if self.ontology.edges.loc[j,'child'] == t: # can replace with find. Way faster!
+				# print(self.ontology.edges.loc[j,'type'])
+				if self.ontology.edges.loc[j,'type'] == 'is_a':
 					return self.is_a_score
-				elif self.ontology.edges.ix[j,'type'] == 'part_of':
+				elif self.ontology.edges.loc[j,'type'] == 'part_of':
 					return self.part_of_score
-				elif self.ontology.edges.ix[j,'type'] == 'regulates':
+				elif self.ontology.edges.loc[j,'type'] == 'regulates':
 					return self.regulates_score
-				elif self.ontology.edges.ix[j,'type'] == 'positively_regulates':
+				elif self.ontology.edges.loc[j,'type'] == 'positively_regulates':
 					return self.pos_regulates_score
-				elif self.ontology.edges.ix[j,'type'] == 'negatively_regulates':
+				elif self.ontology.edges.loc[j,'type'] == 'negatively_regulates':
 					return self.neg_regulates_score
 				else:
 					return self.generic_score

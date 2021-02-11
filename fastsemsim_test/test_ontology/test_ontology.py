@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-from fastsemsim.Ontology import ontologies
+from fastsemsim.ontology import ontologies
 
 import sys
 import os

@@ -15,23 +15,23 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
+along with fastsemsim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 from __future__ import print_function
-from fastsemsim.Ontology import ontologies
-from fastsemsim.Ontology import AnnotationCorpus
-from fastsemsim import data, SemSim
-from fastsemsim.SemSim import SemSimUtils
+from fastsemsim.ontology import ontologies
+from fastsemsim.ac import AnnotationCorpus
+from fastsemsim import data, semsim
+from fastsemsim.semsim import SemSimUtils
 import random
 import pandas as pd
 import sys
 import os
 import math
 import gzip
-from fastsemsim.SemSim.SetSemSim import SetSemSim
-from fastsemsim.SemSim.ObjSemSim import ObjSemSim
-from fastsemsim.SemSim.ObjSetSemSim import ObjSetSemSim
+from fastsemsim.semsim.SetSemSim import SetSemSim
+from fastsemsim.semsim.ObjSemSim import ObjSemSim
+from fastsemsim.semsim.ObjSetSemSim import ObjSetSemSim
 
 def load_ontology(i,j):
 	# print("LOAD ONTOLOGY" + str(i))
@@ -88,8 +88,8 @@ def test_SS():
 
 	ac_params = {}
 
-	term_ss_measures = SemSim.term_SemSim_measures.keys()
-	pair_ss_measures =  SemSim.mix_strategies.keys()
+	term_ss_measures = semsim.term_SemSim_measures.keys()
+	pair_ss_measures =  semsim.mix_strategies.keys()
 
 	print("\n#################################")
 	print("\n# Testing SS measures... #\n")
@@ -118,7 +118,7 @@ def test_SS():
 					print('-> Testing term SemSim Measures...')
 					for s in term_ss_measures:
 						print("Initializing: " + str(s) + '...')
-						tss_class = SemSim.select_term_SemSim(s)
+						tss_class = semsim.select_term_SemSim(s)
 						ss = tss_class(ontology, ac, ssutil, do_log=False)
 						print(str(s) + " initialized. Testing with 200 random pairs [showing only a selection of 4 pairs]...")
 						query = ac.reverse_annotations
@@ -136,7 +136,7 @@ def test_SS():
 							for conta in range(0,len(t1)):
 								temp.append((t1[conta], t2[conta], ss.SemSim(t1[conta], t2[conta], root)))
 							temp = pd.DataFrame(temp)
-							print(temp.ix[0:4,:])
+							print(temp.loc[0:4,:])
 							print("----------------")
 
 					print("\n---------------------------------\n")
@@ -158,7 +158,7 @@ def test_SS():
 								for conta in range(0,len(t1)):
 									temp.append((t1[conta][0], t1[conta][1], ss.SemSim(t1[conta][0], t1[conta][1], root)))
 								temp = pd.DataFrame(temp)
-								print(temp.ix[0:4,:])
+								print(temp.loc[0:4,:])
 								print("----------------")
 
 					print("\n---------------------------------\n")
@@ -178,7 +178,7 @@ def test_SS():
 								for conta in range(0,len(t1)):
 									temp.append((t1[conta], t2[conta], ss.SemSim(t1[conta], t2[conta], root)))
 								temp = pd.DataFrame(temp)
-								print(temp.ix[0:4,:])
+								print(temp.loc[0:4,:])
 								print("----------------")
 
 					print("\n---------------------------------\n")
@@ -205,7 +205,7 @@ def test_SS():
 								for conta in range(0,len(t1)):
 									temp.append((t1[conta][0], t1[conta][1], ss.SemSim(t1[conta][0], t1[conta][1], root)))
 								temp = pd.DataFrame(temp)
-								print(temp.ix[0:4,:])
+								print(temp.loc[0:4,:])
 								print("----------------")
 
 

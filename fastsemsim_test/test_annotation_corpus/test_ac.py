@@ -18,8 +18,8 @@ You should have received a copy of the GNU General Public License
 along with fastSemSim.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-from fastsemsim.Ontology import ontologies
-from fastsemsim.Ontology import AnnotationCorpus
+from fastsemsim.ontology import ontologies
+from fastsemsim.ontology import AnnotationCorpus
 from fastsemsim import data
 
 import sys
